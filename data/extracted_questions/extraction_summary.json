@@ -1,18 +1,18 @@
 {
-  "total_questions": 588,
+  "total_questions": 650,
   "by_specialty": {
-    "Emergency Medicine": 83,
-    "Internal Medicine": 81,
-    "Neurology": 176,
-    "Pediatrics": 161,
-    "Surgery": 87
+    "Internal Medicine": 165,
+    "Neurology": 185,
+    "Pediatrics": 146,
+    "Surgery": 154
   },
-  "status": "Extracted from compressed NBME PDFs",
-  "next_steps": [
-    "Add correct answers from answer PDFs",
-    "Add detailed explanations",
-    "Refine reasoning pattern tags",
-    "Add topic classifications",
-    "Validate all extracted data"
+  "status": "OCR extraction complete",
+  "includes": [
+    "Question vignettes",
+    "All answer choices",
+    "Correct answers",
+    "Correct answer explanations",
+    "Distractor explanations for each wrong answer",
+    "Educational objectives"
   ]
 }

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-NBME PDF Question Extractor for ShelfSense
-Extracts questions from compressed NBME PDFs and converts to ShelfSense JSON format
+NBME Answer PDF Extractor for ShelfSense
+Extracts questions AND answers from NBME Answer PDFs
+This is the authoritative source since Answer PDFs contain complete questions + answers
 """
 
 import pdfplumber
@@ -11,14 +12,14 @@ from pathlib import Path
 from typing import Dict, List, Optional
 import sys
 
-class NBMEExtractor:
-    """Extract NBME questions from PDFs into structured format"""
+class NBMEAnswerExtractor:
+    """Extract NBME questions from Answer PDFs (contains everything)"""
 
     def __init__(self, pdf_directory: str):
         self.pdf_dir = Path(pdf_directory)
         self.questions = []
 
-        # Reasoning pattern keywords for automatic tagging
+        # Reasoning pattern keywords
         self.pattern_keywords = {
             "urgency_assessment": ["emergency", "most appropriate immediate", "acute", "stabilize first"],
             "treatment_prioritization": ["most appropriate next step", "initial management"],
@@ -32,31 +33,20 @@ class NBMEExtractor:
         }
 
     def extract_question_from_page(self, page_text: str, page_num: int) -> Optional[Dict]:
-        """Extract a single question from page text - with robust fallback patterns"""
+        """Extract question AND answer from Answer PDF page"""
 
-        # Try to match question number from "Item N of 50"
-        item_match = re.search(r'Item (\d+) of \d+', page_text)
-        question_num = None
-
-        if item_match:
-            question_num = item_match.group(1)
-
-        # Fallback: Extract from "N. A patient..." pattern
-        if not question_num:
-            question_num_match = re.search(r'^(\d+)\.\s+[A-Z]', page_text, re.MULTILINE)
-            if question_num_match:
-                question_num = question_num_match.group(1)
-
-        # If still no question number, skip this page
-        if not question_num:
+        # Extract question number from "N. A patient..."
+        question_num_match = re.search(r'^(\d+)\.\s+[A-Z]', page_text, re.MULTILINE)
+        if not question_num_match:
             return None
 
-        # Extract the vignette - everything between question number and first answer choice
-        # Look for pattern: number. [vignette text] followed by answer choices starting with 0 \n A)
+        question_num = question_num_match.group(1)
+
+        # Extract vignette - from "N." until answer choices
         vignette_match = re.search(
-            r'(\d+)\.\s+(.+?)(?=\n0\s*\n[A-I]\))',
+            r'(\d+)\.\s+(.+?)(?=^[A-I]\))',
             page_text,
-            re.DOTALL
+            re.DOTALL | re.MULTILINE
         )
 
         if not vignette_match:
@@ -64,29 +54,22 @@ class NBMEExtractor:
 
         vignette = vignette_match.group(2).strip()
 
-        # Update question_num from vignette if we only had fallback
-        vignette_question_num = vignette_match.group(1)
-        if vignette_question_num:
-            question_num = vignette_question_num
-
-        # Extract answer choices - format is:
-        # 0
+        # Extract answer choices - simpler pattern in Answer PDFs (no "0\n")
+        # Format is just:
         # A) Choice text
-        # 0
         # B) Choice text
         choices = []
-        choice_pattern = r'0\s*\n([A-I])\)\s*([^\n]+(?:\n(?!0\s*\n[A-I]\)|Previous|Next)[^\n]+)*)'
+        choice_pattern = r'^([A-I])\)\s*(.+?)(?=^[A-I]\)|Correct Answer:|\Z)'
 
-        for match in re.finditer(choice_pattern, page_text):
+        for match in re.finditer(choice_pattern, page_text, re.DOTALL | re.MULTILINE):
             choice_id = match.group(1)
             choice_text = match.group(2).strip()
-            # Clean up choice text - remove extra whitespace and navigation text
+            # Clean up
             choice_text = re.sub(r'\s+', ' ', choice_text)
-            # Remove common footer text
-            choice_text = re.sub(r'(r ~, r,|https://t\.me/\S+|Previous Next Lab Values.*)', '', choice_text)
+            choice_text = re.sub(r'(r ~, r,|https://t\.me/\S+|Next Score Report.*)', '', choice_text)
             choice_text = choice_text.strip()
 
-            if choice_text:  # Only add if text remains after cleaning
+            if choice_text:
                 choices.append({
                     "id": choice_id,
                     "text": choice_text
@@ -94,6 +77,10 @@ class NBMEExtractor:
 
         if not choices:
             return None
+
+        # Extract correct answer
+        answer_match = re.search(r'Correct Answer:\s*([A-I])\b', page_text)
+        correct_answer = answer_match.group(1) if answer_match else "TBD"
 
         # Parse vignette components
         demographics = self._extract_demographics(vignette)
@@ -109,62 +96,56 @@ class NBMEExtractor:
             "vitals": vitals,
             "labs": labs,
             "question_stem": question_stem,
-            "choices": choices
+            "choices": choices,
+            "correct_answer": correct_answer
         }
 
     def _extract_demographics(self, text: str) -> str:
-        """Extract patient demographics from vignette"""
-        demo_match = re.match(r'(A\s+\d+-year-old\s+(?:man|woman|boy|girl))', text)
+        """Extract patient demographics"""
+        demo_match = re.search(r'(A\s+\d+-year-old\s+(?:man|woman|boy|girl))', text, re.IGNORECASE)
         return demo_match.group(1) if demo_match else ""
 
     def _extract_vitals(self, text: str) -> Dict:
-        """Extract vital signs from vignette"""
+        """Extract vital signs"""
         vitals = {}
 
-        # Temperature
-        temp_match = re.search(r'temperature is ([\d.]+)°C \(([\d.]+)°F\)', text)
+        temp_match = re.search(r'temperature is ([\\d.]+)°C \\(([\\d.]+)\\s*°F\\)', text)
         if temp_match:
             vitals["temp_c"] = temp_match.group(1)
             vitals["temp_f"] = temp_match.group(2)
 
-        # Pulse
-        pulse_match = re.search(r'pulse is (\d+)/min', text)
+        pulse_match = re.search(r'pulse is (\\d+)/min', text)
         if pulse_match:
             vitals["pulse"] = pulse_match.group(1)
 
-        # Respirations
-        resp_match = re.search(r'respirations are (\d+)/min', text)
+        resp_match = re.search(r'respirations are (\\d+)/min', text)
         if resp_match:
             vitals["respirations"] = resp_match.group(1)
 
-        # Blood pressure
-        bp_match = re.search(r'blood pressure is (\d+/\d+) mm Hg', text)
+        bp_match = re.search(r'blood pressure is (\\d+/\\d+) mm Hg', text)
         if bp_match:
             vitals["blood_pressure"] = bp_match.group(1)
 
-        # O2 sat
-        o2_match = re.search(r'oxygen saturation of (\d+)%', text)
+        o2_match = re.search(r'oxygen saturation of (\\d+)%', text)
         if o2_match:
             vitals["o2_sat"] = o2_match.group(1)
 
         return vitals
 
     def _extract_labs(self, text: str) -> Dict:
-        """Extract laboratory values from vignette"""
+        """Extract laboratory values"""
         labs = {}
-
-        # Common lab patterns
         lab_patterns = {
-            "hemoglobin": r'Hemoglobin\s+([\d.]+)\s*g/dL',
-            "hematocrit": r'Hematocrit\s+([\d.]+)%',
-            "wbc": r'(?:Leukocyte count|WBC)\s+([\d,]+)/mm',
-            "platelets": r'Platelet count\s+([\d,]+)/mm',
-            "sodium": r'Na\+?\s+([\d]+)\s*mEq/L',
-            "potassium": r'K\+?\s+([\d.]+)\s*mEq/L',
-            "chloride": r'Cl-?\s+([\d]+)\s*mEq/L',
-            "bicarbonate": r'HCO3?-?\s+([\d]+)\s*mEq/L',
-            "glucose": r'Glucose\s+([\d]+)\s*mg/dL',
-            "creatinine": r'Creatinine\s+([\d.]+)\s*mg/dL',
+            "hemoglobin": r'Hemoglobin\\s+([\\d.]+)\\s*g/dL',
+            "hematocrit": r'(?:Hematocrit|hematocrit is)\\s+([\\d.]+)%',
+            "wbc": r'(?:Leukocyte count|leukocyte count is|WBC)\\s+([\\d,]+)/mm',
+            "platelets": r'Platelet count\\s+([\\d,]+)/mm',
+            "sodium": r'Na\\+?\\s+([\\d]+)\\s*mEq/L',
+            "potassium": r'K\\+?\\s+([\\d.]+)\\s*mEq/L',
+            "chloride": r'Cl-?\\s+([\\d]+)\\s*mEq/L',
+            "bicarbonate": r'HCO3?-?\\s+([\\d]+)\\s*mEq/L',
+            "glucose": r'Glucose\\s+([\\d]+)\\s*mg/dL',
+            "creatinine": r'Creatinine\\s+([\\d.]+)\\s*mg/dL',
         }
 
         for lab_name, pattern in lab_patterns.items():
@@ -175,23 +156,25 @@ class NBMEExtractor:
         return labs
 
     def _extract_question_stem(self, text: str) -> str:
-        """Extract the actual question being asked"""
-        # Usually the last sentence with a question mark
-        question_match = re.search(r'([^.!?]+\?)\s*$', text)
+        """Extract the actual question"""
+        question_match = re.search(r'([^.!?]+\\?)\\s*$', text)
         if question_match:
             return question_match.group(1).strip()
 
-        # Or starts with "Which of the following"
-        which_match = re.search(r'(Which of the following.+?)(?=\n|$)', text, re.DOTALL)
+        which_match = re.search(r'((?:Which|What)\\s+(?:of the following|is the).+?)(?=\\n|$)', text, re.DOTALL)
         if which_match:
             return which_match.group(1).strip()
+
+        most_match = re.search(r'((?:The )?most (?:appropriate|likely).+?)(?=\\n|$)', text, re.IGNORECASE | re.DOTALL)
+        if most_match:
+            return most_match.group(1).strip()
 
         return ""
 
     def tag_reasoning_patterns(self, question: Dict) -> List[str]:
-        """Automatically tag question with likely reasoning patterns"""
+        """Auto-tag reasoning patterns"""
         patterns = []
-        full_text = question.get("vignette", "") + question.get("question_stem", "")
+        full_text = question.get("vignette", "") + " " + question.get("question_stem", "")
         full_text_lower = full_text.lower()
 
         for pattern_name, keywords in self.pattern_keywords.items():
@@ -200,40 +183,34 @@ class NBMEExtractor:
                     patterns.append(pattern_name)
                     break
 
-        return list(set(patterns))  # Remove duplicates
+        return list(set(patterns))
 
     def determine_difficulty(self, question: Dict) -> int:
-        """Estimate difficulty (1-5) based on complexity"""
+        """Estimate difficulty"""
         vignette = question.get("vignette", "")
-
-        # Simple heuristic based on vignette length and complexity
         word_count = len(vignette.split())
         num_labs = len(question.get("labs", {}))
-        num_choices = len(question.get("choices", []))
 
         if word_count < 100 and num_labs < 3:
-            return 2  # Easy
+            return 2
         elif word_count < 200 and num_labs < 6:
-            return 3  # Medium
+            return 3
         else:
-            return 4  # Hard
+            return 4
 
     def classify_tier(self, question: Dict) -> int:
-        """Classify question tier (1-5) based on topic importance"""
-        # This would ideally use First Aid high-yield topics
-        # For now, default to tier 2 (high yield but not critical)
+        """Classify tier"""
         return 2
 
     def convert_to_shelfsense_format(self, question: Dict, specialty: str, source_file: str) -> Dict:
-        """Convert extracted question to ShelfSense JSON format"""
+        """Convert to ShelfSense JSON"""
+        question_id = f"{specialty.lower().replace(' ', '_')}_{source_file.replace(' ', '_').replace('-', '_')}_{int(question['question_num']):03d}"
 
-        question_id = f"{specialty.lower().replace(' ', '_')}_{int(question['question_num']):03d}"
-
-        shelfsense_question = {
+        return {
             "id": question_id,
             "specialty": specialty,
             "source": f"NBME {source_file}",
-            "topic": "TBD",  # Would need topic extraction
+            "topic": "TBD",
             "tier": self.classify_tier(question),
             "difficulty": self.determine_difficulty(question),
             "vignette": {
@@ -244,7 +221,7 @@ class NBMEExtractor:
             },
             "question_stem": question.get("question_stem", ""),
             "choices": question.get("choices", []),
-            "correct_answer": "TBD",  # Needs answer key
+            "correct_answer": question.get("correct_answer", "TBD"),
             "reasoning_patterns": self.tag_reasoning_patterns(question),
             "explanation": {
                 "concept": "TBD",
@@ -253,12 +230,9 @@ class NBMEExtractor:
             }
         }
 
-        return shelfsense_question
-
     def extract_from_pdf(self, pdf_path: Path, specialty: str) -> List[Dict]:
-        """Extract all questions from a single PDF"""
+        """Extract all questions from Answer PDF"""
         questions = []
-
         print(f"Processing: {pdf_path.name}")
 
         try:
@@ -276,15 +250,18 @@ class NBMEExtractor:
                             pdf_path.stem
                         )
                         questions.append(shelfsense_q)
-                        print(f"  ✓ Extracted Q{question['question_num']} from page {page_num}")
+                        ans = question['correct_answer']
+                        print(f"  ✓ Q{question['question_num']} → Answer: {ans} (page {page_num})")
 
         except Exception as e:
             print(f"Error processing {pdf_path.name}: {e}")
+            import traceback
+            traceback.print_exc()
 
         return questions
 
     def extract_all_questions(self) -> Dict[str, List[Dict]]:
-        """Extract questions from all PDFs in directory"""
+        """Extract from all Answer PDFs"""
         all_questions = {
             "Emergency Medicine": [],
             "Internal Medicine": [],
@@ -293,7 +270,6 @@ class NBMEExtractor:
             "Surgery": []
         }
 
-        # Map filename patterns to specialties
         specialty_map = {
             "Emergency": "Emergency Medicine",
             "Internal": "Internal Medicine",
@@ -303,11 +279,10 @@ class NBMEExtractor:
             "Surgery": "Surgery"
         }
 
-        # Process only question PDFs (not answer PDFs)
-        question_pdfs = [p for p in self.pdf_dir.glob("*.pdf") if "Question" in p.name]
+        # Process Answer PDFs only
+        answer_pdfs = [p for p in self.pdf_dir.glob("*.pdf") if "Answer" in p.name]
 
-        for pdf_path in sorted(question_pdfs):
-            # Determine specialty from filename
+        for pdf_path in sorted(answer_pdfs):
             specialty = None
             for key, value in specialty_map.items():
                 if key in pdf_path.name:
@@ -317,11 +292,12 @@ class NBMEExtractor:
             if specialty:
                 questions = self.extract_from_pdf(pdf_path, specialty)
                 all_questions[specialty].extend(questions)
+                print(f"  Total from this PDF: {len(questions)}/50")
 
         return all_questions
 
     def save_to_json(self, questions: Dict[str, List[Dict]], output_dir: Path):
-        """Save extracted questions to JSON files"""
+        """Save to JSON"""
         output_dir.mkdir(exist_ok=True)
 
         for specialty, question_list in questions.items():
@@ -334,7 +310,7 @@ class NBMEExtractor:
 
                 print(f"\n✓ Saved {len(question_list)} {specialty} questions to {output_path}")
 
-        # Also save combined file
+        # Combined file
         all_questions_flat = []
         for question_list in questions.values():
             all_questions_flat.extend(question_list)
@@ -345,17 +321,16 @@ class NBMEExtractor:
 
         print(f"\n✓ Saved {len(all_questions_flat)} total questions to {combined_path}")
 
-        # Generate summary statistics
+        # Summary
         self._generate_summary(questions, output_dir)
 
     def _generate_summary(self, questions: Dict[str, List[Dict]], output_dir: Path):
-        """Generate extraction summary report"""
+        """Generate summary"""
         summary = {
             "total_questions": sum(len(q) for q in questions.values()),
             "by_specialty": {k: len(v) for k, v in questions.items()},
-            "status": "Extracted from compressed NBME PDFs",
+            "status": "Extracted from NBME Answer PDFs with correct answers",
             "next_steps": [
-                "Add correct answers from answer PDFs",
                 "Add detailed explanations",
                 "Refine reasoning pattern tags",
                 "Add topic classifications",
@@ -379,25 +354,19 @@ class NBMEExtractor:
 
 def main():
     """Main extraction workflow"""
-
-    # Configure paths
     pdf_directory = "/Users/devaun/Desktop/Compressed_PDFs"
     output_directory = Path("/Users/devaun/ShelfSense/data/extracted_questions")
 
     print("="*60)
-    print("NBME Question Extractor for ShelfSense")
+    print("NBME Answer PDF Extractor for ShelfSense")
+    print("Extracting questions WITH correct answers")
     print("="*60)
     print(f"Source: {pdf_directory}")
     print(f"Output: {output_directory}")
     print("="*60 + "\n")
 
-    # Initialize extractor
-    extractor = NBMEExtractor(pdf_directory)
-
-    # Extract all questions
+    extractor = NBMEAnswerExtractor(pdf_directory)
     questions = extractor.extract_all_questions()
-
-    # Save to JSON files
     extractor.save_to_json(questions, output_directory)
 
     print("\n✓ Ready for integration into ShelfSense database!")
