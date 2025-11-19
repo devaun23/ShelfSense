@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """
-OCR-Enhanced NBME Answer PDF Extractor for ShelfSense
-Processes image-based PDFs using OCR to extract questions + answers + explanations
-Based on nbme_complete_extractor.py with OCR capabilities
+Extract Medicine 7 and Medicine 8 PDFs only
 """
 
 import fitz  # PyMuPDF
@@ -11,7 +9,7 @@ from PIL import Image
 import re
 import json
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 import sys
 import io
 
@@ -79,6 +77,8 @@ class NBMEOCRExtractor:
 
         except Exception as e:
             print(f"  Error during OCR: {e}")
+            import traceback
+            traceback.print_exc()
             return ""
 
         return all_text
@@ -98,8 +98,7 @@ class NBMEOCRExtractor:
 
         # Split by question number pattern to get each complete question
         # Pattern: "N. A patient..." or "N. A N-year-old..."
-        # OCR-friendly: allows various junk chars before number (v, newline, spaces, etc.)
-        question_splits = re.split(r'(?:^|[\n\sv])\s*(\d+)\s*[\.\)]\s+([A-Za-z])', all_text)
+        question_splits = re.split(r'\n(\d+)\.\s+([A-Z])', all_text)
 
         # Process splits: [text_before, num1, first_char1, text1, num2, first_char2, text2, ...]
         i = 1  # Skip the text before first question
@@ -326,16 +325,10 @@ class NBMEOCRExtractor:
         """Process specific PDFs by name"""
         all_questions = {
             "Internal Medicine": [],
-            "Neurology": [],
-            "Pediatrics": [],
-            "Surgery": []
         }
 
         specialty_map = {
             "Medicine": "Internal Medicine",
-            "Neuro": "Neurology",
-            "Pediatrics": "Pediatrics",
-            "Surgery": "Surgery"
         }
 
         for pdf_name in pdf_names:
@@ -366,9 +359,6 @@ class NBMEOCRExtractor:
         # Load existing questions if they exist
         existing_questions = {
             "Internal Medicine": [],
-            "Neurology": [],
-            "Pediatrics": [],
-            "Surgery": []
         }
 
         # Read existing files
@@ -401,68 +391,43 @@ class NBMEOCRExtractor:
         with open(output_dir / "all_nbme_questions.json", 'w', encoding='utf-8') as f:
             json.dump(all_flat, f, indent=2, ensure_ascii=False)
 
-        # Update summary
-        summary = {
-            "total_questions": len(all_flat),
-            "by_specialty": {k: len(v) for k, v in existing_questions.items()},
-            "status": "OCR extraction complete",
-            "includes": [
-                "Question vignettes",
-                "All answer choices",
-                "Correct answers",
-                "Correct answer explanations",
-                "Distractor explanations for each wrong answer",
-                "Educational objectives"
-            ]
-        }
+        # Print per-file results
+        print("\n" + "="*60)
+        print("EXTRACTION RESULTS PER PDF:")
+        print("="*60)
+        for specialty, question_list in questions.items():
+            if question_list:
+                # Count questions by source file
+                med7_count = sum(1 for q in question_list if "medicine_7" in q['id'])
+                med8_count = sum(1 for q in question_list if "medicine_8" in q['id'])
+                if med7_count > 0:
+                    print(f"Medicine 7 - Answers.pdf: {med7_count} questions")
+                if med8_count > 0:
+                    print(f"Medicine 8 - Answers.pdf: {med8_count} questions")
+        print("="*60)
 
-        with open(output_dir / "extraction_summary.json", 'w', encoding='utf-8') as f:
-            json.dump(summary, f, indent=2)
-
-        print(f"\n" + "="*60)
-        print(f"OCR EXTRACTION COMPLETE")
-        print(f"="*60)
-        print(f"Total: {summary['total_questions']} questions")
-        for spec, count in summary['by_specialty'].items():
-            print(f"  {spec}: {count}")
-        print(f"="*60)
 
 def main():
     pdf_directory = "/Users/devaun/Desktop/Compressed_PDFs"
     output_directory = Path("/Users/devaun/ShelfSense/data/extracted_questions")
 
-    # PDFs to process with OCR - Only Pediatrics 7 and Pediatrics 8
+    # PDFs to process with OCR - Only Medicine 7 and Medicine 8
     target_pdfs = [
-        "Pediatrics 7 - Answers.pdf",
-        "Pediatrics 8 - Answers.pdf"
+        "Medicine 7 - Answers.pdf",
+        "Medicine 8 - Answers.pdf"
     ]
 
     print("="*60)
-    print("OCR-Enhanced NBME Extractor - Pediatrics")
+    print("OCR-Enhanced NBME Extractor - Medicine 7 & 8")
     print("="*60)
-    print(f"Processing {len(target_pdfs)} Pediatrics PDFs...")
+    print(f"Processing {len(target_pdfs)} image-based PDFs...")
     print("="*60)
 
     extractor = NBMEOCRExtractor(pdf_directory)
     questions = extractor.process_specific_pdfs(target_pdfs)
     extractor.save_to_json(questions, output_directory)
 
-    # Print extraction results per PDF
-    print("\n" + "="*60)
-    print("EXTRACTION RESULTS PER PDF:")
-    print("="*60)
-    for specialty, question_list in questions.items():
-        if question_list:
-            # Count questions by source file
-            ped7_count = sum(1 for q in question_list if "pediatrics_7" in q['id'])
-            ped8_count = sum(1 for q in question_list if "pediatrics_8" in q['id'])
-            if ped7_count > 0:
-                print(f"Pediatrics 7 - Answers.pdf: {ped7_count} questions")
-            if ped8_count > 0:
-                print(f"Pediatrics 8 - Answers.pdf: {ped8_count} questions")
-    print("="*60)
-
-    print("\n✓ Ready for ShelfSense integration!")
+    print("\n✓ Extraction complete!")
 
 if __name__ == "__main__":
     main()

@@ -1,18 +1,10 @@
 {
-  "total_questions": 650,
+  "total_questions": 760,
   "by_specialty": {
-    "Internal Medicine": 165,
-    "Neurology": 185,
-    "Pediatrics": 146,
-    "Surgery": 154
-  },
-  "status": "OCR extraction complete",
-  "includes": [
-    "Question vignettes",
-    "All answer choices",
-    "Correct answers",
-    "Correct answer explanations",
-    "Distractor explanations for each wrong answer",
-    "Educational objectives"
-  ]
+    "Emergency Medicine": 99,
+    "Internal Medicine": 167,
+    "Neurology": 195,
+    "Pediatrics": 150,
+    "Surgery": 149
+  }
 }

@@ -46,7 +46,8 @@ class NBMECompleteExtractor:
 
             # Split by question number pattern to get each complete question
             # Pattern: "N. A patient..." or "N. A N-year-old..."
-            question_splits = re.split(r'\n(\d+)\.\s+([A-Z])', all_text)
+            # More flexible: allows various characters before the number (newline, parens, etc.)
+            question_splits = re.split(r'(?:^|\n|\)\()\s*(\d+)\.\s+([A-Z])', all_text)
 
             # Process splits: [text_before, num1, first_char1, text1, num2, first_char2, text2, ...]
             i = 1  # Skip the text before first question
