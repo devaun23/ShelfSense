@@ -6,12 +6,39 @@
 ```
 Primary Background: #000000 (Pure Black)
 Text Color: #FFFFFF (Pure White)
-Progress Bar: #1E3A8A (Dark Navy Blue)
-Progress Bar Fill: #3B82F6 (Brighter Blue for contrast)
+Progress Bar Background: #0A1628 (Very Dark Navy - subtle, not bright)
+Progress Bar Fill: #1E3A8A (Dark Navy Blue - grows from left to right)
 Accent/Hover: #60A5FA (Light Blue)
 Borders/Dividers: #1F1F1F (Dark Gray)
 Correct Answer: #10B981 (Green)
 Incorrect Answer: #EF4444 (Red)
+```
+
+### Progress Bar Specification
+```
+Height: 3px (thin but noticeable)
+Position: Fixed at top of viewport
+Width: 100% of screen width
+Background: #0A1628 (very dark navy, barely visible)
+Fill Color: #1E3A8A (dark navy blue, not too bright)
+Fill Direction: Left to right
+Animation: Smooth transition (300ms ease-out)
+
+Mastery Calculation:
+- 0% mastery = 0% fill
+- 99% mastery = 100% fill
+- Mastery = weighted average of:
+  - Question accuracy (40%)
+  - Retention rate (30%)
+  - Pattern mastery (20%)
+  - Consistency (10%)
+
+Example:
+0% mastery:  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+25% mastery: ██████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+50% mastery: ████████████████████░░░░░░░░░░░░░░░░░░░░
+75% mastery: ██████████████████████████████░░░░░░░░░░
+99% mastery: ████████████████████████████████████████
 ```
 
 ### Typography
@@ -44,11 +71,10 @@ Line Height: 1.6 (for readability)
 ### Main Question Screen
 
 ```
+▂▂▂▂▂▂▂▂▂▂░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ ← 3px navy progress bar (25% mastery)
+
 ┌─────────────────────────────────────────────────────────────────────┐
 │ ShelfSense                                    [123/1000] [⚙️] [👤]  │ ← Header (black bg)
-├─────────────────────────────────────────────────────────────────────┤
-│ ████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░     │ ← Navy progress bar
-│                                                               12.3%  │
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                       │
 │  Question 123                                    [Surgery] [Tier 2]  │
