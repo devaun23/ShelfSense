@@ -1,0 +1,16 @@
+# Large files
+data/compressed_pdfs/*.pdf
+*.pdf
+
+# Python
+__pycache__/
+*.py[cod]
+*.class
+*.so
+.Python
+env/
+venv/
+
+# OS
+.DS_Store
+*.swp
