@@ -34,20 +34,39 @@ class NBMEExtractor:
     def extract_question_from_page(self, page_text: str, page_num: int) -> Optional[Dict]:
         """Extract a single question from page text"""
 
-        # Match question number pattern
-        question_match = re.search(r'(\d+)\.\s+(.+?)(?=\n\s*(?:○|O)\s*[A-I]\))', page_text, re.DOTALL)
-        if not question_match:
+        # Match question number at start: "Item N of 50"
+        item_match = re.search(r'Item (\d+) of \d+', page_text)
+        if not item_match:
             return None
 
-        question_num = question_match.group(1)
-        vignette = question_match.group(2).strip()
+        question_num = item_match.group(1)
 
-        # Extract answer choices
+        # Extract the vignette - everything between question number and first answer choice
+        # Look for pattern: number. [vignette text] followed by answer choices starting with 0 \n A)
+        vignette_match = re.search(
+            r'\d+\.\s+(.+?)(?=\n0\s*\n[A-I]\))',
+            page_text,
+            re.DOTALL
+        )
+
+        if not vignette_match:
+            return None
+
+        vignette = vignette_match.group(1).strip()
+
+        # Extract answer choices - format is:
+        # 0
+        # A) Choice text
+        # 0
+        # B) Choice text
         choices = []
-        choice_pattern = r'(?:○|O)\s*([A-I])\)\s*(.+?)(?=\n\s*(?:○|O)\s*[A-I]\)|$)'
-        for match in re.finditer(choice_pattern, page_text, re.DOTALL):
+        choice_pattern = r'0\s*\n([A-I])\)\s*([^\n]+(?:\n(?!0\s*\n[A-I]\))[^\n]+)*)'
+
+        for match in re.finditer(choice_pattern, page_text):
             choice_id = match.group(1)
             choice_text = match.group(2).strip()
+            # Clean up choice text
+            choice_text = re.sub(r'\s+', ' ', choice_text)
             choices.append({
                 "id": choice_id,
                 "text": choice_text
@@ -343,7 +362,7 @@ def main():
 
     # Configure paths
     pdf_directory = "/Users/devaun/Desktop/Compressed_PDFs"
-    output_directory = Path("/Users/devaun/Desktop/ShelfSense_Questions")
+    output_directory = Path("/Users/devaun/ShelfSense/data/extracted_questions")
 
     print("="*60)
     print("NBME Question Extractor for ShelfSense")

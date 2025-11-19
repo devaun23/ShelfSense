@@ -1,0 +1,4383 @@
+[
+  {
+    "id": "surgery_002",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 3 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 57-year-old man",
+      "presentation": "A 57-year-old man comes to the physician because of a 3-month history of five to six loose stools daily and a 7.3-kg\n(16-lb) weight loss. He notes that he had two to three bowel movements daily for 3 weeks following a 10-day course of\ntetracycline 2 months ago . He underwent antrectomy with Billroth 11 reconstruction for a perforated gastric ulcer 1 year\nago. He has not had any changes in his diet. He has osteoarthritis of the hips treated with ibuprofen. He is\n185 cm (6 ft 1 in) tall and weighs 72 kg (160 lb); BMI is 21 kg/m 2 Examination shows excess skinfolds over the\n.\nabdomen. The abdomen is scaphoid with a well-healed surgical scar. Which of the following is the most likely cause of\nthis patient's diarrhea?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely cause of\nthis patient's diarrhea?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Bacterial overgrowth"
+      },
+      {
+        "id": "B",
+        "text": "Bile reflux"
+      },
+      {
+        "id": "C",
+        "text": "COX-2 inhibition"
+      },
+      {
+        "id": "D",
+        "text": "Dumping syndrome"
+      },
+      {
+        "id": "E",
+        "text": "Efferent loop obstruction r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_013",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 3 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 4,
+    "vignette": {
+      "demographics": "A 52-year-old man",
+      "presentation": "A 52-year-old man comes to the physician because he has had a 14-kg (30-lb) weight loss during the past 6 months .\nHe has noticed oily, floating stools during the past 2 months. He received the diagnosis of acute pancreatitis 2 years\nago and has had 1- to 3-hour episodes of severe abdominal pain since then. Current medications include oxycodone.\nHis mother has type 2 diabetes mellitus , and his father died of alcoholic cirrhosis . The patient has smoked one pack of\ncigarettes daily for 30 years. He has alcoholism but has been abstinent for the past 2 years. He is 173 cm (5 ft 8 in) tall\nand weighs 59 kg (130 lb) ; BMI is 20 kg/m 2 His pulse is 100/min , and blood pressure is 120/80 mm Hg. The abdomen\n•\nis scaphoid with mild diffuse tenderness. The liver edge is firm and is palpated 2 cm below the right costal margin .\nLaboratory studies show :\nHematocrit 32%\nMean corpuscular volume 83 µm 3\nLeukocyte count 10,300/mm 3\nPlatelet count 302 ,000/mm 3\nSerum\nNa+\n139 mEq/L\nK+\n3.5 mEq/L\ncI 108 mEq/L\nHco3-\n19 mEq/L\nUrea nitrogen 22 mg/dL\nGlucose 164 mg/dL\nCreatinine 1.1 mg/dL\nAlkaline phosphatase 120 U/L\nAST 23 U/L\nALT 29 U/L\nAmylase 90 U/L\nFerritin 250 ng/mL\nLipase 43 U/L (N=14 - 280)\nWhich of the following is the most likely explanation for these findings?",
+      "vitals": {
+        "pulse": "100",
+        "blood_pressure": "120/80"
+      },
+      "labs": {
+        "hematocrit": "32",
+        "wbc": "10,300",
+        "sodium": "139",
+        "potassium": "3.5",
+        "bicarbonate": "19",
+        "glucose": "164",
+        "creatinine": "1.1"
+      }
+    },
+    "question_stem": "1 mg/dL\nAlkaline phosphatase 120 U/L\nAST 23 U/L\nALT 29 U/L\nAmylase 90 U/L\nFerritin 250 ng/mL\nLipase 43 U/L (N=14 - 280)\nWhich of the following is the most likely explanation for these findings?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Bacterial overgrowth"
+      },
+      {
+        "id": "B",
+        "text": "Celiac disease"
+      },
+      {
+        "id": "C",
+        "text": "Cystic fibrosis"
+      },
+      {
+        "id": "D",
+        "text": "Hemochromatosis"
+      },
+      {
+        "id": "E",
+        "text": "Pancreatic insufficiency"
+      },
+      {
+        "id": "F",
+        "text": "Type 2 diabetes mellitus r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "missed_qualifiers",
+      "lab_interpretation",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_048",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 3 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 4,
+    "vignette": {
+      "demographics": "A 52-year-old man",
+      "presentation": "A 52-year-old man comes to the physician because of a 4-month history of loose, foul-smelling stools ; during this\nperiod, he has had a 6 .3-kg (14-lb) weight loss despite a good appetite. He also has had urinary frequency and\nurgency for 5 weeks . He has not had fever , chills, nausea, or vomiting. He has a 10-year history of recurrent alcoholic\npancreatitis that has required hospitalization once or twice each year because of severe abdominal pain. He has not\nbeen hospitalized since he abstained from drinking alcohol 2 years ago, but he has had chronic, mild midepigastric\npain since that time . During his last hospitalization 2 years ago, an x-ray of the abdomen showed calcifications in the\npancreas. He is 175 cm (5 ft 9 in) tall and weighs 69 kg (153 lb); BMI is 23 kg/m 2 Examination shows temporal\n.\nwasting . Cardiopulmonary examination shows no abnormalities. Abdominal examination shows midepigastric\ntenderness with no masses or hepatosplenomegaly ; bowel sounds are normal. There is no peripheral edema.\nLaboratory studies show :\nHematocrit 39%\nMean corpuscular volume 84 µm 3\nLeukocyte count 9000/mm J\nSegmented neutrophils 73%\nLymphocytes 18%\nMonocytes 9%\nPlatelet count 230,000/mm J\nSerum\nUrea nitrogen 17 mg/dL\nGlucose 280 mg/dL\nCreatinine 1.2 mg/dL\nProtein, total 5.8 g/dL\nAlbumin 2.7 g/dL\nIn addition to pancreatic enzyme replacement therapy, which of the following is most likely to decrease long-term\nmorbidity in this patient?",
+      "vitals": {},
+      "labs": {
+        "hematocrit": "39",
+        "wbc": "9000",
+        "platelets": "230,000",
+        "glucose": "280",
+        "creatinine": "1.2"
+      }
+    },
+    "question_stem": "7 g/dL\nIn addition to pancreatic enzyme replacement therapy, which of the following is most likely to decrease long-term\nmorbidity in this patient?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "High-fiber diet"
+      },
+      {
+        "id": "B",
+        "text": "Lactose-free diet"
+      },
+      {
+        "id": "C",
+        "text": "Nutritional supplementation"
+      },
+      {
+        "id": "D",
+        "text": "Insulin therapy"
+      },
+      {
+        "id": "E",
+        "text": "Sulfonylurea therapy r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "timeline_errors",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_001",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "An otherwise healthy 47-year-old woman comes to the physician because of a 2-year history of increasingly severe heartburn .\nCurrent medications are cimetidine for the past 2 years and an over-the -counter antacid as needed ; neither medication has relieved\nthe symptoms . She has smoked one pack of cigarettes daily for 20 years and drinks three to four beers daily. She is\n157 cm (5 ft 2 in) tall and weighs 59 kg (130 lb); BMI is 24 kg/m 2 Vital signs are within normal limits. Scattered wheezes are heard\n.\nbilaterally . Cardiac and abdominal examinations show no abnormalities. Findings on ECG are normal. A chest x-ray shows an air\nfluid level posterior to the cardiac silhouette . A barium swallow shows the proximal stomach herniating through the esophageal\nhiatus . Which of the following is the most appropriate next step in diagnosis?\n0 A) 24-Hour pH monitoring",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most appropriate next step in diagnosis?",
+    "choices": [
+      {
+        "id": "B",
+        "text": "Endoscopic ultrasonography"
+      },
+      {
+        "id": "C",
+        "text": "Esophageal manometry"
+      },
+      {
+        "id": "D",
+        "text": "Esophagogastroduodenoscopy"
+      },
+      {
+        "id": "E",
+        "text": "Thoracoscopy r, p, https://t.me/USMLENBME2CK Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "test_selection",
+      "timeline_errors",
+      "missed_qualifiers",
+      "treatment_prioritization"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_002",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 4,
+    "vignette": {
+      "demographics": "A 77-year-old woman",
+      "presentation": "A 77-year-old woman comes to the physician because of a 3-day history of nausea , vomiting , and midabdominal cramps . During the\npast 2 days , she has vomited within 1 hour of eating solid food . Her last bowel movement 2 days ago was normal. She usually has a\nbowel movement every 1 to 2 days . She has not had fever. She has type 2 diabetes mellitus. Ten years ago , she underwent an open\ncholecystectomy for cholecystitis. Current medications include intermediate-acting insulin, lisinopril, and aspirin. She does not smoke\nor drink alcohol. Her pulse is 100/min, and blood pressure is 110/70 mm Hg . Abdominal examination shows mild distention and\ntenderness without rebound or guarding . Bowel sounds are increased and high pitched . Laboratory studies show:\nHematocrit 45%\nLeukocyte count 15,000/mm 3\nSerum\nNa+ 147 mEq/L\nK+\n3.5 mEq/L\ncI\n112 mEq/L\nHco3-\n24 mEq/L\nUrea nitrogen 25 mg/dL\nCreatinine 1.2 mg/dL\nAn x-ray of the abdomen shows dilated loops of small bowel and air-fluid levels without a clear transition zone or free air. Which of\nthe following is the most likely diagnosis?",
+      "vitals": {
+        "pulse": "100",
+        "blood_pressure": "110/70"
+      },
+      "labs": {
+        "hematocrit": "45",
+        "wbc": "15,000",
+        "sodium": "147",
+        "potassium": "3.5",
+        "bicarbonate": "24",
+        "creatinine": "1.2"
+      }
+    },
+    "question_stem": "Which of\nthe following is the most likely diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Adhesions 0 B) Diabetic neuropathy"
+      },
+      {
+        "id": "C",
+        "text": "Inguinal hernia"
+      },
+      {
+        "id": "D",
+        "text": "Mesenteric ischemia"
+      },
+      {
+        "id": "E",
+        "text": "Sigmoid volvulus r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "timeline_errors",
+      "vital_sign_interpretation",
+      "diagnosis_recognition",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_001",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "During transfusion of a second unit of crossmatched packed red blood cells , a 62-year-old man has the sudden onset of\nfever , chills, and mild shortness of breath. Transfusion of the first unit was completed 1 hour ago. Yesterday , he\nunderwent a left hemicolectomy for colon cancer . His temperature is 38.4 °C (101 .1° F), pulse is 90/min , and blood\npressure is 126/77 mm Hg. The lungs are clear to auscultation. The remainder of the examination shows no\nabnormalities . A direct antiglobulin (Coombs) test is negative. Urinalysis shows no hemoglobin. Which of the following is\nthe most likely cause of this patient's symptoms?",
+      "vitals": {
+        "pulse": "90"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is\nthe most likely cause of this patient's symptoms?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Acute hemolytic transfusion reaction"
+      },
+      {
+        "id": "B",
+        "text": "Anaphylactic transfusion reaction"
+      },
+      {
+        "id": "C",
+        "text": "Delayed hemolytic transfusion reaction"
+      },
+      {
+        "id": "D",
+        "text": "Nonhemolyt ic transfusion reaction"
+      },
+      {
+        "id": "E",
+        "text": "Transfusion-related acute lung injury r , P , https://t.me/USMLENBME2CK Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_003",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 16-year-old girl",
+      "presentation": "A 16-year-old girl is brought to the emergency department after being stabbed in the anterior neck 30 minutes ago.\nExamination shows a large, pulsatile hematoma at the level of the thyroid cartilage. As the physician watches , the\nhematoma expands. Which of the following is the most appropriate initial step in management?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most appropriate initial step in management?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Esophagoscopy to rule out esophageal injury"
+      },
+      {
+        "id": "B",
+        "text": "Endotracheal intubation"
+      },
+      {
+        "id": "C",
+        "text": "Arteriography"
+      },
+      {
+        "id": "D",
+        "text": "Cricothyroidotomy"
+      },
+      {
+        "id": "E",
+        "text": "Tracheostomy r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_004",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 57-year-old woman",
+      "presentation": "A 57-year-old woman has had pain of the left groin and distal anterior thigh with weight bearing for 3 months. She has\ndifficulty bending forward and tying her left shoe. She walks with a mild limp favoring her left lower extremity. Internal\nrotation of the left hip produces pain . There is no tenderness over the lateral thigh . Muscle strength and deep tendon\nreflexes are normal. Which of the following is the most likely diagnosis?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Lumbar radiculopathy"
+      },
+      {
+        "id": "B",
+        "text": "Osteoarthritis of the hip"
+      },
+      {
+        "id": "C",
+        "text": "Osteoarthritis of the knee"
+      },
+      {
+        "id": "D",
+        "text": "Rheumatoid arthritis of the hip"
+      },
+      {
+        "id": "E",
+        "text": "Trochanteric bursitis r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers",
+      "diagnosis_recognition"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_006",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 60-year-old woman",
+      "presentation": "A 60-year-old woman comes to the emergency department 1 hour after the acute onset of a severe diffuse headache.\nShe has vomited once. She is stuporous and responds to vigorous stimulation. There is marked nuchal rigidity. Babinski\nsign is present bilaterally . A CT scan of the head without contrast shows a hyperintense signal within the basal cisterns\nand sulci. Which of the following is the most likely diagnosis?\n0 0\nA) Acute cerebral infarction J) lntracerebral hemorrhage\n0 0 K)\nB) Arteriovenous malformation Medulloblastoma",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Acute cerebral infarction J) lntracerebral hemorrhage 0 0 K) B) Arteriovenous malformation Medulloblastoma"
+      },
+      {
+        "id": "C",
+        "text": "Astrocytoma Q L) Meningioma"
+      },
+      {
+        "id": "D",
+        "text": "Bacterial abscess Q M) Metastatic carcinoma"
+      },
+      {
+        "id": "E",
+        "text": "Carotid cavernous fistula Q N) Mycobacterium avium-intracellulare granuloma 0 Q F) Epidural abscess 0) Sturge-Weber syndrome Epidural hematoma Subarachnoid hemorrhage Q G) Q P) 0"
+      },
+      {
+        "id": "H",
+        "text": "Fungal abscess Subdural hematoma Q)"
+      },
+      {
+        "id": "I",
+        "text": "Glioblastoma multiforme r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "missed_qualifiers",
+      "diagnosis_recognition"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_007",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 67-year-old man",
+      "presentation": "A 67-year-old man comes to the physician because of a lesion on the left ear\nfor 2 years. The lesion has gradually enlarged and ulcerated and\noccasionally bleeds with minor trauma . The patient worked in construction\nfor 40 years . The lesion is shown. Which of the following is the most likely\ndiagnosis?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely\ndiagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Actinic keratosis"
+      },
+      {
+        "id": "B",
+        "text": "Basal cell carcinoma"
+      },
+      {
+        "id": "C",
+        "text": "Keratoacanthoma 0 D) Melanoma"
+      },
+      {
+        "id": "E",
+        "text": "Traumatic ulcer r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_008",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "An 82-year-old woman is admitted to the hospital because she has refused to eat because of a 2-day history of severe\nabdominal pain. She has type 2 diabetes mellitus treated with insulin. Her temperature is 37°C (98 .6°F), pulse is\n102/min , and blood pressure is 110/85 mm Hg. Abdominal examination shows mild , diffuse tenderness to palpation.\nSerum studies show :\nNa+\n138 mEq/L\nK+\n4 mEq/L\nCl -\n103 mEq/L\nHCO 20 mEq/L\n-\n3\nGlucose 202 mg/dl\nA CT scan of the abdomen shows th ickening of the wall of the small bowel. Which of the follow ing is the most\nappropriate next step in management?",
+      "vitals": {
+        "blood_pressure": "110/85"
+      },
+      "labs": {
+        "sodium": "138",
+        "potassium": "4",
+        "bicarbonate": "20",
+        "glucose": "202"
+      }
+    },
+    "question_stem": "Which of the follow ing is the most\nappropriate next step in management?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Infusion of heparin"
+      },
+      {
+        "id": "B",
+        "text": "Intravenous administration of dopamine"
+      },
+      {
+        "id": "C",
+        "text": "Colonoscopy"
+      },
+      {
+        "id": "D",
+        "text": "Mesenteric angiography"
+      },
+      {
+        "id": "E",
+        "text": "Esophagod uodenostomy r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_009",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 36-year-old woman",
+      "presentation": "A 36-year-old woman with type 1 diabetes mellitus has fever and flank pain. Her temperature is 39°C (102.2 °F). Gram\nstain of the urinary sediment shows many segmented neutrophils and gram-negative bacilli. Leukocyte count is\n27,000/mm 3 with 80% segmented neutrophils and 5% bands . Urine culture is positive for Escherichia coli . Ampicillin and\ngentamicin are administered intravenously. Ten days later, she continues to be febrile. Which of the following is the most\nlikely cause?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most\nlikely cause?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Development of antibiotic resistance"
+      },
+      {
+        "id": "B",
+        "text": "Drug reaction"
+      },
+      {
+        "id": "C",
+        "text": "Natural course of E. coli pyelonephritis in a diabetic patient"
+      },
+      {
+        "id": "D",
+        "text": "Perinephric abscess"
+      },
+      {
+        "id": "E",
+        "text": "Splenic infarct r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_010",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 42-year-old woman",
+      "presentation": "A 42-year-old woman is brought to the emergency department 45 minutes after being involved in a motor vehicle\ncollision. She was the restrained driver. On arrival, she has severe abdominal pain. Her temperature is\n36.5°C (97.7 °F) , pulse is 92/min, respirations are 13/min , and blood pressure is 100/60 mm Hg. There is an abrasion\nover the right flank. The abdomen is nondistended with severe right upper quadrant tenderness. The remainder of the\nexamination, including pelvic and rectal examination, shows no abnormalities. Her hemoglobin concentration is\n10.5 g/dL. There is gross hematuria . A pelvic x-ray shows no abnormalities. Which of the following is the most\nappropriate next step in diagnosis?",
+      "vitals": {
+        "pulse": "92",
+        "respirations": "13",
+        "blood_pressure": "100/60"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most\nappropriate next step in diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Measurement of serum creatinine concentration"
+      },
+      {
+        "id": "B",
+        "text": "CT scan of the abdomen"
+      },
+      {
+        "id": "C",
+        "text": "Cystography"
+      },
+      {
+        "id": "D",
+        "text": "Retrograde urethrography"
+      },
+      {
+        "id": "E",
+        "text": "Cystoscopy"
+      },
+      {
+        "id": "F",
+        "text": "Exploratory laparotomy r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "missed_qualifiers",
+      "lab_interpretation",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_011",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 27-year-old woman",
+      "presentation": "A 27-year-old woman comes to the emergency department because of a 6-day history of right flank pain that radiates\nto her right groin . She is otherwise asymptomatic. She has a 6-year history of Crohn disease and has undergone three\nresections of the small bowel, mostly involving the distal ileum, as well as resection of the right colon . Current\nmedications include mesalamine, folic acid, and a daily multivitamin . Her temperature is 37.7°C (99.9 °F), pulse is\n100/min , respirations are 16/min, and blood pressure is 110/70 mm Hg. Abdominal examination shows a well-healed\nsurgical scar at the midline and mild tenderness of the right flank. A CT scan of the abdomen and pelvis shows a\ncalculus in the middle of the right ureter. Which of the following is the most likely precipitating mechanism of this\npatient's current condition?",
+      "vitals": {
+        "respirations": "16",
+        "blood_pressure": "110/70"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely precipitating mechanism of this\npatient's current condition?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Excess ive intake of calcium and vitamin D"
+      },
+      {
+        "id": "B",
+        "text": "Hyperparathyroidism"
+      },
+      {
+        "id": "C",
+        "text": "Increased absorption of oxalate"
+      },
+      {
+        "id": "D",
+        "text": "Increased secretion of cystine"
+      },
+      {
+        "id": "E",
+        "text": "Increased secretion of uric acid r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_012",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A hospitalized 67-year-old man has chest pain 3 days after undergoing a left colectomy for adenocarcinoma of the\nsigmoid colon . He is diaphoretic. His temperature is 37.5°C (99.5 °F), pulse is 110/min and regular , respirations are\n16/min, and blood pressure is 95/75 mm Hg. The skin is cool. Crackles are heard halfway up the lung bases. Cardiac\nexamination shows no murmurs or gallops. An ECG shows ST-segment elevation in leads II, Ill, and aVF. Which of the\nfollowing is the most likely finding on pulmonary artery catheterization?\nPulmonary Capillary Systemic\nCardiac Output Wedge Pressure Vascular Resistance",
+      "vitals": {
+        "pulse": "110",
+        "blood_pressure": "95/75"
+      },
+      "labs": {}
+    },
+    "question_stem": "",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Decreased decreased normal"
+      },
+      {
+        "id": "B",
+        "text": "Decreased increased increased"
+      },
+      {
+        "id": "C",
+        "text": "Decreased normal normal"
+      },
+      {
+        "id": "D",
+        "text": "Increased increased increased"
+      },
+      {
+        "id": "E",
+        "text": "Increased normal decreased Q F) Increased normal normal Q G) Normal increased normal Q H) Normal normal normal r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_013",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A previously healthy 6-year-old girl is admitted to the hospital because of a 2-day history of fever and progressive left\nhip pain . She has refused to bear weight on her left leg since awakening 4 hours ago. There is no history of trauma.\nShe is now lying on the stretcher with her left leg abducted and externally rotated . Her temperature is\n39.1°C (102.4 °F), pulse is 130/min, respirations are 24/min, and blood pressure is 100/60 mm Hg. On examination ,\nshe resists any motion of the left lower extremity. There is warmth over the left hip but no erythema or swelling . Her\nerythrocyte sedimentation rate is 70 mm/h. Arthrocentesis of the left hip yields cloudy fluid; joint fluid analysis shows\nan erythrocyte count of 10 ,000/mm 3 and leukocyte count of 196,000/mm 3 Results of culture of the synovial fluid are\n.\npending . X-rays of the pelvis and left lower extremity show no abnormalities. In addition to intravenous antibiotic\ntherapy, which of the following is the most appropriate next step in management?",
+      "vitals": {
+        "pulse": "130",
+        "respirations": "24",
+        "blood_pressure": "100/60"
+      },
+      "labs": {}
+    },
+    "question_stem": "In addition to intravenous antibiotic\ntherapy, which of the following is the most appropriate next step in management?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Aspirin therapy"
+      },
+      {
+        "id": "B",
+        "text": "Colchicine therapy"
+      },
+      {
+        "id": "C",
+        "text": "Prednisone therapy"
+      },
+      {
+        "id": "D",
+        "text": "Daily needle aspiration of the hip until her symptoms resolve"
+      },
+      {
+        "id": "E",
+        "text": "Surgical incision and drainage r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers",
+      "treatment_prioritization",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_015",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "Thirty minutes after undergoing a radical gastrectomy for gastric carcinoma, a 67-year-old woman has an oxygen\nsaturation of 84%. She was extubated in the operating room and is currently receiving 6 Umin of oxygen via nasal\ncannula and intravenous morphine for pain. She has smoked two packs of cigarettes daily for 50 years and has mild\nchronic obstructive pulmonary disease. Her temperature is 38°C (100.4 °F), pulse is 105/min and regular, respirations\nare 11/min, and blood pressure is 140/80 mm Hg. There is no jugular venous distention. Breath sounds are decreased\nat the bases. Cardiac examination shows no murmurs or gallops. A portable x-ray of the chest shows moderate\nelevation of both diaphragms ; no other abnormalities are noted . Arterial blood gas analysis shows :\n7.26\n73 mm Hg\n56 mm Hg\n29 mEq/L\nWhich of the following is the most likely mechanism of this patient's respiratory insufficiency?",
+      "vitals": {
+        "pulse": "105",
+        "blood_pressure": "140/80"
+      },
+      "labs": {}
+    },
+    "question_stem": "26\n73 mm Hg\n56 mm Hg\n29 mEq/L\nWhich of the following is the most likely mechanism of this patient's respiratory insufficiency?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Alveolar hypoventilation"
+      },
+      {
+        "id": "B",
+        "text": "Decreased pulmonary blood flow"
+      },
+      {
+        "id": "C",
+        "text": "Increased alveolar-arterial oxygen gradient"
+      },
+      {
+        "id": "D",
+        "text": "Increased metabolic demands"
+      },
+      {
+        "id": "E",
+        "text": "Increased physiologic dead space r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_016",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A previously healthy 20-year-old man is brought to the emergency department by his friend 1 hour after being thrown\nfrom his bicycle and striking his head on a tree. He was not wearing a helmet. He lost consciousness at the scene for\nless than 1 minute and then was able to stand and walk with his bicycle back to his friend's car. He fell asleep in the\nback seat of the car and could not be aroused when they arrived home 30 minutes later. His temperature is\n37.8 °C (100°F), pulse is 45/min, respirations are 5/min, and blood pressure is 180/90 mm Hg. The left pupil is 6 mm\nand unreactive, and the right pupil is 4 mm and reactive . Examination shows intact oculocephalic and corneal reflexes .\nHe withdraws the left upper and lower extremities to noxious stimuli but does not open his eyes or speak. The right\nupper extremity is flexed on the chest, and the right lower extremity is rigidly extended. CT scans of the head without\ncontrast are shown . Which of the following is the most appropriate next step in management?",
+      "vitals": {
+        "pulse": "45",
+        "respirations": "5",
+        "blood_pressure": "180/90"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most appropriate next step in management?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "MRI of the brain with contrast"
+      },
+      {
+        "id": "B",
+        "text": "Intravenous corticosteroid therapy"
+      },
+      {
+        "id": "C",
+        "text": "Intravenous labetalol therapy"
+      },
+      {
+        "id": "D",
+        "text": "Tracheal intubation and ventilation"
+      },
+      {
+        "id": "E",
+        "text": "Ventriculostomy r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "missed_qualifiers",
+      "treatment_prioritization",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_017",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 2-day-old male newborn has a 6-hour history of shortness of breath and blue lips and extremities. He was born at\nterm following an uncomplicated pregnancy and delivery. He appears cyanotic. His pulse is 164/min, respirations are\n68/min, and blood pressure is 60/30 mm Hg. Oxygen saturation on room air is 75% and increases to 78% with\nadministration of 100% oxygen by face mask. Diffuse crackles are heard in both lung fields. S is loud ; no murmur is\n2\nheard. The liver edge is palpated 4 cm below the right costal margin. A chest x-ray shows cardiomegaly and moderate\npulmonary congestion . Which of the following is the most appropriate next step in management?",
+      "vitals": {
+        "pulse": "164",
+        "blood_pressure": "60/30"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most appropriate next step in management?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Echocardiography"
+      },
+      {
+        "id": "B",
+        "text": "CT scan of the chest"
+      },
+      {
+        "id": "C",
+        "text": "Administration of indomethacin"
+      },
+      {
+        "id": "D",
+        "text": "Administration of surfactant"
+      },
+      {
+        "id": "E",
+        "text": "Cardiac catheterization r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers",
+      "treatment_prioritization",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_018",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A previously healthy 27-year-old primigravid woman at 28 weeks' gestation is admitted to the hospital 2 days after the\nonset of constant right upper abdominal pain. Her symptoms have worsened over the past 12 hours. During this\nperiod, she also has had decreased appetite , nausea and vomiting, and decreased fetal movement. She has had no\ncontractions, vaginal bleeding, abnormal vaginal discharge, or change in bowel movements. Her temperature is\n38°C (100.4 °F), pulse is 95/min, and blood pressure is 138/70 mm Hg. The lungs are clear to auscultation. Heart\nsounds are normal. Examination shows a soft abdomen and tenderness in the right upper quadrant with voluntary\nguarding and no rebound . Bowel sounds are normal. Fundal height is 28 cm. Laboratory studies show:\nHemoglobin 12 g/dL\nLeukocyte count 14,000/mm J\nPlatelet count 140,000/mm J\nProthrombin time 12 sec (INR=1.06)\nSerum\nNa +\n142 mEq/L\nK+\n4.5 mEq/L\nCl -\n104 mEq/L\nTotal bilirubin 1.8 mg/dL\nAlkaline phosphatase 268 U/L\nAST 40 U/L\nALT 44 U/L\nUrine\nGlucose negative\nProtein trace\nKetones 2+\nWhich of the following is the most likely diagnosis?",
+      "vitals": {
+        "pulse": "95",
+        "blood_pressure": "138/70"
+      },
+      "labs": {
+        "hemoglobin": "12",
+        "wbc": "14,000",
+        "platelets": "140,000",
+        "potassium": "4.5"
+      }
+    },
+    "question_stem": "8 mg/dL\nAlkaline phosphatase 268 U/L\nAST 40 U/L\nALT 44 U/L\nUrine\nGlucose negative\nProtein trace\nKetones 2+\nWhich of the following is the most likely diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Abruptio placentae"
+      },
+      {
+        "id": "B",
+        "text": "Acute appendicitis"
+      },
+      {
+        "id": "C",
+        "text": "Acute cholecystitis"
+      },
+      {
+        "id": "D",
+        "text": "Acute fatty liver of pregnancy"
+      },
+      {
+        "id": "E",
+        "text": "Fitz-Hugh - Curtis syndrome"
+      },
+      {
+        "id": "F",
+        "text": "Severe preeclampsia r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "vital_sign_interpretation",
+      "lab_interpretation",
+      "missed_qualifiers",
+      "diagnosis_recognition"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_019",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A previously healthy 23-year-old man comes to the physician because of a 3-\nmonth history of fatigue. He reports a decrease in exercise tolerance and in\noverall energy during this period. He has not had chest pain or shortness of\nbreath. He takes no medications and has no known allergies. His father and\npaternal uncle underwent splenectomy in their 20s; the patient is unsure of the\nreason for these procedures. The patient does not smoke cigarettes or use illicit\ndrugs. He consumes two mixed drinks of gin and tonic most weekends. He\nappears comfortable and is not in distress . He is 180 cm (5 ft 11 in) tall and\nweighs 82 kg (180 lb); BMI is 25 kg/m 2 His pulse is 90/min, and blood pressure\n.\nis 116/70 mm Hg. The conjunctivae are pale. Cardiopulmonary examination\nshows no abnormalities . The spleen tip is palpated 3 cm below the left costal\nmargin. A blood smear is shown. Which of the following is the most appropriate\nnext step in management?",
+      "vitals": {
+        "pulse": "90"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most appropriate\nnext step in management?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Avoidance of fava beans"
+      },
+      {
+        "id": "B",
+        "text": "Genetic testing"
+      },
+      {
+        "id": "C",
+        "text": "Hydroxyurea therapy"
+      },
+      {
+        "id": "D",
+        "text": "Iron supplementation"
+      },
+      {
+        "id": "E",
+        "text": "Prednisone therapy"
+      },
+      {
+        "id": "F",
+        "text": "Vitamin 8 (cyanocobalamin) supplementation 12"
+      },
+      {
+        "id": "G",
+        "text": "Bone marrow biopsy"
+      },
+      {
+        "id": "H",
+        "text": "Splenectomy r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_020",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 77-year-old man",
+      "presentation": "A 77-year-old man is brought to the emergency department after being rescued from a house fire . Firefighters found\nhim unconscious in his bed ; the bedroom was full of smoke. The firefighters and paramedics state that the patient\nprobably fell asleep while smok ing in bed . On arrival , he does not respond to verbal stimul i and has cough productive\nof carbonaceous sputum. His temperature is 37.8 °C (100 °F), pulse is 120/min, respirations are 30/min and labored ,\nand blood pressure is 98/78 mm Hg. Pulse oximetry on 50% oxygen by face mask shows an oxygen saturation of\n93%. Examination shows second degree burns over the face and upper extremities . There is marked facial edema,\nand the eyebrows are singed . On pulmonary examination, air movement is poor. Stridor and wheezes are heard over\nthe lung bases bilaterally. The patient's carboxyhemoglobin concentration is 35%. Arterial blood gas analysis on 50%\noxygen by face mask shows :\npH 7.25\nPco 65 mm Hg\n2\nPo 45 mm Hg\n2\nAfter endotracheal intubation and administration of 100% oxygen, this patient should receive fluid resuscitation with\nwhich of the following during the next 12 hours?",
+      "vitals": {
+        "pulse": "120",
+        "respirations": "30",
+        "blood_pressure": "98/78"
+      },
+      "labs": {}
+    },
+    "question_stem": "25\nPco 65 mm Hg\n2\nPo 45 mm Hg\n2\nAfter endotracheal intubation and administration of 100% oxygen, this patient should receive fluid resuscitation with\nwhich of the following during the next 12 hours?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Colloid and isotonic crystalloid solution"
+      },
+      {
+        "id": "B",
+        "text": "Fresh frozen plasma"
+      },
+      {
+        "id": "C",
+        "text": "Hypertonic crystalloid solution only"
+      },
+      {
+        "id": "D",
+        "text": "Isotonic crystalloid solution only"
+      },
+      {
+        "id": "E",
+        "text": "Packed red blood cells r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "missed_qualifiers",
+      "lab_interpretation",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_021",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 67-year -old woman is brought to the emergency department because\nof a 2-day history of increasingly severe abdominal cramps. She also\nhas had a bloating feeling for 6 months . She has not had any operative\nprocedures. Examination shows a nontender , distended , tympanitic\nabdomen with tinkles and peristaltic rushes on auscultation. There are\nno masses. Rectal examinati on shows no abnormalities . An x-ray of the\nabdomen is shown. After hydration and nasogastric suction , an\nexploratory laparotomy is performed. Two liters of serous fluid are\ndrained from the abdomen . Peritoneal and bowel surfaces are studded\nwith nodules . The omentum is thickened and \"caked\" with nodules of\ntumor, and there is thickening of the underside of the diaphragm. Both\novaries are markedly enlarged and appear abnormal. A frozen section\nof one of the nodules confirms a malignancy and the presence of\npsammoma bodies. Which of the following is the most likely diagnosis?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Colon cancer"
+      },
+      {
+        "id": "B",
+        "text": "Endometrial cancer"
+      },
+      {
+        "id": "C",
+        "text": "Gastr ic cancer"
+      },
+      {
+        "id": "D",
+        "text": "Metastatic breast cancer"
+      },
+      {
+        "id": "E",
+        "text": "Metastatic cervical cancer Q F) Ovarian cancer Q G) Pancreatic cancer r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "timeline_errors",
+      "missed_qualifiers",
+      "diagnosis_recognition"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_022",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "",
+      "presentation": "An 8-year-old girl has had migrating polyarthralgia and fever for 4 days. She appears ill. Examination shows an\nevanescent rash . Her left knee is red, swollen , and tender. The chest is clear to auscultation . A grade 4/6 , holosystolic\napical murmur is heard with radiation to the axilla. There is no organomegaly . Which of the following is the most likely\ncardiac abnormality?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely\ncardiac abnormality?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Aortic stenosis"
+      },
+      {
+        "id": "B",
+        "text": "Mitral regurgitation"
+      },
+      {
+        "id": "C",
+        "text": "Tetralogy of Fallot"
+      },
+      {
+        "id": "D",
+        "text": "Tricuspid regurgitation"
+      },
+      {
+        "id": "E",
+        "text": "Ventricular septal defect r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_023",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 24-year-old man",
+      "presentation": "A 24-year-old man comes to the emergency department 60 minutes after the sudden onset of tearing chest pain\nradiating to his back. He has no history of serious illness and takes no medications. He does not smoke . He is\n190 cm (6 ft 3 in) tall and weighs 80 kg (176 lb); BMI is 22 kg/m 2 His temperature is 37.2°C (99°F), pulse is 120/min,\n.\nrespirations are 14/min, and blood pressure is 110/70 mm Hg in his right arm and 70/40 mm Hg in his left arm. Pulse\noximetry on 2 Umin of oxygen via nasal cannula shows an oxygen saturation of 100%. Cardiopulmonary examination\nshows no abnormalities. The lungs are clear to auscultation. Heart sounds are normal. Pulses are difficult to palpate in\nthe left upper extremity. Peripheral pulses are otherwise normal. A chest x-ray shows a widened upper mediastinum.\nAn ECG shows sinus tachycardia with no acute changes . Which of the following is the most appropriate next step in\nmanagement?",
+      "vitals": {
+        "temp_c": "37.2",
+        "temp_f": "99",
+        "pulse": "120",
+        "respirations": "14",
+        "blood_pressure": "110/70",
+        "o2_sat": "100"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most appropriate next step in\nmanagement?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Administration of heparin"
+      },
+      {
+        "id": "B",
+        "text": "Administration of labetalol"
+      },
+      {
+        "id": "C",
+        "text": "Administration of nitroglycerin"
+      },
+      {
+        "id": "D",
+        "text": "Fiberoptic intubation"
+      },
+      {
+        "id": "E",
+        "text": "Pericardiocentesis r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "timeline_errors",
+      "treatment_prioritization",
+      "vital_sign_interpretation",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_024",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 62-year-old woman",
+      "presentation": "A 62-year-old woman comes to the physician because of ulcers on her right ankle for 6 months. There is no history of\nrecent trauma. She has a 5-year history of type 2 diabetes mellitus treated with insulin for the past 4 years and a\n2-year history of chronic bilateral ankle swelling. Her temperature is 37.?°C (99 .9°F), pulse is 82/min, and blood\npressure is 140/88 mm Hg. Examination shows ulceration of the medial aspect of the right ankle. There is bilateral\nlower leg and pedal edema with patches of brown pigmentation. Peripheral pulses are present and normal. Which of\nthe following is the most likely pathogenesis of this condition?",
+      "vitals": {
+        "pulse": "82"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of\nthe following is the most likely pathogenesis of this condition?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Arterial insufficiency"
+      },
+      {
+        "id": "B",
+        "text": "Congestive heart failure"
+      },
+      {
+        "id": "C",
+        "text": "Neurotrophic ulcer"
+      },
+      {
+        "id": "D",
+        "text": "Thromboangiitis obliterans"
+      },
+      {
+        "id": "E",
+        "text": "Venous insufficiency r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_025",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 42-year-old man",
+      "presentation": "A 42-year-old man comes to the physician because of a 1-month history of generalized itching and fatigue . He has\nchronic renal failure secondary to glomerulonephritis and receives hemodialysis three times weekly. Examination\nshows no abnormalities except for a patent arteriovenous fistula in the left forearm. His serum calcium concentration is\n8.3 mg/dl , serum phosphorus concentration is 4.1 mg/dl , and serum intact parathyroid hormone concentration is 485\npg/ml (N=10-65). Which of the following is the most likely diagnosis?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Familial hypercalcemic hypocalciuria"
+      },
+      {
+        "id": "B",
+        "text": "Paraneoplastic syndrome"
+      },
+      {
+        "id": "C",
+        "text": "Primary hyperparathyroidism"
+      },
+      {
+        "id": "D",
+        "text": "Secondary hyperparathyroidism"
+      },
+      {
+        "id": "E",
+        "text": "Tertiary hyperparathyroidism r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "timeline_errors",
+      "missed_qualifiers",
+      "diagnosis_recognition"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_026",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A previously healthy 47-year-old woman comes to the physician because of a 3-month history of mild hearing loss and\nringing in her right ear and a decreased sense of taste on the right. She also has had episodes of unsteadiness during\nthis period and has had trouble understanding speech. She has not had nausea , vomiting , or vertigo . Examination\nshows no abnormalities. Audiometry shows predominantly high-frequency neural hearing loss on the right. Which of\nthe following is the most likely diagnosis?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of\nthe following is the most likely diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Acoustic neuroma"
+      },
+      {
+        "id": "B",
+        "text": "Meniere disease"
+      },
+      {
+        "id": "C",
+        "text": "Meningitis"
+      },
+      {
+        "id": "D",
+        "text": "Otosclerosis"
+      },
+      {
+        "id": "E",
+        "text": "Pituitary adenoma r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers",
+      "diagnosis_recognition"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_027",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A previously healthy 15-year-old girl is brought to the emergency department 1 hour after the sudden onset of difficulty\nbreathing and sharp chest pain that began during track practice . She is 183 cm (6 ft) tall and weighs 55 kg (121 lb);\nBMI is 16 kg/m 2 On arrival, her temperature is 37°C (98 .6°F), pulse is 70/min , and respirations are 28/min . Breath\n•\nsounds are decreased over the lateral chest on the right ; there is hyperresonance to percussion. Cardiac examination\nshows no abnormalities. Which of the following is the most likely mechanism of these findings?",
+      "vitals": {
+        "pulse": "70",
+        "respirations": "28"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely mechanism of these findings?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Air collection in the pleural space"
+      },
+      {
+        "id": "B",
+        "text": "Alveolar atelectasis"
+      },
+      {
+        "id": "C",
+        "text": "Narrowing of moderate-sized airways"
+      },
+      {
+        "id": "D",
+        "text": "Pleural inflammation"
+      },
+      {
+        "id": "E",
+        "text": "Pulmonary parenchymal inflammation r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_028",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A previously healthy 42-year-old woman, gravida 2, para 2, comes to the physician because of a 1-month history of\ndischarge from the left nipple . She is sexually active and uses an oral contraceptive. Her temperature is 37°C (98.6°F),\npulse is 90/min , respirations are 18/min , and blood pressure is 120/75 mm Hg. Examination shows no breast masses.\nA serosanguineous discharge is easily expressed from the left nipple . Mammography shows no areas of\nmicrocalcification. Which of the following is the most likely diagnosis?",
+      "vitals": {
+        "temp_c": "37",
+        "temp_f": "98.6",
+        "pulse": "90",
+        "respirations": "18",
+        "blood_pressure": "120/75"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Breast abscess"
+      },
+      {
+        "id": "B",
+        "text": "Breast cancer"
+      },
+      {
+        "id": "C",
+        "text": "Ductal ectasia"
+      },
+      {
+        "id": "D",
+        "text": "Fat necrosis"
+      },
+      {
+        "id": "E",
+        "text": "Fibroadenoma Q F) Fibrocystic changes of the breast Q G) Galactocele"
+      },
+      {
+        "id": "H",
+        "text": "lntraductal papilloma"
+      },
+      {
+        "id": "I",
+        "text": "Mastitis r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "vital_sign_interpretation",
+      "timeline_errors",
+      "missed_qualifiers",
+      "diagnosis_recognition"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_029",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 77-year-old woman",
+      "presentation": "A 77-year-old woman is admitted to the hospital because of\nsevere cramping pain in the lower abdomen . The pain has been\nconstant for the past 16 hours. The abdomen is markedly\ndistended. A McBurney incisional scar is noted in the right lower\nquadrant. The x-ray shown was taken shortly after admission.\nWhich of the following is the most likely diagnosis?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Cecal cancer"
+      },
+      {
+        "id": "B",
+        "text": "lleoileal intussusception O C) Mechanical obstruction of the small intestine"
+      },
+      {
+        "id": "D",
+        "text": "Paralytic ileus"
+      },
+      {
+        "id": "E",
+        "text": "Sigmoid volvulus r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers",
+      "diagnosis_recognition"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_032",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A previously healthy 32-year-old woman is brought to the emergency department 30 minutes after a motor vehicle\ncollision. She was an unrestrained front seat passenger. On arrival, she has pain and tingling in her right leg and is\nunable to move it. Her pulse is 105/min, respirations are 18/min, and blood pressure is 155/90 mm Hg. The right lower\nextremity is pale . The dorsal is pedis and posterior tibial pulses are absent on the right. There is a posterior dislocation\nof the right knee . Motor and sensory function is absent below the right knee. Following reduction of the dislocation and\nsplinting of the right lower extremity , the patient is able to move the leg . Which of the following is the most appropriate\nnext step in diagnosis?",
+      "vitals": {
+        "pulse": "105",
+        "respirations": "18",
+        "blood_pressure": "155/90"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most appropriate\nnext step in diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Venous duplex ultrasonography of the right lower extremity"
+      },
+      {
+        "id": "B",
+        "text": "CT scan of the right lower extrem ity"
+      },
+      {
+        "id": "C",
+        "text": "Arthroscopy"
+      },
+      {
+        "id": "D",
+        "text": "Arteriography"
+      },
+      {
+        "id": "E",
+        "text": "Nerve conduction studies"
+      },
+      {
+        "id": "F",
+        "text": "No further diagnostic studies necessary r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_033",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 70-year-old man",
+      "presentation": "A 70-year-old man has a 2-year history of progressive dysphagia\nand intermittent regurgitation of undigested food . A barium swallow\nis shown. Which of the following is the most likely cause?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely cause?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Absence of peristalsis after swallowing"
+      },
+      {
+        "id": "B",
+        "text": "Cricopharyngeal muscle spasm"
+      },
+      {
+        "id": "C",
+        "text": "Diffuse esophageal spasm"
+      },
+      {
+        "id": "D",
+        "text": "Severe gastroesophageal reflux r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_034",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 37-year-old woman",
+      "presentation": "A 37-year-old woman is scheduled for operative treatment of an umbilical hernia with incarcerated omentum under\ngeneral anesthesia . During the operation , a solid nodule is excised, and a frozen section shows metastatic carcinoma\nconsistent with primary ovarian cancer. Which of the following is the most appropriate course of action?\nQ\nA) Close the operative site and discuss further treatment with the patient when she awakens\nQ\nB) Place a central venous catheter with a subcutaneous injection port for chemotherapy and discuss further\ntreatment with the patient when she awakens",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most appropriate course of action?",
+    "choices": [
+      {
+        "id": "C",
+        "text": "Place a peritoneal dialysis catheter through the operative site for future chemotherapy and discuss further treatment with the patient when she awakens"
+      },
+      {
+        "id": "D",
+        "text": "Obtain consent from the next of kin and place a central venous catheter with a subcutaneous injection port for chemotherapy Q E) Obtain consent from the next of kin and proceed with laparotomy and tumor debulking r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_035",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "",
+      "presentation": "An 82-year-old woman is brought to the physician for a follow-up examination 2 months after she sustained a right hip\nfracture when she fell in her kitchen. Two years ago , she sustained a Calles fracture in a fall. Examination today shows\na well-healed scar over the right hip. Range of motion of the hip joint is full. Her serum calcium concentration is within\nthe reference ranges ; her serum 25-hydroxyvitamin D concentration is decreased. A DEXA scan shows osteoporosis.\nWhich of the following is the most likely additional serum abnormality in this patient?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely additional serum abnormality in this patient?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Decreased 1a -hydroxylase activity"
+      },
+      {
+        "id": "B",
+        "text": "Decreased thyroxine (T concentration ) 4"
+      },
+      {
+        "id": "C",
+        "text": "Increased calcitonin concentration"
+      },
+      {
+        "id": "D",
+        "text": "Increased osteocalcin concentration"
+      },
+      {
+        "id": "E",
+        "text": "Increased parathyroid hormone concentration r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_036",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 25-year-old man",
+      "presentation": "A 25-year-old man comes for a routine health maintenance examination . A harsh systolic murmur is heard .\nExamination shows no other abnormalities. Echocardiography shows a bicuspid aortic valve . This patient is at\nincreased risk for aortic stenosis as a result of which of the following?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "This patient is at\nincreased risk for aortic stenosis as a result of which of the following?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Calcification of the valve"
+      },
+      {
+        "id": "B",
+        "text": "Formation of atherosclerotic plaque"
+      },
+      {
+        "id": "C",
+        "text": "Rupture of the chordae tendineae"
+      },
+      {
+        "id": "D",
+        "text": "Streptococcal infection"
+      },
+      {
+        "id": "E",
+        "text": "Thrombus deposition on the valve r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_037",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "An 18-year-old woman is brought to the emergency department 20 minutes after she sustained severe head injuries in\na high-speed motor vehicle collision in which she was the unrestrained driver . Paramedics report finding a bottle of\namphetamines inside the patient's vehicle . On arrival, her Glasgow Coma Scale score is 6, and she is immediately\nintubated. Her pulse is 50/min, and blood pressure is 180/90 mm Hg. Examination shows numerous ecchymoses;\nlacerations over the face, trunk , and upper extremities ; and right-sided hemotympanum. There are obvious facial\nfractures. Except for an abrasion over the right upper quadrant , abdominal examination shows no abnormalities.\nWhich of the following is the most likely explanation for this patient's increased blood pressure?",
+      "vitals": {
+        "pulse": "50",
+        "blood_pressure": "180/90"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely explanation for this patient's increased blood pressure?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Acute renal artery dissection"
+      },
+      {
+        "id": "B",
+        "text": "Amphetamine intoxication"
+      },
+      {
+        "id": "C",
+        "text": "Decreased minute ventilation"
+      },
+      {
+        "id": "D",
+        "text": "Increased intracranial pressure"
+      },
+      {
+        "id": "E",
+        "text": "Increased serum catecholamine concentration"
+      },
+      {
+        "id": "F",
+        "text": "Pain response related to the fractures r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_038",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 55-year-old man",
+      "presentation": "A 55-year-old man comes to the physician's office because of claudication. He smokes two packs of cigarettes per day\nand has no history of diabetes mellitus. The femoral pulses are palpable bilaterally, and distal pulses are absent.\nCapillary refill in both feet is less than 5 seconds . Ankle-arm indices are 0.75 on the right and 0.60 on the left. In\naddition to recommending that he quit smoking, which of the following is the most appropriate initial step in patient\ncare?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "In\naddition to recommending that he quit smoking, which of the following is the most appropriate initial step in patient\ncare?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Balloon angioplasty"
+      },
+      {
+        "id": "B",
+        "text": "Femoropopliteal bypass"
+      },
+      {
+        "id": "C",
+        "text": "Sympathectomy"
+      },
+      {
+        "id": "D",
+        "text": "Vasodilator therapy"
+      },
+      {
+        "id": "E",
+        "text": "Prescription for an exercise program r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_039",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 51-year-old man",
+      "presentation": "A 51-year-old man comes to the physician 10 days after discovering a nontender mass in his neck. His father and two\nolder brothers were diagnosed with thyroid cancer at the ages of 46, 46, and 49 years, respectively. Examination\nshows a 2-cm nodule in the right lobe of the thyroid gland . A 1-cm, firm, nontender lymph node is palpable in the\nanterior cervical chain . Which of the following is the most likely diagnosis?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Anaplastic carcinoma"
+      },
+      {
+        "id": "B",
+        "text": "Follicular carcinoma"
+      },
+      {
+        "id": "C",
+        "text": "Hurthle cell adenoma"
+      },
+      {
+        "id": "D",
+        "text": "Medullary carcinoma"
+      },
+      {
+        "id": "E",
+        "text": "Papillary carcinoma r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers",
+      "diagnosis_recognition"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_043",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 4,
+    "vignette": {
+      "demographics": "A 57-year-old woman",
+      "presentation": "A 57-year-old woman is undergoing elective endoscopic retrograde cholangiopancreatography with 20% benzocaine\nspray for analgesia and intravenous meperidine and midazolam for sedation. She is receiving 100% oxygen (5 L/min)\nby nasal cannula . Ten minutes after initiation of the procedure, she becomes mildly confused and cyanotic. She does\nnot have chest or abdominal pain . She has a 5-year history of type 2 diabetes mellitus controlled with metformin . She\nhad a myocardial infarction and coronary artery bypass grafting 3 years ago and has not had cardiac symptoms since\nthen . Laparoscopic cholecystectomy was performed 1 year ago; abdominal ultrasonography 2 weeks ago showed a\ndilated common bile duct with retained calculi. She has smoked one pack of cigarettes daily for 40 years. Her pulse is\n106/min , respirations are 30/min, and blood pressure is 116/78 mm Hg. Pulse oximetry shows a decrease in oxygen\nsaturation from 99% to 84% during the past 10 minutes; oxygen saturation improves significantly with 40% oxygen by\nface mask . A few crackles are heard at the lung bases . Laboratory studies show :\nHemoglobin\nMethemoglobin 41% (NS1 .5)\nCarboxyhemoglobin 2% (NS5)\nArterial blood gas analysis shows :\nPco 43 mm Hg\n2\nPo 282 mm Hg\n2\n0 saturation 99%\n2\nWhich of the following is the most appropriate next step in management?",
+      "vitals": {
+        "respirations": "30",
+        "blood_pressure": "116/78"
+      },
+      "labs": {}
+    },
+    "question_stem": "5)\nCarboxyhemoglobin 2% (NS5)\nArterial blood gas analysis shows :\nPco 43 mm Hg\n2\nPo 282 mm Hg\n2\n0 saturation 99%\n2\nWhich of the following is the most appropriate next step in management?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Administration of 100% oxygen by nonrebreather face mask"
+      },
+      {
+        "id": "B",
+        "text": "Hyperbaric oxygen therapy"
+      },
+      {
+        "id": "C",
+        "text": "Exchange transfusion"
+      },
+      {
+        "id": "D",
+        "text": "Intravenous administration of methylene blue"
+      },
+      {
+        "id": "E",
+        "text": "Mechanical ventilation r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "timeline_errors",
+      "treatment_prioritization",
+      "vital_sign_interpretation",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_044",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 32-year-old man",
+      "presentation": "A 32-year-old man is brought to the emergency department 45 minutes after being involved in a motorcycle collision.\nOn arrival, he is unconscious. His pulse is 132/min , respirations are 22/min, and blood pressure is 88/62 mm Hg.\nThere are no visible external injuries. The pupils are 6 mm and sluggish . He moves his extremities in response to pain .\nWhich of the following is the most likely cause of the hypotension?",
+      "vitals": {
+        "pulse": "132",
+        "respirations": "22",
+        "blood_pressure": "88/62"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely cause of the hypotension?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Aspiration"
+      },
+      {
+        "id": "B",
+        "text": "Cardiac contusion"
+      },
+      {
+        "id": "C",
+        "text": "Hypovolemia"
+      },
+      {
+        "id": "D",
+        "text": "Neurogenic shock"
+      },
+      {
+        "id": "E",
+        "text": "Spinal cord injury r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_045",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 10-month-old boy is brought to the physician for a follow-up\nexamination . He has had a mass on the back of his neck that has been\nenlarging over the past 8 months. His growth and development are\nappropriate for age. A photograph of the mass is shown. Examination\nshows no other abnormalities . Which of the following is the most likely\nexplanation for these findings?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely\nexplanation for these findings?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Cephalocele Q B) Fat necrosis Q C) Lymphatic hypertrophy"
+      },
+      {
+        "id": "D",
+        "text": "Malignant transformation"
+      },
+      {
+        "id": "E",
+        "text": "Retention cyst"
+      },
+      {
+        "id": "F",
+        "text": "Vascular proliferation r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_046",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 62-year-old man",
+      "presentation": "A 62-year-old man with alcoholism comes to the emergency department because he has vomited bright red blood\nthree times during the past 6 hours. His pulse is 130/min, and blood pressure is 90/40 mm Hg. He becomes dizzy\nwhen he sits up. Abdominal examination shows marked distention, shifting dullness, and a fluid wave . Upper\nendoscopy shows esophageal varices and an ulcer with a blood clot on a visible vessel located on the posterior wall of\nthe first part of the duodenum. Which of the following is the most appropriate next step?",
+      "vitals": {
+        "pulse": "130",
+        "blood_pressure": "90/40"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most appropriate next step?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Intravenous administration of ADH (vasopressin)"
+      },
+      {
+        "id": "B",
+        "text": "Intravenous administration of esmolol"
+      },
+      {
+        "id": "C",
+        "text": "Intravenous fluid therapy and blood transfusion"
+      },
+      {
+        "id": "D",
+        "text": "Endoscopic-guided sclerosis of the esophageal varices"
+      },
+      {
+        "id": "E",
+        "text": "Placement of a transjugular intrahepatic portal shunt r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "missed_qualifiers",
+      "treatment_prioritization",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_047",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A42-year-old woman comes to the physician because of a 3-month history of episodes of headache , sweating, and\nrapid heartbeat. She has not had weight loss or chest pain. She has a 10-year history of hypertension that has been\ndifficult to control despite trials of different drug classes. There is no family history of cancer . Her temperature is\n37.8°C (100°F), pulse is 100/min , respirations are 16/min, and blood pressure is 172/105 mm Hg. Examination shows\nno other abnormalities . A 24-hour urine collection shows increased catecholamine and metanephrine concentrations.\nAn MRI of the abdomen shows a 4-cm enhancing mass in the right adrenal gland . Surgical excision of the mass is\nscheduled. Which of the following is the most appropriate initial pharmacotherapy to prepare this patient for surgical\nremoval of the adrenal mass?",
+      "vitals": {
+        "pulse": "100",
+        "respirations": "16",
+        "blood_pressure": "172/105"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most appropriate initial pharmacotherapy to prepare this patient for surgical\nremoval of the adrenal mass?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Atropine"
+      },
+      {
+        "id": "B",
+        "text": "Methylprednisolone"
+      },
+      {
+        "id": "C",
+        "text": "Phenoxybenzamine"
+      },
+      {
+        "id": "D",
+        "text": "Propranolol"
+      },
+      {
+        "id": "E",
+        "text": "Sodium nitroprusside r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_048",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 57-year-old man",
+      "presentation": "A 57-year-old man is admitted to the hospital because of a 1-month history of profuse , watery diarrhea with facial\nflushing. During this period, he has had fatigue and a 4.5-kg (10-lb) weight loss. The diarrhea has not resolved with\nuse of over-the-counter antidiarrheal medications . He has no history of serious illness and takes no other medications .\nHis pulse is 110/min, and blood pressure is 100/70 mm Hg. Examination shows no abnormalities. Intravenous fluid\nresuscitation is begun. His stool output is 5 Lover the next 24 hours; his stool potassium concentration is increased.\nSerum studies show a pH of 7.56 and a potassium concentration of 2.8 mEq/L. A CT scan of the abdomen shows a\npancreatic mass. Which of the following is the most likely diagnosis?",
+      "vitals": {
+        "pulse": "110",
+        "blood_pressure": "100/70"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Gastrinoma"
+      },
+      {
+        "id": "B",
+        "text": "Glucagonoma"
+      },
+      {
+        "id": "C",
+        "text": "lnsulinoma"
+      },
+      {
+        "id": "D",
+        "text": "Somatostatinoma"
+      },
+      {
+        "id": "E",
+        "text": "VIPoma r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "timeline_errors",
+      "vital_sign_interpretation",
+      "diagnosis_recognition",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_050",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 5 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "",
+      "presentation": "While undergoing a splenectomy for immune thrombocytopenic purpura , a 49-year-old man aspirates during a difficult\nintubation . The diagnosis is confirmed when bile is aspirated from the trachea. Which of the following factors is most\npredictive of the severity of the resulting aspiration pneumonia?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following factors is most\npredictive of the severity of the resulting aspiration pneumonia?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Amount of bile present in the aspirate"
+      },
+      {
+        "id": "B",
+        "text": "Duration of endotracheal intubation"
+      },
+      {
+        "id": "C",
+        "text": "Presence of solid material in the aspirate"
+      },
+      {
+        "id": "D",
+        "text": "Use of prophylactic antibiotics preoperatively"
+      },
+      {
+        "id": "E",
+        "text": "Volume of aspirated fluid r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_001",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 15-year-old boy",
+      "presentation": "A 15-year-old boy is brought to the emergency department by his parents because of a 3-hour history of severe pain in\nhis right testicle . He has not sustained any recent trauma and has no history of serious illness. His temperature is\n37°C (98.6°F), pulse is 72/min , and blood pressure is 110/70 mm Hg . Cardiopulmonary and abdominal examinations\nshow no abnormalities. The right testicle is high in the right hemiscrotum , transverse , and exquisitely tender to\npalpation. The left hemiscrotum is normal. Urinalysis shows no abnormalities. Which of the following is the most\nappropriate next step in management?",
+      "vitals": {
+        "pulse": "72",
+        "blood_pressure": "110/70"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most\nappropriate next step in management?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Transillumination of the right hemiscrotum"
+      },
+      {
+        "id": "B",
+        "text": "Application of an ice pack to the right hemiscrotum"
+      },
+      {
+        "id": "C",
+        "text": "Technetium Tc 99m sestamibi scan of the testes"
+      },
+      {
+        "id": "D",
+        "text": "Intravenous administration of antibiot ics"
+      },
+      {
+        "id": "E",
+        "text": "Surgical exploration of the scrotum r , P , https://t.me/USMLENBME2CK Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_002",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 67-year-old man",
+      "presentation": "A 67-year-old man comes to the physician because of a 5-day history of chest pain , fatigue , shortness of breath, and a\nnonproductive cough. The chest pain is exacerbated by inspiration or lying down and is relieved when he leans forward .\nThree weeks ago, he underwent three-vessel coronary artery bypass grafting . His initial postoperative course was\nuncomplicated , and he was discharged 16 days ago. His temperature is 38.2 °C (100.8 °F), pulse is 85/min and regular,\nand respirations are 14/min. The lungs are clear to auscultation . A friction rub is heard best over the left anterior chest.\nAn x-ray of the chest shows no abnormalities . An ECG is unchanged from the ECG taken on discharge. Which of the\nfollowing is the most appropriate next step in diagnosis?",
+      "vitals": {
+        "pulse": "85",
+        "respirations": "14"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the\nfollowing is the most appropriate next step in diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Echocardiography"
+      },
+      {
+        "id": "B",
+        "text": "Venous duplex ultrasonography of the lower extremities"
+      },
+      {
+        "id": "C",
+        "text": "Myocardial biopsy"
+      },
+      {
+        "id": "D",
+        "text": "Coronary angiography"
+      },
+      {
+        "id": "E",
+        "text": "Pulmonary angiography r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "treatment_prioritization",
+      "vital_sign_interpretation",
+      "missed_qualifiers",
+      "test_selection"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_003",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 37-year-old woman",
+      "presentation": "A 37-year-old woman comes to the physician for evaluation of a mole on her left cheek because her uncle was recently\ndiagnosed with widely metastatic melanoma. She has had the mole for 15 years , and there have been no recent\nchanges. Examination of the left cheek shows a 0.5-cm , smooth, dome shaped , round , brown papule nevus with distinct\nsymmetric borders . A 4-mm, smooth , moveable left posterior cervical lymph node is palpated. Which of the following is\nthe most appropriate next step in diagnosis?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is\nthe most appropriate next step in diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Observation only"
+      },
+      {
+        "id": "B",
+        "text": "Biopsy of the inguinal lymph node"
+      },
+      {
+        "id": "C",
+        "text": "Excisional biopsy of the nevus with a rim of normal skin"
+      },
+      {
+        "id": "D",
+        "text": "lncisional biopsy of the nevus"
+      },
+      {
+        "id": "E",
+        "text": "Needle biopsy of the nevus r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "test_selection",
+      "missed_qualifiers",
+      "treatment_prioritization"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_004",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 4-year-old boy",
+      "presentation": "A 4-year-old boy is brought to the physician because of pain and burning of his right eye after playing in a sandbox.\nAlthough he insists that something is in his eye and he continues to rub it, no foreign body is apparent. He also states\nthat his vision is blurry in the right eye. There is moderate conjunctiva! injection with marked tearing and photophobia.\nThe pupils are equal, round, and reactive to light and accommodation. Funduscopic examination shows no\nabnormalities . Which of the following is the most appropriate next step in diagnosis?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most appropriate next step in diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Indirect funduscopy"
+      },
+      {
+        "id": "B",
+        "text": "Measurement of intraocular pressure"
+      },
+      {
+        "id": "C",
+        "text": "Formal visual field testing"
+      },
+      {
+        "id": "D",
+        "text": "Gram stain of conjunctiva! fluid"
+      },
+      {
+        "id": "E",
+        "text": "Conjunctiva! instillation of fluorescein r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "test_selection",
+      "missed_qualifiers",
+      "treatment_prioritization"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_006",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A hospitalized 62-year-old woman has a rash over her lower extremities that\ndeveloped 2 days after she underwent emergent left-sided cardiac\ncatheterization and subsequent angioplasty and stent placement to the left\nanterior descending artery. There were no intraoperative complications . She\nwas admitted because of a 2-hour history of chest pain ; on admission, an initial\nECG showed 3-mm ST elevation in leads V through V Her temperature is\n.\n2 4\n36.9°C (98.4°F), pulse is 98/min, respirations are 14/min, and blood pressure is\n138/78 mm Hg. A photograph of the rash is shown . The posterior tibial and\ndorsalis pedis pulses are palpable bilaterally. Which of the following is the most\nlikely underlying cause of this patient 's rash?",
+      "vitals": {
+        "pulse": "98",
+        "respirations": "14"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most\nlikely underlying cause of this patient 's rash?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Aortic atheroembolism O B) Bacterial infection in subcutaneous tissues"
+      },
+      {
+        "id": "C",
+        "text": "Incompetent venous valves"
+      },
+      {
+        "id": "D",
+        "text": "Systemic vasculitis"
+      },
+      {
+        "id": "E",
+        "text": "Thrombocytopenia -induced capillary bleeding r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_007",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 60-year-old woman",
+      "presentation": "A 60-year-old woman has had left shoulder and arm pain for 2 weeks. She has smoked two packs of cigarettes daily for\n35 years. Examination shows a fixed, dilated left pupil and ptosis on the left. X-rays of the chest are shown. Which of the\nfollowing is the most likely diagnosis?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the\nfollowing is the most likely diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Bronchogenic carcinoma"
+      },
+      {
+        "id": "B",
+        "text": "Mesothelioma"
+      },
+      {
+        "id": "C",
+        "text": "Sarcoidosis"
+      },
+      {
+        "id": "D",
+        "text": "Thymoma"
+      },
+      {
+        "id": "E",
+        "text": "Tuberculosis r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers",
+      "diagnosis_recognition"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_009",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 4 ?-year-old woman with breast cancer has the sudden onset of confusion and lethargy. Funduscopic examination\nshows papilledema . A CT scan of the head shows a cerebellar metastasis. Which of the following is the most\nappropriate next step in management?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most\nappropriate next step in management?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Corticosteroid therapy"
+      },
+      {
+        "id": "B",
+        "text": "Anticoagulant therapy"
+      },
+      {
+        "id": "C",
+        "text": "Vigorous hydration"
+      },
+      {
+        "id": "D",
+        "text": "Examination of cerebrospinal fluid"
+      },
+      {
+        "id": "E",
+        "text": "Craniotomy r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_010",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 57-year-old woman",
+      "presentation": "A 57-year-old woman is brought to the emergency department after being found comatose. During the past 3 days,\nshe has been lethargic and somnolent, but she has not had focal neurologic signs. Twelve years ago, she had stage Ill\ncarcinoma of the right breast treated with a modified radical mastectomy and adjuvant chemotherapy. Eight months\nago, a pulmonary metastasis was diagnosed that has responded well to cytotoxic chemotherapy. Two weeks ago, the\npatient underwent a course of radiation therapy to the lumbar spine and iliac crest for painful bony metastases. Which\nof the following is the most likely cause of this patient's current symptoms?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which\nof the following is the most likely cause of this patient's current symptoms?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Adverse reaction to cytotoxic chemotherapy"
+      },
+      {
+        "id": "B",
+        "text": "Cerebral infarction"
+      },
+      {
+        "id": "C",
+        "text": "Hypercalcemic crisis"
+      },
+      {
+        "id": "D",
+        "text": "Seizure disorder"
+      },
+      {
+        "id": "E",
+        "text": "Systemic effect of radiation therapy r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "timeline_errors",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_012",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 65-year-old man",
+      "presentation": "A 65-year-old man is brought to the emergency department 1 hour after an episode of syncope. He has a 1-day history\nof back pain that radiates to his right groin. He has hypertension, chronic back pain, and hypercholesterolemia. His\nmedications are hydrochlorothiazide, lisinopril , simvastatin, and ibuprofen. He has smoked one pack of cigarettes daily\nfor 40 years. His temperature is 36 .6°C (97.9°F), pulse is 124/min, respirations are 22/min, and blood pressure is\n92/54 mm Hg. Pulse oximetry on room air shows an oxygen saturation of 97%. Abdominal examination shows diffuse\ntenderness with no guarding or rebound. A pulsatile abdominal mass is palpated in the supraumbilical region.\nExamination of the back shows no abnormalities . Which of the following is the most appropriate next step in\ndiagnosis?",
+      "vitals": {
+        "pulse": "124",
+        "respirations": "22",
+        "o2_sat": "97"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most appropriate next step in\ndiagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Bedside transabdominal ultrasonography"
+      },
+      {
+        "id": "B",
+        "text": "CT scan of the abdomen and pelvis with contrast"
+      },
+      {
+        "id": "C",
+        "text": "HIDAscan"
+      },
+      {
+        "id": "D",
+        "text": "Intravenous pyelography"
+      },
+      {
+        "id": "E",
+        "text": "Peritoneal lavage"
+      },
+      {
+        "id": "F",
+        "text": "Digital subtraction arteriography r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "missed_qualifiers",
+      "treatment_prioritization",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_013",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 57-year-old woman",
+      "presentation": "A 57-year-old woman with metastatic cancer of the sigmoid colon is admitted to the hospital because of a 2-day history\nof progressive swelling and pain of her right arm . Ten days ago , she underwent partial resection of the liver and\nplacement of a right subclavian venous port . She currently takes no medications . Examination today shows a swollen,\ntender right forearm and hand . Venous duplex ultrasonography shows thrombosis of the right axillary and subclavian\nveins. The port and catheter are removed, and intravenous unfractionated heparin therapy (UHT) is begun. After\n2 days of UHT, the patient's pain has decreased . Laboratory studies on admission and after 2 days of UHT show :\nOn Admission 2 Days After Admission\nHemoglobin (g/dL) 9.8 9.6\n28\nHematocrit (%) 27\nLeukocyte count (/mm 3) 8900 12,600\nPlatelet count (/mm 3) 260,000 61 ,000\nProthrombin time (sec) 12 (INR=1) 13 (INR=1.1)\nPartial thromboplastin time (sec) 32 87\nWhich of the following is the most appropriate next step in management?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "1)\nPartial thromboplastin time (sec) 32 87\nWhich of the following is the most appropriate next step in management?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Measurement of antithrombin Ill concentration"
+      },
+      {
+        "id": "B",
+        "text": "Serum o-dimer assay"
+      },
+      {
+        "id": "C",
+        "text": "Discontinuation of heparin"
+      },
+      {
+        "id": "D",
+        "text": "Platelet transfusion"
+      },
+      {
+        "id": "E",
+        "text": "Thrombolysis"
+      },
+      {
+        "id": "F",
+        "text": "Warfarin therapy r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "timeline_errors",
+      "missed_qualifiers",
+      "treatment_prioritization"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_014",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "",
+      "presentation": "An 82-year-old man comes to the emergency department because of a 2-day history of extreme difficulty voiding and\nurinary incontinence. He has seasonal rhinitis , hypertension , and congestive heart failure. Medications include\ndiphenhydramine, isosorbide, metoprolol , terazosin , and lisinopril. Vital signs are within normal limits . Examination\nshows a moderately enlarged, nontender prostate ; no masses are palpated . His postvoid residual volume is 490 ml.\nWhich of the following medications is most likely contributing to his urinary symptoms?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following medications is most likely contributing to his urinary symptoms?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Diphenhydramine"
+      },
+      {
+        "id": "B",
+        "text": "lsosorbide"
+      },
+      {
+        "id": "C",
+        "text": "Lisinopril"
+      },
+      {
+        "id": "D",
+        "text": "Metoprolol"
+      },
+      {
+        "id": "E",
+        "text": "Terazosin r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "timeline_errors",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_015",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 55-year-old man",
+      "presentation": "A 55-year-old man has had heel pain and an\nassociated limp for 1 month . He works as a police\nofficer and walks most of the day. The pain is most\nsevere when he first stands up and walks after lying or\nsitting. Palpation of the medial plantar surface of the\nheel increases the pain. An x-ray of the heel is shown .\nWhich of the following is the most likely diagnosis?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Calcaneal stress fracture"
+      },
+      {
+        "id": "B",
+        "text": "Osteoarthritis"
+      },
+      {
+        "id": "C",
+        "text": "Peripheral vascular disease"
+      },
+      {
+        "id": "D",
+        "text": "Plantar fasciitis"
+      },
+      {
+        "id": "E",
+        "text": "Spinal stenosis r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers",
+      "diagnosis_recognition"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_016",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "",
+      "presentation": "Ten minutes after transfusion of packed red blood cells is begun, a 62-year-old woman has chest pain , shortness of\nbreath, and the feeling of impending doom. The transfusion is stopped immediately . Her temperature is\n38.5°C (101 .3°F) , pulse is 90/min , respirations are 20/min, and blood pressure is 110/80 mm Hg. Examination shows\nno other abnormalities . Which of the following is the most appropriate next step in diagnosis?",
+      "vitals": {
+        "pulse": "90",
+        "respirations": "20",
+        "blood_pressure": "110/80"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most appropriate next step in diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Direct antiglobulin (Coombs) test"
+      },
+      {
+        "id": "B",
+        "text": "Duffy antigen test"
+      },
+      {
+        "id": "C",
+        "text": "Measurement of serum bilirubin concentration"
+      },
+      {
+        "id": "D",
+        "text": "Measurement of urine hemoglobin concentration"
+      },
+      {
+        "id": "E",
+        "text": "Measurement of urine myoglobin concentration r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "test_selection",
+      "missed_qualifiers",
+      "treatment_prioritization",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_017",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 50-year-old man",
+      "presentation": "A 50-year-old man with chronic constipation has had anal pain after each bowel movement for 2 weeks. He has also\nnoted a small amount of bright red blood on the toilet tissue. Pain is relieved by sitz baths between bowel movements.\nWhich of the following is the most likely cause of these symptoms?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely cause of these symptoms?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Anal fissure"
+      },
+      {
+        "id": "B",
+        "text": "Fistula in ano"
+      },
+      {
+        "id": "C",
+        "text": "Pilonidal cyst"
+      },
+      {
+        "id": "D",
+        "text": "Squamous cell carcinoma of the anal canal"
+      },
+      {
+        "id": "E",
+        "text": "Thrombosed external hemorrhoid r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_018",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "",
+      "presentation": "Thirty-six hours after hospitalization for treatment of multiple fractures sustained in a motor vehicle collision, a\n47-year-old man develops double vision, confusion, and drowsiness . Examination now shows scattered petechiae\nover the upper portion of the trunk . Laboratory studies show :\nOn Admission Now\n50 30\nHematocrit (%)\nPlatelet count (/mm 3) >160 ,000 >160,000\n235\nSerum alcohol (mg/dl) <80\nX-rays of the chest and an ECG on admission showed no abnormalities. An x-ray of the chest now shows diffuse\npatchy infiltrates. Which of the following is the most likely diagnosis?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Aspiration pneumonitis"
+      },
+      {
+        "id": "B",
+        "text": "Delirium tremens"
+      },
+      {
+        "id": "C",
+        "text": "Fat embolism"
+      },
+      {
+        "id": "D",
+        "text": "Myocardial infarction"
+      },
+      {
+        "id": "E",
+        "text": "Pulmonary embolism ,. 0 r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "missed_qualifiers",
+      "diagnosis_recognition"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_019",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 57-year-old woman",
+      "presentation": "A 57-year-old woman has a decreased urine output (15 ml/h) 2 hours after undergoing a radical hysterectomy for\nendometrial cancer; the urine is dark yellow. The operation lasted 4 hours, and her blood pressure decreased to\n70/50 mm Hg briefly during the operation. She received 3 L of lactated Ringer solution and 2 units of packed red blood\ncells intraoperatively. She has no history of diabetes mellitus or chronic renal insufficiency. Her pulse is 110/min,\nrespirations are 14/min, and blood pressure now is 100/70 mm Hg. The lungs are clear to auscultation . There is no\nabdominal distention . Which of the following is the most likely cause of the oliguria?",
+      "vitals": {
+        "pulse": "110",
+        "respirations": "14"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely cause of the oliguria?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Anesthesia-induced tubular injury"
+      },
+      {
+        "id": "B",
+        "text": "Decreased renal blood flow"
+      },
+      {
+        "id": "C",
+        "text": "Obstruction of bladder drainage"
+      },
+      {
+        "id": "D",
+        "text": "Tubular hemoglobin deposition"
+      },
+      {
+        "id": "E",
+        "text": "Ureteral obstruction r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_020",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 38-year-old man",
+      "presentation": "A 38-year-old man who had been receiving corticosteroids for asthma has an emergency appendectomy for a ruptured\nappendix. In the recovery room , he becomes confused and febrile ; his blood pressure is 85/60 mm Hg, and his pulse\nis 130/min . Arterial blood gases are normal. His blood pressure does not respond to infusion of 1 L of lactated Ringer\nsolution. Which of the following is the most appropriate next step in management?",
+      "vitals": {
+        "blood_pressure": "85/60"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most appropriate next step in management?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Administration of hydrocortisone , 100 mg intravenously"
+      },
+      {
+        "id": "B",
+        "text": "Administration of whole blood, 500 ml"
+      },
+      {
+        "id": "C",
+        "text": "ECG"
+      },
+      {
+        "id": "D",
+        "text": "Pulmonary angiography"
+      },
+      {
+        "id": "E",
+        "text": "Reexploration of the abdomen r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "missed_qualifiers",
+      "treatment_prioritization",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_021",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "",
+      "presentation": "An x-ray of the abdomen shows a 4-mm calcification in the right\nupper quadrant. An x-ray of the chest is normal. Which of the following is the most likely cause of her condition?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely cause of her condition?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Hyperlipoproteinemia"
+      },
+      {
+        "id": "B",
+        "text": "Metastatic breast cancer"
+      },
+      {
+        "id": "C",
+        "text": "Parathyroid adenoma"
+      },
+      {
+        "id": "D",
+        "text": "Renal tubular acidosis"
+      },
+      {
+        "id": "E",
+        "text": "Sarcoidosis r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_022",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 52-year-old man",
+      "presentation": "A 52-year-old man with type 1 diabetes mellitus comes to the physician for a follow-up examination. Three years ago,\nhe underwent a cadaveric left renal transplant for diabetic nephropathy. He has been compliant with treatment, and his\nimmunosuppressive regimen includes prednisone and cyclosporine. He takes lisinopril for hypertension . His\ntemperature is 37°C (98.6 °F), pulse is 80/min, respirations are 12/min, and blood pressure is 128/82 mm Hg.\nExamination shows moderate pedal edema bilaterally and a tender 10-cm mass in the left iliac fossa. His serum\ncreatinine concentration has increased from 1.9 mg/dl over the past year to 2. 7 mg/dl. Which of the following is the\nmost likely cause of the renal insufficiency?",
+      "vitals": {
+        "pulse": "80",
+        "respirations": "12",
+        "blood_pressure": "128/82"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the\nmost likely cause of the renal insufficiency?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Chronic cyclosporine toxicity"
+      },
+      {
+        "id": "B",
+        "text": "Chronic rejection"
+      },
+      {
+        "id": "C",
+        "text": "Hemolytic-uremic syndrome"
+      },
+      {
+        "id": "D",
+        "text": "Pyelonephritis"
+      },
+      {
+        "id": "E",
+        "text": "Ureteral obstruction r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_023",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "",
+      "presentation": "An 82-year-old man comes to the physician because of a growth on his face for 6 months. It bleeds easily when\ntouched . He worked as a mail carrier for 42 years. There is a nodule with prominent telang iectasias on the forehead.\nWhich of the following is the most likely diagnosis?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Basal cell carcinoma"
+      },
+      {
+        "id": "B",
+        "text": "Hordeolum"
+      },
+      {
+        "id": "C",
+        "text": "Malignant melanoma"
+      },
+      {
+        "id": "D",
+        "text": "Merkel cell carcinoma"
+      },
+      {
+        "id": "E",
+        "text": "Squamous cell carcinoma r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers",
+      "diagnosis_recognition"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_024",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 72-year-old man",
+      "presentation": "A 72-year-old man with esophageal adenocarcinoma comes to the physician for evaluation 2 weeks prior to a\nscheduled subtotal esophagectomy . He has a 20-year history of gastroesophageal reflux disease treated most\nrecently with a proton pump inhibitor and a 10-year history of hypertension well controlled with a 13-adrenergic blocking\nagent and an ACE inhibitor. He does not smoke or drink alcohol. He is 178 cm (5 ft 10 in) tall and weighs\n127 kg (280 lb); BMI is 40 kg/m 2 His blood pressure today is 145/84 mm Hg. Examination shows varicose veins of the\n.\nlower extremities with no tenderness . There is 1 + pitting pedal edema . In addition to early ambulation, which of the\nfollowing is the most appropriate preventive measure for this patient perioperatively?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "In addition to early ambulation, which of the\nfollowing is the most appropriate preventive measure for this patient perioperatively?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Aspirin therapy"
+      },
+      {
+        "id": "B",
+        "text": "Clopidogrel therapy"
+      },
+      {
+        "id": "C",
+        "text": "Low-molecular-weight heparin therapy"
+      },
+      {
+        "id": "D",
+        "text": "Placement of an inferior vena cava filter"
+      },
+      {
+        "id": "E",
+        "text": "No other preventive measures are indicated r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_025",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "",
+      "presentation": "One hour after delivery at term , a 3750-g (8-lb 4-oz) female newborn begins to choke, cough, and regurgitate while\nattempting to breast-feed. Pregnancy and delivery were uncomplicated . Apgar scores were 9 and 10 at 1 and\n5 minutes, respectively. Examination shows no abnormalities except for drooling . Which of the following is the most\nappropriate next step in diagnosis?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most\nappropriate next step in diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Barium swallow"
+      },
+      {
+        "id": "B",
+        "text": "CT scan of the chest"
+      },
+      {
+        "id": "C",
+        "text": "Flexible esophagogastroduodenoscopy"
+      },
+      {
+        "id": "D",
+        "text": "Rigid esophagoscopy"
+      },
+      {
+        "id": "E",
+        "text": "Insertion of a nasogastric tube r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_026",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A previously healthy 37-year-old woman comes to the physician because of a persistent headache for 1 week with\noccasional episodes of nausea when the pain is most severe. She has had no other neurologic symptoms. Use of\nnonsteroidal anti-inflammatory drugs has provided no relief . She has smoked one pack of cigarettes daily for 20 years .\nHer last pregnancy 3 years ago was uncomplicated. Her last menstrual period was 2 weeks ago. Her pulse is 72/min ,\nrespirations are 14/min, and blood pressure is 170/120 mm Hg. Examination shows no abnormalities except for mild\npapilledema and a right carotid bruit. A renal artery duplex scan shows stenosis of the right renal artery, and a carotid\nduplex scan shows 25% stenosis of the right carotid. Which of the following is the most likely cause of this patient's\nhypertension?",
+      "vitals": {
+        "pulse": "72",
+        "respirations": "14",
+        "blood_pressure": "170/120"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely cause of this patient's\nhypertension?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Congenital renal artery disease"
+      },
+      {
+        "id": "B",
+        "text": "Fibromuscular dysplasia of the renal artery"
+      },
+      {
+        "id": "C",
+        "text": "Premature atherosclerosis"
+      },
+      {
+        "id": "D",
+        "text": "Undiagnosed previous renal trauma r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_027",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 67-year-old woman",
+      "presentation": "A 67-year-old woman with essential hypertension comes to the physician because of a 6-month history of moderate\naching of her left arm when she carries grocery bags, does anything with the arm raised above her head, or lifts\nanything heavy. One week ago , while cleaning a large mirror, she felt dizzy and almost lost consciousness. She has\nnot had chest pain, shortness of breath, or sweating. She is left-hand dominant. She takes no medications . She has\nsmoked one pack of cigarettes daily for 40 years . Her pulse is 72/min and regular, and blood pressure in the left upper\nextremity is 115/85 mm Hg. Upper extremity pulses are normal. Muscle strength and sensation testing in the upper\nextremities shows no abnormalities. Which of the following additional components of the physical examination is most\nlikely to confirm the diagnosis?",
+      "vitals": {
+        "pulse": "72"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following additional components of the physical examination is most\nlikely to confirm the diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Blood pressure measurement of the right upper extrem ity"
+      },
+      {
+        "id": "B",
+        "text": "Cardiac auscultation"
+      },
+      {
+        "id": "C",
+        "text": "Hyperabduction maneuver"
+      },
+      {
+        "id": "D",
+        "text": "Neck auscultation"
+      },
+      {
+        "id": "E",
+        "text": "Percussion of the left ulnar nerve r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers",
+      "test_selection",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_028",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 47-year-old woman",
+      "presentation": "A 47-year-old woman is brought to the emergency department 30 minutes after being found unresponsive by her\nhusband on the bathroom floor . Yesterday, she called the physician after noticing a small scratch on her left labium\nmajus and received a prescription for levofloxacin. Her husband reports that she has had a 24-hour history of\nprogressive vulvar redness, hardness , and swelling that spread to her left upper thigh and lower abdomen . She has\ntype 1 diabetes mellitus. She is responsive to painful stimuli only. Her temperature is 37.2°C (99°F), pulse is 130/min,\nrespirations are 30/min , and blood pressure is 70/40 mm Hg. Examination shows erythema of the lower abdomen to\nthe level of the umbilicus and from the left thigh to the knee ; there is no crepitus . Pelvic examination shows a purulent\ndischarge from an open laceration on the left labium majus and marked edema of the labia majora . Emergency\ndebridement is performed . During the procedure , there is liquefaction necrosis of the subcutaneous tissue , fascia, and\nmuscle . Which of the following is the most likely causal organism?",
+      "vitals": {
+        "temp_c": "37.2",
+        "temp_f": "99",
+        "pulse": "130",
+        "respirations": "30",
+        "blood_pressure": "70/40"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely causal organism?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Bacteroides fragi/is"
+      },
+      {
+        "id": "B",
+        "text": "Candida albicans"
+      },
+      {
+        "id": "C",
+        "text": "C/ostridium perfringens"
+      },
+      {
+        "id": "D",
+        "text": "Pseudomonas aeruginosa"
+      },
+      {
+        "id": "E",
+        "text": "Streptococcus pyogenes (group A) r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_029",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 25-year-old woman",
+      "presentation": "A 25-year-old woman has a 2-year history of episodic bloody diarrhea, sometimes productive of blood and mucus\nwithout stool, ranging up to 25 anal discharges daily. Examination shows no abnormalities. X-rays of the intestines\nshow generalized changes in the colon , including decreased size, shortening and narrowing of the lumen , and loss of\nhaustral markings. Results of an endoscopic biopsy of the colon show mucosal microabscesses. This patient is at\ngreatest risk for which of the following subsequent conditions?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "This patient is at\ngreatest risk for which of the following subsequent conditions?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Cancer of the colon"
+      },
+      {
+        "id": "B",
+        "text": "Colonic polyps"
+      },
+      {
+        "id": "C",
+        "text": "Diverticulosis"
+      },
+      {
+        "id": "D",
+        "text": "lschemic colitis"
+      },
+      {
+        "id": "E",
+        "text": "Ovarian cancer r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_030",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A previously healthy 47-year-old man comes to the emergency department 2 hours after the sudden onset of constant ,\nsevere epigastric pain . He says that the pain feels as if he had been kicked in the abdomen . He appears diaphoretic .\nHis temperature is 37.5 °C (99 .5°F), pulse is 120/min, respirations are 24/min , and blood pressure is 100/60 mm Hg.\nAbdominal examination shows exquisite tenderness and board -like rigidity of the epigastrium and right upper\nquadrant. Laboratory studies show :\nHemoglobin 15.2 g/dL\nLeukocy te count 11,900/mm 3\nSerum\nAmylase 140 U/L\nLipase 50 U/L (N=14-280)\nWhich of the following is the most likely diagnosis?",
+      "vitals": {
+        "pulse": "120",
+        "respirations": "24",
+        "blood_pressure": "100/60"
+      },
+      "labs": {
+        "hemoglobin": "15.2"
+      }
+    },
+    "question_stem": "2 g/dL\nLeukocy te count 11,900/mm 3\nSerum\nAmylase 140 U/L\nLipase 50 U/L (N=14-280)\nWhich of the following is the most likely diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Acute cholangitis"
+      },
+      {
+        "id": "B",
+        "text": "Acute cholecystitis"
+      },
+      {
+        "id": "C",
+        "text": "Acute diverticulitis"
+      },
+      {
+        "id": "D",
+        "text": "Acute pancreatitis"
+      },
+      {
+        "id": "E",
+        "text": "Acute pyelonephritis Q F) Gastroesophageal reflux disease Q G) Mallory-Weiss syndrome Q H) Perforated duodenal ulcer"
+      },
+      {
+        "id": "I",
+        "text": "Ruptured esophagus r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "lab_interpretation",
+      "vital_sign_interpretation",
+      "diagnosis_recognition",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_032",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 36-year-old man",
+      "presentation": "A 36-year-old man comes to the physician because of a 4-day history of bloody diarrhea. He has a 16-year history of\nulcerative colitis treated with corticosteroid therapy. His temperature is 37 .5°C (99.5 °F), pulse is 110/min, respirations\nare 16/min, and blood pressure is 124/78 mm Hg. The abdomen is soft and mildly distended; there is mild, diffuse\ntenderness to palpation but no rigidity or guarding. Colon contrast studies show a constricting, apple-core,\nnonobstructing sigmoid mass. Which of the following is the most appropriate next step in management?",
+      "vitals": {
+        "pulse": "110",
+        "blood_pressure": "124/78"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most appropriate next step in management?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Antibiotic therapy and bowel rest"
+      },
+      {
+        "id": "B",
+        "text": "Proctocolectomy"
+      },
+      {
+        "id": "C",
+        "text": "Radiation therapy"
+      },
+      {
+        "id": "D",
+        "text": "Segmental colectomy"
+      },
+      {
+        "id": "E",
+        "text": "Total parenteral nutrition r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers",
+      "treatment_prioritization",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_033",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 20-year-old man",
+      "presentation": "A 20-year-old man is brought to the emergency department 30 minutes after being involved in a motor vehicle\ncollision. He was an unrestrained front-seat passenger during the head-on collision . The left lower extremity is flexed\nat the hip, shortened , adducted , and internally rotated . He is unable to dorsiflex the ankle . Which of the following is the\nmost likely diagnosis?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the\nmost likely diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Acute hemarthrosis"
+      },
+      {
+        "id": "B",
+        "text": "Femoral neck fracture"
+      },
+      {
+        "id": "C",
+        "text": "Femoral nerve contusion"
+      },
+      {
+        "id": "D",
+        "text": "Gluteus medius tendon rupture"
+      },
+      {
+        "id": "E",
+        "text": "Hip dislocation r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "missed_qualifiers",
+      "diagnosis_recognition"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_034",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 52-year-old man",
+      "presentation": "A 52-year-old man comes to the physician 3 weeks after an episode of dysphagia while eating meat. He has had\nheartburn for 2 years; it has been unrelieved by antacids for 9 months. He has smoked two packs of cigarettes daily\nfor 35 years. Examination shows no abnormalities. Hematocrit is 36%. A blood smear shows microcytic, hypochromic\nerythrocytes. Upper gastrointestinal endoscopy shows erythema of the mucosa between a hiatus hernia and the\nmidesophagus, with multiple linear erosions. Which of the following is the most appropriate pharmacotherapy?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most appropriate pharmacotherapy?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Aluminum hydroxide-alginic acid (Gaviscon)"
+      },
+      {
+        "id": "B",
+        "text": "Bethanechol"
+      },
+      {
+        "id": "C",
+        "text": "Metoclopramide"
+      },
+      {
+        "id": "D",
+        "text": "Omeprazole"
+      },
+      {
+        "id": "E",
+        "text": "Sucralfate r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_036",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 42-year-old woman",
+      "presentation": "A 42-year-old woman , gravida 3, para 3, is brought to the emergency department because of severe abdominal pain\nthat awoke her from sleep 8 hours ago. She had one similar episode 3 months ago that resolved without treatment.\nHer temperature is 37°C (98.6°F) . Abdominal exam ination shows right upper quadrant guarding and normal bowel\nsounds . Hemoglobin concentration is 12 g/dl, leukocyte count is 12,000/mm 3, and total serum bilirubin concentration\nis 1.1 mg/dl. X-rays of the abdomen show no abnormalities. Which of the following is the most appropriate next step\nin diagnosis?",
+      "vitals": {
+        "temp_c": "37",
+        "temp_f": "98.6"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most appropriate next step\nin diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Abdominal ultrasonography"
+      },
+      {
+        "id": "B",
+        "text": "Angiography"
+      },
+      {
+        "id": "C",
+        "text": "Aortography"
+      },
+      {
+        "id": "D",
+        "text": "Barium swallow"
+      },
+      {
+        "id": "E",
+        "text": "Celiotomy Q F) CT scan of the abdomen Q G) Diagnost ic laparoscopy Q H) Endoscopic retrograde cholangiopancreatography"
+      },
+      {
+        "id": "I",
+        "text": "Endoscopy r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "urgency_assessment",
+      "timeline_errors",
+      "treatment_prioritization",
+      "vital_sign_interpretation",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_037",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "",
+      "presentation": "An asymptomatic 72-year-old woman comes to the physician for a routine health maintenance examination. Her pulse\nis 76/min, respirations are 18/min , and blood pressure is 134/90 mm Hg. Examination shows no abnormalities. Her\nhematocrit is 35%. Erythrocyte indices show microcytic anemia . Test of the stool for occult blood is positive . Which of\nthe following is the most likely cause of this patient's anemia?",
+      "vitals": {
+        "respirations": "18",
+        "blood_pressure": "134/90"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of\nthe following is the most likely cause of this patient's anemia?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Cecal malignancy"
+      },
+      {
+        "id": "B",
+        "text": "Hemorrhoids"
+      },
+      {
+        "id": "C",
+        "text": "Meckel diverticulum"
+      },
+      {
+        "id": "D",
+        "text": "Peptic ulcer"
+      },
+      {
+        "id": "E",
+        "text": "Small-bowel malignancy r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_039",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A previously healthy 27-year-old woman is brought to the emergency department because of a 3-hour history of\nincreasingly severe lower abdominal pain. The pain involves the left side and radiates to the back. Her temperature is\n38°C (100.4 °F). Examination shows an 8-cm , exquisitely tender ovarian mass. A pregnancy test is negative . Her\nleukocyte count is 10,400/mm Ultrasonography confirms the mass. Which of the following is the most appropriate\n3_\nnext step in management?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most appropriate\n3_\nnext step in management?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "MRI of the pelvis"
+      },
+      {
+        "id": "B",
+        "text": "Ceftriaxone and doxycycline therapy"
+      },
+      {
+        "id": "C",
+        "text": "Ibuprofen therapy"
+      },
+      {
+        "id": "D",
+        "text": "Oral contraceptive therapy"
+      },
+      {
+        "id": "E",
+        "text": "Laparoscopy r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_042",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 42-year-old woman",
+      "presentation": "A 42-year-old woman has had fatigue, exertional dyspnea, and palpitations for 4 months. She has a history of frequent\nrespiratory infections. Her pulse is 90/min and regular, and blood pressure is 120/80 mm Hg. A prominent right\nventricular impulse, wide fixed splitting of S and a systolic ejection murmur are heard. An ECG shows incomplete\n,\n2\nright bundle branch block . An x-ray of the chest shows right ventricular enlargement, prominence of the main\npulmonary artery, and increased pulmonary artery markings. Which of the following is the most likely diagnosis?",
+      "vitals": {
+        "pulse": "90",
+        "blood_pressure": "120/80"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Aortic stenosis"
+      },
+      {
+        "id": "B",
+        "text": "Atrial septal defect"
+      },
+      {
+        "id": "C",
+        "text": "Coarctation of the aorta"
+      },
+      {
+        "id": "D",
+        "text": "Patent ductus arteriosus"
+      },
+      {
+        "id": "E",
+        "text": "Pulmonic stenosis Q F) Tetralogy of Fallot Q G) Transposition of the great arteries Q H) Truncus arteriosus"
+      },
+      {
+        "id": "I",
+        "text": "Ventricular septal defect r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "vital_sign_interpretation",
+      "timeline_errors",
+      "missed_qualifiers",
+      "diagnosis_recognition"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_043",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 42-year-old woman",
+      "presentation": "A 42-year-old woman comes to the physician after finding a mass in her left breast on breast self-examination. She\nhas no history of serious illness and takes no medications. Examination of the left breast shows a 3.5-cm mass with\nregular borders in the upper outer quadrant. Aspiration of the mass shows a clear brown fluid. Which of the following is\nthe most likely diagnosis?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is\nthe most likely diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Carcinoma"
+      },
+      {
+        "id": "B",
+        "text": "Fibroadenoma"
+      },
+      {
+        "id": "C",
+        "text": "Fibrocystic disease"
+      },
+      {
+        "id": "D",
+        "text": "Galactocele"
+      },
+      {
+        "id": "E",
+        "text": "Paget disease r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers",
+      "diagnosis_recognition"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_044",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 27-year-old man",
+      "presentation": "A 27-year-old man undergoes Roux-en-Y gastric bypass for morbid obesity. He has type 2 diabetes mellitus ,\nhypertension, and sleep apnea. Twelve hours after the operation, he is awake and alert. He is 175 cm (5 ft 9 in) tall\nand weighs 139 kg (305 lb); BMI is 45 kg/m 2 His temperature is 38.1°C (100 .6°F), pulse is 90/min, respirations are\n.\n10/min, and blood pressure is 145/85 mm Hg. Breath sounds are heard bilaterally with decreased air movement.\nArterial blood gas analysis on 4 Umin of oxygen via nasal cannula shows:\n7.31\n55 mm Hg\n64 mm Hg\n26 mEq/L\nWhich of the following is the most appropriate next step in management?",
+      "vitals": {
+        "pulse": "90",
+        "blood_pressure": "145/85"
+      },
+      "labs": {}
+    },
+    "question_stem": "31\n55 mm Hg\n64 mm Hg\n26 mEq/L\nWhich of the following is the most appropriate next step in management?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Application of continuous positive airway pressure"
+      },
+      {
+        "id": "B",
+        "text": "Switching from nasal cannula to face mask"
+      },
+      {
+        "id": "C",
+        "text": "Bronchodilator therapy"
+      },
+      {
+        "id": "D",
+        "text": "Naloxone therapy"
+      },
+      {
+        "id": "E",
+        "text": "Reintubation r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers",
+      "treatment_prioritization",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_045",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 92-year-old woman",
+      "presentation": "A 92-year-old woman is brought to the emergency department 6 hours after the\nsudden onset of abdominal pain, distention, and vomiting . She has not passed\nflatus during this period. She underwent appendectomy 46 years ago .\nAbdominal examination shows distention and diffuse tenderness. Bowel sounds\nare increased. An x-ray of the abdomen is shown. Which of the following is the\nmost likely explanation for these findings?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the\nmost likely explanation for these findings?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Adhesions Appendiceal phlegmon Q B) Gallstone ileus Q C)"
+      },
+      {
+        "id": "D",
+        "text": "In tussusception"
+      },
+      {
+        "id": "E",
+        "text": "Primary tumor of the small intestine r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_046",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 4,
+    "vignette": {
+      "demographics": "A 49-year-old man",
+      "presentation": "A 49-year-old man with type 1 diabetes mellitus remains hospitalized 2 days after admission for management of\ngangrene of the second toe of the left foot. He also has peripheral neuropathy, retinopathy, and stage Ill chronic kidney\ndisease . His preadmission medications are insulin, valsartan, ramipril, gabapentin, and omeprazole. On admission ,\nintravenous piperacillin-tazobactam was added to the regimen . He is following a consistent carbohydrate diet. His\ntemperature is 37.2 °C (99°F), pulse is 72/min and regular, and blood pressure is 140/90 mm Hg. Examination shows\ndry gangrene over the distal phalanx of the left second toe with minimal residual erythema. Pedal pulses are not\npalpable . Ankle systolic pressures are greater than 220 mm Hg bilaterally. Laboratory studies show:\nHemoglobin A 8%\nc\n1\nLeukocyte count 8700/mm 3 with a normal differential\nSerum\nGlucose 160 mg/dL\nCreatinine 1.8 mg/dL\nOn duplex ultrasonography of the left lower extremity, the femoral and popliteal arteries appear normal ; there is\nocclusion of all three tibial arteries in the proximal calf and reconstitution of the posterior tibial artery just proximal to\nthe ankle. In addition to continued piperacillin-tazobactam therapy and foot care, which of the following is the most\nappropriate next step in management?",
+      "vitals": {
+        "pulse": "72",
+        "blood_pressure": "140/90"
+      },
+      "labs": {
+        "wbc": "8700",
+        "glucose": "160",
+        "creatinine": "1.8"
+      }
+    },
+    "question_stem": "In addition to continued piperacillin-tazobactam therapy and foot care, which of the following is the most\nappropriate next step in management?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Below-the-knee amputation"
+      },
+      {
+        "id": "B",
+        "text": "Femorotibial bypass grafting"
+      },
+      {
+        "id": "C",
+        "text": "High-dose clopidogrel therapy"
+      },
+      {
+        "id": "D",
+        "text": "Percutaneous tibial angioplasty"
+      },
+      {
+        "id": "E",
+        "text": "Supervised exercise program r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_047",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 72-year-old man",
+      "presentation": "A 72-year-old man is admitted to the hospital because of hematochezia for 12 hours. He has mild chronic obstructive\npulmonary disease and osteoarthritis . He sustained a myocardial infarction 4 months ago . Medications include\npropranolol and nitroglycerin . His temperature is 36 .9°C (98.4°F), pulse is 102/min, and blood pressure is\n144/82 mm Hg. Abdominal examination shows no abnormalities . Rectal examination shows dark blood and clots . His\nhematocrit is 32%. The bleeding resolves spontaneously 6 hours after admission. Colonoscopy shows a short\nsegment of sigmoid colon with edema , ulceration , and friability ; no other abnormalities are noted . Which of the\nfollowing is the most likely diagnosis?",
+      "vitals": {
+        "pulse": "102"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the\nfollowing is the most likely diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "C/ostridium difficile colitis"
+      },
+      {
+        "id": "B",
+        "text": "Cytomegalovirus colitis"
+      },
+      {
+        "id": "C",
+        "text": "Diverticulitis"
+      },
+      {
+        "id": "D",
+        "text": "lschemic colitis"
+      },
+      {
+        "id": "E",
+        "text": "Ulcerative colitis r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "vital_sign_interpretation",
+      "timeline_errors",
+      "missed_qualifiers",
+      "diagnosis_recognition"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_048",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A hospitalized 37-year-old woman with type 1 diabetes mellitus and chronic renal failure has the sudden onset of\nshortness of breath. Twenty minutes ago , she underwent placement of a right subclavian catheter for hemodialysis\nafter several unsuccessful attempts to insert a right internal jugular catheter. Her pulse is 120/min, respirations are\n32/min, and blood pressure is 90/50 mm Hg. Examination shows no jugular venous distention. Breath sounds are\ndecreased on the right. Heart sounds are normal. Pulse oximetry on 4 L/min of oxygen via nasal cannula shows an\noxygen saturation of 65% . Which of the following is the most appropriate next step?",
+      "vitals": {
+        "pulse": "120",
+        "blood_pressure": "90/50",
+        "o2_sat": "65"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most appropriate next step?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Arterial blood gas analysis"
+      },
+      {
+        "id": "B",
+        "text": "X-ray of the chest"
+      },
+      {
+        "id": "C",
+        "text": "Echocardiography"
+      },
+      {
+        "id": "D",
+        "text": "CT scan of the chest"
+      },
+      {
+        "id": "E",
+        "text": "Radionuclide lung scan Q F) Needle aspiration of the right chest Q G) Pulmonary angiography Q H) Pulmonary artery catheterization r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers",
+      "treatment_prioritization",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "surgery_049",
+    "specialty": "Surgery",
+    "source": "NBME Surgery 6 - Questions v1",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 62-year-old man",
+      "presentation": "A 62-year-old man comes to the physician because of a 1-year history of pain in his calves and thighs after he walks\nmore than two blocks . The pain is relieved after he rests for 5 to 10 minutes . He has smoked one and a half packs of\ncigarettes daily for 30 years . His temperature is 37°C (98.6°F), pulse is 75/min, respirations are 16/min, and blood\npressure is 140/80 mm Hg. Examination shows decreased femoral, popliteal, and pedal pulses bilaterally. Which of the\nfollowing is the most likely diagnosis?",
+      "vitals": {
+        "temp_c": "37",
+        "temp_f": "98.6",
+        "pulse": "75",
+        "respirations": "16"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the\nfollowing is the most likely diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Aortoiliac occlusive disease (Leriche syndrome)"
+      },
+      {
+        "id": "B",
+        "text": "Bilateral iliac aneurysms"
+      },
+      {
+        "id": "C",
+        "text": "Bilateral superficial femoral artery occlusions"
+      },
+      {
+        "id": "D",
+        "text": "Coarctation of the aorta"
+      },
+      {
+        "id": "E",
+        "text": "Internal iliac artery stenosis r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "vital_sign_interpretation",
+      "timeline_errors",
+      "missed_qualifiers",
+      "diagnosis_recognition"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  }
+]

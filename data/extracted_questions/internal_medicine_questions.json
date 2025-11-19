@@ -1,0 +1,3544 @@
+[
+  {
+    "id": "internal_medicine_006",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 3 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 4,
+    "vignette": {
+      "demographics": "A 72-year-old woman",
+      "presentation": "A 72-year-old woman is brought to the emergency department because of a 1-month history of progressive shortness of breath and\nfatigue . She has had no chest pain . There is no history of heart or pulmonary disease. She is in moderate respiratory distress . Her\ntemperature is 37°C (98.6 °F), pulse is 100/min, respirations are 22/min, and blood pressure is 135/85 mm Hg. Examination shows\njugular venous distention . Crackles are heard halfway up both lungs . A grade 2/6, systolic ejection murmur is heard along the left\nsternal border . There is an S She has 2+ edema of the lower extremities . Rectal examination shows dark stool ; test for occult blood\n.\n3\nis positive . Laboratory studies show :\nHemoglobin 5 g/dL\nLeukocyte count 9000/mm 3\nSerum\nNa+ 140 mEq/L\nK+\n4 mEq/L\ncI\n105 mEq/L\nHco3-\n25 mEq/L\nUrea nitrogen 28 mg/dL\nGlucose 120 mg/dL\nCreatinine 1.2 mg/dL\nUrine protein 1+\nAn x-ray of the chest shows a mildly enlarged cardiac silhouette with pulmonary vascular congestion . An ECG shows nonspecific\nST-segment changes. Echocardiography shows trace mitral regurgitation and an ejection fraction of 70%; there are no wall motion\nabnormalities. Which of the following is the most likely cause of these findings?",
+      "vitals": {
+        "pulse": "100",
+        "respirations": "22",
+        "blood_pressure": "135/85"
+      },
+      "labs": {
+        "hemoglobin": "5",
+        "wbc": "9000",
+        "sodium": "140",
+        "potassium": "4",
+        "bicarbonate": "25",
+        "glucose": "120",
+        "creatinine": "1.2"
+      }
+    },
+    "question_stem": "Which of the following is the most likely cause of these findings?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "High-output heart failure"
+      },
+      {
+        "id": "B",
+        "text": "Left ventricular diastolic dysfunction"
+      },
+      {
+        "id": "C",
+        "text": "Left ventricular systolic dysfunction"
+      },
+      {
+        "id": "D",
+        "text": "Nephrotic syndrome"
+      },
+      {
+        "id": "E",
+        "text": "Valvular heart disease r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "timeline_errors",
+      "lab_interpretation",
+      "vital_sign_interpretation",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_016",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 3 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 57-year-old man",
+      "presentation": "A 57-year-old man comes to the physician with his wife because of a headache for 3 days . He has had a 6.8-kg (15-lb) weight gain\nover the past 6 months . His dentist has told him that the space between his teeth is increasing . His wife says that he has started\nsnoring and his voice has deepened over the past 6 months . He is 178 cm (5 ft 10 in) tall and now weighs 91 kg (200 lb); BMI is\n29 kg/m 2 Examination shows frontal bossing and large feet. Measurement of which of the following is most likely to confirm the\n.\ndiagnosis?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Hemoglobin A c 1"
+      },
+      {
+        "id": "B",
+        "text": "Serum C-peptide concentration"
+      },
+      {
+        "id": "C",
+        "text": "Serum growth hormone-releasing hormone concentration"
+      },
+      {
+        "id": "D",
+        "text": "Serum insulin-like growth factor 1"
+      },
+      {
+        "id": "E",
+        "text": "Serum somatostatin concentration r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_017",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 3 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A previously healthy 72-year-old man who is a retired shipyard worker comes to the physician because of a 2-month history of\nnonproductive cough and shortness of breath. He does not smoke. Breath sounds are decreased, and there is dullness to\npercussion at the left lung base. An x-ray of the chest shows calcified pleural plaques and a left pleural effusion. A thoracentesis is\nperformed, and analysis of the pleural fluid shows a glucose concentration of 4 mg/dl. The most likely underlying cause of these\nfindings is exposure to which of the following?\n0 A) Asbestos\n0 B) Graphite\n0 C) lsocyanates\n0 D) Mycobacterium kansasii\n0 E) Mycoplasma pneumoniae",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "",
+    "choices": [
+      {
+        "id": "F",
+        "text": "Nocardia asteroides 0 G) Radon 0 H) Silicon r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_030",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 3 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 37-year-old man",
+      "presentation": "A 37-year-old man comes to the physician because of fever and rash for 2 days . He just completed a 6-week course of nafcillin for\ntreatment of staphylococcal bacterial endocarditis . His temperature is 37.8°C (100°F). Examination shows a faint maculopapular\nrash. Cardiac examination shows an unchanged murmur of aortic insufficiency and no embolic lesions. Laboratory studies and an\nx-ray of the chest show no abnormalities . Which of the following is the most likely set of findings on urinalysis?\nSpecific WBC RBC Other\nGravity Glucose Protein /hpf /hpf Casts Findings\n0 A) 1.003 1+ 30 5 muddy brown tubular epithelial\ncells\n0 B) 1.005 trace 2+ 30 3 rare WBC eosinophils\n0 C) 1.012 2 5 none",
+      "vitals": {
+        "temp_c": "37.8",
+        "temp_f": "100"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely set of findings on urinalysis?",
+    "choices": [
+      {
+        "id": "D",
+        "text": "1.012 1+ 3 2-3 WBC 2+ bacteria 0 E) 1.012 3+ 100 RBC 0 F) 1.030 4+ 3+ 30 30 none 2+ bacteria r, r p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_001",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 42-year-old man",
+      "presentation": "A 42-year-old man has had the gradual onset of greasy, diffuse scaling of the scalp with variable itching over the past year. Yellowish\nred scaling papules appear along the hairline and behind the ears ; there is no hair loss . Which of the following is the most likely\ndiagnosis?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely\ndiagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Exfoliative dermatitis Q B) Lichen simplex chronicus Q C) Pediculosis capitis"
+      },
+      {
+        "id": "D",
+        "text": "Psoriasis"
+      },
+      {
+        "id": "E",
+        "text": "Seborrheic dermatitis \"' p, ,., https://t.me/USMLENBME2CK Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_002",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 24-year-old man",
+      "presentation": "A 24-year-old man comes to the physician for a follow-up examination . Two months ago, he was seen for a red, scaly rash over his\ngroin. A 6-week course of topical clotrimazole resolved the rash completely, but it recurred 2 days ago. He is sexually active with one\npartner and uses condoms consistently. Examination shows an erythematous, excoriated rash over the groin and a similar rash over\nthe instep of the left foot. A KOH preparation of a skin scraping shows hyphae. Which of the following is the most likely cause of this\npatient's recurrent infection?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely cause of this\npatient's recurrent infection?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Autoinfection Clotrimazole resistance Q B) Impaired cellular immunity Q C)"
+      },
+      {
+        "id": "D",
+        "text": "Impaired humoral immunity"
+      },
+      {
+        "id": "E",
+        "text": "Reinfection from a sexual partner ,. \"' r-- , r ,,, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_003",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "",
+      "presentation": "An otherwise healthy 30-year-old man has had recurrent aching right shoulder pain initiated by reaching overhead; it also occurs at\nnight in bed. The pain is most prominent in the area of the deltoid muscle. It is elicited by abduction of the shoulder against\nresistance . Which of the following is the most likely site of the underlying condition?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely site of the underlying condition?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Biceps tendon Cervical nerve root Q B) Deltoid muscle Q C)"
+      },
+      {
+        "id": "D",
+        "text": "Proximal humerus"
+      },
+      {
+        "id": "E",
+        "text": "Supraspinatus tendon ,. \"' p, ,., https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_004",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 72-year-old woman",
+      "presentation": "A 72-year-old woman comes to the physician because she is concerned about her high blood pressure . Two days ago, her blood\npressure was 200/105 mm Hg at the drug store . She has a 20-year history of hypertension that had been well controlled with a\nthiazide diuretic . At her last visit 3 months ago , her blood pressure was 140/75 mm Hg. Today, her pulse is 80/min, respirations are\n12/min, and blood pressure is 210/114 mm Hg. Funduscopic examination shows arteriovenous nicking. A right carotid bruit is heard.\nLaboratory studies are within normal limits . Which of the following is the most likely cause of these findings?",
+      "vitals": {
+        "pulse": "80",
+        "blood_pressure": "210/114"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely cause of these findings?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Acute glomerulonephritis Acute porphyria Q B) Q C) Coarctation of the aorta"
+      },
+      {
+        "id": "D",
+        "text": "Cushing syndrome"
+      },
+      {
+        "id": "E",
+        "text": "Hyperaldosteronism Hyperparathyroidism Q F) Q G) Hyperthyroidism"
+      },
+      {
+        "id": "H",
+        "text": "Pheochromocytoma"
+      },
+      {
+        "id": "I",
+        "text": "Renal artery stenosis ,. \"' p, ,., https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_007",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 4,
+    "vignette": {
+      "demographics": "A 42-year-old woman",
+      "presentation": "A 42-year-old woman comes to the physician for a follow-up examination. She was diagnosed with hypertension 6 months ago, and\nhydrochlorothiazide therapy was begun . Eight weeks ago, her blood pressure was 176/96 mm Hg, and lisinopril was added to her\nregimen . She says she feels well. She has no other history of serious illness . She occasionally takes ibuprofen for muscle pain or\nheadache. She walks for 30 minutes three times weekly. She is 170 cm (5 ft 7 in) tall and weighs 66 kg (145 lb); BMI is 23 kg/m 2 Her\n.\npulse is 76/min, and blood pressure is 160/98 mm Hg in the right upper extremity and 162/96 mm Hg in the left upper extremity while\nsitting and standing . Cardiopulmonary examination shows no abnormalities . There is no peripheral edema . Fasting laboratory studies\nshow:\nSerum\nNa+ 140 mEq/L\nK+\n4 mEq/L\nCl· 105 mEq/L\nHC0 24 mEq/L\n-\n3\nUrea nitrogen 16 mg/dl\nGlucose 94 mg/dl\nCreatinine 1 mg/dl\nUrine protein 1+\nThe patient asks how she can decrease her risk for renal failure. Which of the following is the most appropriate recommendation?\nO\nA) Protein-restricted diet\nQ\nB) 24-Hour urine collection for measurement of protein concentration",
+      "vitals": {
+        "pulse": "76",
+        "blood_pressure": "160/98"
+      },
+      "labs": {
+        "sodium": "140",
+        "potassium": "4",
+        "glucose": "94",
+        "creatinine": "1"
+      }
+    },
+    "question_stem": "Which of the following is the most appropriate recommendation?",
+    "choices": [
+      {
+        "id": "C",
+        "text": "Increasing the dose of lisinopril O D) Switching from hydrochlorothiazide to furosemide Q E) No further measures are indicated at this time ,. \"' r-- , r ,,, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_008",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 55-year-old man",
+      "presentation": "A 55-year-old man is admitted to the hospital in a coma following a sudden collapse . He has a history of recent coronary bypass\noperation for coronary artery disease . ECG shows wide ORS complexes (QRS 160 ms) with a ventricular rate of 170/min and an\natrial rate of 110/min. Which of the following is the most appropriate initial step in management?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most appropriate initial step in management?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Administration of digitalis Administration of verapamil Q B) Carotid sinus massage Q C)"
+      },
+      {
+        "id": "D",
+        "text": "Direct current countershock"
+      },
+      {
+        "id": "E",
+        "text": "External pacing ,. \"' r-- , r ,,, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_009",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 32-year-old woman",
+      "presentation": "A 32-year-old woman is admitted to the hospital 8 hours after the\nonset of nausea and vomiting and epigastric abdominal pain that\nradiates to her back. She has had two similar episodes during the\npast 2 months. She has no other history of serious illness. She does\nnot drink alcohol. Abdominal examination shows moderate epigastric\ntenderness. Laboratory studies show:\nHemoglobin 12.5 g/dL\nHematocrit 38%\nLeukocyte count 15,400/mm3\nPlatelet count 326,000/mm3\nSerum amylase 1450 U/L\nUltrasonography of the gallbladder shows no abnormalities. A CT\nscan of the abdomen is shown. Which of the following is the most\nappropriate next step in diagnosis?\nQ\nA) HIDA scan\nO\nB) Endoscopic retrograde cholangiopancreatography\nO\nC) Esophagogastroduodenoscopy",
+      "vitals": {},
+      "labs": {
+        "hemoglobin": "12.5",
+        "hematocrit": "38",
+        "wbc": "15,400",
+        "platelets": "326,000"
+      }
+    },
+    "question_stem": "Which of the following is the most",
+    "choices": [
+      {
+        "id": "D",
+        "text": "Mesenteric angiography O E) Percutaneous transhepatic cholangiography ,. \"' r-- , r ,,, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "timeline_errors",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_010",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 27-year-old man",
+      "presentation": "A 27-year-old man comes to the physician because of fatigue and loose stools over the past 3 months; during this period , he has\nhad a 6.8-kg (15-lb) weight loss despite a good appetite and normal dietary intake . He has a childhood history of diarrhea and\ndifficulty gaining weight that resolved without treatment during early adolescence . He has not traveled recently . He does not appear\nacutely ill. He is 173 cm (5 ft 8 in) tall and weighs 57 kg (125 lb); BMI is 19 kg/m 2 Vital signs are within normal limits. Examination\n.\nshows no abnormalities . Test of the stool shows no leukocytes , and cultures of the stool are negative for pathogens . A 72-hour test\nof the stool for fecal fat shows 12 g/d (N=2-6) . D-xylose absorption test shows a serum D-xylose concentration of\n4 mg/dl (N=25-40) 2 hours after the administration of 25 g of D-xylose. Which of the following is the most likely underlying cause of\nthis patient's malabsorption?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely underlying cause of\nthis patient's malabsorption?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Bacterial overgrowth in the small bowel Exocrine pancreatic insufficiency Q B) Q C) Failure of bile acid excretion"
+      },
+      {
+        "id": "D",
+        "text": "Failure of bile acid reabsorption"
+      },
+      {
+        "id": "E",
+        "text": "Lactase deficiency"
+      },
+      {
+        "id": "F",
+        "text": "Villous atrophy in the small bowel ,. \"' r-- , r ,,, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "timeline_errors",
+      "missed_qualifiers",
+      "lab_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_012",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 72-year-old nursing home resident is brought to the emergency department because of abdominal pain and bloody stools for\n3 days . She has dementia, Alzheimer type, and a long-standing history of constipation treated with psyllium and docusate. She is in\nno apparent distress . Her temperature is 39°C (102.2°F), pulse is 88/min, respirations are 18/min, and blood pressure is\n150/80 mm Hg. Abdominal examination shows left lower quadrant tenderness and distention. Rectal examination shows blood and\nno masses. She is not oriented to place or time. Which of the following is the most likely diagnosis?\n0 A)\nCampylobacteriosis Q G) Irritable bowel syndrome\n0 H)\nCeliac disease lschemic colitis\nQ B)\n0\nQ C) C/ostridium difficile colitis I) Salmonellosis\n0 D) Colon cancer 0 J) Shigellosis\n0 0 K)\nE) Diverticulitis Ulcerative colitis",
+      "vitals": {
+        "temp_c": "39",
+        "temp_f": "102.2",
+        "pulse": "88",
+        "respirations": "18"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely diagnosis?",
+    "choices": [
+      {
+        "id": "F",
+        "text": "Diverticulosis ,. \"' r-- , r ,,, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "timeline_errors",
+      "vital_sign_interpretation",
+      "diagnosis_recognition",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_013",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 27-year-old man",
+      "presentation": "A 27-year-old man is brought to the emergency department 40 minutes after the sudden onset of shortness of breath while scuba\ndiving . He reports that he had to ascend rapidly from a 70-foot depth because he was running out of compressed air. During the\nascent , he had the sudden onset of midchest pain; he had shortness of breath by the time he reached the surface . He has no\nhistory of serious illness and takes no medications. He is in moderate respiratory distress and unable to speak in complete\nsentences. His respirations are 28/min . Pulse oximetry on room air shows an oxygen saturation of 88% . He is using accessory\nmuscles of respiration . The trachea is midline . Pulmonary examination shows decreased breath sounds and hyperresonance to\npercussion on the left. The remainder of the examination shows no abnormalities . Which of the following is the most appropriate\nnext step in diagnosis?\nO\nA) Measurement of serum D-dimer concentration\nO\nB) Chest x-ray\nQ C) ECG",
+      "vitals": {
+        "respirations": "28",
+        "o2_sat": "88"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most appropriate",
+    "choices": [
+      {
+        "id": "D",
+        "text": "Echocardiography"
+      },
+      {
+        "id": "E",
+        "text": "CT scan of the thorax ,. \"' r-- , r ,,, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "timeline_errors",
+      "lab_interpretation",
+      "vital_sign_interpretation",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_014",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 62-year-old man",
+      "presentation": "A 62-year-old man is brought to the emergency department 45 minutes after the sudden onset of shortness of breath . When\nparamedics arrived at his home , he was agitated but alert and oriented to person , place, and time . He was cyanotic and in severe\nrespiratory distress . He was treated with 100% oxygen by face mask en route to the hospital. He has a 15-year history of chronic\nobstructive pulmonary disease treated with home oxygen therapy (1.5 Umin) over the past 2 years. He has smoked two packs of\ncigarettes daily for 40 years . On arrival , he is drowsy and awakens only to loud voices or painful stimuli. His temperature is 37°C\n(98 .6°F) , pulse is 104/min , respirations are 14/min and shallow, and blood pressure is 164/90 mm Hg. Breath sounds are diffusely\ndecreased , and air movement is poor with prolonged expiration . Which of the following is the most likely underlying cause of this\npatient's decreased level of consciousness?",
+      "vitals": {
+        "pulse": "104",
+        "respirations": "14",
+        "blood_pressure": "164/90"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely underlying cause of this\npatient's decreased level of consciousness?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Hypercarbia Hypoxemia Q B) Q C) Metabolic acidosis"
+      },
+      {
+        "id": "D",
+        "text": "Oxygen toxicity"
+      },
+      {
+        "id": "E",
+        "text": "Respiratory alkalosis ,. \"' r-- , r ,,, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_015",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 47-year-old woman",
+      "presentation": "A 47-year-old woman with type 2 diabetes mellitus comes to the physician for a follow-up examination . Six weeks ago, her fasting\nserum glucose concentration was 177 mg/dl; urine protein was 1+. She has been taking metformin and following a\nlow-carbohydrate diet for the past 4 weeks . She has no other medical problems and is taking no other medications. Her father died\nof end-stage renal disease secondary to type 2 diabetes mellitus. She is 165 cm (5 ft 5 in) tall and weighs 82 kg (180 lb); BMI is\n30 kg/m 2 Her weight is unchanged from her last visit. Today, her blood pressure is 130/82 mm Hg; at her last examination 4 weeks\n•\nago, it was 128/80 mm Hg. The remainder of the physical examination shows no abnormalities. Laboratory studies show:\nHemoglobin A 7.3%\nc\n1\nSerum\nUrea nitrogen 17 mg/dl\nGlucose 169 mg/dl\nCreatinine 1.1 mg/dl\nUrine protein 180 mg/24 h\nWhich of the following measures is most likely to slow the progression of diabetic nephropathy in this patient?\nQ\nA) Calorie-reduced diet",
+      "vitals": {
+        "blood_pressure": "130/82"
+      },
+      "labs": {
+        "glucose": "169",
+        "creatinine": "1.1"
+      }
+    },
+    "question_stem": "Which of the following measures is most likely to slow the progression of diabetic nephropathy in this patient?",
+    "choices": [
+      {
+        "id": "B",
+        "text": "Dietary protein restriction to 0.6 g/kg daily Q C) Maintenance of a hemoglobin A of less than 6% c 1 O D) Addition of lisinopril to the medication regimen Q E) Switching from metformin to insulin therapy ,. \"' r-- , r ,,, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_017",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 52-year-old woman",
+      "presentation": "A 52-year-old woman with hypertension comes to the emergency department 45 minutes after the onset of tearing pain that starts\nat the base of her neck and radiates to her back . On arrival , her temperature is 37°C (98.6°F), pulse is 96/min , respirations are\n20/min , and blood pressure is 190/110 mm Hg. Pulse oximetry on room air shows an oxygen saturation of 99% . No other\nabnormalities are noted on physical examination. An ECG shows sinus tachycardia and left ventricular hypertrophy. A chest x-ray\nshows a widened mediastinum . The most appropriate next step in management is administration of which of the following?",
+      "vitals": {
+        "temp_c": "37",
+        "temp_f": "98.6",
+        "pulse": "96",
+        "blood_pressure": "190/110",
+        "o2_sat": "99"
+      },
+      "labs": {}
+    },
+    "question_stem": "The most appropriate next step in management is administration of which of the following?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Labetalol Q B) Morphine Q C) Nitroglycerin"
+      },
+      {
+        "id": "D",
+        "text": "Phenylephrine"
+      },
+      {
+        "id": "E",
+        "text": "Sodium nitroprusside ,. \"' r-- , r ,,, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "missed_qualifiers",
+      "treatment_prioritization",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_018",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 62-year-old man",
+      "presentation": "A 62-year-old man has had lethargy, weakness, confusion , and constipation for 3 days.T hree weeks ago, he was diagnosed with\ninoperable squamous cell carcinoma of the lung. Examination shows decreased skin turgor. Breath sounds are decreased at the\nleft apex . Laboratory studies show :\nLeukocyte count 8100/mm 3\nSerum\nNa + 142 mEq/L\nK+\n4.8 mEq/L\nCa 2+ 15.2 mg/dL\nPhosphorus 1.2 mg/dL\nAlbumin 4.5 g/dL\nAn ECG shows a short QT interval. Intravenous administration of 0.9% saline(200 ml/h) is begun. Which of the following is the\nmost appropriate pharmacotherapy?",
+      "vitals": {},
+      "labs": {
+        "wbc": "8100",
+        "potassium": "4.8"
+      }
+    },
+    "question_stem": "Which of the following is the\nmost appropriate pharmacotherapy?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Allopurinol Fresh frozen plasma Q F) 0 B) Cisplatin Heparin Q G) 0 Cryoprecipitate H) Hydroxyurea Q C) 0 Demeclocycline I) Pamidronate Q D) 0 Q E) Doxycycline J) Tamoxifen ,. \"' r-- , r ,,, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "timeline_errors",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_019",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 52-year-old man",
+      "presentation": "A 52-year-old man comes to the physician because of fatigue for 4 months. He has hypertension and a 2-year history of chronic\nrenal insufficiency. His serum creatinine concentrations have ranged between 2.5 mg/dl and 3.5 mg/dl. Medications include\nlisinopril and amlodipine . His pulse is 96/min , and blood pressure is 160/72 mm Hg. Examination shows no other abnormalities\nexcept for mild pallor. Test of the stool for occult blood is negative. Laboratory studies show :\nHematocrit 22%\nMean corpuscular volume 89 µm 3\nReticulocyte count 2.5%\nSerum\nCreatinine 3.4 mg/dl\nFerritin 150 ng/ml\nIron 35 µg/dl\nTransferrin saturation 28% (N=22%-46%)\nSupplementation with which of the following is most likely to have prevented these hematologic findings?",
+      "vitals": {
+        "pulse": "96",
+        "blood_pressure": "160/72"
+      },
+      "labs": {
+        "hematocrit": "22",
+        "creatinine": "3.4"
+      }
+    },
+    "question_stem": "4 mg/dl\nFerritin 150 ng/ml\nIron 35 µg/dl\nTransferrin saturation 28% (N=22%-46%)\nSupplementation with which of the following is most likely to have prevented these hematologic findings?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Erythropoietin Q B) Folic acid Q C) Iron"
+      },
+      {
+        "id": "D",
+        "text": "Vitamin B (cyanocobalamin) 12"
+      },
+      {
+        "id": "E",
+        "text": "No preventive measures are available ,. \"' r-- , r ,,, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_020",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "",
+      "presentation": "The life table shown compares the natural disease history of groups A and ......\n100\n......\n......\nB. Which group at which time has the poorest 1-year survival rate?\n......\n80",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Group A at Time 0-1 cij .. 60 > Group Bat Time 0-1 Q B) ·;; ::, 40 Group A at Year 2-3 Q C) ff) B 'll'."
+      },
+      {
+        "id": "D",
+        "text": "Group B at Year 3-4 20"
+      },
+      {
+        "id": "E",
+        "text": "Group B at Year 4-5 0 0 2 3 4 5 Years ,. \"' p, ,., https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_021",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 67-year-old man",
+      "presentation": "A 67-year-old man had the acute onset of bilateral weakness of the lower extremities and urinary incontinence 2 days ago. He has\nhad carcinoma of the prostate for 2 years and bone metastases to the pelvis for 6 months. His temperature is 37.4°C (99.3°F) ,\npulse is 86/min, respirations are 18/min, and blood pressure is 160/86 mm Hg. There is tenderness to palpation over the\nlumbosacral spine most prominent at S1 . He is unable to lift his legs against gravity; deep tendon reflexes are absent at the knees\nand ankles . Which of the following is the most appropriate initial step in diagnosis?\nQ\nA) Radionuclide bone scan\nQ\nB) Electromyography and nerve conduction studies",
+      "vitals": {
+        "temp_c": "37.4",
+        "temp_f": "99.3",
+        "pulse": "86",
+        "respirations": "18",
+        "blood_pressure": "160/86"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most appropriate initial step in diagnosis?",
+    "choices": [
+      {
+        "id": "C",
+        "text": "CT scan of the head O D) MRI of the lumbosacral spine Q E) Lumbar puncture ,. \"' p, ,., https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_022",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 72-year-old man",
+      "presentation": "A 72-year-old man has had burning, aching pain in the distal extremities for 3 weeks ; the pain is exacerbated by lowering the\nextremities and relieved by elevation . Examination shows tenderness and swelling of the fingers and wrist, knee, ankle , and toe\njoints ; the overlying skin is warm and erythematous . There is clubbing of the fingers and toes . Which of the following is most likely\nto be abnormal?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is most likely\nto be abnormal?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Serum creatinine concentration Q B) Serum ferritin concentration Q C) Serum protein electrophoresis 0 D) X-ray of the abdomen"
+      },
+      {
+        "id": "E",
+        "text": "X-ray of the chest ,. \"' r-- , r ,,, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_023",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 62-year-old woman",
+      "presentation": "A 62-year-old woman comes to the physician because of heartburn for 4 months and difficulty swallowing solids for 1 month. She\nhas daily episodes of epigastric burning radiating to her chest and neck , especially at night or after ingestion of large meals.\nTreatment with ranitidine over the past 3 months has been ineffective . She has not had nausea, vomiting, change in bowel habits,\nor weight loss. She takes no other medications. She does not smoke or drink alcohol. She appears well nourished. Her temperature\nis 36.9°C (98.4°F), pulse is 80/min, respirations are 16/min, and blood pressure is 136/86 mm Hg. Examination shows no scleral\nicterus , jaundice , or lymphadenopathy . Test of the stool for occult blood is negative. Her hemoglobin concentration is 13 g/dl ,\nserum AST activity is 18 U/L, and serum lipase activity is 224 U/L (N=14-280) . Which of the following is the most appropriate next\nstep in management?\nO\nA) Add metoclopramide to the medication regimen\nO\nB) Add omeprazole to the medication regimen",
+      "vitals": {
+        "pulse": "80",
+        "respirations": "16",
+        "blood_pressure": "136/86"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most appropriate next",
+    "choices": [
+      {
+        "id": "C",
+        "text": "Switch to famotidine therapy O D) Switch to omeprazole therapy"
+      },
+      {
+        "id": "E",
+        "text": "Upper endoscopy O F) No further testing or pharmacotherapy indicated ,. \"' r-- , r ,,, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_024",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 37-year-old woman",
+      "presentation": "A 37-year-old woman comes for a routine follow-up examination . She has renal failure secondary to polycystic kidney disease and\nis receiving hemodialysis . Immunization history includes diphtheria-tetanus toxoid and 23-valent pneumococcal vaccine 3 years ago\nand influenza virus vaccine 12 months ago. Examination shows no abnormalities . Serum hepatitis B surface antibody assay is\npositive. Which of the following is the most appropriate vaccine to administer at this visit?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most appropriate vaccine to administer at this visit?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Diphtheria-tetanus toxoid Hepatitis B Q B) Influenza virus Q C) 0 D) Meningococcal"
+      },
+      {
+        "id": "E",
+        "text": "23-Valent pneumococcal ,. \"' r-- , r ,,, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "timeline_errors",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_025",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 67-year-old man",
+      "presentation": "A 67-year-old man is brought to the emergency department because of a 2-day history of episodes of vomiting blood. He has no\nhistory of similar episodes . He has esophageal adenocarcinoma, hypertension, type 2 diabetes mellitus , osteoarthritis , and\ncoronary artery disease . He has a prosthetic , mechanical aortic valve . He is receiving radiation therapy. He notes that the therapy\nmakes him tired and he naps several hours daily. His other medications are lisinopril, metformin, glipizide , simvastatin, warfarin, and\naspirin . Which of the following is the strongest indication for anticoagulant therapy in this patient?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the strongest indication for anticoagulant therapy in this patient?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Adenocarcinoma Coronary artery disease Q B) Q C) Decreased activity"
+      },
+      {
+        "id": "D",
+        "text": "Prosthetic aortic valve"
+      },
+      {
+        "id": "E",
+        "text": "Radiation therapy ,. \"' r-- , r ,,, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "timeline_errors",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_026",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 22-year-old man",
+      "presentation": "A 22-year-old man comes to the physician because of swelling of the neck for 1 month and malaise , fever, fatigue , night sweats ,\nand generalized pruritus for 2 weeks . Acetaminophen has provided only minimal relief of his symptoms . His temperature is\n38.3°C (100.9°F), pulse is 90/min , respirations are 16/min, and blood pressure is 100/67 mm Hg. There is a 3 x 4-cm left anterior\ncervical lymph node. Conjunctivae are not injected, and the tympanic membranes and pharynx are not erythematous. The lungs are\nclear to auscultation . A grade 1/ 6, nonradiating systolic murmur is heard best at the upper right sternal border. Bowel sounds are\nslightly hyperactive . Laboratory studies show:\nHemoglobin 14 g/dL\nLeukocyte count 6000/mm 3\nSegmented neutrophils 60%\nBands 2%\nEosinophils 1%\nLymphocytes 33%\nMonocytes 4%\nWhich of the following is the most likely diagnosis?\n0 0\nA) Acute lymphocytic leukemia H) Infectious mononucleosis\n0\nCat-scratch disease I) Rubella\nQ B)\n0\nChronic lymphocytic leukemia J) Sarcoidosis\nQ C)\n0 0 K)\nD) Drug reaction Syphilis",
+      "vitals": {
+        "pulse": "90",
+        "respirations": "16",
+        "blood_pressure": "100/67"
+      },
+      "labs": {
+        "hemoglobin": "14",
+        "wbc": "6000"
+      }
+    },
+    "question_stem": "Which of the following is the most likely diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Acute lymphocytic leukemia H) Infectious mononucleosis 0 Cat-scratch disease I) Rubella Q B) 0 Chronic lymphocytic leukemia J) Sarcoidosis Q C) 0 0 K) D) Drug reaction Syphilis"
+      },
+      {
+        "id": "E",
+        "text": "Gastric carcinoma Systemic lupus erythematosus Q L) HIV infection Tuberculosis Q F) Q M) Hodgkin disease Q G) ,. \"' r-- , r ,,, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "lab_interpretation",
+      "vital_sign_interpretation",
+      "diagnosis_recognition",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_027",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 62-year-old man",
+      "presentation": "A 62-year-old man is admitted to the hospital for treatment of pneumonia . Ceftriaxone therapy is started . He also takes a thiazide\ndiuretic for hypertension , glyburide for type 2 diabetes mellitus , and acetaminophen for osteoarthritis . Two days after admission ,\nlaboratory studies show:\nSerum\nUrea nitrogen 50 mg/dl\nCreatinine 2.4 mg/dl\nUrine\nNa+ <10 mEq/L\nFractional excretion of Na+ <1\nProtein trace\nUrine sediment is unremarkable. Which of the following is the most likely cause of his renal failure?",
+      "vitals": {},
+      "labs": {
+        "creatinine": "2.4"
+      }
+    },
+    "question_stem": "Which of the following is the most likely cause of his renal failure?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Acute glomerulonephritis Acute tubular necrosis Q B) Diabetic nephropathy Q C)"
+      },
+      {
+        "id": "D",
+        "text": "Interstitial nephritis"
+      },
+      {
+        "id": "E",
+        "text": "Prerenal azotemia"
+      },
+      {
+        "id": "F",
+        "text": "Urethral obstruct ion ,. \"' r-- , r ,,, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_028",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A previously healthy 42-year-old woman comes to the physician 2 days after she noted a mildly tender bump on her neck. She has\nnot had fever, chills , cough, sore throat, or palpitations. She has smoked approximately one-half pack of cigarettes daily for\n20 years. She underwent a hysterectomy 2 years ago. Her only medication is conjugated estrogen. She is in no acute distress . She\nis 178 cm (5 ft 10 in) tall and weighs 57 kg (125 lb); BMI is 18 kg/m 2 Her temperature is 37°C (98.6°F), pulse is 82/min, and blood\n.\npressure is 120/78 mm Hg. Examination of the neck shows a 2-cm lesion on the left lobe of the thyroid gland . There is no cervical\nlymphadenopathy. Her serum thyroid-stimulating hormone concentration is 1.5 µU/ml , and serum free thyroxine concentration is\n1.4 ng/dl (N=0.9-2 .1 ). Which of the following is the most appropriate next step in management?\nO\nA) Reexamination and repeat thyroid function tests in 1 month\nO\nB) Measurement of thyroid radioactive iodine uptake",
+      "vitals": {
+        "temp_c": "37",
+        "temp_f": "98.6",
+        "pulse": "82"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most appropriate next step in management?",
+    "choices": [
+      {
+        "id": "C",
+        "text": "CT scan of the neck"
+      },
+      {
+        "id": "D",
+        "text": "Fine-needle aspiration of the lesion"
+      },
+      {
+        "id": "E",
+        "text": "Partial thyroidectomy ,. \"' r-- , r ,,, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "urgency_assessment",
+      "treatment_prioritization",
+      "vital_sign_interpretation",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_029",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 4 7-year-old man comes to the emergency department 18 hours after the sudden onset of pain and swelling of the left knee . He\nhas no history of recent trauma or injury to the knee. He has had two similar episodes 3 years ago and 3 months ago ; both\nepisodes resolved spontaneously . He has a 3-year history of hypertension treated with enalapril. He has smoked one pack of\ncigarettes daily for 20 years. He has a 10-year history of daily alcohol use. He is 173 cm (5 ft 8 in) tall and weighs 95 kg (210 lb);\nBMI is 32 kg/m 2 His temperature is 37.?°C (99.9°F), pulse is 88/min , respirations are 16/min , and blood pressure is 142/88 mm Hg.\n•\nExamination shows moderate pain and swelling of the left knee ; range of motion of the knee is limited by pain. Examination of the\nright knee shows no abnormalities . Which of the following is the most likely diagnosis?",
+      "vitals": {
+        "pulse": "88",
+        "respirations": "16",
+        "blood_pressure": "142/88"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Gout Osteoarthritis Q B) Psoriatic arthritis Q C)"
+      },
+      {
+        "id": "D",
+        "text": "Rheumatoid arthritis"
+      },
+      {
+        "id": "E",
+        "text": "Septic arthritis"
+      },
+      {
+        "id": "F",
+        "text": "Systemic lupus erythematosus ,. \"' r-- , r ,,, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "timeline_errors",
+      "vital_sign_interpretation",
+      "diagnosis_recognition",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_030",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 4,
+    "vignette": {
+      "demographics": "A 47-year-old woman",
+      "presentation": "A 47-year-old woman is brought to the emergency department 24 hours after the onset of severe abdominal pain, nausea, and\nvomiting . She says her pain improves somewhat with vomiting and rates her current pain as a 9 on a 10-point scale . At first, her\nvomitus consisted of partially digested food, but now it contains yellow fluid . She also has noticed increased abdominal girth. Her\nlast bowel movement was 24 hours ago. She has not had fever or chills. She underwent an endodontic surgical procedure 4 days\nago and has been taking acetaminophen with codeine for pain . She underwent an appendectomy at the age of 17 years and a total\nabdominal hysterectomy at the age of 45 years for dysfunctional uterine bleeding . She appears uncomfortable . Her temperature is\n37°C (98.6°F), and respirations are 17/min. Her pulse is 120/min and blood pressure is 110/82 mm Hg while supine; her pulse is\n130/min and blood pressure is 100/76 mm Hg while sitting. Examination shows dry oral mucosa . The abdomen is distended and\ntympanitic; there is mild diffuse tenderness to palpation. Bowel sounds are high pitched. Rectal examination shows no stool in the\nrectal vault and no masses. Laboratory studies show :\nHematocrit 47%\nLeukocyte count 13,000/mm3\nPlatelet count 450 ,000/mm3\nSerum\nNa+ 145 mEq/L\nK+\n3.4 mEq/L\nc1- 103 mEq/L\nHco3-\n35 mEq/L\nUrea nitrogen 62 mg/dL\nCreatinine 1.8 mg/dL\nAn abdominal x-ray shows distended loops of small bowel with air-fluid levels. There is no air in the rectum. Which of the following\nis the most likely diagnosis?",
+      "vitals": {
+        "pulse": "120",
+        "respirations": "17",
+        "blood_pressure": "110/82"
+      },
+      "labs": {
+        "hematocrit": "47",
+        "wbc": "13,000",
+        "sodium": "145",
+        "potassium": "3.4",
+        "bicarbonate": "35",
+        "creatinine": "1.8"
+      }
+    },
+    "question_stem": "Which of the following\nis the most likely diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Cecal volvulus lieus Q B) Obstruction of the small bowel Q C)"
+      },
+      {
+        "id": "D",
+        "text": "Pseudo-obstruction of the colon"
+      },
+      {
+        "id": "E",
+        "text": "Sigmoid volvulus ,. \"' r-- , r ,,, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "lab_interpretation",
+      "vital_sign_interpretation",
+      "diagnosis_recognition",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_032",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 37-year-old man",
+      "presentation": "A 37-year-old man comes to the physician because of a 1-year history of progressive shortness of breath . He now has shortness of\nbreath after walking 200 feet. He coaches a soccer team and is unable to keep up with his players on the field . He occasionally has\nwheezing and a nonproductive cough . He does not smoke or drink alcohol. His wife resumed smoking 18 months ago after quitting\nfor 3 years. He has three healthy children. His father died of alcoholic cirrhosis at the age of 55 years. The patient's temperature is\n36 .9°C (98.5°F) , pulse is 76/min , respirations are 20/min , and blood pressure is 124/76 mm Hg. Pulse oximetry on room air shows\nan oxygen saturation of 90%. End-expiratory wheezes and occasional rhonchi are heard bilaterally . The remainder of the\nexamination shows no abnormalities. An x-ray of the chest shows increased lucency and bullous changes at both lung bases .\nWhich of the following is the most likely cause of this patient's condition?",
+      "vitals": {
+        "pulse": "76",
+        "respirations": "20",
+        "blood_pressure": "124/76",
+        "o2_sat": "90"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely cause of this patient's condition?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "a -Antitrypsin deficiency 1 Exposure to asbestos Q B) Q C) Exposure to radon"
+      },
+      {
+        "id": "D",
+        "text": "Exposure to secondhand smoke"
+      },
+      {
+        "id": "E",
+        "text": "Pulmonary fibrosis ,. \"' r-- , r ,,, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_038",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 19-year-old man",
+      "presentation": "A 19-year-old man comes to the physician because of a 5-day history of pain with urination and a watery urethral discharge . He has\nnot had fever. He has no history of sexually transmitted diseases . He was sexually active with a female partner 3 weeks ago and\nanother female partner 2 weeks ago, and he did not use condoms . He is not sure if his partners have had genitourinary symptoms .\nHis temperature is 37.1 °C (98.8°F), pulse is 80/min , and blood pressure is 122/70 mm Hg. Examination shows no\nlymphadenopathy . The penis and testes appear normal. There is a mucopurulent , whitish urethral discharge . Rectal examination\nshows a normal-sized , nontender prostate . A Gram stain of the urethral discharge shows segmented neutrophils without\nintracellular organisms. Which of the following is the most likely causal organism?",
+      "vitals": {
+        "pulse": "80",
+        "blood_pressure": "122/70"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely causal organism?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Chlamydia trachomatis Herpes simplex virus 1 Q B) HIV-1 Q C)"
+      },
+      {
+        "id": "D",
+        "text": "Neisseria gonorrhoeae"
+      },
+      {
+        "id": "E",
+        "text": "Treponema pal/idum ,. \"' r-- , r ,,, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_039",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 72-year-old woman",
+      "presentation": "A 72-year-old woman is brought to the emergency department by her daughter because of a 3-day history of progressive confusion\nand lethargy . She underwent bilateral hip replacement 6 years ago . She takes no medications except for aspirin as needed for\nosteoarthritis . She is unable to answer questions . Her temperature is 36.2°C (97.2°F) , pulse is 110/min and regular, respirations are\n20/min, and blood pressure is 110/70 mm Hg. Examination shows a supple neck. The lungs are clear to auscultation. Cardiac\nexamination shows no murmurs or gallops . The abdomen is soft with no guarding ; bowel sounds are present but hypoactive . Deep\ntendon reflexes are 1+ bilaterally. Babinski sign is absent. Serum studies show :\nNa + 135 mEq/L\nCl · 100 mEq/L\nK+\n4.2 mEq/L\nHC0 22 mEq/L\n•\n3\nUrea nitrogen 52 mg/dl\nGlucose 602 mg/dl\nCreatinine 2.4 mg/dl\nWhich of the following is the most likely diagnosis?",
+      "vitals": {
+        "temp_c": "36.2",
+        "temp_f": "97.2",
+        "pulse": "110",
+        "blood_pressure": "110/70"
+      },
+      "labs": {
+        "potassium": "4.2",
+        "glucose": "602",
+        "creatinine": "2.4"
+      }
+    },
+    "question_stem": "4 mg/dl\nWhich of the following is the most likely diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Alcoholic ketoacidosis O B) Central diabetes insipidus"
+      },
+      {
+        "id": "C",
+        "text": "Diabetic ketoacidosis"
+      },
+      {
+        "id": "D",
+        "text": "Lactic acidosis O E) Myxedema O F) Nephrogenic diabetes insipidus O G) Nonketotic hyperosmolar state"
+      },
+      {
+        "id": "H",
+        "text": "Salicylate toxici ty O I) Syndrome of inappropriate secretion of ADH (vasopressin) ,. \"' r-- , r ,,, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "timeline_errors",
+      "lab_interpretation",
+      "vital_sign_interpretation",
+      "diagnosis_recognition",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_040",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "An 85-year-old woman is brought to the emergency department by paramedics 45 minutes after being found on the floor of her\napartment by a home health aide. The patient says that she tripped and fell down during the night while going to the bathroom . She\nwas on the floor for 7 hours before being found. She says that she has not been having any health problems . There is no evidence\nof trauma. Vital signs are within normal limits. Physical examination shows no abnormalities. Results of a complete blood count and\nmeasurement of serum electrolyte concentrations are within the reference ranges . Urinalysis shows:\nSpecific gravity 1.025\nBlood 2+\nProtein trace\nRBC 0/hpf\nWBC 0/hpf\nNitrites negative\nWhich of the following is the most likely diagnosis?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "025\nBlood 2+\nProtein trace\nRBC 0/hpf\nWBC 0/hpf\nNitrites negative\nWhich of the following is the most likely diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Glomerulonephritis"
+      },
+      {
+        "id": "B",
+        "text": "Infective endocarditis Q C) Nephrolithiasis Q D) Rhabdomyolysis Q E) Urinary tract infection ,. \"' r-- , r ,,, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "lab_interpretation",
+      "diagnosis_recognition",
+      "anchoring",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_042",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "A 56-year-old woman",
+      "presentation": "A 56-year-old woman has a 1-day history of epigastric pain and vomiting . She has scleral icterus and a tender epigastrium .\nLaboratory studies show:\nLeukocyte count 14,200/mm 3\nNeutrophils 78%\nSerum\nBilirubin\nTotal 4.4 mg/dL\nDirect 3.3 mg/dL\nTriglycerides 210 mg/dL\nAmylase 1350 Somogyi U/dL (N=60-160)\nAlkaline phosphatase 320 Bodansky U/dL (N=2.0-4.5)\nUltrasonography shows dilation of intrahepatic ducts. Which of the following is the most likely cause of her condition?",
+      "vitals": {},
+      "labs": {
+        "wbc": "14,200"
+      }
+    },
+    "question_stem": "Which of the following is the most likely cause of her condition?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Alcoholism"
+      },
+      {
+        "id": "B",
+        "text": "Cholecystitis Choledocholithiasis Q C) Q D) Hepatoma Q E) Pancreatic carcinoma ,. \"' r-- , r ,,, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "timeline_errors",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_043",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 57-year-old woman",
+      "presentation": "A 57-year-old woman with a history of alcohol abuse is brought to the emergency department by police after she was found lying in\nthe street. On arrival , she does not respond to noxious stimuli. Her temperature is 38.1° C (100 .6°F) , pulse is 124/min, respirations\nare 20/min , and blood pressure is 94/60 mm Hg. Examination shows poor skin turgor . The oral mucosa is dry. Laboratory studies\nshow:\nHematocrit 42%\nSerum\nUrea nitrogen 58 mg/dl\nCreatinine 3.4 U/L\nUrine\nColor reddish\nSpecific gravity 1.020\nBlood 3+\nProtein 1+\nRBC 0-2/hpf\nWBC 0-5/hpf\nHyaline casts 1/hpf\nWhich of the following is the most likely diagnosis?",
+      "vitals": {
+        "pulse": "124",
+        "blood_pressure": "94/60"
+      },
+      "labs": {
+        "hematocrit": "42"
+      }
+    },
+    "question_stem": "020\nBlood 3+\nProtein 1+\nRBC 0-2/hpf\nWBC 0-5/hpf\nHyaline casts 1/hpf\nWhich of the following is the most likely diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Acute glomerulonephritis"
+      },
+      {
+        "id": "B",
+        "text": "Acute tubular necrosis Allergic interstitial nephritis Q C) Q D) Glomerulosclerosis Pyelonephritis Q E) ,. \"' r-- , r ,,, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "timeline_errors",
+      "lab_interpretation",
+      "vital_sign_interpretation",
+      "diagnosis_recognition",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_045",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 24-year-old woman",
+      "presentation": "A 24-year-old woman comes to the physician for a routine health maintenance examination. She feels well and has no history of\nserious illness. She has smoked one pack of cigarettes daily for 5 years and drinks two beers daily. She has a sedentary lifestyle .\nHer mother underwent bilateral knee replacement at the age of 55 years for severe osteoarthritis . The patient is 178 cm (5 ft 10 in)\ntall and weighs 101 kg (223 lb); BMI is 32 kg/m 2 Her pulse is 64/min, respirations are 18/min, and blood pressure is 148/92 mm Hg.\n.\nExamination shows no abnormalities. She requests advice about how to prevent osteoarthritis . Which of the following is most likely\nto decrease this patient's risk for osteoarthritis?",
+      "vitals": {
+        "pulse": "64",
+        "respirations": "18",
+        "blood_pressure": "148/92"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is most likely\nto decrease this patient's risk for osteoarthritis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Abstinence from alcohol Q B) Regular aerobic exercise"
+      },
+      {
+        "id": "C",
+        "text": "Weight loss Q D) Calcium supplementation Q E) Estrogen replacement therapy at the onset of menopause ,. \"' r-- , r ,,, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_046",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 4,
+    "vignette": {
+      "demographics": "A 42-year-old man",
+      "presentation": "A 42-year-old man is brought to the emergency department because of the sudden onset of worsening headache and left-sided\nweakness 1 hour ago. He has no history of serious illness and has not seen a physician for 10 years . He has smoked one pack of\ncigarettes daily for 25 years and drinks six beers daily. He is 180 cm (5 ft 11 in) tall and weighs 97 kg (215 lb); BMI is 30 kg/m 2 His\n•\npulse is 80/min, and blood pressure is 180/120 mm Hg. Examination shows mild-to-moderate weakness of the left lower aspect of\nthe face . Muscle strength is decreased in the left upper and left lower extremities. Funduscopic examination shows an\narteriovenous ratio of 1 :3 and regions of mild focal spasm of some arterioles. Results of a complete blood count, platelet count, and\ncoagulation studies are within the reference ranges . His serum total cholesterol concentration is 400 mg/dl. A CT scan of the head\nshows a 1.5 x 2-cm region of hyperintensity centered at the right putamen ; there is mild surrounding lucency. Which of the following\nis most likely to decrease this patient's risk for a recurrent stroke of this type?",
+      "vitals": {
+        "pulse": "80",
+        "blood_pressure": "180/120"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following\nis most likely to decrease this patient's risk for a recurrent stroke of this type?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Alcohol cessation Smoking cessation Q B) Weight loss Q C)"
+      },
+      {
+        "id": "D",
+        "text": "Atorvastatin therapy"
+      },
+      {
+        "id": "E",
+        "text": "Clopidogrel therapy"
+      },
+      {
+        "id": "F",
+        "text": "Lisinopril therapy ,. \"' r-- , r ,,, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "timeline_errors",
+      "lab_interpretation",
+      "vital_sign_interpretation",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_047",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 32-year-old nulligravid woman comes to the physician because of irregular menses for 3 years . Menses occur at 35- to 60-day\nintervals. Menses previously occurred at regular 28-day intervals. Her last menstrual period was 6 weeks ago. She has no history of\nserious illness but has been overweight most of her adult life. She is sexually active with her husband of 3 years and uses condoms\nconsistently. She is 163 cm (5 ft 4 in) tall and weighs 77 kg (170 lb); BMI is 29 kg/m 2 Her blood pressure is 110/60 mm Hg. Physical\n.\nexamination shows moderate coarse hair over the upper lip, chin , and abdomen . Abdominal and pelvic examinations show no\nabnormalities . Serum studies show a thyroid-stimulating hormone concentration of 4 µU/ml , ~-hCG concentration of less than\n2 mlU/mL , and prolactin concentration of 18 ng/ml. Pelvic ultrasonography shows no abnormalities . In addition to recommending\nweight loss, which of the following is the most appropriate pharmacotherapy?",
+      "vitals": {
+        "blood_pressure": "110/60"
+      },
+      "labs": {}
+    },
+    "question_stem": "In addition to recommending\nweight loss, which of the following is the most appropriate pharmacotherapy?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Oral contraceptive therapy O B) Oral medroxyprogesterone therapy"
+      },
+      {
+        "id": "C",
+        "text": "Oral prednisone therapy"
+      },
+      {
+        "id": "D",
+        "text": "Oral thyroid therapy"
+      },
+      {
+        "id": "E",
+        "text": "Depot leuprolide injection ,. \"' r-- , r ,,, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_048",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 57-year-old man",
+      "presentation": "A 57-year-old man is brought to the emergency department 30 minutes after a 3-minute episode of unconsciousness . The patient\nsays that the episode began with an impending sense of feeling ill while watching television . He quickly became confused, swayed\nin his chair, and fell to the floor. He had no bowel or bladder incontinence during this episode . His mental status spontaneously\nrecovered fully within 3 minutes. He has a 10-year history of hypertension well controlled with hydrochlorothiazide. He had a\nmyocardial infarction 4 years ago. He is 183 cm (6 ft) tall and weighs 95 kg (210 lb); BMI is 29 kg/m 2 His pulse is 86/min ,\n•\nrespirations are 12/min, and blood pressure is 124/86 mm Hg. Neurologic and cardiac examinations show normal findings . An ECG\nshows Q waves in leads 11, 111, and aVF. Which of the following is the most likely explanation for these findings?",
+      "vitals": {
+        "pulse": "86",
+        "respirations": "12",
+        "blood_pressure": "124/86"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely explanation for these findings?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Hypoglycemia"
+      },
+      {
+        "id": "B",
+        "text": "Paroxysmal ventricular tachycardia"
+      },
+      {
+        "id": "C",
+        "text": "Pulmonary embolus O D) Seizure O E) Transient ischemic attack ,. \"' p, ,., https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_050",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 4 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "",
+      "presentation": "An asymptomatic 24-year-old man who is HIV positive comes to the physician for a follow-up examination . He has been seen by a\nphysician regularly since he was diagnosed 3 years ago and has been following all recommendations. He currently takes no\nmedications. Examination shows no abnormalities . Laboratory studies show:\nHematocrit 42%\nLeukocyte count 4000/mm 3\nCD4+ T-lymphocyte count 550/mm 3 (Normal~ 500)\nPlasma HIV viral load 2000 copies/ml\nWhich of the following is the most appropriate recommendation for this patient?\nO\nA) Follow-up examination in 6 months",
+      "vitals": {},
+      "labs": {
+        "hematocrit": "42",
+        "wbc": "4000"
+      }
+    },
+    "question_stem": "Which of the following is the most appropriate recommendation for this patient?",
+    "choices": [
+      {
+        "id": "B",
+        "text": "Two-drug antiretroviral therapy only O C) Two-drug antiretroviral therapy and Pneumocystis jiroveci (formerly P. carini1) prophylaxis"
+      },
+      {
+        "id": "D",
+        "text": "Three-drug antiretroviral therapy only O E) Three-drug antiretroviral therapy and P. jiroveci prophylaxis ,. \"' r-- , r ,,, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_006",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 5 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "A 57-year-old man",
+      "presentation": "A 57-year-old man comes to the physician because of a 3-day history\nof a painful rash on his right index finger , low-grade fever , and swollen\nlymph nodes in his right armpit. There is no family history of serious\nillness . He drinks one alcoholic beverage daily. He does not smoke .\nHe works as a dentist. His temperature is 37.9°C (100 .2°F}, pulse is\n70/min, respirations are 12/min, and blood pressure is\n130/84 mm Hg. A photograph of the right index finger is shown . There\nis right axillary lymphadenopathy . Which of the following is the most\nappropriate next step in management?",
+      "vitals": {
+        "respirations": "12"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most\nappropriate next step in management?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Topical erythromycin"
+      },
+      {
+        "id": "B",
+        "text": "Topical hydrocortisone therapy"
+      },
+      {
+        "id": "C",
+        "text": "Oral acyclovir"
+      },
+      {
+        "id": "D",
+        "text": "Oral dicloxacillin"
+      },
+      {
+        "id": "E",
+        "text": "Oral prednisolone therapy"
+      },
+      {
+        "id": "F",
+        "text": "Incision and drainage r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_048",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 5 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "Twenty-four hours after nearly drowning , a 24-year-old man in the\nintensive care unit has not regained consciousness. He was resuscitated\nat the scene and was intubated and mechanically ventilated en route to\nthe emergency department. In the emergency department, his Po was\n2\n80 mm Hg on an F10 of 30%. An x-ray of the chest showed no\n2\nabnormalities. Now, his temperature is 37.2°C (99°F), pulse is 90/min,\nand blood pressure is 121/60 mm Hg. His respirations are 14/min on the\nventilator . Examination shows no edema . Coarse airway sounds are\nheard on auscultation ; there are no crackles . Heart sounds are distant\nwith no gallops. Laboratory studies show:\nLeukocyte count 8500/mm 3\nSegmented neutrophils 80%\nLymphocytes 20%\nSerum creatinine 1.2 mg/dL\nArterial blood gas analysis on an F10 of 100% and a positive\n2\nend-expiratory pressure of 20 cm Hp shows:\n7.42\n38 mm Hg\n60 mm Hg\nAn x-ray of the chest is shown . Which of the following is the most likely\ncause of this patient's current x-ray findings?",
+      "vitals": {
+        "temp_c": "37.2",
+        "temp_f": "99",
+        "pulse": "90",
+        "respirations": "14",
+        "blood_pressure": "121/60"
+      },
+      "labs": {
+        "wbc": "8500",
+        "creatinine": "1.2"
+      }
+    },
+    "question_stem": "Which of the following is the most likely\ncause of this patient's current x-ray findings?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Acute respiratory distress syndrome"
+      },
+      {
+        "id": "B",
+        "text": "Bronchiolitis obliterans"
+      },
+      {
+        "id": "C",
+        "text": "Congestive heart failure 0 D) Diffuse interstitial pneumonia"
+      },
+      {
+        "id": "E",
+        "text": "Idiopathic interstitial fibrosis r r, p, https://t.me/USMLENBME2CK Previous Next Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "missed_qualifiers",
+      "lab_interpretation",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_001",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 67-year-o ld w hite man comes to the phys ician\nbecause his wife is concerned about a freck le\non the bac k of his neck. He says he has had the\nfreck le for many years, but he has noticed that it\nhas grow n during the past 6 mon ths . His brothe r\ndied of liver cancer at the age of 50 years.\nExa mination shows a 3-c m les ion at the base of\nthe sku ll. A photograph of the les ion is shown .\nThe remainde r of the exam ination shows no\nabnor malities. Wh ich of the following is the most\nappropr iate next step in manage ment?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Wh ich of the following is the most\nappropr iate next step in manage ment?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Follow- up exam ination in 6 months"
+      },
+      {
+        "id": "B",
+        "text": "Topical app lication of retinoic acid"
+      },
+      {
+        "id": "C",
+        "text": "Full-thickness biopsy 0 D) Shave biopsy"
+      },
+      {
+        "id": "E",
+        "text": "Cryoab lation https://t.me/USMLENBME2CK Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_002",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 24-year-o ld wom an has had intermittent feve r, malaise , and a ge neralized rash for 2 weeks. Her tempe ratu re\nis 37 .2°C (99 °F), pu lse is 80/ min, resp irations are 14/min , and blood pressure is 124/76 mm Hg. There is a\ngene ralized erythemato us macu lopa pul ar ras h ove r the pa lms and soles . She has patchy alopec ia of the sca lp\nand eye brows. Hematocrit is 36 %, and leukocyte coun t is 9000/ mm 3 (70 % segme nted neutroph ils and 30 %\nlymp hocytes) . She is given intravenous aqueous penicillin G. Two hours late r, she has seve re ch ills, headache ,\ntachyca rdia, flush ing, and hyperven tilation. Her tempe rature is 39 .4 °C (103 °F), and blood pressure is 90/60 mm\nHg. Which of the fo llowing is the most likely cause of her acute cond ition?",
+      "vitals": {
+        "blood_pressure": "124/76"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the fo llowing is the most likely cause of her acute cond ition?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Ch ronic meningococcem ia"
+      },
+      {
+        "id": "B",
+        "text": "Jarisch-Herxhe imer reaction"
+      },
+      {
+        "id": "C",
+        "text": "Rocky Mounta in spotted feve r 0 D) Sys tem ic lupus erythematosus 0 E) Toxic shock synd rome https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_003",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 53-year-o ld man notices a lump in his neck. Exam ination shows a hard 2-cm nod ule in the lower left pole of\nthe thyroid gland. Needle biopsy shows papil lary carcinoma, and he undergoes tota l thyroidectomy . Five days\nlater, he reports facial numbness and tingling , muscle pain, and hoarse ness. Physical exam ination shows\nlaryngea l strider and a pos itive Chvostek sign. Which of the following is the most appropr iate manageme nt?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most appropr iate manageme nt?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Hydrat ion with 0.9% isotonic saline intraveno usly"
+      },
+      {
+        "id": "B",
+        "text": "Ad ministrat ion of calcium gluconate intravenous ly"
+      },
+      {
+        "id": "C",
+        "text": "Ad ministrat ion of glucoco rticoids"
+      },
+      {
+        "id": "D",
+        "text": "Ad ministrat ion of 50,000 U of vitam in D"
+      },
+      {
+        "id": "E",
+        "text": "Endotrac heal intubation https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_004",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 77-year-o ld man comes to the phys ician because of a 3-month history of intermittent mild abdomina l pain. He\nalso has had rectal pain with bowe l movements and occas iona lly notices traces of red blood in his stool. He has\ntype 2 diabetes mellitus , benign prostat ic hype rplasia, and hype rtens ion . Current medications include insulin,\ntamsu losin, lisinopril, and hydrochlorothiazide; verapa mil was added 4 months ago . A colonoscopy performed\n1 year ago showed no abno rmalities. He is not in distress. His blood pressure is 108/72 mm Hg. Exam ination\nshows moist mucous memb ranes . The abdomen is slightly distended and nontende r. The prostate is enlarged,\nand there is an external hemorrho id. Rectal exam ination shows hard stoo l in the rectal vau lt. Sensat ion to light\ntouch and vibration is intact over the distal lower extremities. An x-ray of the abdo men shows multiple air-fluid\nlevels and stool throughou t the bowe l. Which of the following is the most likely cause of this patient's current\nsymp toms?",
+      "vitals": {
+        "blood_pressure": "108/72"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely cause of this patient's current\nsymp toms?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Adverse effect of verapa mil"
+      },
+      {
+        "id": "B",
+        "text": "Colon cance r"
+      },
+      {
+        "id": "C",
+        "text": "Dehydrat ion"
+      },
+      {
+        "id": "D",
+        "text": "Diabetic neuropathy of the colon"
+      },
+      {
+        "id": "E",
+        "text": "Metastat ic prosta te cance r https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_005",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 52-year-o ld woman with hypertens ion and type 2\ndiabe tes me llitus is admitted to the hospi tal because of a\n2-day history of increas ing confus ion. She is left-hand\ndom inan t. Her med ications are lisinop ril and metformi n.\nOn admiss ion , she is awa ke and alert. Her tempe rature is\n38.3 °C (101 °F), pulse is 100/min , and blood pressure is\n130/70 mm Hg. On exa mination, musc le strength is 5/5\nbilaterally. Sensat ion to light touch and pinprick is intact.\nCoor dinat ion is norma l. She cannot reca ll a name and\naddress after 5 minutes . A T2-weighted MR I of the brain is\nshown. Wh ich of the following is the mos t appropriate\npha rmaco therapy?",
+      "vitals": {
+        "pulse": "100"
+      },
+      "labs": {}
+    },
+    "question_stem": "Wh ich of the following is the mos t appropriate\npha rmaco therapy?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Acyc lovir"
+      },
+      {
+        "id": "B",
+        "text": "Ceftriaxone"
+      },
+      {
+        "id": "C",
+        "text": "Dexamethasone"
+      },
+      {
+        "id": "D",
+        "text": "Low- molecu lar-we ight hepar in 0 E) Mann itol"
+      },
+      {
+        "id": "F",
+        "text": "Pyr imethamine-su lfadiazine https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_006",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A previously healthy 52-yea r-old man comes to the physician because of a 6-month history of cough productive\nof white sputum. He has had no chest pain . He has smoked one pack of cigarettes daily for 25 years. His pulse\nis 80/min and regular, respirations are 18/min, and blood pressure is 136/86 mm Hg. Breath sounds are\ndecreased througho ut with a prolonged expiratory phase. Cardiac examination shows no abnormalities .\nSpirometry shows an FEV :FVC ratio of 0.65 . Which of the following is the most likely explanation for these\n1\nfindings?",
+      "vitals": {
+        "respirations": "18",
+        "blood_pressure": "136/86"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely explanation for these\n1\nfindings?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Alveolar destruction and fibrosis"
+      },
+      {
+        "id": "B",
+        "text": "Diffuse infiltrative disease of the lung parenchyma"
+      },
+      {
+        "id": "C",
+        "text": "Diffuse thickening of the pleura"
+      },
+      {
+        "id": "D",
+        "text": "Histamine-med iated bronchospasm and edema"
+      },
+      {
+        "id": "E",
+        "text": "Mass effect in peripheral lung parenc hyma https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_007",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A prev ious ly hea lthy 22-yea r-o ld man is broug ht to the eme rgency departme nt 1 hour after he was hit in his right\nflank by a hockey stick. He repo rts no blood in his urine . He rates his pain as a 6 on a 10-point sca le. His pulse\nis 100/min , and blood press ure is 140/90 mm Hg. Exami nation shows moderate tende rness to palpation ove r\nthe right flank. His hematoc rit is 42%. Urinalysis shows no abno rmalities . Which of the fo llowing is the most\nappro priate next step in diagnos is?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the fo llowing is the most\nappro priate next step in diagnos is?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Diagnost ic lapa roscopy"
+      },
+      {
+        "id": "B",
+        "text": "Renal arteriography"
+      },
+      {
+        "id": "C",
+        "text": "Retrograde uret hrography"
+      },
+      {
+        "id": "D",
+        "text": "Spiral CT sca n of the abdome n"
+      },
+      {
+        "id": "E",
+        "text": "No furth er test ing is indicated https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_008",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 24-year-o ld woma n, gravida 1, para 1, comes to the\nphys ician because of a 3-month history of fat igue .\nMenses occur at regu lar interva ls with no excess ive\nbleeding . She takes no med icat ions or vitamin\nsupp lements . Exam inat ion shows no abnorma lities\nexcept for pa le conjunct ivae. Her hemog lobin\nconcentrat ion is 9 g/dl . A blood smear is shown . Th is\npatient most likely has a deficiency of wh ich of the\nfollowing?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Th is\npatient most likely has a deficiency of wh ich of the\nfollowing?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Folic acid"
+      },
+      {
+        "id": "B",
+        "text": "Iron"
+      },
+      {
+        "id": "C",
+        "text": "Niacin 0 D) Vitam in B (thiamine) 1"
+      },
+      {
+        "id": "E",
+        "text": "Vitam in B 6 https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_009",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 62-year-o ld woman comes to the physician 8 days afte r she had loss of consc ious ness while comb ing her\nha ir. She says she felt light- headed before she passed out. During the past 3 months, she has had two simi lar\nepisodes and has noticed that her left arm tires eas ily. She is left-ha nded. She has hypertension treated with\nhydrochlorothiaz ide and atenolol. She has smo ked one pack of cigarettes daily for 40 years. Her pu lse is 76/m in\nand regular, and blood pressure is 148/92 mm Hg in the right arm. Heart sounds are norma l. The radial and\nbrachia ! pu lses are absent on the left and present on the right. Peda l pu lses are dec reased bilatera lly. Muscle\nstreng th an d sensation are norma l. Which of the fo llowing is the most likely cause of this patient's sympto ms?",
+      "vitals": {
+        "blood_pressure": "148/92"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the fo llowing is the most likely cause of this patient's sympto ms?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Coa rctation of the aorta"
+      },
+      {
+        "id": "B",
+        "text": "Left cerv ical rib"
+      },
+      {
+        "id": "C",
+        "text": "Raynaud disease"
+      },
+      {
+        "id": "D",
+        "text": "Subc lavian stea l syndrome 0 E) Thromboang iitis obliterans"
+      },
+      {
+        "id": "F",
+        "text": "Trans ient ischem ic attack https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_010",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 62-year-o ld woma n comes to the physician for a follow-up exam ination. Her blood pressu re was\n140/90 mm Hg 3 mont hs ago and 138/92 mm Hg 6 mo nths ago . She has a 5-year history of type 2 diabetes\nmellitus we ll controlled with metformi n. Her only othe r med icatio n is asp irin. She has tried to limit her sod ium\nintake to 2 g dai ly and reports moderate success. Her pulse is 80/m in, and blood pressu re is 145/85 mm Hg.\nFunduscop ic exam inat ion shows no abnorma lities . An S is heard. Urinalys is shows:\n4\nGlucose negat ive\nProte in 1+\nRSC none\nWBC none\nAn ECG shows no abnorma lities. Which of the follow ing is the mos t appropr iate next step in management?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the follow ing is the mos t appropr iate next step in management?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Schedule a fo llow-up visit in 3 mon ths"
+      },
+      {
+        "id": "B",
+        "text": "Decrease her sod ium inta ke to 1 g daily"
+      },
+      {
+        "id": "C",
+        "text": "Begin hydroch loroth iazide therapy"
+      },
+      {
+        "id": "D",
+        "text": "Begin lisinopr il therapy"
+      },
+      {
+        "id": "E",
+        "text": "Begin metop rolol therapy https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_011",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 35-year-o ld man has had recu rrent episodes of dysur ia and pelvic pain over the past 2 years. He is sexua lly\nactive. Exam ination shows a tender prostate. Urinalys is shows 2- 5 WBC/h pf. A urine cu lture is nega tive.\nWh ich of the following is the most like ly cause?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Wh ich of the following is the most like ly cause?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Chancro id"
+      },
+      {
+        "id": "B",
+        "text": "Chlamydia trachomatis"
+      },
+      {
+        "id": "C",
+        "text": "Herpes simplex 0 D) Syph ilis"
+      },
+      {
+        "id": "E",
+        "text": "Trichomonas vagina/is https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_012",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 4,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 32-year-o ld man comes to the phys ician because of a 4-week histo ry of moderate numbness and weakness\nof his left hand. There is no history of trauma to the hand. He has hypertension treated with ena lapril and type\n1 diabetes mel litus treated with insu lin. He is 173 cm (5 ft 8 in) tall and we ighs 63 kg (140 lb); BMI is 21 kg/m 2\n.\nHis temperature is 37°C (98.6 °F), pulse is 84/ min, res pirations are 16/min , and blood pressure is\n146/88 mm Hg. Examination shows atrophy of the hypot henar muscles. The middl e, ring, and sma ll fingers are\nheld in flex ion; there is weakness of abduc tion of the small finger. The pat ient canno t prevent paper from being\npulled through his fingers. All other intrinsic hand muscles are norma l. Deep tendon reflexes are 1+ at the left\nbrach ioradialis, biceps, and triceps muscles. Sensat ion to pinprick is decreased ove r the palmar aspec t of the\nleft ring and sma ll fingers and the hypothenar region of the hand. The remainder of the exa minat ion shows no\nothe r abnorma lities . Which of the fo llowing is the most likely cause of these findings?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the fo llowing is the most likely cause of these findings?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Cervica l syringomyelia"
+      },
+      {
+        "id": "B",
+        "text": "C8 nerve root comp ress ion"
+      },
+      {
+        "id": "C",
+        "text": "Les ion of the lowe r trunk of the brachia! plexus"
+      },
+      {
+        "id": "D",
+        "text": "Les ion of the medial co rd of the brach ia! plexus"
+      },
+      {
+        "id": "E",
+        "text": "Ulnar nerve comp ression https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_014",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 4,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 52-year-o ld woma n has dec reased urine outpu t 6 hours after adm ission to the hosp ital for trea tmen t of a\n3-day history of nausea and vom iting. She has type 2 diabetes me llitus and periphera l neuropat hy. Her\noutpat ient medicat ions were glipizide, ato rvastat in, lisinopril, and 81 -mg asp irin; all med icat ions were held on\nadmission. Her blood press ure was 82/40 mm Hg on adm ission. After beginn ing intr aveno us adm inistration of\nfluids, her blood pressure increased to 110/70 mm Hg. On exa min ation now, the abdo men is soft , and there is\ndiffuse mild tenderness with no guarding or rebound. Bowel sounds are decreased. There is decreased\nsensat ion to light touch ove r the fee t. Laboratory studies show:\nOn Admi ssion Now\nFingerst ick blood glucose 4+ 4+\nSeru m\nUrea nitrogen (mg/d l ) 38 54\nCreat inine (mg/d l ) 1.8 2.6\nUrine\nSpec ific grav ity 1.028 1.011\nRBC (/hpf) 0- 2 0- 2\nCasts None coarse gra nular\nWhich of the fo llowing is the most like ly exp lanat ion for this pat ient's dec reased urine outp ut?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "011\nRBC (/hpf) 0- 2 0- 2\nCasts None coarse gra nular\nWhich of the fo llowing is the most like ly exp lanat ion for this pat ient's dec reased urine outp ut?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Acute glomeru lonephritis"
+      },
+      {
+        "id": "B",
+        "text": "Acute interst itial nephritis"
+      },
+      {
+        "id": "C",
+        "text": "Acute tubu lar necros is 0 D) Bilatera l hydro nephrosis 0 E) Rhabdo myolysis https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_015",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 42-year-o ld man with alcoholism is admitted to the hospital 12 hours after the onset of severe epigastr ic pain\nthat radiates to the back. He has had severa l episodes of vomit ing. His temperatu re is 38.5°C (101.3°F), pulse\nis 102/min, resp irations are 20/min, and blood pressure is 110/70 mm Hg. There is tenderness to palpation in\nthe epigastrium and right upper quadrant of the abdomen ; there are no signs of peritonitis. Bowe l sounds are\ndecreased. After 2 days , laboratory studies show:\nHemoglobin 13 g/dL\nMean corpuscular volume 102 µm 3\n3\nLeukocy te count 12,000/mm\nSegmented neutro phils 76%\nBands 4%\nLymphocytes 20%\nSerum\nCa 2 6 mg/dL\n+\nUrea nitrogen 20 mg/d L\nCreatin ine 1.4 mg/dL\nAlbumin 3.5 g/dL\nAmy lase 500 U/L\nHis serum electrolyte concentrat ions are within the reference range . Which of the laboratory find ings in this\npatient is associated with the worst prognosis?",
+      "vitals": {
+        "blood_pressure": "110/70"
+      },
+      "labs": {
+        "hemoglobin": "13"
+      }
+    },
+    "question_stem": "Which of the laboratory find ings in this\npatient is associated with the worst prognosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Leukocy te count"
+      },
+      {
+        "id": "B",
+        "text": "Mean corpuscular volume"
+      },
+      {
+        "id": "C",
+        "text": "Serum albumin concentrat ion 0 D) Serum amylase activ ity 0 E) Serum calcium concentrat ion https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_016",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 32-year-o ld woman comes to the eme rgency department because of fever and cough with increasing\nproduct ion of purulent sputu m for 24 hours. She has had asthma since childhood that is characterized by\nepisodes of cough ing and wheez ing. Treatment with inhaled corticosteroids was begun 8 months ago . She has\nbeen hospita lized twice over the past 2 months for low-g rade feve r, increased sputum production, and a poorly\nresolving infiltrate in the left lowe r lobe ; sputum cultures at that time grew norma l flora and Aspergillus\nfumigatus. She is in modera te respiratory distress . Her tempe rature is 38°C (1 00.4 °F), pulse is 95/m in,\nrespirat ions are 22/m in, and blood pressu re is 110/68 mm Hg. Diffuse expiratory wheezes and crack les are\nheard at the left lung base. Cardiac exam ination shows a normal S and S with no murmurs. Wh ich of the\n1 2\nfollowing is the most likely diagnosis?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Wh ich of the\n1 2\nfollowing is the most likely diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Allergic bronchopu lmona ry asperg illosis"
+      },
+      {
+        "id": "B",
+        "text": "a -Antitrypsin deficiency 1"
+      },
+      {
+        "id": "C",
+        "text": "Cystic fibrosis"
+      },
+      {
+        "id": "D",
+        "text": "Pertuss is 0 E) Wegener granu lomatos is https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "vital_sign_interpretation",
+      "timeline_errors",
+      "missed_qualifiers",
+      "diagnosis_recognition"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_017",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A previously healthy 37-year-o ld woman comes to the physician because of a 2-year history of progressive shortness of\nbreath . During this period, she also has had intermittent nonproduct ive cough and wheezing, especially when she has\ncolds during the winter. She has not had night sweats . She takes no medications. She has smoked one-half pack of\ncigarettes daily for 9 years . She is employed as a landscape architect. Her 60-year-o ld father has had emphysema since\nhis early 40s . The patient appears well. Her pulse is 80/min, respirations are 16/min, and blood pressure is 120/80 mm\nHg. The lungs are clear to auscultation. Breath sounds are mildly decreased at the lung bases . The remainder of the\nexam ination shows no abnormalities. Pulse oximetry on room air shows an oxygen saturat ion of 97%. Spirometry shows\nan FEV of 45% of predicted. X-rays of the chest are shown. Which of the following is the most likely mechanism of this\n1\npatient's lung injury?",
+      "vitals": {
+        "pulse": "80",
+        "respirations": "16"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely mechanism of this\n1\npatient's lung injury?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Chronic expos ure to environme ntal allergens"
+      },
+      {
+        "id": "B",
+        "text": "Chronic infection with Aspergillus fumigatus"
+      },
+      {
+        "id": "C",
+        "text": "Chronic infection with respiratory syncytial virus"
+      },
+      {
+        "id": "D",
+        "text": "Chronic irritation and inflammat ion from cigarette smoking"
+      },
+      {
+        "id": "E",
+        "text": "Defective chloride secretion from respiratory epithelium"
+      },
+      {
+        "id": "F",
+        "text": "Insufficient inhibition of neutrophil elastase https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_018",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 62-year-o ld man comes to the phys ician because of mode rate right leg pain for 2 days . He has metastat ic\nnon-sma ll cell carc inoma of the lung and comp leted pa lliative chemotherapy 3 weeks ago. He takes no other\nmedicat ions. His temperature is 37°C (98 .6°F), pulse is 90/ min , resp irations are 22/m in, and blood pressure is\n146/80 mm Hg. Card iopu lmonary exam ination shows no abno rmalities . Laboratory stud ies show :\nHemog lob in 13 g/d l\nPlate let cou nt 367,000/mm 3\nProthromb in time 12 sec (INR =1)\nPart ial thrombop last in time28 sec\nSerum creat inine 1.1 mg/d l\nVenous dup lex ultrasonography of the right lower extrem ity shows thrombos is in the common femora l ve in.\nWhich of the fo llowing is the most approp riate next step in management?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the fo llowing is the most approp riate next step in management?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Ora l adm inistrat ion of asp irin"
+      },
+      {
+        "id": "B",
+        "text": "Ora l adm inistrat ion of warfarin"
+      },
+      {
+        "id": "C",
+        "text": "Subcuta neous adm inistration of enoxapa rin 0 D) CT ang iography of the chest 0 E) Placement of an infer ior vena cava filter https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_019",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A moderate ly obese 35-yea r-old wo man has a 4-year history of recurrent abscesses in both ax illae. These are\nprogress ive ly more freq uent and severe. The episodes are interfering w ith her ability to work. She has type 2\ndiabetes mel litus that is fair ly we ll controlled by diet and the use of ora l hypog lyce mic age nts. Wh ich of the\nfo llow ing is the most appropr iate manage ment?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Wh ich of the\nfo llow ing is the most appropr iate manage ment?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Inst itutio n of insuli n therapy to improve glucose contro l"
+      },
+      {
+        "id": "B",
+        "text": "Long-ter m adm inistration of ant ibiotics"
+      },
+      {
+        "id": "C",
+        "text": "Su rgica l excision of apocrine tiss ue 0 D) Topica l app licat ion of silver su lfadiazine 0 E) Wash ing three times da ily with pHiso Hex and water https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_020",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 23-yea r-old woman comes to the emergency department 2 hours after the sudde n onse t of sharp ante rior\nchest pain . She says that the pain is worse with inspiration and when she is supine and is relieved somewhat\nwhen she sits up. She took two ace taminophen tablets 1 hour ago , but they have not relieved the pain. She\nhas no history of similar symp toms or serious illness. She takes no other medications. Her temperature is\n37 .8°C (100°F), pulse is 100/min and regular , respirations are 16/min, and blood pressure is 114/76 mm Hg.\nA two-component friction rub is heard at the apex. The rema inder of the exam ination shows no abnor malities.\nAn ECG is shown. Wh ich of the following is the most appropriate initial step in pharmacothe rapy?",
+      "vitals": {
+        "pulse": "100",
+        "respirations": "16",
+        "blood_pressure": "114/76"
+      },
+      "labs": {}
+    },
+    "question_stem": "Wh ich of the following is the most appropriate initial step in pharmacothe rapy?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Oral ibuprofen"
+      },
+      {
+        "id": "B",
+        "text": "Oral predn isone"
+      },
+      {
+        "id": "C",
+        "text": "Sublingua l nitroglyce rin 0 D) Intravenous heparin"
+      },
+      {
+        "id": "E",
+        "text": "Intravenous morphine https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "urgency_assessment",
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_021",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 4,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 77-year-o ld woman with osteo porosis and hypertension is admitted to the hosp ital because of progress ive\nconfusion during the past 5 days. Her husband reports that she has had cons tipation for the past week and\nabdominal pain for the past 3 days . She had right breast cance r treated with lumpecto my and radiation therapy\n2 years ago. Medications are alendronate , hydroch lorothiazide, and a calcium suppleme nt containing vitamin\nD. She is alert. Her tempe rature is 36 .4°C (97.5°F), pulse is 78/min, respirations are 20/min, and blood\npressure is 156/82 mm Hg. Pulmonary exam ination shows no abnor malities. Abdominal exam ination shows\nmild distention and tenderness throughou t; there is no gua rding or reboun d. Rectal exam ination shows hard\nbrown stool. Neuro logic examination shows no focal findings . On menta l status examination , she appears\nanxious and is not oriented to person , place, or time. Her serum calcium conce ntration is 14.8 mg/dl , and\nserum albumin conce ntration is 3 g/d l. A CT scan of the head without contrast shows multiple skull\nmetastases. Which of the following is the stronges t contr ibuting factor for this patient's hypercalcemia?",
+      "vitals": {
+        "pulse": "78",
+        "respirations": "20"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the stronges t contr ibuting factor for this patient's hypercalcemia?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Alend ronate therapy"
+      },
+      {
+        "id": "B",
+        "text": "Constipation"
+      },
+      {
+        "id": "C",
+        "text": "Hydrochlorothiazide therapy 0 D) Ove ruse of calcium suppleme nt 0 E) Postradiation bronchogen ic carc inoma"
+      },
+      {
+        "id": "F",
+        "text": "Recurrence of breas t cancer https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_024",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 62-year-o ld woman has had progress ively\nseve re midback pain over the past month. She\nhas been fatigued and less mentally alert for\n3 wee ks. Her tempe rature is 37°C (98.6°F),\npulse is 82/m in, respirations are 14/m in, and\nblood pressure is 140/80 mm Hg. The\nrema inder of the examination shows no\nabnormalit ies exce pt for impaired cognitive\nfunction. Labo ratory stud ies show:\nHemoglobin 8 g/d L\nHematocrit 24%\nLeukocyte count 12,500/ mm 3\nSerum\nCa 2 12.4 mg/d L\n+\nUrea nitrogen 35 mg/d L\nCreatinine 2.4 mg/d L\nSerum electrolyte concentrat ions are within\nnorma l limit s. An x-ray of the ches t shows no\nabnormalit ies. A lateral x-ray of the skull is\nshown. Which of the following is the most\nappropriate next step in evaluation?",
+      "vitals": {
+        "blood_pressure": "140/80"
+      },
+      "labs": {
+        "hematocrit": "24"
+      }
+    },
+    "question_stem": "Which of the following is the most\nappropriate next step in evaluation?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Serum protein electrophoresis"
+      },
+      {
+        "id": "B",
+        "text": "Mammography"
+      },
+      {
+        "id": "C",
+        "text": "Bone sca n 0 D) CT scan of the head 0 E) Rena l biopsy https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_025",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "",
+      "presentation": "Two days afte r a myocard ial infarction, a prev ious ly asympto mati c 60-yea r-old woman deve lops pulm ona ry\nedema . A grade 4/6 systo lic murmur is hea rd at the apex. Oxyge n saturat ion in the right atr ium and pulmona ry\nartery is 65%, and pulmonary artery diasto lic pressure is 35 mm Hg. Wh ich of the following is the most likely\ndiagnos is?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Wh ich of the following is the most likely\ndiagnos is?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Ruptured interventr icular septu m"
+      },
+      {
+        "id": "B",
+        "text": "Ruptured left ve ntricular free wa ll"
+      },
+      {
+        "id": "C",
+        "text": "Ruptured papil lary musc le 0 D) Ruptured pu lmonary va lve 0 E) Torn chordae tendineae of the tricusp id va lve https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_027",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 37-year-o ld woma n comes to the physician beca use she has been ame norrheic for 3 months. She has also\nhad increased fac ial hair growth and mu ltiple episodes of acne ove r the past year ; she has had a\n27-kg (60- lb) weight gain du ring this time desp ite no cha nge in appet ite. Menses had occurred at regular\ninterva ls unt il 1 year ago , when they became increasing ly irregular . She is not sexual ly active. She is\n163 cm (5 ft 4 in) tall and we ighs 95 kg (210 lb); BMI is 36 kg/m 2 Her blood press ure is 160/100 mm Hg .\n.\nExa min ation shows truncal obes ity w ith pink striae . The remainder of the exam ination shows no abnorma lities.\nUrine ~-hCG test is negat ive. Measurement of wh ich of the follow ing is the most appropr iate next step in\ndiagnos is?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Measurement of wh ich of the follow ing is the most appropr iate next step in\ndiagnos is?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Se rum dehydroepia ndroste rone sulfate concentrat ion"
+      },
+      {
+        "id": "B",
+        "text": "Se rum est radiol concentrat ion"
+      },
+      {
+        "id": "C",
+        "text": "Se rum progesterone conce ntration 0 D) Urine catecholam ine concent ration"
+      },
+      {
+        "id": "E",
+        "text": "Urine free cort iso l concentrat ion in a 24-hour spec imen https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_028",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 67-year-o ld man w ith type 2 diabetes mellitus comes to the physician because of a 2-day history of\nincreas ing pain and redness of his left knee . Ten days ago, he spent severa l hours on his knees waxing a\nfloo r. His knee has been some wh at swollen and painful since then. His temperature is 38.1 °C (100.6°F), pu lse\nis 88/m in, and blood pressu re is 120/85 mm Hg. The anterior aspect of the knee ove rlying the pate lla is\nerythema tous , and there is fluctuance in this area . There is no effu sion. Range of motion of the knee is full,\nand any movement of the knee produces minor disco mfort. Wh ich of the following is the most likely diagnosis?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Wh ich of the following is the most likely diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Deep venous thrombos is"
+      },
+      {
+        "id": "B",
+        "text": "Gout"
+      },
+      {
+        "id": "C",
+        "text": "Inflamed Baker cys t"
+      },
+      {
+        "id": "D",
+        "text": "Inflammatory bursitis of the pes anserinus 0 E) Osgood-Sch latter disease Q F) Prepa tellar septic burs itis Q G) Septic arthritis of the knee https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "vital_sign_interpretation",
+      "timeline_errors",
+      "missed_qualifiers",
+      "diagnosis_recognition"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_031",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 62-yea r-old man comes to the physic ian beca use of a 3-week history of progress ive fat igue and shortness of\nbreath w ith exert ion. His temperatu re is 37°C (98.6 °F), pulse is 56/m in, respirat ions are 16/m in, and blood\npressu re is 150/92 mm Hg . Bilatera l bas ilar crack les are heard on auscu ltation. Card iac exam inat ion shows a\nlatera lly displaced po int of max imal imp ulse . Echocard iography shows left ventr icular dilation and an ejection\nfraction of 32%. In add ition to furosem ide , wh ich of the follow ing is the mos t appropr iate pharmacot herapy?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "In add ition to furosem ide , wh ich of the follow ing is the mos t appropr iate pharmacot herapy?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Clonid ine"
+      },
+      {
+        "id": "B",
+        "text": "Diltiazem"
+      },
+      {
+        "id": "C",
+        "text": "Lisinop ril"
+      },
+      {
+        "id": "D",
+        "text": "Meto prolol"
+      },
+      {
+        "id": "E",
+        "text": "Nifed ipine"
+      },
+      {
+        "id": "F",
+        "text": "Sp irono lactone https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_033",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 37-year-o ld woman with type 1 diabetes me llitus and anx iety disorder comes to the physician because of a\n6-month histo ry of progressive numb ness of her hands tha t has recent ly exte nded to her forea rms . During the\npast 2 months , she has burned her fingers nume rous times wh ile cook ing; she did not know tha t she had\nburned herse lf until she saw the develo pment of bliste rs. She has no othe r neu rologic sympto ms. Her only\nmedica tion is insu lin. Cranial nerves are intact. Musc le stre ngth is 5/5 in the upper and lower extrem ities. Deep\ntendon reflexes are 3+ bilate rally. Bab inski sign is absen t. Se nsation to pinprick and temperatu re is absen t\nove r the hands and upper extremities ex tending to the nec k and posterior sca lp but is intac t over the trunk and\nlower extrem ities. Pro prioce ption and sensa tion to vibrat ion are norma l throughout. Wh ich of the following is\nthe most like ly diag nosis?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Wh ich of the following is\nthe most like ly diag nosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Brach ia! plexopa thy"
+      },
+      {
+        "id": "B",
+        "text": "Cervica l stenosis"
+      },
+      {
+        "id": "C",
+        "text": "Conversion disorder"
+      },
+      {
+        "id": "D",
+        "text": "Diabetic polyneuro pathy 0 E) Syringo myelia https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_034",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 62-yea r-old man with seve re obstructive pulmonary disease has chroni c disabling dys pnea . His pulse is\n90/min, respirations are 30/min , and blood pressure is 150/85 mm Hg. He is plethori c, and jugular veins are\ndistended. Breath sounds are distant, and the seco nd component of S is acce ntuated. His FEV is 0.5 L. An\n2 1\nx-ray of the chest shows prominent pulmonary arteries. The pulmonary hypertension in this patient is most\nlikely the resu lt of which of the following?",
+      "vitals": {
+        "respirations": "30",
+        "blood_pressure": "150/85"
+      },
+      "labs": {}
+    },
+    "question_stem": "The pulmonary hypertension in this patient is most\nlikely the resu lt of which of the following?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Decreased cardiac output"
+      },
+      {
+        "id": "B",
+        "text": "Decreased expiratory flow rate"
+      },
+      {
+        "id": "C",
+        "text": "Increased residual volume"
+      },
+      {
+        "id": "D",
+        "text": "Seve rity of hypercarbia 0 E) Seve rity of hypoxe mia https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_035",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 57-year-o ld man comes to the eme rgency departme nt because of a painfu l, cold right leg for 4 hours. He\nhas hyperte nsion, type 2 diabetes mellitus, and hyperlipidemia . Medications include metformin,\ntriamterene-hy droch lorothiazide , and atorvastat in. He has smoked one pack of cigarettes da ily for 40 years.\nHis blood pressu re is 140/90 mm Hg. Pulses are decreased in the right lowe r extremity. His serum creat inine\nconcen tration is 1.5 mg/dl . Ang iogra phy of the right lowe r extre mity shows occ lusion of the commo n femoral\nartery. Twenty- four hours later, his serum creatinine conce ntration increases to 3.6 mg/dl. Which of the\nfollowi ng measures prior to his angiogra phy is most likely to have preven ted this patie nt's worse ning\nazote mia?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the\nfollowi ng measures prior to his angiogra phy is most likely to have preven ted this patie nt's worse ning\nazote mia?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Discontinuat ion of metform in"
+      },
+      {
+        "id": "B",
+        "text": "Hydration"
+      },
+      {
+        "id": "C",
+        "text": "Pretreatment with manni tol"
+      },
+      {
+        "id": "D",
+        "text": "Pretreatment with predn isone and diphenhydra mine 0 E) There are no known prevent ive measu res https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_037",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 4,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 62-year-o ld man comes to the physician for a preope rative evaluation. He is schedu led to undergo partial\ncolectomy in 5 days because of recurrent diverticulitis. He can carry groceries up two flights of stairs without\nstopping. He has no history of chest pain or heart disease . Two months ago , his serum tota l choleste rol\nconcen tration was 162 mg/dl . He takes no medications. He is adopted and has no information abou t his\nfamily history. He smoked one-ha lf pack of cigarettes daily for 30 years but stopped 3 years ago. He is\n175 cm (5 ft 9 in) tall and weighs 93 kg (205 lb); BMI is 30 kg/m 2 His pulse is 78/m in and regu lar, and blood\n.\npressure is 138/84 mm Hg. The lungs are clear to auscu ltat ion. S and S are norma l. A grade 2/6 holosys tolic\n1 2\nmurmur is heard at the apex with radiation toward the left axilla. The abdomen is soft. An ECG shows a normal\nsinus rhythm and left bundl e branch block. Echocard iography shows mitral valve thickening with mild\nregurg itation . Which of the following diagnostic tests is indicated prior to the ope ration?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following diagnostic tests is indicated prior to the ope ration?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Exerc ise stress test"
+      },
+      {
+        "id": "B",
+        "text": "24-Hour ambu latory ECG monitoring"
+      },
+      {
+        "id": "C",
+        "text": "Electron beam (ultrafast) CT sca n 0 D) Corona ry angiogra phy"
+      },
+      {
+        "id": "E",
+        "text": "No further tests are indicated https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "timeline_errors",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_038",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 52-year-o ld woman comes for a routine health maintenance examination. She feels we ll. Over the past\n6 months, menses have occu rred at irregular 2- to 3-month intervals. She takes no medications. She has\nsmoked one pack of cigarettes daily for 30 years and drinks alcohol socially. Her father has hypertension, and\nher mother has osteoarth ritis of the knees and is scheduled for bilateral knee replaceme nts. The patient is\n157 cm (5 ft 2 in) tall and weighs 72 kg (160 lb); BMI is 29 kg/m 2 Her pulse is 80/min and regular and blood\n.\npressure is 115/70 mm Hg. Range of motion of all joints is full and does not produce pain. She is concerned\nabout her risk for arthritis. Which of the following is most likely to decrease this patient's risk for osteoarth ritis?\nQ\nA) Begin a swimming program 30 minutes daily three times wee kly\nQ\nB) Begin a walking progra m 30 minutes daily three times week ly\nQ\nC) Smoking cessa tion",
+      "vitals": {
+        "pulse": "80"
+      },
+      "labs": {}
+    },
+    "question_stem": "Which of the following is most likely to decrease this patient's risk for osteoarth ritis?",
+    "choices": [
+      {
+        "id": "D",
+        "text": "Weight loss Q E) Estrogen replacement therapy Q F) Nonsteroidal anti-inflamma tory drug therapy Q G) No prevent ive measures available https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_039",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 42-yea r-old man comes to the emergency depa rtme nt because of the recent onset of shortness of breat h.\nHe has smoked two packs of ciga rettes daily for 25 years . He is emac iated and in moderate respiratory\ndistress. There is dullness to percussion and egop hony at the right lung base . He has a leukocyte count of\n18,200/ mm 3 (60% neutrop hils, 17% band forms, 20% lymphocytes , and 3% monocytes). An x-ray of the chest\nshows a right lowe r lobe infiltrate with a pleural effus ion. Thorace ntes is shows purulent, foul-smelling fluid.\nWhich of the following is the most likely diagnosis?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most likely diagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Anaerob ic empyema"
+      },
+      {
+        "id": "B",
+        "text": "Chylothorax"
+      },
+      {
+        "id": "C",
+        "text": "Malignant effus ion 0 D) Pneumococca l empyema 0 E) Tuberculous empyema https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "vital_sign_interpretation",
+      "urgency_assessment",
+      "missed_qualifiers",
+      "diagnosis_recognition"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_040",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 62-year-o ld man is admitt ed to the hospital for treatment of pneumonia . He has a 3-day histo ry of fever,\ncough productive of gree nish sput um, and mild shortness of breath . He has type 2 diabetes mellitus and\ncoronary artery disease . Curre nt medicat ions include 81-mg asp irin, ateno lol, isosorb ide, glipizide , metformin,\nand ros iglitazone . He appears ill and has mild sho rtness of breath. His tempe rature is 39°C (102.2 °F), pulse is\n110/min and regular, respirations are 24/min, and blood pressu re is 195/64 mm Hg. Moist crack les are heard\nat the left lung base. Labo ratory stud ies show:\nLeukocyte coun t 16,700/mm 3\nSeg mented neutrophi ls 90%\nBands 2%\nLymp hocy tes 8%\nSerum\nNa+\n137 mEq/L\nK+\n4.8 mEq /L\nc 1-\n97 mEq/L\nHco -\n20 mEq/L\n3\nGlucose 180 mg/d L\nCreatinine 1.5 mg/d L\nAST 18 U/L\nALT 12 U/L\nAn x-ray of the chest co nfirm s left lower lobe pneumonia. Immediate discont inuat ion of which of the following\nis the most appropriate next step?",
+      "vitals": {
+        "respirations": "24"
+      },
+      "labs": {
+        "sodium": "137"
+      }
+    },
+    "question_stem": "Immediate discont inuat ion of which of the following\nis the most appropriate next step?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Aspirin"
+      },
+      {
+        "id": "B",
+        "text": "Ate nolol"
+      },
+      {
+        "id": "C",
+        "text": "Glipizide 0 D) lsosor bide"
+      },
+      {
+        "id": "E",
+        "text": "Metformin"
+      },
+      {
+        "id": "F",
+        "text": "Rosiglitazone https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "lab_interpretation",
+      "missed_qualifiers",
+      "treatment_prioritization",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_041",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 72-year-ol d woman co mes to the phys ician\nbecause of a 6-day history of increas ingly\nseve re left hip pain. She now has difficu lty\nwa lking because of the pain. She has temporal\narteritis and hyper tens ion. Her medicat ions are\nprednisone and ena lapr il. Vital signs are within\nnorma l limit s. Inte rnal and externa l range of\nmotion of the left hip is limited by pain. The\nrema inde r of the exa mination shows no\nabnormalit ies. An x-ray of the left hip shows no\nabnormalit ies. An MR I of the hips is shown.\nWh ich of the following is the mos t likely\ndiagnosis?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Wh ich of the following is the mos t likely\ndiagnosis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Avascu lar necros is"
+      },
+      {
+        "id": "B",
+        "text": "Hip fracture"
+      },
+      {
+        "id": "C",
+        "text": "lliotibial band syn drome 0 D) Osteoa rthritis 0 E) Trochan teric bursitis https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_042",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A study is conducted to compare a new stoo l test with mucosa l biopsy for diagnosing Helicobacter pylori\ninfect ion. A tota l of 400 pat ients with suspected H. pylori infect ion are en rolled. Pat ients are screened using\nboth methods. Resu lts show that of the 100 patients who tested pos itive for H. pylori infect ion on biopsy , 80\nalso tested pos itive using the new stoo l test ; 120 pat ients who tested negat ive for H. pylori infect ion on biopsy\ntested posit ive using the new stoo l test. Wh ich of the fol low ing represents the sens itivity of the new stoo l test\nfor H. pylori infect ion in this study?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "pylori infect ion in this study?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "10%"
+      },
+      {
+        "id": "B",
+        "text": "20%"
+      },
+      {
+        "id": "C",
+        "text": "40% 0 D) 60% 0 E) 80% https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_043",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 2,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 4 ?-year-o ld woma n comes to the physician beca use of a 2-day history of soreness in the back of her throat\nand pain on swa llowing. She has had recurrent episodes of tonsi llitis during the past 2 years. Examination\nshows massive edema of the soft palate and enlarged tons ils with a puru lent discharge from the right tons il.\nWithout treatment , this patient is at increased risk for which of the fo llowing?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Without treatment , this patient is at increased risk for which of the fo llowing?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Airway comprom ise"
+      },
+      {
+        "id": "B",
+        "text": "Brain abscess"
+      },
+      {
+        "id": "C",
+        "text": "Necros is of the tons ils 0 D) Paralysis of the facia l nerve"
+      },
+      {
+        "id": "E",
+        "text": "Rupture of the tympanic membrane https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_046",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 4,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 24-year-o ld woma n, grav ida 2, para 2, comes to the eme rgency departme nt because of an unco ntro llable\nnoseb leed for 6 hours. Th is is he r fou rth noseb leed ove r the past 2 weeks . Each of the prev ious nosebleeds\nstopped w ithin approx imate ly 2 hours. Her menses occur at regular 28-day interva ls, but she did have heav ier\nthan usua l bleed ing dur ing her last two menst rual periods . She takes no medicat ions. She has no history of\nbleed ing problems, includ ing du ring an unco mp licated appendectomy at the age of 10 years and during\ndelivery of her two children . The re is no fam ily history of blee ding pro blems. Examina tion shows scattered\npetech iae over the trun k and up per and lower extre mities. There is fresh and clotted blood in the nares with\ncontinued ooz ing of blood. He r hemog lobin concentrat ion is 9.8 g/d l , leukocyte count is 9000/mm 3 with a\nnormal diffe rential, and plate let count is 20,000/mm 3 Examina tion of bo ne ma rrow asp irate shows\n.\nmegaka ryocy tes. Which of the following is the most appropr iate next step in ma nageme nt?",
+      "vitals": {},
+      "labs": {}
+    },
+    "question_stem": "Which of the following is the most appropr iate next step in ma nageme nt?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Cort icostero id thera py"
+      },
+      {
+        "id": "B",
+        "text": "Methotrexate the rapy"
+      },
+      {
+        "id": "C",
+        "text": "Sp lenic artery embo lizat ion 0 D) Sp lenic irradiation"
+      },
+      {
+        "id": "E",
+        "text": "Sp lenectomy https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_049",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 4,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 4 ?-year-o ld man comes to the phys ician because of a 1-month history of progressive swe lling of both legs\nand genera lized weakness . He says he now has some diffi culty performing his usua l activities . Last year, he\nreceived the diagnos is of hepatitis B and C. He has a long-s tand ing histo ry of intr avenous drug use. He\nrefused treatme nt for hepat itis C and currently takes no medications. He is not in acu te distress. He is\n183 cm (6 ft) tall and weighs 55 kg (121 lb); BMI is 16 kg/m 2 His tempe rature is 37 °C (98 .6°F), pu lse is\n.\n70/min, res pirations are 12/min , and blood pressure is 160/99 mm Hg. Cardiopu lmona ry exa mination shows\nno abno rmalities . The abdomen is nontende r. There is no hepatomega ly. Mu scle streng th is normal.\nLabo ratory stud ies show:\nHemog lobin 10 g/d L\nLeukocy te count 9000/mm 3\nPlatelet cou nt 260,000/ mm 3\nSe rum\nUrea nitrogen 22 mg/d L\nCreat inine 2.1 mg/dL\nAlbumin 3.8 g/dL\nTotal bilirubin 0.6 mg/dL\nAST 70 U/L\nALT 60 U/L\nUrin e\nBlood 3+\nProtein 4+\nMicrosco pic exa mina tion of urine shows numerous RBCs, w hich are mostly aca nth ocytes with irregu lar\nmembrane protrusions. Wh ich of the following is the most appropriate next step in diagnos is?",
+      "vitals": {
+        "blood_pressure": "160/99"
+      },
+      "labs": {}
+    },
+    "question_stem": "Wh ich of the following is the most appropriate next step in diagnos is?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Second set of labo ratory stud ies in 1 month"
+      },
+      {
+        "id": "B",
+        "text": "Urin e prote in electro phores is"
+      },
+      {
+        "id": "C",
+        "text": "Urin e cu lture 0 D) Cys tosco py 0 E) Renal biopsy https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers",
+      "treatment_prioritization",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  },
+  {
+    "id": "internal_medicine_050",
+    "specialty": "Internal Medicine",
+    "source": "NBME Internal Medicine 6 - Questions",
+    "topic": "TBD",
+    "tier": 2,
+    "difficulty": 3,
+    "vignette": {
+      "demographics": "",
+      "presentation": "A 37-year-o ld man comes to the eme rgency departme nt because of vomiting for the past 3 days . He says that\nhe ca nnot hold dow n liquids or solids. For the past month, he has had early sat iety and has not bee n eating as\nmuch as he usually does . He has a 2-year history of pept ic ulcer disease, diagnose d by upper endoscopy .\nInfection wi th Helicobacter pylori was successf ully trea ted w ith clarithro mycin, amoxicillin, omep razo le, and\nbismuth subsa licylate therapy. Since then , he has had intermittent epigas tric pain for wh ich he takes cimetidine\nwhen he remembers to do so . He appears ill and anx ious. His temperatu re is 37°C(98.6 °F), pulse is 100/ min,\nrespirations are 14/min , and blood pressu re is 110/60 mm Hg. Phys ica l exam ination shows dry muco us\nmemb ranes an d a flat, soft , no ntende r abdome n. Wh ich of the fo llowing sets of labo rato ry abno rmalities is\nmost likely in this patient?\nK+ Cl- pH",
+      "vitals": {
+        "respirations": "14"
+      },
+      "labs": {}
+    },
+    "question_stem": "",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Increased increased decreased"
+      },
+      {
+        "id": "B",
+        "text": "Decreased decreased decreased"
+      },
+      {
+        "id": "C",
+        "text": "Increased decreased increased"
+      },
+      {
+        "id": "D",
+        "text": "Decreased decreased increased"
+      },
+      {
+        "id": "E",
+        "text": "Decreased increased increased https://t.me/USMLENBME2CK Previous Lab Values Calculator Review Help Pause"
+      }
+    ],
+    "correct_answer": "TBD",
+    "reasoning_patterns": [
+      "timeline_errors",
+      "missed_qualifiers",
+      "vital_sign_interpretation"
+    ],
+    "explanation": {
+      "concept": "TBD",
+      "pattern": "TBD",
+      "distractors": {}
+    }
+  }
+]

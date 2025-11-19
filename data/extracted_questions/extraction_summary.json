@@ -1,0 +1,18 @@
+{
+  "total_questions": 588,
+  "by_specialty": {
+    "Emergency Medicine": 83,
+    "Internal Medicine": 81,
+    "Neurology": 176,
+    "Pediatrics": 161,
+    "Surgery": 87
+  },
+  "status": "Extracted from compressed NBME PDFs",
+  "next_steps": [
+    "Add correct answers from answer PDFs",
+    "Add detailed explanations",
+    "Refine reasoning pattern tags",
+    "Add topic classifications",
+    "Validate all extracted data"
+  ]
+}
