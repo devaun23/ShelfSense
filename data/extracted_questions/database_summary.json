@@ -1,0 +1,46 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "created": "2025-11-19",
+    "total_questions": 1809,
+    "sources": [
+      "Shelf Exams",
+      "NBME Step 2 CK"
+    ],
+    "extraction_tools": [
+      "nbme_complete_extractor.py",
+      "run_all_ocr.py",
+      "nbme_comprehensive_extractor.py"
+    ]
+  },
+  "statistics": {
+    "total_before_dedup": 3633,
+    "total_after_dedup": 1809,
+    "duplicates_removed": 1824,
+    "by_source_type": {
+      "Shelf Exams": 1160,
+      "NBME Step 2 CK": 2473
+    },
+    "by_source": {
+      "Shelf - Emergency Medicine": 99,
+      "Shelf - Internal Medicine": 273,
+      "Shelf - Neurology": 293,
+      "Shelf - Pediatrics": 241,
+      "Shelf - Surgery": 254,
+      "NBME 8": 737,
+      "NBME 7": 362,
+      "NBME 6": 358,
+      "NBME 12": 504,
+      "NBME 13": 192,
+      "NBME 11": 147,
+      "NBME 10": 173
+    },
+    "by_specialty": {
+      "Emergency Medicine": 99,
+      "Internal Medicine": 273,
+      "Neurology": 293,
+      "Pediatrics": 241,
+      "Surgery": 254
+    }
+  }
+}

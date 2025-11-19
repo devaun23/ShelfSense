@@ -1,0 +1,12 @@
+{
+  "total_questions": 2473,
+  "by_exam": {
+    "NBME 10": 173,
+    "NBME 11": 147,
+    "NBME 12": 504,
+    "NBME 13": 192,
+    "NBME 6": 358,
+    "NBME 7": 362,
+    "NBME 8": 737
+  }
+}
