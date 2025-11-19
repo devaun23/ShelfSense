@@ -223,7 +223,7 @@
         "text": "Type 1 diabetes mellitus"
       }
     ],
-    "correct_answer": "TBD",
+    "correct_answer": "C",
     "reasoning_patterns": [
       "vital_sign_interpretation",
       "urgency_assessment",
@@ -233,9 +233,12 @@
       "timeline_errors"
     ],
     "explanation": {
-      "correct_answer_explanation": "",
+      "correct_answer_explanation": "Postoperative myocardial infarction is a complication that can occur following physiologically stressful surgical procedures, especially those with high blood loss in patients already predisposed to myocardial infarction (e.g., older, male smokers with history of atherosclerotic cardiovascular disease). Myocardial infarction can present nonspecifically but classically occurs with shortness of breath, chest pain, light-headedness, nausea, vomiting, or altered mental status, and may be complicated by cardiogenic shock, seen as tachycardia, hypotension, and impaired end-organ perfusion (cool extremities, low urine output). In postoperative cases, especially with intubated patients, it may be difficult to assess the presence of myocardial infarction. Evaluation using ECG, serial troponin assays, and echocardiogram should be considered in such cases. Right-heart catheterization can be used to determine cardiac output and index, along with pulmonary capillary wedge pressure, which can distinguish right heart failure from left heart failure. An increased pulmonary capillary wedge pressure indicates that filling pressures in the left heart are abnormal, which is consistent with myocardial infarction and cardiogenic shock.",
       "distractor_explanations": {
-        "A": "Adrenal insufficiency refers to insufficient production of hormones from the adrenal cortex, which include aldosterone and cortisol; sex hormone deficiency may also be present. Primary adrenal insufficiency can present with deficiencies in both aldosterone and cortisol, whereas secondary or tertiary adrenal insufficiency tends to affect cortisol concentrations only. Insufficient aldosterone production leads to hypotension, hyponatremia, hyperkalemia, and metabolic alkalosis. Insufficient cortisol can lead to hypoglycemia, hypothermia, bradycardia, hypotension, and lethargy. Adrenal insufficiency would not present with increased serum insulin and C-peptide concentrations. Cushing syndrome (Choice B) results from increased endogenous or exogenous glucocorticoid activity and presents with fatigue, hypertension, hyperglycemia, fat redistribution (moon facies, buffalo hump, truncal obesity, extremity wasting), and abdominal striae. Exogenous production of insulin-like growth factor (Choice C) results in gigantism or acromegaly depending on whether the production of the hormone occurs prior to or following closure of growth plates; it presents in an adult with enlargement of flat bones, notably in the face, hands, and feet, and is often associated with the development of type 2 diabetes mellitus. It would not classically present with hypoglycemia. Pituitary insufficiency (Choice E) presents with a variety of symptoms depending on which hormones are deficient and generally refers to deficiency of the anterior pituitary hormones. Hypopituitarism carries a complex presentation, though symptoms of hypoglycemia can result from secondary adrenal insufficiency resulting from inadequate adrenocorticotropic hormone production. However, symptoms of hypoglycemia from adrenal insufficiency would not always follow activity or fasting, and concentrations of insulin would be low or normal. Reactive hypoglycemia (Choice F) refers to blood glucose fluctuations, specifically hyperglycemia followed by hypoglycemia, following a high carbohydrate meal. Symptoms of hypoglycemia occur typically two to four hours following a large meal and are thought to occur from the rapid decrease in blood glucose during insulin-triggered uptake by cells. Surreptitious self-administration of insulin (Choice G), also known as factitious hypoglycemia, presents with low serum C-peptide, as the hyperinsulinemic state is secondary to exogenous administration, not r \" , r-- r , Exam Section : Item 4 of 50 tall and weighs 77 kg (170 lb); BMI is 23 kg/m 2 His pulse is 60/min , and blood pressure is 105/60 mm Hg. Examination shows no other abnormalities . He is given a meal and then given nothing orally. Seven hours later when he • develops similar symptoms , his serum glucose concentration is 25 mg/dl , and serum insulin and C-peptide concentrations are increased . Which of the following is the most likely diagnosis? A) Adrenal insufficiency B) Cushing syndrome C) Exogenous production of insulin-like growth factor D) lnsulinoma E) Pituitary insufficiency F) Reactive hypoglycemia G) Surreptitious self-administration of insulin H) Type 1 diabetes mellitus CorrectAnswer: D. lnsulinoma is a rare neoplasm of pancreatic islet cells that functionally produces insulin. These neoplastic cells classically do not respond to the typical feedback mechanisms, and as a result, insulin is continuously produced even in periods of hypoglycemia. Patients present with symptoms of hypoglycemia which are generally neuroglycopenic (agitation, headache, blurry vision, diplopia, tremor), autonomic (diaphoresis, tremor, nausea, vomiting, cramping, tachycardia, anxiety), and nonspecific (fatigue, weakness, lethargy), often exacerbated by periods of fasting or exercise. In extreme cases, hypoglycemia can present with seizures, coma, arrhythmias, and death. Whipple triad characterizes the presentation of true hypoglycemia and includes 1) signs and symptoms of hypoglycemia, 2) concomitant serum glucose less than 45 mg/dl, and 3) reversibility of symptoms with administration of glucose. lnsulinomas seldom metastasize and are considered predominantly benign neuroendocrine tumors apart from their dysregulated functional production of hormone. They are occasionally associated with multiple endocrine neoplasia. Diagnosis of an insulinoma is via laboratory evaluation demonstrating increased serum proinsulin, insulin, C-peptide, and decreased glucose, and imaging of the pancreas with CT scan or MRI. Definitive treatment is surgical resection. Incorrect Answers: A, B, C, E, F, G, and H. Adrenal insufficiency (Choice A) refers to insufficient production of hormones from the adrenal cortex, which include aldosterone and cortisol; sex hormone deficiency may also be present. Primary adrenal insufficiency can present with deficiencies in both aldosterone and cortisol, whereas secondary or tertiary adrenal insufficiency tends to affect cortisol concentrations only. Insufficient aldosterone production leads to hypotension, hyponatremia, hyperkalemia, and metabolic alkalosis. Insufficient cortisol can lead to hypoglycemia, hypothermia, bradycardia, hypotension, and lethargy. Adrenal insufficiency would not present with increased serum insulin and C-peptide concentrations. Cushing syndrome (Choice B) results from increased endogenous or exogenous glucocorticoid activity and presents with fatigue, hypertension, hyperglycemia, fat redistribution (moon facies, buffalo hump, truncal obesity, extremity wasting), and abdominal striae. Exogenous production of insulin-like growth factor (Choice C) results in gigantism or acromegaly depending on whether the production of the hormone occurs prior to or following closure of growth plates; it presents in an adult with enlargement of flat bones, notably in the face, hands, and feet, and is often associated with the development of type 2 diabetes mellitus. It would not classically present with hypoglycemia. Pituitary insufficiency (Choice E) presents with a variety of symptoms depending on which hormones are deficient and generally refers to deficiency of the anterior pituitary hormones. Hypopituitarism carries a complex presentation, though symptoms of hypoglycemia can result from secondary adrenal insufficiency resulting from inadequate adrenocorticotropic hormone production. However, symptoms of hypoglycemia from adrenal insufficiency would not always follow activity or fasting, and concentrations of insulin would be low or normal. Reactive hypoglycemia (Choice F) refers to blood glucose fluctuations, specifically hyperglycemia followed by hypoglycemia, following a high carbohydrate meal. Symptoms of hypoglycemia occur typically two to four hours following a large meal and are thought to occur from the rapid decrease in blood glucose during insulin-triggered uptake by cells. Surreptitious self-administration of insulin (Choice G), also known as factitious hypoglycemia, presents with low serum C-peptide, as the hyperinsulinemic state is secondary to exogenous administration, not functional production by islet cells. Type 1 diabetes mellitus (Choice H) refers to the autoimmune destruction of pancreatic islet cells, which presents with hyperglycemia, low insulin, and low serum C-peptide. r \" , r-- r , Exam Section : Item 5 of 50 'I"
+        "A": "and intra-abdominal hemorrhage {",
+        "B": "are both associated with low intravascular volume, which would present on a right-heart catheterization as low pulmonary capillary wedge pressure. Pulmonary embolism {",
+        "D": "presents with chest pain and shortness of breath, often in the setting of immobilization and known deep venous thrombosis. Vital signs may show tachycardia, tachypnea, hypoxia, and, if sufficiently large, hypotension. Right-heart catheterization would show increased pulmonic circuit pressures, but the pulmonary capillary wedge pressure should be normal or low unless concomitant left heart failure is also present. Sepsis {",
+        "E": "presents following a source of infection with fever, tachycardia, tachypnea, hypotension if in septic shock, and end-organ dysfunction. Right-heart catheterization would show increased cardiac output and low pulmonary capillary wedge pressure. r , \" , F'"
       },
       "educational_objective": "",
       "concept": "TBD"
@@ -378,15 +381,18 @@
         "text": "MW"
       }
     ],
-    "correct_answer": "TBD",
+    "correct_answer": "C",
     "reasoning_patterns": [
       "missed_qualifiers",
       "timeline_errors"
     ],
     "explanation": {
-      "correct_answer_explanation": "",
+      "correct_answer_explanation": "Postoperative myocardial infarction is a complication that can occur following physiologically stressful surgical procedures, especially those with high blood loss in patients already predisposed to myocardial infarction (e.g., older, male smokers with history of atherosclerotic cardiovascular disease). Myocardial infarction can present nonspecifically but classically occurs with shortness of breath, chest pain, light-headedness, nausea, vomiting, or altered mental status, and may be complicated by cardiogenic shock, seen as tachycardia, hypotension, and impaired end-organ perfusion (cool extremities, low urine output). In postoperative cases, especially with intubated patients, it may be difficult to assess the presence of myocardial infarction. Evaluation using ECG, serial troponin assays, and echocardiogram should be considered in such cases. Right-heart catheterization can be used to determine cardiac output and index, along with pulmonary capillary wedge pressure, which can distinguish right heart failure from left heart failure. An increased pulmonary capillary wedge pressure indicates that filling pressures in the left heart are abnormal, which is consistent with myocardial infarction and cardiogenic shock.",
       "distractor_explanations": {
-        "A": "Arterial blood PCO and arterial blood PO (Choice B) are used to analyze the current status of the patient's oxygenation and ventilation and are influenced by many variables beyond functional segments of 2 2 lung, including but not limited to the acid-base status of the patient, renal function, the presence of heart failure, and volume status. They do not have a role in predicting postoperative pulmonary function and reserve. DlCO (Choice C) can also be used to assess postoperative pulmonary function and is also associated with morbidity and mortality. This patient's FEV falls below the floor threshold of risk. 1 MW (Choice E), maximal voluntary ventilation, is not as strongly associated with postoperative risk as FEV and DlCO, and therefore is not as useful in assessing the patient's postoperative risk following 1 pneumonectomy. r \" , r-- r , Exam Section : Item 8 of 50"
+        "A": "and intra-abdominal hemorrhage {",
+        "B": "are both associated with low intravascular volume, which would present on a right-heart catheterization as low pulmonary capillary wedge pressure. Pulmonary embolism {",
+        "D": "presents with chest pain and shortness of breath, often in the setting of immobilization and known deep venous thrombosis. Vital signs may show tachycardia, tachypnea, hypoxia, and, if sufficiently large, hypotension. Right-heart catheterization would show increased pulmonic circuit pressures, but the pulmonary capillary wedge pressure should be normal or low unless concomitant left heart failure is also present. Sepsis {",
+        "E": "presents following a source of infection with fever, tachycardia, tachypnea, hypotension if in septic shock, and end-organ dysfunction. Right-heart catheterization would show increased cardiac output and low pulmonary capillary wedge pressure. r , \" , F'"
       },
       "educational_objective": "",
       "concept": "TBD"
@@ -477,7 +483,7 @@
         "text": "Aortic angiography"
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "C",
     "reasoning_patterns": [
       "missed_qualifiers",
       "vital_sign_interpretation",
@@ -485,9 +491,12 @@
       "treatment_prioritization"
     ],
     "explanation": {
-      "correct_answer_explanation": "",
+      "correct_answer_explanation": "Postoperative myocardial infarction is a complication that can occur following physiologically stressful surgical procedures, especially those with high blood loss in patients already predisposed to myocardial infarction (e.g., older, male smokers with history of atherosclerotic cardiovascular disease). Myocardial infarction can present nonspecifically but classically occurs with shortness of breath, chest pain, light-headedness, nausea, vomiting, or altered mental status, and may be complicated by cardiogenic shock, seen as tachycardia, hypotension, and impaired end-organ perfusion (cool extremities, low urine output). In postoperative cases, especially with intubated patients, it may be difficult to assess the presence of myocardial infarction. Evaluation using ECG, serial troponin assays, and echocardiogram should be considered in such cases. Right-heart catheterization can be used to determine cardiac output and index, along with pulmonary capillary wedge pressure, which can distinguish right heart failure from left heart failure. An increased pulmonary capillary wedge pressure indicates that filling pressures in the left heart are abnormal, which is consistent with myocardial infarction and cardiogenic shock.",
       "distractor_explanations": {
-        "B": "CT scan of the lumbar spine may be appropriate if the patient presents with symptoms typical for neurogenic claudication. Spinal stenosis, a cause of neurogenic claudication, can result in leg pain when standing or walking downhill, which improves when bending forward, seated, or walking uphill. MRI of the calf (Choice C) assesses for local structural or vascular lesions, but in a patient without traumatic or malignant history and with chronic symptoms clinically diagnostic for vascular claudication, it is not necessary for the diagnosis. Aspirin therapy (Choice D) is appropriate for this patient to reduce his risk for myocardial infarction; however, it would not improve the symptoms of vascular claudication. Aortic angiography (Choice E) is appropriate if concern for arterial occlusion, aneurysm, or dissection is present. Angiography of the lower aorta and extremity arteries may eventually be necessary for preoperative planning, but this would occur after exhaustion of nonsurgical interventions or in cases where acute vascular occlusion or arterial embolism is suspected. r \" , r-- r , Exam Section : Item 10 of 50"
+        "A": "and intra-abdominal hemorrhage {",
+        "B": "are both associated with low intravascular volume, which would present on a right-heart catheterization as low pulmonary capillary wedge pressure. Pulmonary embolism {",
+        "D": "presents with chest pain and shortness of breath, often in the setting of immobilization and known deep venous thrombosis. Vital signs may show tachycardia, tachypnea, hypoxia, and, if sufficiently large, hypotension. Right-heart catheterization would show increased pulmonic circuit pressures, but the pulmonary capillary wedge pressure should be normal or low unless concomitant left heart failure is also present. Sepsis {",
+        "E": "presents following a source of infection with fever, tachycardia, tachypnea, hypotension if in septic shock, and end-organ dysfunction. Right-heart catheterization would show increased cardiac output and low pulmonary capillary wedge pressure. r , \" , F'"
       },
       "educational_objective": "",
       "concept": "TBD"
@@ -1310,16 +1319,19 @@
         "text": "Wegener granulomatosis"
       }
     ],
-    "correct_answer": "TBD",
+    "correct_answer": "C",
     "reasoning_patterns": [
       "diagnosis_recognition",
       "missed_qualifiers",
       "lab_interpretation"
     ],
     "explanation": {
-      "correct_answer_explanation": "",
+      "correct_answer_explanation": "Postoperative myocardial infarction is a complication that can occur following physiologically stressful surgical procedures, especially those with high blood loss in patients already predisposed to myocardial infarction (e.g., older, male smokers with history of atherosclerotic cardiovascular disease). Myocardial infarction can present nonspecifically but classically occurs with shortness of breath, chest pain, light-headedness, nausea, vomiting, or altered mental status, and may be complicated by cardiogenic shock, seen as tachycardia, hypotension, and impaired end-organ perfusion (cool extremities, low urine output). In postoperative cases, especially with intubated patients, it may be difficult to assess the presence of myocardial infarction. Evaluation using ECG, serial troponin assays, and echocardiogram should be considered in such cases. Right-heart catheterization can be used to determine cardiac output and index, along with pulmonary capillary wedge pressure, which can distinguish right heart failure from left heart failure. An increased pulmonary capillary wedge pressure indicates that filling pressures in the left heart are abnormal, which is consistent with myocardial infarction and cardiogenic shock.",
       "distractor_explanations": {
-        "A": "Diabetic nephropathy results from nonenzymatic glycosylation of the glomerular basement membrane and efferent arterioles. This results in increased glomerular pressure, glomerular hyperfiltration injury, expansion of the mesangium, thickening of the glomerular basement membrane, and glomerular sclerosis. Laboratory evaluation typically discloses albuminuria, not hematuria. Goodpasture syndrome (Choice B) is a type 2 hypersensitivity reaction that results in autoimmune antibody targeting of the pulmonary capillaries and glomerular basement membranes, leading to hemoptysis and hematuria. Lupus nephritis (Choice C) is a complication of systemic lupus erythematosus (SLE) and is common in younger women; it presents with hematuria and rising creatinine in the setting of SLE. Laboratory evaluation generally discloses a low complement concentration. Polyarteritis nodosa (Choice D) is a necrotizing vasculitis that involves medium-sized arteries and generally affects the kidneys and visceral organs, sparing the lungs. It does not generally present with hypercalcemia and fever. Polycystic kidney disease (Choice E) is caused by genetic mutations that result in the development of multiple cysts in the kidney because of structural abnormalities of the renal tubules. Cysts may form in infancy, childhood, or adulthood, and eventually compress adjacent normal renal parenchyma. Aneurysmal vascular disease and hepatic cysts are often also present in the autosomal dominant form of polycystic kidney disease. Poststreptococcal glomerulonephritis (Choice F) is a type of nephritic syndrome characterized by dark-colored urine, hypertension, and proteinuria following an infection with group A streptococcus. Urinary tract infection (Choice H) generally presents with suprapubic pain, dysuria, and increased urinary frequency and urgency, most commonly occurring in women. Wegener granulomatosis (Choice I) is a necrotizing vasculitis that classically presents with sinopulmonary and renal vessel involvement. Patients classically present with epistaxis, hemoptysis, and hematuria. r \" , r-- r , Exam Section : Item 25 of 50 'I"
+        "A": "and intra-abdominal hemorrhage {",
+        "B": "are both associated with low intravascular volume, which would present on a right-heart catheterization as low pulmonary capillary wedge pressure. Pulmonary embolism {",
+        "D": "presents with chest pain and shortness of breath, often in the setting of immobilization and known deep venous thrombosis. Vital signs may show tachycardia, tachypnea, hypoxia, and, if sufficiently large, hypotension. Right-heart catheterization would show increased pulmonic circuit pressures, but the pulmonary capillary wedge pressure should be normal or low unless concomitant left heart failure is also present. Sepsis {",
+        "E": "presents following a source of infection with fever, tachycardia, tachypnea, hypotension if in septic shock, and end-organ dysfunction. Right-heart catheterization would show increased cardiac output and low pulmonary capillary wedge pressure. r , \" , F'"
       },
       "educational_objective": "",
       "concept": "TBD"
@@ -1519,16 +1531,19 @@
         "text": "Testicular torsion"
       }
     ],
-    "correct_answer": "TBD",
+    "correct_answer": "C",
     "reasoning_patterns": [
       "diagnosis_recognition",
       "vital_sign_interpretation",
       "missed_qualifiers"
     ],
     "explanation": {
-      "correct_answer_explanation": "",
+      "correct_answer_explanation": "Postoperative myocardial infarction is a complication that can occur following physiologically stressful surgical procedures, especially those with high blood loss in patients already predisposed to myocardial infarction (e.g., older, male smokers with history of atherosclerotic cardiovascular disease). Myocardial infarction can present nonspecifically but classically occurs with shortness of breath, chest pain, light-headedness, nausea, vomiting, or altered mental status, and may be complicated by cardiogenic shock, seen as tachycardia, hypotension, and impaired end-organ perfusion (cool extremities, low urine output). In postoperative cases, especially with intubated patients, it may be difficult to assess the presence of myocardial infarction. Evaluation using ECG, serial troponin assays, and echocardiogram should be considered in such cases. Right-heart catheterization can be used to determine cardiac output and index, along with pulmonary capillary wedge pressure, which can distinguish right heart failure from left heart failure. An increased pulmonary capillary wedge pressure indicates that filling pressures in the left heart are abnormal, which is consistent with myocardial infarction and cardiogenic shock.",
       "distractor_explanations": {
-        "A": "Colon diverticulitis occurs because of infection or inflammation of existing colonic diverticula, which are small outpouchings of the bowel wall, most commonly located in the sigmoid colon. Diverticulitis presents with acute left lower quadrant abdominal pain, sometimes accompanied by diarrhea, fever, and tenderness to palpation in the left lower quadrant. An inguinal mass would not be expected. Femoral artery aneurysm (Choice B) is an abnormal dilatation of the femoral artery, which is located in the thigh distal to the inguinal ligament. On examination, a pulsatile mass may be palpable. It would not classically present with fever and leukocytosis. Inguinal lymphadenitis (Choice C) occurs in the setting of infection, inflammation, or malignancy within the lymph nodes and associated tissues along the involved site's drainage pattern. It can be seen in the setting of sexually transmitted infection accompanied by genital lesions. It would seldom cause unstable vital signs, and lymph nodes are often discretely palpable. Testicular torsion (Choice E) occurs when the testicle rotates about itself within the scrotal sac. The resultant twisting of the spermatic cord, which contains the gonadal artery, pampiniform plexus, and gonadal vein results in vascular congestion and potential cessation of venous or arterial flow. This can lead to testicular infarction if not promptly managed. r \" , r-- r , Exam Section : Item 29 of 50 'I"
+        "A": "and intra-abdominal hemorrhage {",
+        "B": "are both associated with low intravascular volume, which would present on a right-heart catheterization as low pulmonary capillary wedge pressure. Pulmonary embolism {",
+        "D": "presents with chest pain and shortness of breath, often in the setting of immobilization and known deep venous thrombosis. Vital signs may show tachycardia, tachypnea, hypoxia, and, if sufficiently large, hypotension. Right-heart catheterization would show increased pulmonic circuit pressures, but the pulmonary capillary wedge pressure should be normal or low unless concomitant left heart failure is also present. Sepsis {",
+        "E": "presents following a source of infection with fever, tachycardia, tachypnea, hypotension if in septic shock, and end-organ dysfunction. Right-heart catheterization would show increased cardiac output and low pulmonary capillary wedge pressure. r , \" , F'"
       },
       "educational_objective": "",
       "concept": "TBD"
@@ -1570,7 +1585,7 @@
         "text": "Laparoscopy"
       }
     ],
-    "correct_answer": "TBD",
+    "correct_answer": "C",
     "reasoning_patterns": [
       "test_selection",
       "missed_qualifiers",
@@ -1578,10 +1593,12 @@
       "treatment_prioritization"
     ],
     "explanation": {
-      "correct_answer_explanation": "",
+      "correct_answer_explanation": "Postoperative myocardial infarction is a complication that can occur following physiologically stressful surgical procedures, especially those with high blood loss in patients already predisposed to myocardial infarction (e.g., older, male smokers with history of atherosclerotic cardiovascular disease). Myocardial infarction can present nonspecifically but classically occurs with shortness of breath, chest pain, light-headedness, nausea, vomiting, or altered mental status, and may be complicated by cardiogenic shock, seen as tachycardia, hypotension, and impaired end-organ perfusion (cool extremities, low urine output). In postoperative cases, especially with intubated patients, it may be difficult to assess the presence of myocardial infarction. Evaluation using ECG, serial troponin assays, and echocardiogram should be considered in such cases. Right-heart catheterization can be used to determine cardiac output and index, along with pulmonary capillary wedge pressure, which can distinguish right heart failure from left heart failure. An increased pulmonary capillary wedge pressure indicates that filling pressures in the left heart are abnormal, which is consistent with myocardial infarction and cardiogenic shock.",
       "distractor_explanations": {
-        "A": "Measurement of serum estradiol concentration is often used to evaluate amenorrhea, infertility, or the response to assistive reproductive technologies. It is not appropriate for the evaluation of a suspicious ovarian mass. X-rays of the abdomen (Choice B) offer a rapid means of evaluating bone structure, calcifications, and bowel gas patterns; the ovaries are not well-visualized on an x-ray because of their tissue density and position within the bony pelvis. Barium enema (Choice C) has no role in the visualization of ovarian masses; rather, it is used to evaluate the lumen of the large bowel to assist in the diagnosis of colonic neoplasms, strictures, fistulas, or postsurgical complications.",
-        "E": "Laparoscopy is the gold-standard diagnostic technique for endometriosis, where it evaluates for endometriotic implant lesions on the peritoneum. It may have an eventual role in the evaluation and treatment of an ovarian mass but is invasive and should be preceded by less invasive means to prevent unnecessary surgery. r \" , r-- r , Exam Section : Item 30 of 50 'I"
+        "A": "and intra-abdominal hemorrhage {",
+        "B": "are both associated with low intravascular volume, which would present on a right-heart catheterization as low pulmonary capillary wedge pressure. Pulmonary embolism {",
+        "D": "presents with chest pain and shortness of breath, often in the setting of immobilization and known deep venous thrombosis. Vital signs may show tachycardia, tachypnea, hypoxia, and, if sufficiently large, hypotension. Right-heart catheterization would show increased pulmonic circuit pressures, but the pulmonary capillary wedge pressure should be normal or low unless concomitant left heart failure is also present. Sepsis {",
+        "E": "presents following a source of infection with fever, tachycardia, tachypnea, hypotension if in septic shock, and end-organ dysfunction. Right-heart catheterization would show increased cardiac output and low pulmonary capillary wedge pressure. r , \" , F'"
       },
       "educational_objective": "",
       "concept": "TBD"
@@ -1745,7 +1762,7 @@
         "text": "Tubuloglomerular feedback"
       }
     ],
-    "correct_answer": "TBD",
+    "correct_answer": "C",
     "reasoning_patterns": [
       "urgency_assessment",
       "lab_interpretation",
@@ -1753,9 +1770,12 @@
       "missed_qualifiers"
     ],
     "explanation": {
-      "correct_answer_explanation": "",
+      "correct_answer_explanation": "Postoperative myocardial infarction is a complication that can occur following physiologically stressful surgical procedures, especially those with high blood loss in patients already predisposed to myocardial infarction (e.g., older, male smokers with history of atherosclerotic cardiovascular disease). Myocardial infarction can present nonspecifically but classically occurs with shortness of breath, chest pain, light-headedness, nausea, vomiting, or altered mental status, and may be complicated by cardiogenic shock, seen as tachycardia, hypotension, and impaired end-organ perfusion (cool extremities, low urine output). In postoperative cases, especially with intubated patients, it may be difficult to assess the presence of myocardial infarction. Evaluation using ECG, serial troponin assays, and echocardiogram should be considered in such cases. Right-heart catheterization can be used to determine cardiac output and index, along with pulmonary capillary wedge pressure, which can distinguish right heart failure from left heart failure. An increased pulmonary capillary wedge pressure indicates that filling pressures in the left heart are abnormal, which is consistent with myocardial infarction and cardiogenic shock.",
       "distractor_explanations": {
-        "A": "Hypovolemia results in prerenal azotemia, which is a classification of AKI characterized by declining urine output and glomerular filtration rate, rising creatinine, and an increase in the serum urea nitrogen to creatinine ratio of greater than 20:1. Hypovolemia should be evident from the patient's risk factors, clinical history, and on physical examination, which may demonstrate dry mucous membranes, skin tenting, cool extremities, weak peripheral pulses, tachycardia, or hypotension. Inappropriate secretion of ADH (vasopressin) (Choice B) often occurs following injury involving the hypothalamic-pituitary axis, or because of ectopic secretion in cases of paraneoplastic syndrome. It presents with euvolemic hypo-osmolar hyponatremia and generally has no effect on the creatinine concentration. Increased production of angiotensin II (Choice C) occurs because of activation of the renin-angiotensin-aldosterone system. Such activation may be appropriate, in cases of hypovolemia or hypotension, or inappropriate, in cases of renal artery stenosis or a reninoma. Tubuloglomerular feedback (Choice E) involves intrinsic regulation of renal blood flow via signaling within the nephron from the downstream tubules back to the glomerulus, such as the macula densa providing feedback based on downstream sodium concentration. It is not appreciably affected by the use of NSAIDs. r \" , r-- r , Exam Section : Item 34 of 50"
+        "A": "and intra-abdominal hemorrhage {",
+        "B": "are both associated with low intravascular volume, which would present on a right-heart catheterization as low pulmonary capillary wedge pressure. Pulmonary embolism {",
+        "D": "presents with chest pain and shortness of breath, often in the setting of immobilization and known deep venous thrombosis. Vital signs may show tachycardia, tachypnea, hypoxia, and, if sufficiently large, hypotension. Right-heart catheterization would show increased pulmonic circuit pressures, but the pulmonary capillary wedge pressure should be normal or low unless concomitant left heart failure is also present. Sepsis {",
+        "E": "presents following a source of infection with fever, tachycardia, tachypnea, hypotension if in septic shock, and end-organ dysfunction. Right-heart catheterization would show increased cardiac output and low pulmonary capillary wedge pressure. r , \" , F'"
       },
       "educational_objective": "",
       "concept": "TBD"
@@ -1849,16 +1869,19 @@
         "text": "Pulmonary stenosis"
       }
     ],
-    "correct_answer": "TBD",
+    "correct_answer": "C",
     "reasoning_patterns": [
       "diagnosis_recognition",
       "vital_sign_interpretation",
       "missed_qualifiers"
     ],
     "explanation": {
-      "correct_answer_explanation": "",
+      "correct_answer_explanation": "Postoperative myocardial infarction is a complication that can occur following physiologically stressful surgical procedures, especially those with high blood loss in patients already predisposed to myocardial infarction (e.g., older, male smokers with history of atherosclerotic cardiovascular disease). Myocardial infarction can present nonspecifically but classically occurs with shortness of breath, chest pain, light-headedness, nausea, vomiting, or altered mental status, and may be complicated by cardiogenic shock, seen as tachycardia, hypotension, and impaired end-organ perfusion (cool extremities, low urine output). In postoperative cases, especially with intubated patients, it may be difficult to assess the presence of myocardial infarction. Evaluation using ECG, serial troponin assays, and echocardiogram should be considered in such cases. Right-heart catheterization can be used to determine cardiac output and index, along with pulmonary capillary wedge pressure, which can distinguish right heart failure from left heart failure. An increased pulmonary capillary wedge pressure indicates that filling pressures in the left heart are abnormal, which is consistent with myocardial infarction and cardiogenic shock.",
       "distractor_explanations": {
-        "A": "Aortic stenosis presents with a crescendo-decrescendo systolic murmur that is heard best at the upper right sternal border and radiates to the carotid arteries. It classically occurs secondary to age-related fibrotic and calcific changes of the valve but can occur earlier in life in cases of a bicuspid aortic valve or chronic rheumatic heart disease. Atrial septal defect (Choice B) is a defect in the interatrial septum. The most common type is an ostium secundum defect, although ostium primum defects are commonly associated with trisomy 21. The atrial septal defect results in a left-to-right shunt with abnormal flow of blood from the left atrium to the right atrium, resulting in relative volume overload of the right atrium and ventricle, which presents as a fixed, split S and low 2 grade physiologic ejection murmur on cardiac auscultation. Coarctation of the aorta (Choice C) refers to a narrowing of the aorta. It is associated with a bicuspid aortic valve and Turner syndrome. It typically presents with a systolic murmur with differential pulses and blood pressures between extremities. Pulmonary stenosis (Choice E) presents with a systolic murmur best heard in the left second intercostal region, which is often crescendo-decrescendo in nature, though generally quieter and with less radiation to the neck compared to aortic stenosis because of the lower pressure in the pulmonary circulation. r \" , r-- r , Exam Section : Item 36 of 50 'I"
+        "A": "and intra-abdominal hemorrhage {",
+        "B": "are both associated with low intravascular volume, which would present on a right-heart catheterization as low pulmonary capillary wedge pressure. Pulmonary embolism {",
+        "D": "presents with chest pain and shortness of breath, often in the setting of immobilization and known deep venous thrombosis. Vital signs may show tachycardia, tachypnea, hypoxia, and, if sufficiently large, hypotension. Right-heart catheterization would show increased pulmonic circuit pressures, but the pulmonary capillary wedge pressure should be normal or low unless concomitant left heart failure is also present. Sepsis {",
+        "E": "presents following a source of infection with fever, tachycardia, tachypnea, hypotension if in septic shock, and end-organ dysfunction. Right-heart catheterization would show increased cardiac output and low pulmonary capillary wedge pressure. r , \" , F'"
       },
       "educational_objective": "",
       "concept": "TBD"
@@ -1900,16 +1923,19 @@
         "text": "Rh incompatibility"
       }
     ],
-    "correct_answer": "TBD",
+    "correct_answer": "C",
     "reasoning_patterns": [
       "lab_interpretation",
       "vital_sign_interpretation",
       "missed_qualifiers"
     ],
     "explanation": {
-      "correct_answer_explanation": "",
+      "correct_answer_explanation": "Postoperative myocardial infarction is a complication that can occur following physiologically stressful surgical procedures, especially those with high blood loss in patients already predisposed to myocardial infarction (e.g., older, male smokers with history of atherosclerotic cardiovascular disease). Myocardial infarction can present nonspecifically but classically occurs with shortness of breath, chest pain, light-headedness, nausea, vomiting, or altered mental status, and may be complicated by cardiogenic shock, seen as tachycardia, hypotension, and impaired end-organ perfusion (cool extremities, low urine output). In postoperative cases, especially with intubated patients, it may be difficult to assess the presence of myocardial infarction. Evaluation using ECG, serial troponin assays, and echocardiogram should be considered in such cases. Right-heart catheterization can be used to determine cardiac output and index, along with pulmonary capillary wedge pressure, which can distinguish right heart failure from left heart failure. An increased pulmonary capillary wedge pressure indicates that filling pressures in the left heart are abnormal, which is consistent with myocardial infarction and cardiogenic shock.",
       "distractor_explanations": {
-        "A": "ABO incompatibility occurs because of a mismatch between donor and recipient blood groups where the native recipient immunoglobulins against the donor antigen (known as an acute, hemolytic transfusion reaction [AHTR]). AHTR can be life threatening because of hemolysis, renal failure, disseminated intravascular coagulation, and hypotension. Diagnosis is based on the history and laboratory workup for hemolysis plus blood group mismatch; treatment begins with immediate discontinuation of the transfusion. Bacterial growth in transfused blood (transfusion-transmitted bacterial infection [TTBI]) (Choice B) is a source of bacteremia following transfusion and can occur when bacteria is introduced at any point from the collection process to the transfusion. Symptoms include fever, rigors, tachycardia, and tachypnea, and can occur anywhere from minutes to hours after transfusion. TTBI is rare with current standards for the proper handling of blood products. Intravenous catheter infection (Choice C) is uncommon with appropriate technique and antiseptic conditions related to peripheral intravenous catheters and would take hours to days to develop. Rh incompatibility (Choice E) is primarily of concern to pregnant women who are Rh-antigen negative; exposure to the Rh antigen can result in immunoglobulin formation and risk for subsequent fetal hemolysis in future pregnancies if the fetus is Rh-positive. Rh incompatibility in males is of minimal clinical significance and does not commonly cause hemolysis following a transfusion. r \" , r-- r , Exam Section : Item 37 of 50 'I"
+        "A": "and intra-abdominal hemorrhage {",
+        "B": "are both associated with low intravascular volume, which would present on a right-heart catheterization as low pulmonary capillary wedge pressure. Pulmonary embolism {",
+        "D": "presents with chest pain and shortness of breath, often in the setting of immobilization and known deep venous thrombosis. Vital signs may show tachycardia, tachypnea, hypoxia, and, if sufficiently large, hypotension. Right-heart catheterization would show increased pulmonic circuit pressures, but the pulmonary capillary wedge pressure should be normal or low unless concomitant left heart failure is also present. Sepsis {",
+        "E": "presents following a source of infection with fever, tachycardia, tachypnea, hypotension if in septic shock, and end-organ dysfunction. Right-heart catheterization would show increased cardiac output and low pulmonary capillary wedge pressure. r , \" , F'"
       },
       "educational_objective": "",
       "concept": "TBD"
@@ -1987,7 +2013,7 @@
         "text": "Decrease the dose of propofol"
       }
     ],
-    "correct_answer": "TBD",
+    "correct_answer": "C",
     "reasoning_patterns": [
       "urgency_assessment",
       "diagnosis_recognition",
@@ -1995,10 +2021,12 @@
       "missed_qualifiers"
     ],
     "explanation": {
-      "correct_answer_explanation": "",
+      "correct_answer_explanation": "Postoperative myocardial infarction is a complication that can occur following physiologically stressful surgical procedures, especially those with high blood loss in patients already predisposed to myocardial infarction (e.g., older, male smokers with history of atherosclerotic cardiovascular disease). Myocardial infarction can present nonspecifically but classically occurs with shortness of breath, chest pain, light-headedness, nausea, vomiting, or altered mental status, and may be complicated by cardiogenic shock, seen as tachycardia, hypotension, and impaired end-organ perfusion (cool extremities, low urine output). In postoperative cases, especially with intubated patients, it may be difficult to assess the presence of myocardial infarction. Evaluation using ECG, serial troponin assays, and echocardiogram should be considered in such cases. Right-heart catheterization can be used to determine cardiac output and index, along with pulmonary capillary wedge pressure, which can distinguish right heart failure from left heart failure. An increased pulmonary capillary wedge pressure indicates that filling pressures in the left heart are abnormal, which is consistent with myocardial infarction and cardiogenic shock.",
       "distractor_explanations": {
-        "A": "Angiodysplasia of the colon and arteriovenous malformation of the colon (Choice C) present with lower gastrointestinal bleeding and are often otherwise asymptomatic. They classically occur in the elderly and persons with a history of hereditary hemorrhagic telangiectasia. The terms are often used synonymously, though classically angiodysplasia refers to disordered growth of a blood vessel, whereas arteriovenous malformation suggests an abnormal vascular tangle involving both arteries and veins. Antibiotic-associated colitis (Choice B) refers to inflammation or infection of the colon, typically presenting as watery or bloody diarrhea, following the administration of antibiotics. The disruption of the normal intestinal microbiota from antibiotics may permit an opportunistic pathogen to infect or invade. Classically, this infection is associated with C/ostridioides difficile (formerly C/ostridium difficile); however, other pathogens, including Klebsiella, Staphylococcus, and Candida species have been implicated. C. difficile infections can present with pseudomembranous colitis (Choice F); on colonoscopy, yellow pseudomembranes are visualized amidst inflamed, ulcerated colonic mucosa.",
-        "D": "Diverticulitis presents because of infection or inflammation of existing colonic diverticula, which are small outpouchings of the bowel wall, often located in the sigmoid colon. Diverticulitis presents with left lower quadrant abdominal pain, sometimes accompanied by diarrhea, fever, and tenderness to palpation in the left lower quadrant. lschemic colitis (Choice E) presents with abdominal pain, nausea, vomiting, or bloody diarrhea, often following a local obstruction to blood flow such as a mesenteric thrombus or embolus, or in a watershed territory in the setting of systemic hypotension. Laboratory investigation often discloses increased serum lactate and leukocytosis, and imaging may disclose bowel wall thickening, pneumatosis intestinalis, or perforation. Rectal carcinoid (Choice G) tumors are neuroendocrine tumors of the gastrointestinal tract but seldom present with the classic neuroendocrine features of flushing and diarrhea; rather, they often present with rectal bleeding, unexplained weight loss, and rectal pain. Volvulus of the colon (Choice I) most commonly refers to a sigmoid volvulus. It is defined as twisting of the colonic mesentery, with the sigmoid and cecum being the most commonly affected segments. Sigmoid volvulus generally presents in an older person, with increasing abdominal distention, abdominal pain, constipation, and possible obstipation. r \" , r-- r , Exam Section : Item 38 of 50 'I 38 . A 32-year-old woman comes to the emergency department because of a 10-hour history of increasingly severe , constant pain in her abdomen . She has nausea but has not vomited. She has systemic lupus erythematosus well controlled with prednisone . She takes no other medications . Her temperature is 38°C (100.4 °F), pulse is 110/min , respirations are 16/min , and blood pressure is 115/65 mm Hg. Examination shows no scleral icterus . The abdomen is soft and tender to palpation over the right upper quadrant ; there is mild guarding without rebound . Laboratory studies show : Hemoglobin 14 g/dL Leukocyte count 12,000/mm 3 Segmented neutrophils 75% Bands 10% Lymphocytes 15% Results of liver function tests are within the reference ranges . Abdominal ultrasonography shows a distended gallbladder with a thickened wall and a gallstone lodged in the neck of the gallbladder . Following administration of cefazolin and an intravenous infusion of lactated Ringer solution , the patient is taken to the operating room for laparoscopic cholecystectomy . On induction with propofol , her blood pressure abruptly decreases to 60/40 mm Hg and remains constant despite administration of an additional 500-mL bolus of lactated Ringer solution . Which of the following is the most appropriate next step in pharmacotherapy? A) Administer diphenhydramine B) Administer dopamine C) Administer gentamicin D) Administer hydrocortisone E) Decrease the dose of propofol CorrectAnswer: D. The adrenal cortex primarily produces the hormones aldosterone, cortisol, and androstenedione. Aldosterone, a mineralocorticoid, is regulated by the renin-angiotensin system and acts at the kidney to increase sodium uptake and promote excretion of potassium and hydrogen ions. Cortisol, a glucocorticoid, has roles in regulation of cardiovascular tone, carbohydrate, protein, and fat metabolism, and sympathetic nervous system function. Chronic use of prednisone, an exogenous glucocorticoid, results in negative feedback on the hypothalamic-pituitary-adrenal axis, with resultant downregulation of adrenocorticotrophic hormone (ACTH). Without ACTH, adrenal cortical atrophy occurs. During physiologic stress such as surgery or infection, the atrophic adrenal parenchyma may not produce sufficient cortisol or aldosterone to meet physiologic demands for maintenance of vascular volume, cardiovascular and sympathetic tone, regulation of electrolytes, and regulation of blood glucose. This is known as an adrenal crisis (Addisonian crisis) characterized by hypotension refractory to fluid resuscitation, hypoglycemia, hyperkalemia, and lethargy. Treatment is through repletion of the deficient hormones. Exogenous administration of hydrocortisone, which has both mineralocorticoid and glucocorticoid activity, is the treatment of choice. Incorrect Answers: A, B, C, and E. Administer diphenhydramine (Choice A), an antihistamine and anticholinergic, would be appropriate for the treatment of an allergic or anaphylactic reaction, which classically presents with flushing, urticaria, nausea, vomiting, diarrhea, bronchospasm, angioedema, and hypotension if shock is present. Administer dopamine (Choice B), a vasopressor and inotrope, may be appropriate in cases of cardiogenic shock. Administer gentamicin (Choice C) is appropriate in cases of septic shock, which typically presents with progressive tachycardia, fever, and hypotension in the setting of severe localized or disseminated infection. Decrease the dose of propofol (Choice E) may be appropriate; however, propofol-induced hypotension typically responds to fluids. Further, it is often self-limited by the patient's endogenous autonomic autoregulation, which is insufficient in cases of adrenal crisis. r \" , r-- r , Exam Section : Item 39 of 50 'I"
+        "A": "and intra-abdominal hemorrhage {",
+        "B": "are both associated with low intravascular volume, which would present on a right-heart catheterization as low pulmonary capillary wedge pressure. Pulmonary embolism {",
+        "D": "presents with chest pain and shortness of breath, often in the setting of immobilization and known deep venous thrombosis. Vital signs may show tachycardia, tachypnea, hypoxia, and, if sufficiently large, hypotension. Right-heart catheterization would show increased pulmonic circuit pressures, but the pulmonary capillary wedge pressure should be normal or low unless concomitant left heart failure is also present. Sepsis {",
+        "E": "presents following a source of infection with fever, tachycardia, tachypnea, hypotension if in septic shock, and end-organ dysfunction. Right-heart catheterization would show increased cardiac output and low pulmonary capillary wedge pressure. r , \" , F'"
       },
       "educational_objective": "",
       "concept": "TBD"
@@ -2436,7 +2464,7 @@
         "text": "Thoracoscopy"
       }
     ],
-    "correct_answer": "TBD",
+    "correct_answer": "A",
     "reasoning_patterns": [
       "test_selection",
       "missed_qualifiers",
@@ -2444,8 +2472,13 @@
       "treatment_prioritization"
     ],
     "explanation": {
-      "correct_answer_explanation": "",
-      "distractor_explanations": {},
+      "correct_answer_explanation": "Adhesions are the most common cause of small bowel obstruction (SBO) in patients with a prior history of intra-abdominal surgery. Obstruction of the small bowel occurs from partial or complete blockage of the small bowel lumen and typically presents with nausea, vomiting, and abdominal pain. Partial SBO allows a degree of continued flatus with diminished stooling, and complete SBO will result in obstipation (no passage of stool or flatus). SBO has many potential etiologies, with peritoneal adhesions that form following a",
+      "distractor_explanations": {
+        "B": "is a microvascular complication of long-standing diabetes mellitus that typically presents in a 'stocking and glove' distribution of the hands and feet. If associated neuropathy of the autonomic nervous system occurs, this can result in complications such as diabetic gastroparesis or dysautonomia. Gastroparesis typically presents with slowly progressive early satiety, nausea, vomiting of undigested food, and abdominal bloating with a succussion splash heard during physical examination. Inguinal hernias (",
+        "C": "are protrusions of abdominal contents into the inguinal region through a defect in the lower abdominal wall. Incarceration and strangulation are potential complications of inguinal hernias and may require surgical correction. Hernias are the second most common cause of SBO in patients with a prior history of intra-abdominal surgery. Mesenteric ischemia (",
+        "D": "can occur in acute and chronic forms. Acute mesenteric ischemic typically occurs from a critical decrease in intestinal blood flow, most commonly from thromboembolic occlusion of a mesenteric vessel (e.g., superior mesenteric artery) or a severe hypoperfusion state (e.g., hemorrhagic shock). This results in ischemia and potential necrosis of the bowel, which presents with abdominal pain out of proportion to the physical examination findings. Sigmoid volvulus (",
+        "E": "results from twisting of the sigmoid mesentery, which can lead to large bowel obstruction and potential rupture or necrosis if not treated. It typically demonstrates a coffee-bean appeara"
+      },
       "educational_objective": "",
       "concept": "TBD"
     }
@@ -2822,17 +2855,19 @@
         "text": "Vitamin C"
       }
     ],
-    "correct_answer": "TBD",
+    "correct_answer": "A",
     "reasoning_patterns": [
       "urgency_assessment",
       "lab_interpretation",
       "missed_qualifiers"
     ],
     "explanation": {
-      "correct_answer_explanation": "",
+      "correct_answer_explanation": "Adhesions are the most common cause of small bowel obstruction (SBO) in patients with a prior history of intra-abdominal surgery. Obstruction of the small bowel occurs from partial or complete blockage of the small bowel lumen and typically presents with nausea, vomiting, and abdominal pain. Partial SBO allows a degree of continued flatus with diminished stooling, and complete SBO will result in obstipation (no passage of stool or flatus). SBO has many potential etiologies, with peritoneal adhesions that form following a",
       "distractor_explanations": {
-        "A": "Dihydroxycholecalciferol would be increased in the setting of primary hyperparathyroidism. PTH results in stimulation of 1a-hydroxylase in the kidney, which leads to conversion of 25- hydroxycholecalciferol to 1,25-dihydroxycholecalciferol.",
-        "B": "Magnesium serum concentrations rise in the setting of hyperparathyroidism. PTH promotes renal tubular absorption of magnesium; as well, hypomagnesemia upregulates PTH secretion. Parathyroid hormone (Choice C) is excessively produced by a parathyroid adenoma, hyperplasia, or carcinoma in primary hyperparathyroidism. It is also increased in secondary and tertiary hyperparathyroidism. Causes of decreased PTH include increased calcium concentration (negative feedback) or hypoparathyroidism (idiopathic or post-surgical). Vitamin C (Choice E) levels are not affected by PTH or calcium concentrations. It is a water-soluble vitamin and its serum concentration is dependent on dietary intake. r \" , r-- r , Exam Section : Item 9 of 50 'I"
+        "B": "is a microvascular complication of long-standing diabetes mellitus that typically presents in a 'stocking and glove' distribution of the hands and feet. If associated neuropathy of the autonomic nervous system occurs, this can result in complications such as diabetic gastroparesis or dysautonomia. Gastroparesis typically presents with slowly progressive early satiety, nausea, vomiting of undigested food, and abdominal bloating with a succussion splash heard during physical examination. Inguinal hernias (",
+        "C": "are protrusions of abdominal contents into the inguinal region through a defect in the lower abdominal wall. Incarceration and strangulation are potential complications of inguinal hernias and may require surgical correction. Hernias are the second most common cause of SBO in patients with a prior history of intra-abdominal surgery. Mesenteric ischemia (",
+        "D": "can occur in acute and chronic forms. Acute mesenteric ischemic typically occurs from a critical decrease in intestinal blood flow, most commonly from thromboembolic occlusion of a mesenteric vessel (e.g., superior mesenteric artery) or a severe hypoperfusion state (e.g., hemorrhagic shock). This results in ischemia and potential necrosis of the bowel, which presents with abdominal pain out of proportion to the physical examination findings. Sigmoid volvulus (",
+        "E": "results from twisting of the sigmoid mesentery, which can lead to large bowel obstruction and potential rupture or necrosis if not treated. It typically demonstrates a coffee-bean appeara"
       },
       "educational_objective": "",
       "concept": "TBD"
@@ -2874,15 +2909,18 @@
         "text": "Bilateral burr holes"
       }
     ],
-    "correct_answer": "TBD",
+    "correct_answer": "A",
     "reasoning_patterns": [
       "urgency_assessment",
       "missed_qualifiers"
     ],
     "explanation": {
-      "correct_answer_explanation": "",
+      "correct_answer_explanation": "Adhesions are the most common cause of small bowel obstruction (SBO) in patients with a prior history of intra-abdominal surgery. Obstruction of the small bowel occurs from partial or complete blockage of the small bowel lumen and typically presents with nausea, vomiting, and abdominal pain. Partial SBO allows a degree of continued flatus with diminished stooling, and complete SBO will result in obstipation (no passage of stool or flatus). SBO has many potential etiologies, with peritoneal adhesions that form following a",
       "distractor_explanations": {
-        "A": "Administration of a bolus of corticosteroids and intravenous administration of mannitol (Choice B) also serve to reduce ICP but are not the appropriate next step in a comatose patient following acute trauma. Corticosteroids and mannitol work to reduce ICP through reduction in cerebral edema, although the effect of the medications is not immediate. This patient is unresponsive, which requires emergent intubation. As well, hyperventilation results in a faster reduction in ICP than corticosteroids or mannitol. MRI of the brain (Choice C) is not indicated in the initial evaluation of acute traumatic brain injuries, as it would delay definitive management of a potentially life-threatening condition. CT scan of the head without contrast is indicated for the emergent evaluation of undifferentiated intracranial pathologies, especially following trauma where there may be concern for calvarial fractures, intracranial hemorrhage, and herniation. Bilateral burr holes (Choice E) would reduce the patient's intracranial pressure and are typically used in the management of extra-axial hematomas. The patient presents in a nonspecific unresponsive state with evidence of increased ICP, which requires emergent intubation and hyperventilation as a temporizing measure prior to definitive surgical management. r \" , r-- r , Exam Section : Item 10 of 50 'I"
+        "B": "is a microvascular complication of long-standing diabetes mellitus that typically presents in a 'stocking and glove' distribution of the hands and feet. If associated neuropathy of the autonomic nervous system occurs, this can result in complications such as diabetic gastroparesis or dysautonomia. Gastroparesis typically presents with slowly progressive early satiety, nausea, vomiting of undigested food, and abdominal bloating with a succussion splash heard during physical examination. Inguinal hernias (",
+        "C": "are protrusions of abdominal contents into the inguinal region through a defect in the lower abdominal wall. Incarceration and strangulation are potential complications of inguinal hernias and may require surgical correction. Hernias are the second most common cause of SBO in patients with a prior history of intra-abdominal surgery. Mesenteric ischemia (",
+        "D": "can occur in acute and chronic forms. Acute mesenteric ischemic typically occurs from a critical decrease in intestinal blood flow, most commonly from thromboembolic occlusion of a mesenteric vessel (e.g., superior mesenteric artery) or a severe hypoperfusion state (e.g., hemorrhagic shock). This results in ischemia and potential necrosis of the bowel, which presents with abdominal pain out of proportion to the physical examination findings. Sigmoid volvulus (",
+        "E": "results from twisting of the sigmoid mesentery, which can lead to large bowel obstruction and potential rupture or necrosis if not treated. It typically demonstrates a coffee-bean appeara"
       },
       "educational_objective": "",
       "concept": "TBD"
@@ -3193,7 +3231,7 @@
         "text": "Low-fat diet N) Upper gastrointestinal series"
       }
     ],
-    "correct_answer": "TBD",
+    "correct_answer": "A",
     "reasoning_patterns": [
       "urgency_assessment",
       "missed_qualifiers",
@@ -3201,8 +3239,13 @@
       "treatment_prioritization"
     ],
     "explanation": {
-      "correct_answer_explanation": "",
-      "distractor_explanations": {},
+      "correct_answer_explanation": "Adhesions are the most common cause of small bowel obstruction (SBO) in patients with a prior history of intra-abdominal surgery. Obstruction of the small bowel occurs from partial or complete blockage of the small bowel lumen and typically presents with nausea, vomiting, and abdominal pain. Partial SBO allows a degree of continued flatus with diminished stooling, and complete SBO will result in obstipation (no passage of stool or flatus). SBO has many potential etiologies, with peritoneal adhesions that form following a",
+      "distractor_explanations": {
+        "B": "is a microvascular complication of long-standing diabetes mellitus that typically presents in a 'stocking and glove' distribution of the hands and feet. If associated neuropathy of the autonomic nervous system occurs, this can result in complications such as diabetic gastroparesis or dysautonomia. Gastroparesis typically presents with slowly progressive early satiety, nausea, vomiting of undigested food, and abdominal bloating with a succussion splash heard during physical examination. Inguinal hernias (",
+        "C": "are protrusions of abdominal contents into the inguinal region through a defect in the lower abdominal wall. Incarceration and strangulation are potential complications of inguinal hernias and may require surgical correction. Hernias are the second most common cause of SBO in patients with a prior history of intra-abdominal surgery. Mesenteric ischemia (",
+        "D": "can occur in acute and chronic forms. Acute mesenteric ischemic typically occurs from a critical decrease in intestinal blood flow, most commonly from thromboembolic occlusion of a mesenteric vessel (e.g., superior mesenteric artery) or a severe hypoperfusion state (e.g., hemorrhagic shock). This results in ischemia and potential necrosis of the bowel, which presents with abdominal pain out of proportion to the physical examination findings. Sigmoid volvulus (",
+        "E": "results from twisting of the sigmoid mesentery, which can lead to large bowel obstruction and potential rupture or necrosis if not treated. It typically demonstrates a coffee-bean appeara"
+      },
       "educational_objective": "",
       "concept": "TBD"
     }
@@ -3398,7 +3441,7 @@
         "text": "Administration of the pneumococcal polysaccharide vaccine , 23-valent , at discharge"
       }
     ],
-    "correct_answer": "TBD",
+    "correct_answer": "A",
     "reasoning_patterns": [
       "urgency_assessment",
       "missed_qualifiers",
@@ -3406,9 +3449,12 @@
       "timeline_errors"
     ],
     "explanation": {
-      "correct_answer_explanation": "",
+      "correct_answer_explanation": "Adhesions are the most common cause of small bowel obstruction (SBO) in patients with a prior history of intra-abdominal surgery. Obstruction of the small bowel occurs from partial or complete blockage of the small bowel lumen and typically presents with nausea, vomiting, and abdominal pain. Partial SBO allows a degree of continued flatus with diminished stooling, and complete SBO will result in obstipation (no passage of stool or flatus). SBO has many potential etiologies, with peritoneal adhesions that form following a",
       "distractor_explanations": {
-        "A": "Implantation of a port instead of a catheter for administration of piperacillin and tazobactam would not be appropriate as the placement of a port is typically reserved for patients requiring repetitive intravenous therapy such as chemotherapy for cancer care, antibiotics for cystic fibrosis, or pain management for sickle cell crises. Initiation of ampicillin and gentamicin therapy instead of piperacillin and tazobactam (Choice B) and addition of fluconazole to the medication regimen for his diverticulitis (Choice C) would have no effect on the development of a CLABSI and acute endocarditis. The prolonged placement of the catheter after the antibiotic course finished was the main cause of the patient's subsequent bloodstream infection. Administration of the pneumococcal polysaccharide vaccine, 23-valent, at discharge (Choice E) would not prevent the development of a CLABSI and endocarditis secondary to S. aureus. r \" , r-- r , Exam Section : Item 20 of 50 'I"
+        "B": "is a microvascular complication of long-standing diabetes mellitus that typically presents in a 'stocking and glove' distribution of the hands and feet. If associated neuropathy of the autonomic nervous system occurs, this can result in complications such as diabetic gastroparesis or dysautonomia. Gastroparesis typically presents with slowly progressive early satiety, nausea, vomiting of undigested food, and abdominal bloating with a succussion splash heard during physical examination. Inguinal hernias (",
+        "C": "are protrusions of abdominal contents into the inguinal region through a defect in the lower abdominal wall. Incarceration and strangulation are potential complications of inguinal hernias and may require surgical correction. Hernias are the second most common cause of SBO in patients with a prior history of intra-abdominal surgery. Mesenteric ischemia (",
+        "D": "can occur in acute and chronic forms. Acute mesenteric ischemic typically occurs from a critical decrease in intestinal blood flow, most commonly from thromboembolic occlusion of a mesenteric vessel (e.g., superior mesenteric artery) or a severe hypoperfusion state (e.g., hemorrhagic shock). This results in ischemia and potential necrosis of the bowel, which presents with abdominal pain out of proportion to the physical examination findings. Sigmoid volvulus (",
+        "E": "results from twisting of the sigmoid mesentery, which can lead to large bowel obstruction and potential rupture or necrosis if not treated. It typically demonstrates a coffee-bean appeara"
       },
       "educational_objective": "",
       "concept": "TBD"
@@ -4271,16 +4317,18 @@
         "text": "Type IV hyperlipoproteinemia"
       }
     ],
-    "correct_answer": "TBD",
+    "correct_answer": "A",
     "reasoning_patterns": [
       "lab_interpretation",
       "missed_qualifiers"
     ],
     "explanation": {
-      "correct_answer_explanation": "",
+      "correct_answer_explanation": "Adhesions are the most common cause of small bowel obstruction (SBO) in patients with a prior history of intra-abdominal surgery. Obstruction of the small bowel occurs from partial or complete blockage of the small bowel lumen and typically presents with nausea, vomiting, and abdominal pain. Partial SBO allows a degree of continued flatus with diminished stooling, and complete SBO will result in obstipation (no passage of stool or flatus). SBO has many potential etiologies, with peritoneal adhesions that form following a",
       "distractor_explanations": {
-        "A": "Acute pancreatitis can result in the development of hypocalcemia secondary to saponification of peripancreatic fat, which in turn binds ionized calcium. This patient demonstrates a normal serum amylase, which would be increased in the setting of acute pancreatitis. Acute renal failure (Choice B) does not result in hypocalcemia as intestinal absorption and parathyroid hormone levels are not acutely affected. Chronic renal failure can result in hypocalcemia and secondary hyperparathyroidism.",
-        "C": "Hypokalemia typically presents with muscle weakness, cramps, abdominal ileus, paresthesias, and hyporeflexia. It is commonly caused by diarrhea, vomiting, loop or thiazide diuretic use, insulin use, or hypomagnesemia. Hypokalemia does not contribute to the development of hypocalcemia. Type IV hyperlipoproteinemia (Choice E) is an autosomal dominant disease that presents with hypertriglyceridemia contained within very-low density lipoproteins. Increased triglycerides are a risk factor for acute pancreatitis, which can result in hypocalcemia, although this patient does not demonstrate findings of acute pancreatitis. r \" , r-- r , Exam Section : Item 39 of 50 'I"
+        "B": "is a microvascular complication of long-standing diabetes mellitus that typically presents in a 'stocking and glove' distribution of the hands and feet. If associated neuropathy of the autonomic nervous system occurs, this can result in complications such as diabetic gastroparesis or dysautonomia. Gastroparesis typically presents with slowly progressive early satiety, nausea, vomiting of undigested food, and abdominal bloating with a succussion splash heard during physical examination. Inguinal hernias (",
+        "C": "are protrusions of abdominal contents into the inguinal region through a defect in the lower abdominal wall. Incarceration and strangulation are potential complications of inguinal hernias and may require surgical correction. Hernias are the second most common cause of SBO in patients with a prior history of intra-abdominal surgery. Mesenteric ischemia (",
+        "D": "can occur in acute and chronic forms. Acute mesenteric ischemic typically occurs from a critical decrease in intestinal blood flow, most commonly from thromboembolic occlusion of a mesenteric vessel (e.g., superior mesenteric artery) or a severe hypoperfusion state (e.g., hemorrhagic shock). This results in ischemia and potential necrosis of the bowel, which presents with abdominal pain out of proportion to the physical examination findings. Sigmoid volvulus (",
+        "E": "results from twisting of the sigmoid mesentery, which can lead to large bowel obstruction and potential rupture or necrosis if not treated. It typically demonstrates a coffee-bean appeara"
       },
       "educational_objective": "",
       "concept": "TBD"
@@ -4605,16 +4653,19 @@
         "text": "Exploratory laparotomy"
       }
     ],
-    "correct_answer": "TBD",
+    "correct_answer": "A",
     "reasoning_patterns": [
       "urgency_assessment",
       "missed_qualifiers",
       "vital_sign_interpretation"
     ],
     "explanation": {
-      "correct_answer_explanation": "",
+      "correct_answer_explanation": "Adhesions are the most common cause of small bowel obstruction (SBO) in patients with a prior history of intra-abdominal surgery. Obstruction of the small bowel occurs from partial or complete blockage of the small bowel lumen and typically presents with nausea, vomiting, and abdominal pain. Partial SBO allows a degree of continued flatus with diminished stooling, and complete SBO will result in obstipation (no passage of stool or flatus). SBO has many potential etiologies, with peritoneal adhesions that form following a",
       "distractor_explanations": {
-        "A": "R L Serial measurement of cardiac enzyme activities would be indicated for evaluation of potential acute coronary syndrome to evaluate progression of myocardial ischemia or infarction. This is not indicated in the setting of sigmoid volvulus. CT scan of the abdomen (Choice B) may be performed if there is doubt about the diagnosis following x-ray. Given the patient's physical examination along with a coffee-bean sign and severe distention of the sigmoid colon on the x-ray, a CT scan is unnecessary. Discontinuation of sertraline (Choice C) is unnecessary as this patient's altered mental status and presentation are secondary to a sigmoid volvulus, which has no association with selective serotonin reuptake inhibitors. Exploratory laparotomy (Choice E) is not indicated for the first-line management of sigmoid volvulus without intestinal necrosis or perforation. r \" , r-- r ,"
+        "B": "is a microvascular complication of long-standing diabetes mellitus that typically presents in a 'stocking and glove' distribution of the hands and feet. If associated neuropathy of the autonomic nervous system occurs, this can result in complications such as diabetic gastroparesis or dysautonomia. Gastroparesis typically presents with slowly progressive early satiety, nausea, vomiting of undigested food, and abdominal bloating with a succussion splash heard during physical examination. Inguinal hernias (",
+        "C": "are protrusions of abdominal contents into the inguinal region through a defect in the lower abdominal wall. Incarceration and strangulation are potential complications of inguinal hernias and may require surgical correction. Hernias are the second most common cause of SBO in patients with a prior history of intra-abdominal surgery. Mesenteric ischemia (",
+        "D": "can occur in acute and chronic forms. Acute mesenteric ischemic typically occurs from a critical decrease in intestinal blood flow, most commonly from thromboembolic occlusion of a mesenteric vessel (e.g., superior mesenteric artery) or a severe hypoperfusion state (e.g., hemorrhagic shock). This results in ischemia and potential necrosis of the bowel, which presents with abdominal pain out of proportion to the physical examination findings. Sigmoid volvulus (",
+        "E": "results from twisting of the sigmoid mesentery, which can lead to large bowel obstruction and potential rupture or necrosis if not treated. It typically demonstrates a coffee-bean appeara"
       },
       "educational_objective": "",
       "concept": "TBD"
@@ -4656,17 +4707,15 @@
         "text": "Transfusion-related acute lung injury"
       }
     ],
-    "correct_answer": "TBD",
+    "correct_answer": "B",
     "reasoning_patterns": [
       "lab_interpretation",
       "vital_sign_interpretation",
       "missed_qualifiers"
     ],
     "explanation": {
-      "correct_answer_explanation": "",
-      "distractor_explanations": {
-        "A": "results from a mismatch between donor and recipient blood groups, caused by native recipient immunoglobulins against the donor antigen. AHTR can be life threatening because of hemolysis, end-stage kidney disease, disseminated intravascular coagulation (DIC), and hypotension. Diagnosis is based on the history and laboratory workup for hemolysis plus type mismatch; treatment begins with immediate discontinuation of the transfusion. Anaphylactic transfusion reaction (Choice B) occurs when transfused blood contains an antigen against which the recipient has preformed lgE antibodies, leading to a rapid and severe type I (immediate) hypersensitivity reaction with diffuse mast cell degranulation and histamine release. Symptoms include flushing, itching, nausea, vomiting, diarrhea, bronchospasm, shortness of breath, angioedema, and in severe cases, airway obstruction and distributive shock. Classically, anaphylactic transfusion reactions are seen in recipients with lgA deficiency when they receive lgA fragments in donated blood. Delayed hemolytic transfusion reaction (DHTR) (Choice C) occurs because of the recipient developing antibodies against donor antigens generally occurring 1 to 10 days following transfusion. Hemolysis, with resultant anemia, jaundice, and fatigue may occur. In general, DHTR symptoms are much milder than the symptoms of AHTR, and end-stage kidney disease, DIC, and hypotension are less common. Transfusion-related acute lung injury (Choice E) generally occurs within 6 hours of a blood transfusion. It is a serious complication that is characterized by noncardiogenic pulmonary edema. Symptoms include fever, dyspnea, severe hypoxemia, and shock. It more frequently occurs following a transfusion of platelets or plasma and is hypothesized to be immune-mediated. r , \" , F' Exam Section : Item 2 of 50 'I"
-      },
+      "correct_answer_explanation": "Cholangiocarcinoma, a malignancy of the bile ducts, characteristically presents late in its course with signs of biliary tree obstruction, including abdominal discomfort, weight loss, nausea, jaundice, and pruritus. Patients may report dark urine or light, pale stools. Many persons have no risk factors; however, those with a history of cirrhosis, sclerosing cholangitis, hepatitis B or C, liver fluke infection, and ulcerative colitis may be at increased risk. Diagnosis occurs through imaging of the abdomen with CT scan or MRI, which may disclose a variety of findings from bile duct wall thickening, a focal mass, or only dilation of bile ducts proximal to the presumed lesion location. Endoscopic retrograde cholangiopancreatography (ERCP) allows for the potential direct visualization of the lesion location, bile duct scrapings or biopsy for definitive diagnosis, and stenting of any associated occlusion. Laboratory analysis typically discloses obstructive (direct) hyperbilirubinemia and increased alkaline phosphatase activity. Treatment includes surgical resection and chemotherapy; however, the condition is often late-stage or terminal at the time of diagnosis. lncorrectAnswers:A, C, D, and E. Measurement of serum carcinoembryonic antigen (CEA) concentration (Choice A) is sometimes increased in cholangiocarcinoma; however, it is nonspecific and is also increased in colorectal carcinoma along with other various malignancies. It may be followed during treatment to assess treatment response but does not have a specific role in diagnosis. Hepatobiliary scintigraphy (HIDA scan) (Choice C) evaluates the patency of the hepatobiliary tree and gallbladder. It is useful in cases of suspected acute cholecystitis, choledocholithiasis, or biliary obstruction with indeterminate ultrasonography findings. It does not permit tissue sampling such as biopsy or therapeutic interventions such as stenting. Liver biopsy (Choice D) is useful in the diagnosis of conditions such as cirrhosis, hepatitis, and hepatocellular carcinoma, though cholangiocarcinoma is generally small and confined to the biliary tree. These features may result in false negative liver biopsy results and should prompt targeted sampling via ERCP. Exploratory laparotomy (Choice E) involves the surgical evaluation of the peritoneal cavity and is commonly employed in the diagnosis and management of abdominal trauma, bowel obstruction, peritonitis, and undifferentiated cases of an acute abdomen. It does not have an immediate role in the diagnosis or management of cholangiocarcinoma. r \" , r-- r ,",
+      "distractor_explanations": {},
       "educational_objective": "",
       "concept": "TBD"
     }
@@ -4943,14 +4992,14 @@
         "text": "Glioblastoma multiforme"
       }
     ],
-    "correct_answer": "TBD",
+    "correct_answer": "B",
     "reasoning_patterns": [
       "urgency_assessment",
       "diagnosis_recognition",
       "missed_qualifiers"
     ],
     "explanation": {
-      "correct_answer_explanation": "",
+      "correct_answer_explanation": "Cholangiocarcinoma, a malignancy of the bile ducts, characteristically presents late in its course with signs of biliary tree obstruction, including abdominal discomfort, weight loss, nausea, jaundice, and pruritus. Patients may report dark urine or light, pale stools. Many persons have no risk factors; however, those with a history of cirrhosis, sclerosing cholangitis, hepatitis B or C, liver fluke infection, and ulcerative colitis may be at increased risk. Diagnosis occurs through imaging of the abdomen with CT scan or MRI, which may disclose a variety of findings from bile duct wall thickening, a focal mass, or only dilation of bile ducts proximal to the presumed lesion location. Endoscopic retrograde cholangiopancreatography (ERCP) allows for the potential direct visualization of the lesion location, bile duct scrapings or biopsy for definitive diagnosis, and stenting of any associated occlusion. Laboratory analysis typically discloses obstructive (direct) hyperbilirubinemia and increased alkaline phosphatase activity. Treatment includes surgical resection and chemotherapy; however, the condition is often late-stage or terminal at the time of diagnosis. lncorrectAnswers:A, C, D, and E. Measurement of serum carcinoembryonic antigen (CEA) concentration (Choice A) is sometimes increased in cholangiocarcinoma; however, it is nonspecific and is also increased in colorectal carcinoma along with other various malignancies. It may be followed during treatment to assess treatment response but does not have a specific role in diagnosis. Hepatobiliary scintigraphy (HIDA scan) (Choice C) evaluates the patency of the hepatobiliary tree and gallbladder. It is useful in cases of suspected acute cholecystitis, choledocholithiasis, or biliary obstruction with indeterminate ultrasonography findings. It does not permit tissue sampling such as biopsy or therapeutic interventions such as stenting. Liver biopsy (Choice D) is useful in the diagnosis of conditions such as cirrhosis, hepatitis, and hepatocellular carcinoma, though cholangiocarcinoma is generally small and confined to the biliary tree. These features may result in false negative liver biopsy results and should prompt targeted sampling via ERCP. Exploratory laparotomy (Choice E) involves the surgical evaluation of the peritoneal cavity and is commonly employed in the diagnosis and management of abdominal trauma, bowel obstruction, peritonitis, and undifferentiated cases of an acute abdomen. It does not have an immediate role in the diagnosis or management of cholangiocarcinoma. r \" , r-- r ,",
       "distractor_explanations": {},
       "educational_objective": "",
       "concept": "TBD"
@@ -5044,7 +5093,7 @@
         "text": "Esophagoduodenostomy"
       }
     ],
-    "correct_answer": "TBD",
+    "correct_answer": "B",
     "reasoning_patterns": [
       "vital_sign_interpretation",
       "missed_qualifiers",
@@ -5053,7 +5102,7 @@
       "treatment_prioritization"
     ],
     "explanation": {
-      "correct_answer_explanation": "",
+      "correct_answer_explanation": "Cholangiocarcinoma, a malignancy of the bile ducts, characteristically presents late in its course with signs of biliary tree obstruction, including abdominal discomfort, weight loss, nausea, jaundice, and pruritus. Patients may report dark urine or light, pale stools. Many persons have no risk factors; however, those with a history of cirrhosis, sclerosing cholangitis, hepatitis B or C, liver fluke infection, and ulcerative colitis may be at increased risk. Diagnosis occurs through imaging of the abdomen with CT scan or MRI, which may disclose a variety of findings from bile duct wall thickening, a focal mass, or only dilation of bile ducts proximal to the presumed lesion location. Endoscopic retrograde cholangiopancreatography (ERCP) allows for the potential direct visualization of the lesion location, bile duct scrapings or biopsy for definitive diagnosis, and stenting of any associated occlusion. Laboratory analysis typically discloses obstructive (direct) hyperbilirubinemia and increased alkaline phosphatase activity. Treatment includes surgical resection and chemotherapy; however, the condition is often late-stage or terminal at the time of diagnosis. lncorrectAnswers:A, C, D, and E. Measurement of serum carcinoembryonic antigen (CEA) concentration (Choice A) is sometimes increased in cholangiocarcinoma; however, it is nonspecific and is also increased in colorectal carcinoma along with other various malignancies. It may be followed during treatment to assess treatment response but does not have a specific role in diagnosis. Hepatobiliary scintigraphy (HIDA scan) (Choice C) evaluates the patency of the hepatobiliary tree and gallbladder. It is useful in cases of suspected acute cholecystitis, choledocholithiasis, or biliary obstruction with indeterminate ultrasonography findings. It does not permit tissue sampling such as biopsy or therapeutic interventions such as stenting. Liver biopsy (Choice D) is useful in the diagnosis of conditions such as cirrhosis, hepatitis, and hepatocellular carcinoma, though cholangiocarcinoma is generally small and confined to the biliary tree. These features may result in false negative liver biopsy results and should prompt targeted sampling via ERCP. Exploratory laparotomy (Choice E) involves the surgical evaluation of the peritoneal cavity and is commonly employed in the diagnosis and management of abdominal trauma, bowel obstruction, peritonitis, and undifferentiated cases of an acute abdomen. It does not have an immediate role in the diagnosis or management of cholangiocarcinoma. r \" , r-- r ,",
       "distractor_explanations": {},
       "educational_objective": "",
       "concept": "TBD"
@@ -5095,13 +5144,13 @@
         "text": "Splenic infarct"
       }
     ],
-    "correct_answer": "TBD",
+    "correct_answer": "B",
     "reasoning_patterns": [
       "missed_qualifiers",
       "vital_sign_interpretation"
     ],
     "explanation": {
-      "correct_answer_explanation": "",
+      "correct_answer_explanation": "Cholangiocarcinoma, a malignancy of the bile ducts, characteristically presents late in its course with signs of biliary tree obstruction, including abdominal discomfort, weight loss, nausea, jaundice, and pruritus. Patients may report dark urine or light, pale stools. Many persons have no risk factors; however, those with a history of cirrhosis, sclerosing cholangitis, hepatitis B or C, liver fluke infection, and ulcerative colitis may be at increased risk. Diagnosis occurs through imaging of the abdomen with CT scan or MRI, which may disclose a variety of findings from bile duct wall thickening, a focal mass, or only dilation of bile ducts proximal to the presumed lesion location. Endoscopic retrograde cholangiopancreatography (ERCP) allows for the potential direct visualization of the lesion location, bile duct scrapings or biopsy for definitive diagnosis, and stenting of any associated occlusion. Laboratory analysis typically discloses obstructive (direct) hyperbilirubinemia and increased alkaline phosphatase activity. Treatment includes surgical resection and chemotherapy; however, the condition is often late-stage or terminal at the time of diagnosis. lncorrectAnswers:A, C, D, and E. Measurement of serum carcinoembryonic antigen (CEA) concentration (Choice A) is sometimes increased in cholangiocarcinoma; however, it is nonspecific and is also increased in colorectal carcinoma along with other various malignancies. It may be followed during treatment to assess treatment response but does not have a specific role in diagnosis. Hepatobiliary scintigraphy (HIDA scan) (Choice C) evaluates the patency of the hepatobiliary tree and gallbladder. It is useful in cases of suspected acute cholecystitis, choledocholithiasis, or biliary obstruction with indeterminate ultrasonography findings. It does not permit tissue sampling such as biopsy or therapeutic interventions such as stenting. Liver biopsy (Choice D) is useful in the diagnosis of conditions such as cirrhosis, hepatitis, and hepatocellular carcinoma, though cholangiocarcinoma is generally small and confined to the biliary tree. These features may result in false negative liver biopsy results and should prompt targeted sampling via ERCP. Exploratory laparotomy (Choice E) involves the surgical evaluation of the peritoneal cavity and is commonly employed in the diagnosis and management of abdominal trauma, bowel obstruction, peritonitis, and undifferentiated cases of an acute abdomen. It does not have an immediate role in the diagnosis or management of cholangiocarcinoma. r \" , r-- r ,",
       "distractor_explanations": {},
       "educational_objective": "",
       "concept": "TBD"
@@ -5432,7 +5481,7 @@
         "text": "Ventriculostomy"
       }
     ],
-    "correct_answer": "TBD",
+    "correct_answer": "B",
     "reasoning_patterns": [
       "urgency_assessment",
       "missed_qualifiers",
@@ -5440,10 +5489,8 @@
       "treatment_prioritization"
     ],
     "explanation": {
-      "correct_answer_explanation": "",
-      "distractor_explanations": {
-        "A": "MRI of the brain with contrast is unnecessary in cases where an emergent diagnosis has been confirmed by a CT scan. MRI would offer no necessary additional information and would delay definitive r \" a II a , • a I a II a I r-- r , Exam Section : Item 16 of 50"
-      },
+      "correct_answer_explanation": "Cholangiocarcinoma, a malignancy of the bile ducts, characteristically presents late in its course with signs of biliary tree obstruction, including abdominal discomfort, weight loss, nausea, jaundice, and pruritus. Patients may report dark urine or light, pale stools. Many persons have no risk factors; however, those with a history of cirrhosis, sclerosing cholangitis, hepatitis B or C, liver fluke infection, and ulcerative colitis may be at increased risk. Diagnosis occurs through imaging of the abdomen with CT scan or MRI, which may disclose a variety of findings from bile duct wall thickening, a focal mass, or only dilation of bile ducts proximal to the presumed lesion location. Endoscopic retrograde cholangiopancreatography (ERCP) allows for the potential direct visualization of the lesion location, bile duct scrapings or biopsy for definitive diagnosis, and stenting of any associated occlusion. Laboratory analysis typically discloses obstructive (direct) hyperbilirubinemia and increased alkaline phosphatase activity. Treatment includes surgical resection and chemotherapy; however, the condition is often late-stage or terminal at the time of diagnosis. lncorrectAnswers:A, C, D, and E. Measurement of serum carcinoembryonic antigen (CEA) concentration (Choice A) is sometimes increased in cholangiocarcinoma; however, it is nonspecific and is also increased in colorectal carcinoma along with other various malignancies. It may be followed during treatment to assess treatment response but does not have a specific role in diagnosis. Hepatobiliary scintigraphy (HIDA scan) (Choice C) evaluates the patency of the hepatobiliary tree and gallbladder. It is useful in cases of suspected acute cholecystitis, choledocholithiasis, or biliary obstruction with indeterminate ultrasonography findings. It does not permit tissue sampling such as biopsy or therapeutic interventions such as stenting. Liver biopsy (Choice D) is useful in the diagnosis of conditions such as cirrhosis, hepatitis, and hepatocellular carcinoma, though cholangiocarcinoma is generally small and confined to the biliary tree. These features may result in false negative liver biopsy results and should prompt targeted sampling via ERCP. Exploratory laparotomy (Choice E) involves the surgical evaluation of the peritoneal cavity and is commonly employed in the diagnosis and management of abdominal trauma, bowel obstruction, peritonitis, and undifferentiated cases of an acute abdomen. It does not have an immediate role in the diagnosis or management of cholangiocarcinoma. r \" , r-- r ,",
+      "distractor_explanations": {},
       "educational_objective": "",
       "concept": "TBD"
     }
@@ -5654,14 +5701,14 @@
         "text": "Si:>lenectomy"
       }
     ],
-    "correct_answer": "TBD",
+    "correct_answer": "B",
     "reasoning_patterns": [
       "missed_qualifiers",
       "vital_sign_interpretation",
       "timeline_errors"
     ],
     "explanation": {
-      "correct_answer_explanation": "",
+      "correct_answer_explanation": "Cholangiocarcinoma, a malignancy of the bile ducts, characteristically presents late in its course with signs of biliary tree obstruction, including abdominal discomfort, weight loss, nausea, jaundice, and pruritus. Patients may report dark urine or light, pale stools. Many persons have no risk factors; however, those with a history of cirrhosis, sclerosing cholangitis, hepatitis B or C, liver fluke infection, and ulcerative colitis may be at increased risk. Diagnosis occurs through imaging of the abdomen with CT scan or MRI, which may disclose a variety of findings from bile duct wall thickening, a focal mass, or only dilation of bile ducts proximal to the presumed lesion location. Endoscopic retrograde cholangiopancreatography (ERCP) allows for the potential direct visualization of the lesion location, bile duct scrapings or biopsy for definitive diagnosis, and stenting of any associated occlusion. Laboratory analysis typically discloses obstructive (direct) hyperbilirubinemia and increased alkaline phosphatase activity. Treatment includes surgical resection and chemotherapy; however, the condition is often late-stage or terminal at the time of diagnosis. lncorrectAnswers:A, C, D, and E. Measurement of serum carcinoembryonic antigen (CEA) concentration (Choice A) is sometimes increased in cholangiocarcinoma; however, it is nonspecific and is also increased in colorectal carcinoma along with other various malignancies. It may be followed during treatment to assess treatment response but does not have a specific role in diagnosis. Hepatobiliary scintigraphy (HIDA scan) (Choice C) evaluates the patency of the hepatobiliary tree and gallbladder. It is useful in cases of suspected acute cholecystitis, choledocholithiasis, or biliary obstruction with indeterminate ultrasonography findings. It does not permit tissue sampling such as biopsy or therapeutic interventions such as stenting. Liver biopsy (Choice D) is useful in the diagnosis of conditions such as cirrhosis, hepatitis, and hepatocellular carcinoma, though cholangiocarcinoma is generally small and confined to the biliary tree. These features may result in false negative liver biopsy results and should prompt targeted sampling via ERCP. Exploratory laparotomy (Choice E) involves the surgical evaluation of the peritoneal cavity and is commonly employed in the diagnosis and management of abdominal trauma, bowel obstruction, peritonitis, and undifferentiated cases of an acute abdomen. It does not have an immediate role in the diagnosis or management of cholangiocarcinoma. r \" , r-- r ,",
       "distractor_explanations": {},
       "educational_objective": "",
       "concept": "TBD"
@@ -5963,7 +6010,7 @@
         "text": "Tertiary hyperparathyroidism"
       }
     ],
-    "correct_answer": "TBD",
+    "correct_answer": "B",
     "reasoning_patterns": [
       "timeline_errors",
       "diagnosis_recognition",
@@ -5971,7 +6018,7 @@
       "lab_interpretation"
     ],
     "explanation": {
-      "correct_answer_explanation": "",
+      "correct_answer_explanation": "Cholangiocarcinoma, a malignancy of the bile ducts, characteristically presents late in its course with signs of biliary tree obstruction, including abdominal discomfort, weight loss, nausea, jaundice, and pruritus. Patients may report dark urine or light, pale stools. Many persons have no risk factors; however, those with a history of cirrhosis, sclerosing cholangitis, hepatitis B or C, liver fluke infection, and ulcerative colitis may be at increased risk. Diagnosis occurs through imaging of the abdomen with CT scan or MRI, which may disclose a variety of findings from bile duct wall thickening, a focal mass, or only dilation of bile ducts proximal to the presumed lesion location. Endoscopic retrograde cholangiopancreatography (ERCP) allows for the potential direct visualization of the lesion location, bile duct scrapings or biopsy for definitive diagnosis, and stenting of any associated occlusion. Laboratory analysis typically discloses obstructive (direct) hyperbilirubinemia and increased alkaline phosphatase activity. Treatment includes surgical resection and chemotherapy; however, the condition is often late-stage or terminal at the time of diagnosis. lncorrectAnswers:A, C, D, and E. Measurement of serum carcinoembryonic antigen (CEA) concentration (Choice A) is sometimes increased in cholangiocarcinoma; however, it is nonspecific and is also increased in colorectal carcinoma along with other various malignancies. It may be followed during treatment to assess treatment response but does not have a specific role in diagnosis. Hepatobiliary scintigraphy (HIDA scan) (Choice C) evaluates the patency of the hepatobiliary tree and gallbladder. It is useful in cases of suspected acute cholecystitis, choledocholithiasis, or biliary obstruction with indeterminate ultrasonography findings. It does not permit tissue sampling such as biopsy or therapeutic interventions such as stenting. Liver biopsy (Choice D) is useful in the diagnosis of conditions such as cirrhosis, hepatitis, and hepatocellular carcinoma, though cholangiocarcinoma is generally small and confined to the biliary tree. These features may result in false negative liver biopsy results and should prompt targeted sampling via ERCP. Exploratory laparotomy (Choice E) involves the surgical evaluation of the peritoneal cavity and is commonly employed in the diagnosis and management of abdominal trauma, bowel obstruction, peritonitis, and undifferentiated cases of an acute abdomen. It does not have an immediate role in the diagnosis or management of cholangiocarcinoma. r \" , r-- r ,",
       "distractor_explanations": {},
       "educational_objective": "",
       "concept": "TBD"
@@ -6133,7 +6180,7 @@
         "text": "Mastitis"
       }
     ],
-    "correct_answer": "TBD",
+    "correct_answer": "B",
     "reasoning_patterns": [
       "diagnosis_recognition",
       "vital_sign_interpretation",
@@ -6141,13 +6188,8 @@
       "timeline_errors"
     ],
     "explanation": {
-      "correct_answer_explanation": "",
-      "distractor_explanations": {
-        "A": "Breast abscess is a potential complication of mastitis, most commonly occurring in breast-feeding women. It typically presents following mastitis, with a localized region of indurated, fluctuant tissue. Breast cancer (Choice B) encompasses many types of breast carcinoma, including invasive ductal and lobular carcinoma, medullary carcinoma, inflammatory breast carcinoma, and cystosarcoma phyllodes. The most common type is invasive ductal carcinoma, which typically presents as a palpable, immobile breast mass, which may demonstrate features such as spiculated margins and microcalcifications on mammography. Malignancies can be associated with pathologic nipple discharge, although intraductal papilloma is the most common cause of unilateral bloody nipple discharge. Ductal ectasia (Choice C) more often occurs in perimenopausal women and is a widening of the lactiferous ducts with thickening of their walls, often near the nipple. Ectatic ducts are often asymptomatic until they become blocked, at which time they may become nodular or painful. Bloody discharge is uncommon. Fat necrosis (Choice D) is often detected in the breast as a palpable nodularity in an area of previous trauma. On imaging, peripheral calcifications are often seen.",
-        "E": "Fibroadenoma presents as a unilateral, nontender, mobile, rubbery mass in the breast. They are benign and are not associated with nipple discharge. Fibrocystic changes of the breast (Choice F) are a benign and cyclic cause of breast pain that presents with focal masses or nodules. Nipple discharge is uncommon in fibrocystic breast disease.",
-        "G": "Galactocele presents as a painless breast lump typically following the cessation of lactation. It does not present with pathologic nipple discharge and often resolves spontaneously.",
-        "I": "Mastitis presents with erythema and induration in an area of tender, warm skin. It classically occurs in breast-feeding mothers as a consequence of microtrauma to the nipple leading to inoculation from cutaneous or oral flora. Staphylococcus aureus is a common pathogen. It does not generally present with bloody nipple discharge. r \" , r-- r , Exam Section : Item 29 of 50"
-      },
+      "correct_answer_explanation": "Cholangiocarcinoma, a malignancy of the bile ducts, characteristically presents late in its course with signs of biliary tree obstruction, including abdominal discomfort, weight loss, nausea, jaundice, and pruritus. Patients may report dark urine or light, pale stools. Many persons have no risk factors; however, those with a history of cirrhosis, sclerosing cholangitis, hepatitis B or C, liver fluke infection, and ulcerative colitis may be at increased risk. Diagnosis occurs through imaging of the abdomen with CT scan or MRI, which may disclose a variety of findings from bile duct wall thickening, a focal mass, or only dilation of bile ducts proximal to the presumed lesion location. Endoscopic retrograde cholangiopancreatography (ERCP) allows for the potential direct visualization of the lesion location, bile duct scrapings or biopsy for definitive diagnosis, and stenting of any associated occlusion. Laboratory analysis typically discloses obstructive (direct) hyperbilirubinemia and increased alkaline phosphatase activity. Treatment includes surgical resection and chemotherapy; however, the condition is often late-stage or terminal at the time of diagnosis. lncorrectAnswers:A, C, D, and E. Measurement of serum carcinoembryonic antigen (CEA) concentration (Choice A) is sometimes increased in cholangiocarcinoma; however, it is nonspecific and is also increased in colorectal carcinoma along with other various malignancies. It may be followed during treatment to assess treatment response but does not have a specific role in diagnosis. Hepatobiliary scintigraphy (HIDA scan) (Choice C) evaluates the patency of the hepatobiliary tree and gallbladder. It is useful in cases of suspected acute cholecystitis, choledocholithiasis, or biliary obstruction with indeterminate ultrasonography findings. It does not permit tissue sampling such as biopsy or therapeutic interventions such as stenting. Liver biopsy (Choice D) is useful in the diagnosis of conditions such as cirrhosis, hepatitis, and hepatocellular carcinoma, though cholangiocarcinoma is generally small and confined to the biliary tree. These features may result in false negative liver biopsy results and should prompt targeted sampling via ERCP. Exploratory laparotomy (Choice E) involves the surgical evaluation of the peritoneal cavity and is commonly employed in the diagnosis and management of abdominal trauma, bowel obstruction, peritonitis, and undifferentiated cases of an acute abdomen. It does not have an immediate role in the diagnosis or management of cholangiocarcinoma. r \" , r-- r ,",
+      "distractor_explanations": {},
       "educational_objective": "",
       "concept": "TBD"
     }
@@ -6315,7 +6357,7 @@
         "text": "No further diagnostic studies necessary"
       }
     ],
-    "correct_answer": "TBD",
+    "correct_answer": "B",
     "reasoning_patterns": [
       "vital_sign_interpretation",
       "urgency_assessment",
@@ -6324,11 +6366,8 @@
       "treatment_prioritization"
     ],
     "explanation": {
-      "correct_answer_explanation": "",
-      "distractor_explanations": {
-        "A": "Venous duplex ultrasonography of the right lower extremity is appropriate to investigate the diagnosis of deep venous thrombosis, which can result from stasis in the setting of orthopaedic injury. However, it is not the most likely immediate complication of a knee dislocation. CT scan of the right lower extremity (Choice B) provides detail about bony, vascular, and soft tissue structures; however, a CT angiography protocol would be required for appropriate vessel imaging detail.",
-        "C": "Arthroscopy may eventually be required in the diagnosis or repair of potentially damaged knee ligaments from the dislocation; however, this is not the most immediate limb-threatening complication. Nerve conduction studies (Choice E) may eventually be indicated to diagnose injury to the distal sciatic nerve branches such as the tibial and peroneal nerves but would not take precedence over arterial injury assessment in a patient where motor function had been restored. No further diagnostic studies necessary (Choice F) is inappropriate; posterior knee dislocation is highly associated with arterial injury and additional studies are indicated to prevent a delay in diagnosis and treatment. r \" , r-- r , Exam Section : Item 33 of 50"
-      },
+      "correct_answer_explanation": "Cholangiocarcinoma, a malignancy of the bile ducts, characteristically presents late in its course with signs of biliary tree obstruction, including abdominal discomfort, weight loss, nausea, jaundice, and pruritus. Patients may report dark urine or light, pale stools. Many persons have no risk factors; however, those with a history of cirrhosis, sclerosing cholangitis, hepatitis B or C, liver fluke infection, and ulcerative colitis may be at increased risk. Diagnosis occurs through imaging of the abdomen with CT scan or MRI, which may disclose a variety of findings from bile duct wall thickening, a focal mass, or only dilation of bile ducts proximal to the presumed lesion location. Endoscopic retrograde cholangiopancreatography (ERCP) allows for the potential direct visualization of the lesion location, bile duct scrapings or biopsy for definitive diagnosis, and stenting of any associated occlusion. Laboratory analysis typically discloses obstructive (direct) hyperbilirubinemia and increased alkaline phosphatase activity. Treatment includes surgical resection and chemotherapy; however, the condition is often late-stage or terminal at the time of diagnosis. lncorrectAnswers:A, C, D, and E. Measurement of serum carcinoembryonic antigen (CEA) concentration (Choice A) is sometimes increased in cholangiocarcinoma; however, it is nonspecific and is also increased in colorectal carcinoma along with other various malignancies. It may be followed during treatment to assess treatment response but does not have a specific role in diagnosis. Hepatobiliary scintigraphy (HIDA scan) (Choice C) evaluates the patency of the hepatobiliary tree and gallbladder. It is useful in cases of suspected acute cholecystitis, choledocholithiasis, or biliary obstruction with indeterminate ultrasonography findings. It does not permit tissue sampling such as biopsy or therapeutic interventions such as stenting. Liver biopsy (Choice D) is useful in the diagnosis of conditions such as cirrhosis, hepatitis, and hepatocellular carcinoma, though cholangiocarcinoma is generally small and confined to the biliary tree. These features may result in false negative liver biopsy results and should prompt targeted sampling via ERCP. Exploratory laparotomy (Choice E) involves the surgical evaluation of the peritoneal cavity and is commonly employed in the diagnosis and management of abdominal trauma, bowel obstruction, peritonitis, and undifferentiated cases of an acute abdomen. It does not have an immediate role in the diagnosis or management of cholangiocarcinoma. r \" , r-- r ,",
+      "distractor_explanations": {},
       "educational_objective": "",
       "concept": "TBD"
     }
@@ -6565,17 +6604,15 @@
         "text": "Pain response related to the fractures"
       }
     ],
-    "correct_answer": "TBD",
+    "correct_answer": "B",
     "reasoning_patterns": [
       "urgency_assessment",
       "missed_qualifiers",
       "vital_sign_interpretation"
     ],
     "explanation": {
-      "correct_answer_explanation": "",
-      "distractor_explanations": {
-        "A": "Acute renal artery dissection can cause secondary hypertension from activation of the renin-angiotensin-aldosterone system, though clinical evidence including thoracoabdominal trauma, flank bruising, or a bruit may be present. Bradycardia and head trauma with signs of a basilar skull fracture (hemotympanum) are more suggestive of intracranial bleeding. Amphetamine intoxication (Choice B) and increased serum catecholamine concentration (Choice E) present with signs of sympathomimetic toxicity including hypertension, tachycardia, tachypnea, diaphoresis, and dilated pupils. Decreased minute ventilation (Choice C) does not generally have a direct causal relationship with mean arterial pressure; however, it can be associated with increased intracranial pressure through respiratory acidosis inducing cerebral vasodilation. Pain response related to the fractures (Choice F) is variably associated with signs of sympathetic or parasympathetic stimulus, which would include hypertension and tachycardia in the setting of increased sympathetic stimulus, or bradycardia and hypotension in the event of a vagal response to pain. r \" , r-- r , Exam Section : Item 38 of 50 'I"
-      },
+      "correct_answer_explanation": "Cholangiocarcinoma, a malignancy of the bile ducts, characteristically presents late in its course with signs of biliary tree obstruction, including abdominal discomfort, weight loss, nausea, jaundice, and pruritus. Patients may report dark urine or light, pale stools. Many persons have no risk factors; however, those with a history of cirrhosis, sclerosing cholangitis, hepatitis B or C, liver fluke infection, and ulcerative colitis may be at increased risk. Diagnosis occurs through imaging of the abdomen with CT scan or MRI, which may disclose a variety of findings from bile duct wall thickening, a focal mass, or only dilation of bile ducts proximal to the presumed lesion location. Endoscopic retrograde cholangiopancreatography (ERCP) allows for the potential direct visualization of the lesion location, bile duct scrapings or biopsy for definitive diagnosis, and stenting of any associated occlusion. Laboratory analysis typically discloses obstructive (direct) hyperbilirubinemia and increased alkaline phosphatase activity. Treatment includes surgical resection and chemotherapy; however, the condition is often late-stage or terminal at the time of diagnosis. lncorrectAnswers:A, C, D, and E. Measurement of serum carcinoembryonic antigen (CEA) concentration (Choice A) is sometimes increased in cholangiocarcinoma; however, it is nonspecific and is also increased in colorectal carcinoma along with other various malignancies. It may be followed during treatment to assess treatment response but does not have a specific role in diagnosis. Hepatobiliary scintigraphy (HIDA scan) (Choice C) evaluates the patency of the hepatobiliary tree and gallbladder. It is useful in cases of suspected acute cholecystitis, choledocholithiasis, or biliary obstruction with indeterminate ultrasonography findings. It does not permit tissue sampling such as biopsy or therapeutic interventions such as stenting. Liver biopsy (Choice D) is useful in the diagnosis of conditions such as cirrhosis, hepatitis, and hepatocellular carcinoma, though cholangiocarcinoma is generally small and confined to the biliary tree. These features may result in false negative liver biopsy results and should prompt targeted sampling via ERCP. Exploratory laparotomy (Choice E) involves the surgical evaluation of the peritoneal cavity and is commonly employed in the diagnosis and management of abdominal trauma, bowel obstruction, peritonitis, and undifferentiated cases of an acute abdomen. It does not have an immediate role in the diagnosis or management of cholangiocarcinoma. r \" , r-- r ,",
+      "distractor_explanations": {},
       "educational_objective": "",
       "concept": "TBD"
     }
@@ -7386,7 +7423,7 @@
         "text": "Osteomyelitis"
       }
     ],
-    "correct_answer": "TBD",
+    "correct_answer": "E",
     "reasoning_patterns": [
       "vital_sign_interpretation",
       "urgency_assessment",
@@ -7395,8 +7432,13 @@
       "timeline_errors"
     ],
     "explanation": {
-      "correct_answer_explanation": "",
-      "distractor_explanations": {},
+      "correct_answer_explanation": "Surgical exploration of the scrotum is indicated for the management of testicular torsion. Testicular torsion occurs when the testicle twists on the spermatic cord, resulting in subsequent insufficient testicular blood supply. Patients typically present with acute, severe testicular pain, swelling, and erythema. On physical examination, the testicle typically demonstrates an abnormal lie (e.g., transverse), extreme tenderness to palpation, absent cremasteric reflex, and pain that does not improve with elevation of the scrotum (as it does in epididymitis). The diagnosis is often clinical, though in cases of uncertainty, evaluation begins with ultrasonography, which delineates testicular size, sonographic features, blood flow, and epididymal anatomy. Management requires immediate surgical exploration of the scrotum with detorsion of the spermatic cord followed by bilateral orchiopexy to prevent future testicular torsion.",
+      "distractor_explanations": {
+        "A": "is used to differentiate a hydrocele from a varicocele. Hydroceles characteristically transilluminate with the application of light to the scrotum, while varicoceles do not. Application of an ice pack to the right hemiscrotum (",
+        "B": "can be used for symptomatic treatment in epididymitis and orchitis to attempt to relieve inflammation and swelling. Technetium Tc 99m sestamibi scan of the testes (",
+        "C": "can be used to evaluate testicular blood flow; however, this technique is outdated as advances in technology make ultrasonography the first-line diagnostic imaging exam for the evaluation of testicular torsion. Intravenous administration of antibiotics (",
+        "D": "may be necessary for severe cases of epididymitis or orchitis. These typically present as acute unilateral scrotal pain, swelling, and erythema, with decreased pain on scrotal elevation and evidence of abnormally increased vascularity on testicular Doppler ultrasonography. r , \" , F'"
+      },
       "educational_objective": "",
       "concept": "TBD"
     }
@@ -7722,16 +7764,18 @@
         "text": "Spinal stenosis"
       }
     ],
-    "correct_answer": "TBD",
+    "correct_answer": "E",
     "reasoning_patterns": [
       "diagnosis_recognition",
       "missed_qualifiers"
     ],
     "explanation": {
-      "correct_answer_explanation": "",
+      "correct_answer_explanation": "Surgical exploration of the scrotum is indicated for the management of testicular torsion. Testicular torsion occurs when the testicle twists on the spermatic cord, resulting in subsequent insufficient testicular blood supply. Patients typically present with acute, severe testicular pain, swelling, and erythema. On physical examination, the testicle typically demonstrates an abnormal lie (e.g., transverse), extreme tenderness to palpation, absent cremasteric reflex, and pain that does not improve with elevation of the scrotum (as it does in epididymitis). The diagnosis is often clinical, though in cases of uncertainty, evaluation begins with ultrasonography, which delineates testicular size, sonographic features, blood flow, and epididymal anatomy. Management requires immediate surgical exploration of the scrotum with detorsion of the spermatic cord followed by bilateral orchiopexy to prevent future testicular torsion.",
       "distractor_explanations": {
-        "A": "Calcaneal stress fractures occur secondary to increased, repetitive physical activity, often in the setting of relative energy deficiency syndrome (formerly known as the female athlete triad).",
-        "B": "Osteoarthritis is a noninflammatory arthropathy secondary to deterioration of articular cartilage, often involving weight-bearing or chronically overused joints (e.g., knee, hips, spine, wrist). Pain secondary to osteoarthritis is usually worse at the end of the day following activity, not at the onset of standing. Peripheral vascular disease (Choice C) is common among older males who smoke cigarettes with a history of hypertension, diabetes mellitus, or hyperlipidemia. It typically presents as leg pain, known as claudication, that occurs during exertion and improves with rest. Claudication results from increased physiologic demand of the skeletal musculature for oxygen, which cannot be met because of the fixed obstruction to flow caused by stenotic arteries. Spinal stenosis (Choice E) presents as neurogenic claudication, characterized by leg pain when standing or walking downhill, which improves when bending forward, seated, or walking uphill. r \" , r-- r , Exam Section : Item 16 of 50 'I"
+        "A": "is used to differentiate a hydrocele from a varicocele. Hydroceles characteristically transilluminate with the application of light to the scrotum, while varicoceles do not. Application of an ice pack to the right hemiscrotum (",
+        "B": "can be used for symptomatic treatment in epididymitis and orchitis to attempt to relieve inflammation and swelling. Technetium Tc 99m sestamibi scan of the testes (",
+        "C": "can be used to evaluate testicular blood flow; however, this technique is outdated as advances in technology make ultrasonography the first-line diagnostic imaging exam for the evaluation of testicular torsion. Intravenous administration of antibiotics (",
+        "D": "may be necessary for severe cases of epididymitis or orchitis. These typically present as acute unilateral scrotal pain, swelling, and erythema, with decreased pain on scrotal elevation and evidence of abnormally increased vascularity on testicular Doppler ultrasonography. r , \" , F'"
       },
       "educational_objective": "",
       "concept": "TBD"
@@ -8860,17 +8904,17 @@
         "text": "Sucralfate"
       }
     ],
-    "correct_answer": "TBD",
+    "correct_answer": "E",
     "reasoning_patterns": [
       "missed_qualifiers"
     ],
     "explanation": {
-      "correct_answer_explanation": "",
+      "correct_answer_explanation": "Surgical exploration of the scrotum is indicated for the management of testicular torsion. Testicular torsion occurs when the testicle twists on the spermatic cord, resulting in subsequent insufficient testicular blood supply. Patients typically present with acute, severe testicular pain, swelling, and erythema. On physical examination, the testicle typically demonstrates an abnormal lie (e.g., transverse), extreme tenderness to palpation, absent cremasteric reflex, and pain that does not improve with elevation of the scrotum (as it does in epididymitis). The diagnosis is often clinical, though in cases of uncertainty, evaluation begins with ultrasonography, which delineates testicular size, sonographic features, blood flow, and epididymal anatomy. Management requires immediate surgical exploration of the scrotum with detorsion of the spermatic cord followed by bilateral orchiopexy to prevent future testicular torsion.",
       "distractor_explanations": {
-        "A": "is a type of antacid, which neutralizes stomach acid. It is often used for symptomatic relief of GERD but does not result in persistent neutralization of stomach contents as do proton pump inhibitors. As well, aluminum hydroxide can result in constipation and hypophosphatemia.",
-        "B": "Bethanechol is a cholinomimetic agent that activates peristaltic contraction of the bowel and bladder smooth muscle. It is primarily used in the setting of severe postoperative ileus or neurogenic urinary retention.",
-        "C": "Metoclopramide is a D2 receptor antagonist that increases gastric contractility and motility. It is used primarily for the treatment of gastroparesis and as an antiemetic. It can be used for persistent GERD because of its effect on increasing lower esophageal sphincter tone, but because of its potentially severe adverse effects (e.g., parkinsonism, tardive dyskinesia), this should only be used for severe, resistant cases of GERD.",
-        "E": "Sucralfate provides physical protection to the gastric mucosa and gastric ulcers, allowing for reestablishment of the pH mucosal gradient and resulting in improved ulcer healing. It is not as effective as a proton pump inhibitor in managing GERD. r \" , r-- r , Exam Section : Item 35 of 50 'I"
+        "A": "is used to differentiate a hydrocele from a varicocele. Hydroceles characteristically transilluminate with the application of light to the scrotum, while varicoceles do not. Application of an ice pack to the right hemiscrotum (",
+        "B": "can be used for symptomatic treatment in epididymitis and orchitis to attempt to relieve inflammation and swelling. Technetium Tc 99m sestamibi scan of the testes (",
+        "C": "can be used to evaluate testicular blood flow; however, this technique is outdated as advances in technology make ultrasonography the first-line diagnostic imaging exam for the evaluation of testicular torsion. Intravenous administration of antibiotics (",
+        "D": "may be necessary for severe cases of epididymitis or orchitis. These typically present as acute unilateral scrotal pain, swelling, and erythema, with decreased pain on scrotal elevation and evidence of abnormally increased vascularity on testicular Doppler ultrasonography. r , \" , F'"
       },
       "educational_objective": "",
       "concept": "TBD"
@@ -9487,7 +9531,7 @@
         "text": "Tracheostomy"
       }
     ],
-    "correct_answer": "TBD",
+    "correct_answer": "E",
     "reasoning_patterns": [
       "urgency_assessment",
       "missed_qualifiers",
@@ -9495,10 +9539,12 @@
       "treatment_prioritization"
     ],
     "explanation": {
-      "correct_answer_explanation": "",
+      "correct_answer_explanation": "Surgical exploration of the scrotum is indicated for the management of testicular torsion. Testicular torsion occurs when the testicle twists on the spermatic cord, resulting in subsequent insufficient testicular blood supply. Patients typically present with acute, severe testicular pain, swelling, and erythema. On physical examination, the testicle typically demonstrates an abnormal lie (e.g., transverse), extreme tenderness to palpation, absent cremasteric reflex, and pain that does not improve with elevation of the scrotum (as it does in epididymitis). The diagnosis is often clinical, though in cases of uncertainty, evaluation begins with ultrasonography, which delineates testicular size, sonographic features, blood flow, and epididymal anatomy. Management requires immediate surgical exploration of the scrotum with detorsion of the spermatic cord followed by bilateral orchiopexy to prevent future testicular torsion.",
       "distractor_explanations": {
-        "A": "Observation only is not appropriate as the patient presents with findings concerning for an inhalation injury, which presents an increased risk for acute airway obstruction. This requires endotracheal intubation to protect the airway. Inhaled corticosteroid and epinephrine therapy (Choice B) is appropriate for the treatment of diseases causing airway edema and stridor such as croup. In inhalation injury, the airway should first be mechanically protected through endotracheal intubation. Intravenous corticosteroid therapy and intermittent positive pressure breathing (Choice C) is appropriate therapy for a chronic obstructive pulmonary disease exacerbation. Noninvasive positive pressure ventilation would not adequately protect the patient's airway from obstruction.",
-        "E": "Tracheostomy may be necessary if securing the airway via laryngoscopy is unsuccessful; however, it should not be attempted until after traditional attempts at orotracheal or nasotracheal intubation have failed. r \" , r-- r ,"
+        "A": "is used to differentiate a hydrocele from a varicocele. Hydroceles characteristically transilluminate with the application of light to the scrotum, while varicoceles do not. Application of an ice pack to the right hemiscrotum (",
+        "B": "can be used for symptomatic treatment in epididymitis and orchitis to attempt to relieve inflammation and swelling. Technetium Tc 99m sestamibi scan of the testes (",
+        "C": "can be used to evaluate testicular blood flow; however, this technique is outdated as advances in technology make ultrasonography the first-line diagnostic imaging exam for the evaluation of testicular torsion. Intravenous administration of antibiotics (",
+        "D": "may be necessary for severe cases of epididymitis or orchitis. These typically present as acute unilateral scrotal pain, swelling, and erythema, with decreased pain on scrotal elevation and evidence of abnormally increased vascularity on testicular Doppler ultrasonography. r , \" , F'"
       },
       "educational_objective": "",
       "concept": "TBD"
