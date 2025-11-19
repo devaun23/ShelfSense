@@ -169,6 +169,12 @@ How this helps reach 99th percentile
 5. **Always focus**: on getting to 99th percentile
 6. **Always test**: behavioral tracking and adaptation
 7. **Always document**: why each decision helps mastery
+8. **ALWAYS RUN TASKS SIMULTANEOUSLY**: Maximum parallelization
+   - Launch multiple agents concurrently when possible
+   - Run background processes for long-running tasks
+   - Never wait for one task when others can run in parallel
+   - Use task agents, bash background processes, and parallel tool calls
+   - Example: Extract 3 PDFs at once, not sequentially
 
 ---
 
