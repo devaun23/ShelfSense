@@ -66,7 +66,7 @@ def get_next_question(user_id: str, db: Session = Depends(get_db)):
 def submit_answer(request: SubmitAnswerRequest, db: Session = Depends(get_db)):
     """
     Submit answer and record attempt
-    Returns immediate feedback
+    Returns immediate feedback and schedules spaced repetition
     """
     # Get question
     question = db.query(Question).filter(Question.id == request.question_id).first()
@@ -91,6 +91,16 @@ def submit_answer(request: SubmitAnswerRequest, db: Session = Depends(get_db)):
 
     db.add(attempt)
     db.commit()
+
+    # Schedule spaced repetition review
+    from app.services.spaced_repetition import schedule_review
+    schedule_review(
+        db=db,
+        user_id=request.user_id,
+        question_id=request.question_id,
+        is_correct=is_correct,
+        source=question.source
+    )
 
     return AnswerFeedback(
         is_correct=is_correct,

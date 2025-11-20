@@ -32,7 +32,7 @@ class Question(Base):
     vignette = Column(Text, nullable=False)
     answer_key = Column(String, nullable=False)
     choices = Column(JSON, nullable=False)  # List of answer choices
-    explanation = Column(Text, nullable=True)
+    explanation = Column(JSON, nullable=True)  # Framework-based explanation (JSON) or legacy text
     source = Column(String, nullable=True, index=True)  # Indexed for filtering by specialty
     recency_tier = Column(Integer, nullable=True, index=True)  # Indexed for filtering by tier
     recency_weight = Column(Float, nullable=True, index=True)  # Indexed for sorting by recency
@@ -77,3 +77,39 @@ class UserPerformance(Base):
 
     # Relationships
     user = relationship("User", back_populates="performance")
+
+
+class ScheduledReview(Base):
+    """Tracks spaced repetition schedule for questions"""
+    __tablename__ = "scheduled_reviews"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False, index=True)
+    question_id = Column(String, ForeignKey("questions.id"), nullable=False, index=True)
+    scheduled_for = Column(DateTime, nullable=False, index=True)  # When to review
+    review_interval = Column(String, nullable=False)  # "1d", "3d", "7d", "14d", "30d"
+    times_reviewed = Column(Integer, default=0)  # How many times reviewed
+    learning_stage = Column(String, default="New")  # "New", "Learning", "Review", "Mastered"
+    source = Column(String, nullable=True)  # Topic/source for filtering
+    created_at = Column(DateTime, default=datetime.utcnow)
+    last_reviewed = Column(DateTime, nullable=True)
+
+    # Relationships
+    user = relationship("User")
+    question = relationship("Question")
+
+
+class ChatMessage(Base):
+    """Stores AI chat conversations about questions"""
+    __tablename__ = "chat_messages"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False, index=True)
+    question_id = Column(String, ForeignKey("questions.id"), nullable=False, index=True)
+    message = Column(Text, nullable=False)  # Message content
+    role = Column(String, nullable=False)  # "user" or "assistant"
+    created_at = Column(DateTime, default=datetime.utcnow, index=True)
+
+    # Relationships
+    user = relationship("User")
+    question = relationship("Question")

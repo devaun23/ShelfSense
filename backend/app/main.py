@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from app.database import engine, Base
-from app.routers import questions, analytics, users
+from app.routers import questions, analytics, users, reviews, chat
 
 # Load environment variables
 load_dotenv()
@@ -33,6 +33,8 @@ app.add_middleware(
 app.include_router(users.router)
 app.include_router(questions.router)
 app.include_router(analytics.router)
+app.include_router(reviews.router)  # Spaced repetition
+app.include_router(chat.router)  # AI chat
 
 
 @app.get("/")
