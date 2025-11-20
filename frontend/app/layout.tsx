@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
+import { UserProvider } from "@/contexts/UserContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -28,7 +29,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} ${cormorant.variable} ${inter.className} antialiased`}>
-        {children}
+        <UserProvider>
+          {children}
+        </UserProvider>
       </body>
     </html>
   );

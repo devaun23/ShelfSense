@@ -11,9 +11,12 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(String, primary_key=True, default=generate_uuid)
+    full_name = Column(String, nullable=False)
+    first_name = Column(String, nullable=False, index=True)
     email = Column(String, unique=True, nullable=False, index=True)
-    password_hash = Column(String, nullable=False)
+    password_hash = Column(String, nullable=True)  # Made optional for simple registration
     created_at = Column(DateTime, default=datetime.utcnow)
+    last_login = Column(DateTime, default=datetime.utcnow)
     target_score = Column(Integer, nullable=True)
     exam_date = Column(DateTime, nullable=True)
 

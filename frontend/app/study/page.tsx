@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import ProgressBar from '@/components/ProgressBar';
 import Sidebar from '@/components/Sidebar';
+import { useUser } from '@/contexts/UserContext';
 
 interface Question {
   id: string;
@@ -22,6 +23,7 @@ interface Feedback {
 
 export default function StudyPage() {
   const router = useRouter();
+  const { user, isLoading: userLoading } = useUser();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [question, setQuestion] = useState<Question | null>(null);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
@@ -31,9 +33,6 @@ export default function StudyPage() {
   const [correctCount, setCorrectCount] = useState(0);
   const [startTime, setStartTime] = useState<number>(0);
 
-  // Temporary user ID (in production, this would come from auth)
-  const userId = 'demo-user-1';
-
   const loadNextQuestion = async () => {
     setLoading(true);
     setSelectedAnswer(null);
@@ -41,7 +40,8 @@ export default function StudyPage() {
     setStartTime(Date.now());
 
     try {
-      const response = await fetch(`http://localhost:8000/api/questions/random`);
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const response = await fetch(`${apiUrl}/api/questions/random`);
       if (response.ok) {
         const data = await response.json();
         setQuestion(data);
@@ -54,23 +54,33 @@ export default function StudyPage() {
   };
 
   useEffect(() => {
-    loadNextQuestion();
-  }, []);
+    // Redirect to login if not authenticated
+    if (!userLoading && !user) {
+      router.push('/login');
+      return;
+    }
+
+    // Load first question only if user is authenticated
+    if (user && !question) {
+      loadNextQuestion();
+    }
+  }, [user, userLoading, router]);
 
   const handleSubmit = async () => {
-    if (!selectedAnswer || !question) return;
+    if (!selectedAnswer || !question || !user) return;
 
     const timeSpent = Math.floor((Date.now() - startTime) / 1000);
 
     try {
-      const response = await fetch('http://localhost:8000/api/questions/submit', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const response = await fetch(`${apiUrl}/api/questions/submit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           question_id: question.id,
-          user_id: userId,
+          user_id: user.userId,
           user_answer: selectedAnswer,
           time_spent_seconds: timeSpent,
         }),
