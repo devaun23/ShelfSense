@@ -12,6 +12,8 @@ export default function Home() {
   const [greeting, setGreeting] = useState('');
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
+  const [queueStats, setQueueStats] = useState({ total: 1285, answered: 0 });
+  const [streak, setStreak] = useState(0);
   const router = useRouter();
   const { user, isLoading } = useUser();
 
@@ -90,15 +92,37 @@ export default function Home() {
       return;
     }
 
-    // Generate personalized greeting
+    // Generate personalized greeting and load stats
     if (user) {
       const personalizedGreeting = generateGreeting({
         firstName: user.firstName,
         hour: new Date().getHours()
       });
       setGreeting(personalizedGreeting);
+
+      // Load user stats
+      loadUserStats();
     }
   }, [user, isLoading, router]);
+
+  const loadUserStats = async () => {
+    if (!user) return;
+
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const response = await fetch(`${apiUrl}/api/analytics/stats?user_id=${user.userId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setQueueStats({
+          total: data.total_questions || 1285,
+          answered: data.total_attempts || 0
+        });
+        setStreak(data.streak || 0);
+      }
+    } catch (error) {
+      console.error('Error loading stats:', error);
+    }
+  };
 
   const handleBegin = () => {
     router.push('/study');
@@ -112,7 +136,7 @@ export default function Home() {
         sidebarOpen ? 'md:ml-64' : 'ml-0'
       }`}>
         <div className="flex flex-col items-center justify-center min-h-screen px-6">
-          <div className="max-w-2xl w-full space-y-16 text-center">
+          <div className="max-w-2xl w-full space-y-12 text-center">
             {/* Personalized greeting */}
             {greeting && (
               <div className="flex flex-col items-center justify-center">
@@ -122,15 +146,43 @@ export default function Home() {
               </div>
             )}
 
-            {/* Begin button */}
-            <div className="pt-8">
+            {/* Queue Progress */}
+            <div className="flex flex-col items-center space-y-3">
+              <div className="text-gray-400 text-sm uppercase tracking-wide">Question Queue</div>
+              <div className="text-5xl font-bold text-white" style={{ fontFamily: 'var(--font-cormorant)' }}>
+                {queueStats.answered} / {queueStats.total}
+              </div>
+              {/* Progress Bar */}
+              <div className="w-full max-w-md h-2 bg-gray-800 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-[#1E3A5F] transition-all duration-500"
+                  style={{ width: `${(queueStats.answered / queueStats.total) * 100}%` }}
+                />
+              </div>
+              <div className="text-gray-500 text-sm">
+                {queueStats.total - queueStats.answered} questions remaining
+              </div>
+            </div>
+
+            {/* Start button */}
+            <div className="pt-4 flex flex-col items-center gap-4">
               <button
                 onClick={handleBegin}
                 className="px-8 py-4 bg-[#1E3A5F] hover:bg-[#2C5282] text-white rounded-lg transition-colors duration-200 text-xl"
                 style={{ fontFamily: 'var(--font-cormorant)' }}
               >
-                Ready to Begin?
+                Start
               </button>
+
+              {/* Streak Counter */}
+              {streak > 0 && (
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">🔥</span>
+                  <span className="text-3xl text-orange-400 font-bold" style={{ fontFamily: 'var(--font-cormorant)' }}>
+                    {streak} Day Streak
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         </div>
