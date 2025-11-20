@@ -135,9 +135,9 @@ export default function StudyPage() {
       <main className={`h-screen overflow-hidden bg-black text-white transition-all duration-300 ${
         sidebarOpen ? 'md:ml-64' : 'ml-0'
       }`}>
-        <div className="h-full flex flex-col max-w-4xl mx-auto px-6 py-6">
+        <div className="h-full flex flex-col max-w-5xl mx-auto px-4 py-3">
           {/* Stats bar */}
-          <div className="flex justify-between items-center text-xs text-gray-500 mb-4">
+          <div className="flex justify-between items-center text-xs text-gray-500 mb-2 flex-shrink-0">
             <div>
               Question {questionCount + 1}
             </div>
@@ -147,15 +147,15 @@ export default function StudyPage() {
             </div>
           </div>
 
-          {/* Question Vignette */}
-          <div className="mb-6 overflow-y-auto flex-shrink" style={{ maxHeight: '30vh' }}>
-            <p className="text-sm leading-relaxed whitespace-pre-wrap">
+          {/* Question Vignette - scrollable but compact */}
+          <div className="mb-3 overflow-y-auto flex-shrink min-h-0 border-b border-gray-800 pb-2" style={{ maxHeight: '35vh' }}>
+            <p className="text-xs leading-normal whitespace-pre-wrap pr-2">
               {question.vignette}
             </p>
           </div>
 
-          {/* Answer Choices */}
-          <div className="space-y-2 mb-4 flex-shrink-0">
+          {/* Answer Choices - fixed, no scroll */}
+          <div className="space-y-1.5 mb-3 flex-shrink-0">
             {question.choices.map((choice, index) => {
               const isSelected = selectedAnswer === choice;
               const isCorrectAnswer = feedback && choice === feedback.correct_answer;
@@ -181,9 +181,9 @@ export default function StudyPage() {
                   key={index}
                   onClick={() => !feedback && setSelectedAnswer(choice)}
                   disabled={!!feedback}
-                  className={`w-full p-3 border-2 ${borderColor} ${bgColor} rounded-lg text-left transition-all duration-200 hover:border-[#2C5282] disabled:cursor-not-allowed text-sm`}
+                  className={`w-full p-2 border ${borderColor} ${bgColor} rounded text-left transition-all duration-200 hover:border-[#2C5282] disabled:cursor-not-allowed text-xs`}
                 >
-                  <span className="text-gray-400 mr-2">{String.fromCharCode(65 + index)}.</span>
+                  <span className="text-gray-400 mr-2 text-xs">{String.fromCharCode(65 + index)}.</span>
                   {choice}
                 </button>
               );
@@ -192,26 +192,26 @@ export default function StudyPage() {
 
           {/* Feedback Section */}
           {feedback && (
-            <div className={`p-4 border-l-4 mb-4 overflow-y-auto ${
+            <div className={`p-3 border-l-4 mb-2 overflow-y-auto flex-shrink min-h-0 ${
               feedback.is_correct ? 'border-emerald-500 bg-emerald-500/5' : 'border-red-500 bg-red-500/5'
-            }`} style={{ maxHeight: '25vh' }}>
-              <h3 className={`text-lg font-semibold mb-2 ${
+            }`} style={{ maxHeight: '20vh' }}>
+              <h3 className={`text-sm font-semibold mb-1 ${
                 feedback.is_correct ? 'text-emerald-500' : 'text-red-500'
               }`}>
                 {feedback.is_correct ? 'Correct' : 'Incorrect'}
               </h3>
               {!feedback.is_correct && (
-                <p className="text-gray-300 mb-2 text-sm">
-                  Correct answer: <strong>{feedback.correct_answer}</strong>
+                <p className="text-gray-300 mb-1 text-xs">
+                  Correct: <strong>{feedback.correct_answer}</strong>
                 </p>
               )}
               {feedback.explanation && (
-                <p className="text-gray-300 leading-relaxed text-sm">
+                <p className="text-gray-300 leading-normal text-xs">
                   {feedback.explanation}
                 </p>
               )}
-              <div className="mt-3 text-xs text-gray-500">
-                Source: {feedback.source}
+              <div className="mt-2 text-xs text-gray-500">
+                {feedback.source}
               </div>
             </div>
           )}
