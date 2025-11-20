@@ -5,6 +5,7 @@ Selects next question based on:
 1. User's weak areas (< 60% accuracy)
 2. Recency weighting (newer = more accurate)
 3. Questions not yet answered
+4. AI-generated questions for weak specialties
 """
 
 import random
@@ -12,6 +13,7 @@ from typing import List, Dict, Optional
 from sqlalchemy.orm import Session
 from sqlalchemy import func, and_
 from app.models.models import Question, QuestionAttempt
+from app.services.question_generator import generate_and_save_question
 
 def get_weak_areas(db: Session, user_id: str, threshold: float = 0.6) -> List[str]:
     """
@@ -67,13 +69,14 @@ def get_unanswered_questions(
     return query.all()
 
 
-def select_next_question(db: Session, user_id: str) -> Optional[Question]:
+def select_next_question(db: Session, user_id: str, use_ai: bool = True) -> Optional[Question]:
     """
-    Main adaptive algorithm:
+    ENHANCED Adaptive algorithm with AI generation:
     1. Identify weak areas
     2. Get unanswered questions in weak areas
     3. Apply recency weighting
-    4. Select from top 20% weighted pool (randomized)
+    4. 30% chance: Generate NEW AI question for weak specialty
+    5. 70% chance: Select from top 20% weighted pool (randomized)
     """
     # Get weak areas
     weak_sources = get_weak_areas(db, user_id)
@@ -89,7 +92,41 @@ def select_next_question(db: Session, user_id: str) -> Optional[Question]:
         # User has answered all questions, restart pool
         pool = db.query(Question).all()
 
-    # Apply recency weighting and sort
+    # AI Integration: 30% chance to generate new question for weak specialty
+    if use_ai and weak_sources and random.random() < 0.3:
+        try:
+            # Extract specialty from weak source
+            specialty = None
+            for source in weak_sources:
+                if "Internal Medicine" in source:
+                    specialty = "Internal Medicine"
+                elif "Surgery" in source:
+                    specialty = "Surgery"
+                elif "Pediatrics" in source:
+                    specialty = "Pediatrics"
+                elif "Psychiatry" in source:
+                    specialty = "Psychiatry"
+                elif "OB" in source or "Gynecology" in source:
+                    specialty = "Obstetrics and Gynecology"
+                elif "Family Medicine" in source:
+                    specialty = "Family Medicine"
+                elif "Emergency" in source:
+                    specialty = "Emergency Medicine"
+                elif "Preventive" in source:
+                    specialty = "Preventive Medicine"
+
+                if specialty:
+                    break
+
+            # Generate AI question for weak area
+            ai_question = generate_and_save_question(db, specialty=specialty)
+            return ai_question
+
+        except Exception as e:
+            print(f"AI generation failed, falling back to database: {str(e)}")
+            # Fall through to normal selection
+
+    # Normal selection: Apply recency weighting and sort
     weighted_pool = sorted(
         pool,
         key=lambda q: (q.recency_weight or 0.0) * random.uniform(0.8, 1.2),  # Add randomness

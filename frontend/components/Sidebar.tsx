@@ -29,9 +29,11 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
           isOpen ? 'w-64' : 'w-0'
         } overflow-hidden`}
       >
-        <div className="p-6">
-          <div className="mb-8">
-            <h2 className="text-xl font-semibold">ShelfSense</h2>
+        <div className="p-6 pt-16">
+          <div className={`mb-8 transition-all duration-300 ${isOpen ? 'ml-8' : 'ml-0'}`}>
+            <h2 className="text-xl font-semibold" style={{ fontFamily: 'var(--font-cormorant)' }}>
+              ShelfSense
+            </h2>
           </div>
 
           <nav className="space-y-1">
@@ -63,10 +65,11 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
         </div>
       </div>
 
-      {/* Toggle Button */}
+      {/* Toggle Button - Thicker and more visible */}
       <button
         onClick={onToggle}
-        className="fixed left-4 top-4 z-50 px-3 py-2 text-gray-400 hover:text-white transition-colors"
+        className="fixed left-4 top-4 z-[60] px-3 py-2 text-gray-300 hover:text-white transition-colors text-2xl font-bold"
+        style={{ lineHeight: '1' }}
       >
         {isOpen ? '←' : '→'}
       </button>

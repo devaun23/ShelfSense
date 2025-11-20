@@ -7,6 +7,7 @@ from datetime import datetime
 from app.database import get_db
 from app.models.models import Question, QuestionAttempt
 from app.services.adaptive import select_next_question
+from app.services.question_generator import generate_and_save_question
 
 router = APIRouter(prefix="/api/questions", tags=["questions"])
 
@@ -96,23 +97,21 @@ def submit_answer(request: SubmitAnswerRequest, db: Session = Depends(get_db)):
 
 
 @router.get("/random", response_model=QuestionResponse)
-def get_random_question(db: Session = Depends(get_db)):
+def get_random_question(db: Session = Depends(get_db), specialty: Optional[str] = None):
     """
-    Get random question (for testing/demo)
+    Generate a new AI question or get from cache
     """
-    import random as rand
+    try:
+        # Generate new question using AI
+        question = generate_and_save_question(db, specialty=specialty)
 
-    questions = db.query(Question).limit(100).all()
-
-    if not questions:
-        raise HTTPException(status_code=404, detail="No questions in database")
-
-    question = rand.choice(questions)
-
-    return QuestionResponse(
-        id=question.id,
-        vignette=question.vignette,
-        choices=question.choices,
-        source=question.source or "Unknown",
-        recency_weight=question.recency_weight or 0.5
-    )
+        return QuestionResponse(
+            id=question.id,
+            vignette=question.vignette,
+            choices=question.choices,
+            source=question.source or "AI Generated",
+            recency_weight=question.recency_weight or 1.0
+        )
+    except Exception as e:
+        print(f"Error generating question: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to generate question: {str(e)}")
