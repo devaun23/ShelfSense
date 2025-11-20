@@ -7,19 +7,19 @@ interface SidebarProps {
   onToggle: () => void;
 }
 
-const specialties = [
-  'Internal Medicine',
-  'Surgery',
-  'Pediatrics',
-  'Obstetrics & Gynecology',
-  'Family Medicine',
-  'Emergency Medicine',
-  'Neurology',
-  'Psychiatry',
+const clerkships = [
+  { name: 'Internal Medicine', available: true },
+  { name: 'Surgery', available: false },
+  { name: 'Pediatrics', available: false },
+  { name: 'Obstetrics & Gynecology', available: false },
+  { name: 'Family Medicine', available: false },
+  { name: 'Emergency Medicine', available: false },
+  { name: 'Neurology', available: false },
+  { name: 'Psychiatry', available: false },
 ];
 
 export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
-  const [selectedSpecialty, setSelectedSpecialty] = useState<string | null>(null);
+  const [selectedSpecialty, setSelectedSpecialty] = useState<string>('Internal Medicine');
 
   return (
     <>
@@ -36,31 +36,43 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
             </h2>
           </div>
 
-          <nav className="space-y-1">
-            <button
-              onClick={() => setSelectedSpecialty(null)}
-              className={`w-full text-left px-3 py-2 rounded transition-colors ${
-                selectedSpecialty === null
-                  ? 'bg-gray-900 text-white'
-                  : 'text-gray-400 hover:text-white hover:bg-gray-900'
-              }`}
-            >
-              All Questions
-            </button>
+          <nav className="space-y-3">
+            {/* Step 2 CK Header */}
+            <div className="px-3 py-2">
+              <h3 className="text-lg font-semibold text-white" style={{ fontFamily: 'var(--font-cormorant)' }}>
+                Step 2 CK
+              </h3>
+            </div>
 
-            {specialties.map((specialty) => (
-              <button
-                key={specialty}
-                onClick={() => setSelectedSpecialty(specialty)}
-                className={`w-full text-left px-3 py-2 rounded transition-colors ${
-                  selectedSpecialty === specialty
-                    ? 'bg-gray-900 text-white'
-                    : 'text-gray-400 hover:text-white hover:bg-gray-900'
-                }`}
-              >
-                {specialty}
-              </button>
-            ))}
+            {/* Clerkships Section */}
+            <div className="border-t border-gray-800 pt-3">
+              <div className="px-3 pb-2">
+                <p className="text-sm text-gray-500 uppercase tracking-wide">Clerkships</p>
+              </div>
+
+              <div className="space-y-1">
+                {clerkships.map((clerkship) => (
+                  <button
+                    key={clerkship.name}
+                    onClick={() => clerkship.available && setSelectedSpecialty(clerkship.name)}
+                    disabled={!clerkship.available}
+                    className={`w-full text-left px-3 py-2 rounded transition-colors ${
+                      clerkship.available
+                        ? selectedSpecialty === clerkship.name
+                          ? 'bg-gray-900 text-white'
+                          : 'text-gray-400 hover:text-white hover:bg-gray-900'
+                        : 'text-gray-700 cursor-not-allowed'
+                    }`}
+                    style={{ fontFamily: 'var(--font-cormorant)' }}
+                  >
+                    {clerkship.name}
+                    {!clerkship.available && (
+                      <span className="ml-2 text-xs text-gray-600">(Coming Soon)</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
           </nav>
         </div>
       </div>
