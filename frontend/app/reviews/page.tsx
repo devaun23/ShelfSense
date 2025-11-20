@@ -247,10 +247,6 @@ export default function ReviewsPage() {
 
                 {/* Stage breakdown */}
                 <div className="flex flex-wrap gap-2">
-                  {day.questions.reduce((acc, q) => {
-                    acc[q.learning_stage] = (acc[q.learning_stage] || 0) + 1;
-                    return acc;
-                  }, {} as Record<string, number>)}
                   {Object.entries(
                     day.questions.reduce((acc, q) => {
                       acc[q.learning_stage] = (acc[q.learning_stage] || 0) + 1;
