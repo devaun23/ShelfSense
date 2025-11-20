@@ -16,8 +16,8 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "ShelfSense - Adaptive Step 2 CK Prep",
-  description: "AI-powered adaptive learning platform for USMLE Step 2 CK",
+  title: "ShelfSense",
+  description: "Adaptive learning platform for USMLE Step 2 CK",
 };
 
 export default function RootLayout({

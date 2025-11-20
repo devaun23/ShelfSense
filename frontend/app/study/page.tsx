@@ -132,12 +132,12 @@ export default function StudyPage() {
       {/* Progress bar only appears during questions */}
       <ProgressBar progress={progress} />
 
-      <main className={`min-h-screen bg-black text-white transition-all duration-300 ${
+      <main className={`h-screen overflow-hidden bg-black text-white transition-all duration-300 ${
         sidebarOpen ? 'md:ml-64' : 'ml-0'
       }`}>
-        <div className="max-w-3xl mx-auto px-6 py-12">
+        <div className="h-full flex flex-col max-w-4xl mx-auto px-6 py-6">
           {/* Stats bar */}
-          <div className="flex justify-between items-center text-sm text-gray-500 mb-8">
+          <div className="flex justify-between items-center text-xs text-gray-500 mb-4">
             <div>
               Question {questionCount + 1}
             </div>
@@ -148,14 +148,14 @@ export default function StudyPage() {
           </div>
 
           {/* Question Vignette */}
-          <div className="mb-12">
-            <p className="text-lg leading-relaxed whitespace-pre-wrap">
+          <div className="mb-6 overflow-y-auto flex-shrink" style={{ maxHeight: '30vh' }}>
+            <p className="text-sm leading-relaxed whitespace-pre-wrap">
               {question.vignette}
             </p>
           </div>
 
           {/* Answer Choices */}
-          <div className="space-y-3 mb-8">
+          <div className="space-y-2 mb-4 flex-shrink-0">
             {question.choices.map((choice, index) => {
               const isSelected = selectedAnswer === choice;
               const isCorrectAnswer = feedback && choice === feedback.correct_answer;
@@ -181,9 +181,9 @@ export default function StudyPage() {
                   key={index}
                   onClick={() => !feedback && setSelectedAnswer(choice)}
                   disabled={!!feedback}
-                  className={`w-full p-4 border-2 ${borderColor} ${bgColor} rounded-lg text-left transition-all duration-200 hover:border-[#2C5282] disabled:cursor-not-allowed`}
+                  className={`w-full p-3 border-2 ${borderColor} ${bgColor} rounded-lg text-left transition-all duration-200 hover:border-[#2C5282] disabled:cursor-not-allowed text-sm`}
                 >
-                  <span className="text-gray-400 mr-3">{String.fromCharCode(65 + index)}.</span>
+                  <span className="text-gray-400 mr-2">{String.fromCharCode(65 + index)}.</span>
                   {choice}
                 </button>
               );
@@ -192,32 +192,32 @@ export default function StudyPage() {
 
           {/* Feedback Section */}
           {feedback && (
-            <div className={`p-6 border-l-4 mb-8 ${
+            <div className={`p-4 border-l-4 mb-4 overflow-y-auto ${
               feedback.is_correct ? 'border-emerald-500 bg-emerald-500/5' : 'border-red-500 bg-red-500/5'
-            }`}>
-              <h3 className={`text-xl font-semibold mb-3 ${
+            }`} style={{ maxHeight: '25vh' }}>
+              <h3 className={`text-lg font-semibold mb-2 ${
                 feedback.is_correct ? 'text-emerald-500' : 'text-red-500'
               }`}>
                 {feedback.is_correct ? 'Correct' : 'Incorrect'}
               </h3>
               {!feedback.is_correct && (
-                <p className="text-gray-300 mb-3">
+                <p className="text-gray-300 mb-2 text-sm">
                   Correct answer: <strong>{feedback.correct_answer}</strong>
                 </p>
               )}
               {feedback.explanation && (
-                <p className="text-gray-300 leading-relaxed">
+                <p className="text-gray-300 leading-relaxed text-sm">
                   {feedback.explanation}
                 </p>
               )}
-              <div className="mt-4 text-sm text-gray-500">
+              <div className="mt-3 text-xs text-gray-500">
                 Source: {feedback.source}
               </div>
             </div>
           )}
 
           {/* Action Buttons */}
-          <div className="flex gap-4">
+          <div className="flex gap-4 flex-shrink-0">
             {!feedback ? (
               <button
                 onClick={handleSubmit}
