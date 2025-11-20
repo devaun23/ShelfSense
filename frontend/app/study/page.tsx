@@ -32,6 +32,7 @@ export default function StudyPage() {
   const [loading, setLoading] = useState(true);
   const [questionCount, setQuestionCount] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
+  const [queueStats, setQueueStats] = useState({ completed: 0, queueSize: 10 });
   const [startTime, setStartTime] = useState<number>(0);
 
   const loadNextQuestion = async () => {
@@ -61,11 +62,40 @@ export default function StudyPage() {
       return;
     }
 
-    // Load first question only if user is authenticated
+    // Load first question and queue stats only if user is authenticated
     if (user && !question) {
       loadNextQuestion();
+      loadQueueStats();
     }
   }, [user, userLoading, router]);
+
+  const loadQueueStats = async () => {
+    if (!user) return;
+
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const response = await fetch(`${apiUrl}/api/analytics/stats?user_id=${user.userId}`);
+      if (response.ok) {
+        const data = await response.json();
+
+        // Adaptive queue logic
+        const completed = data.total_attempts || 0;
+        const incorrectCount = data.incorrect_count || 0;
+
+        let queueSize = 10;
+        if (incorrectCount > 0) {
+          queueSize = Math.min(10 + (incorrectCount * 2), 50);
+        }
+
+        setQueueStats({
+          completed: completed,
+          queueSize: queueSize
+        });
+      }
+    } catch (error) {
+      console.error('Error loading queue stats:', error);
+    }
+  };
 
   const handleSubmit = async () => {
     if (!selectedAnswer || !question || !user) return;
@@ -94,6 +124,8 @@ export default function StudyPage() {
         if (data.is_correct) {
           setCorrectCount(prev => prev + 1);
         }
+        // Update queue stats after answering
+        loadQueueStats();
       }
     } catch (error) {
       console.error('Error submitting answer:', error);
@@ -150,8 +182,8 @@ export default function StudyPage() {
           {/* Stats bar */}
           <div className="flex justify-end items-center text-base mb-4 flex-shrink-0">
             <div>
-              <span className="text-gray-500 font-semibold">Question </span>
-              <span className="text-white font-bold">{questionCount + 1}</span>
+              <span className="text-gray-500 font-semibold">Queue: </span>
+              <span className="text-white font-bold">{queueStats.completed}/{queueStats.queueSize} Completed</span>
             </div>
           </div>
 

@@ -12,10 +12,25 @@ export default function Home() {
   const [greeting, setGreeting] = useState('');
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
-  const [queueStats, setQueueStats] = useState({ total: 1285, answered: 0 });
+  const [queueStats, setQueueStats] = useState({ completed: 0, queueSize: 10 });
   const [streak, setStreak] = useState(0);
   const router = useRouter();
   const { user, isLoading } = useUser();
+
+  // Calculate streak color gradient
+  const getStreakColor = (days: number) => {
+    const cycle = days % 101; // Reset after 100
+    if (cycle === 0 && days > 0) {
+      // Day 100, 200, etc - rainbow gradient
+      return 'bg-gradient-to-r from-red-500 via-yellow-500 via-green-500 via-blue-500 to-purple-500 bg-clip-text text-transparent';
+    }
+
+    // Gradient from deep red-orange to bright flame
+    const hue = 0; // Red base
+    const saturation = 100;
+    const lightness = 35 + (cycle * 0.3); // 35% to 65% lightness
+    return `text-[hsl(${hue},${saturation}%,${Math.min(lightness, 65)}%)]`;
+  };
 
   const handleStarHover = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -113,9 +128,21 @@ export default function Home() {
       const response = await fetch(`${apiUrl}/api/analytics/stats?user_id=${user.userId}`);
       if (response.ok) {
         const data = await response.json();
+
+        // Adaptive queue: starts at 10, grows based on performance
+        const completed = data.total_attempts || 0;
+        const incorrectCount = data.incorrect_count || 0;
+
+        // Calculate adaptive queue size (starts at 10, adds more if struggling)
+        let queueSize = 10;
+        if (incorrectCount > 0) {
+          // Add 2 questions for every incorrect answer
+          queueSize = Math.min(10 + (incorrectCount * 2), 50); // Cap at 50
+        }
+
         setQueueStats({
-          total: data.total_questions || 1285,
-          answered: data.total_attempts || 0
+          completed: completed,
+          queueSize: queueSize
         });
         setStreak(data.streak || 0);
       }
@@ -150,17 +177,17 @@ export default function Home() {
             <div className="flex flex-col items-center space-y-3">
               <div className="text-gray-400 text-sm uppercase tracking-wide">Question Queue</div>
               <div className="text-5xl font-bold text-white" style={{ fontFamily: 'var(--font-cormorant)' }}>
-                {queueStats.answered} / {queueStats.total}
+                {queueStats.completed}/{queueStats.queueSize} Completed
               </div>
               {/* Progress Bar */}
               <div className="w-full max-w-md h-2 bg-gray-800 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-[#1E3A5F] transition-all duration-500"
-                  style={{ width: `${(queueStats.answered / queueStats.total) * 100}%` }}
+                  style={{ width: `${(queueStats.completed / queueStats.queueSize) * 100}%` }}
                 />
               </div>
               <div className="text-gray-500 text-sm">
-                {queueStats.total - queueStats.answered} questions remaining
+                {queueStats.queueSize - queueStats.completed} remaining in queue
               </div>
             </div>
 
@@ -178,8 +205,19 @@ export default function Home() {
               {streak > 0 && (
                 <div className="flex items-center gap-2">
                   <span className="text-2xl">🔥</span>
-                  <span className="text-3xl text-orange-400 font-bold" style={{ fontFamily: 'var(--font-cormorant)' }}>
-                    {streak} Day Streak
+                  <span
+                    className={`text-3xl font-bold ${getStreakColor(streak)}`}
+                    style={{
+                      fontFamily: 'var(--font-cormorant)',
+                      ...(streak % 101 === 0 && streak > 0 ? {
+                        backgroundImage: 'linear-gradient(to right, #ef4444, #f59e0b, #10b981, #3b82f6, #8b5cf6)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        backgroundClip: 'text'
+                      } : {})
+                    }}
+                  >
+                    {streak} day
                   </span>
                 </div>
               )}
