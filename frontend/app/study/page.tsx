@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import ProgressBar from '@/components/ProgressBar';
 import Sidebar from '@/components/Sidebar';
+import AIChat from '@/components/AIChat';
 import { useUser } from '@/contexts/UserContext';
 
 interface Question {
@@ -199,14 +200,31 @@ export default function StudyPage() {
 
           {/* Feedback Section */}
           {feedback && (
-            <div className={`p-4 border-l-4 mb-4 ${
-              feedback.is_correct ? 'border-emerald-500 bg-emerald-500/5' : 'border-red-500 bg-red-500/5'
-            }`}>
-              <h3 className={`text-lg font-bold ${
-                feedback.is_correct ? 'text-emerald-500' : 'text-red-500'
+            <div className="space-y-4 mb-4">
+              <div className={`p-4 border-l-4 ${
+                feedback.is_correct ? 'border-emerald-500 bg-emerald-500/5' : 'border-red-500 bg-red-500/5'
               }`}>
-                {feedback.is_correct ? 'Correct' : `Incorrect - Correct: ${feedback.correct_answer}`}
-              </h3>
+                <h3 className={`text-lg font-bold ${
+                  feedback.is_correct ? 'text-emerald-500' : 'text-red-500'
+                }`}>
+                  {feedback.is_correct ? 'Correct!' : `Incorrect - Correct Answer: ${feedback.correct_answer}`}
+                </h3>
+                {feedback.explanation && (
+                  <div className="mt-3 text-sm text-gray-300 whitespace-pre-wrap">
+                    {feedback.explanation}
+                  </div>
+                )}
+              </div>
+
+              {/* AI Chat Component */}
+              {question && user && (
+                <AIChat
+                  questionId={question.id}
+                  userId={user.userId}
+                  isCorrect={feedback.is_correct}
+                  userAnswer={selectedAnswer || ''}
+                />
+              )}
             </div>
           )}
 
