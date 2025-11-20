@@ -284,13 +284,18 @@ class FirstAidKnowledgeExtractor:
         print(f"{'='*60}\n")
 
 def main():
-    # First Aid PDF path
+    # First Aid PDF path - using glob with wildcards to handle special characters
     import glob
-    pdf_files = glob.glob("/Users/devaun/Desktop/*First Aid*.pdf")
+    from pathlib import Path
+
+    pdf_files = glob.glob("/Users/devaun/Desktop/First Aid*.pdf")
     if not pdf_files:
         print("Error: First Aid PDF not found on Desktop")
+        print("Looking for: /Users/devaun/Desktop/First Aid*.pdf")
         return
+
     pdf_path = pdf_files[0]
+    print(f"Found First Aid PDF: {Path(pdf_path).name}")
 
     # Create extractor
     extractor = FirstAidKnowledgeExtractor(pdf_path)
