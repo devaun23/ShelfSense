@@ -11,7 +11,7 @@ Selects next question based on:
 import random
 from typing import List, Dict, Optional
 from sqlalchemy.orm import Session
-from sqlalchemy import func, and_
+from sqlalchemy import func, and_, Integer
 from app.models.models import Question, QuestionAttempt
 from app.services.question_generator import generate_and_save_question
 
@@ -46,11 +46,13 @@ def get_weak_areas(db: Session, user_id: str, threshold: float = 0.6) -> List[st
 def get_unanswered_questions(
     db: Session,
     user_id: str,
-    sources: Optional[List[str]] = None
+    sources: Optional[List[str]] = None,
+    limit: int = None
 ) -> List[Question]:
     """
     Get questions user hasn't answered yet
     Optionally filter by sources (for weak areas)
+    Optimized with SQL-based sorting and limiting
     """
     # Get all question IDs user has attempted
     attempted_ids = db.query(QuestionAttempt.question_id).filter(
@@ -58,7 +60,7 @@ def get_unanswered_questions(
     ).all()
     attempted_ids = [q[0] for q in attempted_ids]
 
-    # Get unanswered questions
+    # Get unanswered questions sorted by recency_weight (SQL-based)
     query = db.query(Question).filter(
         Question.id.notin_(attempted_ids) if attempted_ids else True
     )
@@ -66,31 +68,40 @@ def get_unanswered_questions(
     if sources:
         query = query.filter(Question.source.in_(sources))
 
+    # Sort by recency_weight descending in SQL (much faster than Python)
+    query = query.order_by(Question.recency_weight.desc())
+
+    # Limit results if specified (for performance)
+    if limit:
+        query = query.limit(limit)
+
     return query.all()
 
 
 def select_next_question(db: Session, user_id: str, use_ai: bool = True) -> Optional[Question]:
     """
-    ENHANCED Adaptive algorithm with AI generation:
+    OPTIMIZED Adaptive algorithm with SQL-based selection:
     1. Identify weak areas
-    2. Get unanswered questions in weak areas
-    3. Apply recency weighting
-    4. 30% chance: Generate NEW AI question for weak specialty
-    5. 70% chance: Select from top 20% weighted pool (randomized)
+    2. Get top-weighted unanswered questions using SQL (faster)
+    3. Select randomly from top candidates
+    4. Optional: 30% chance to generate AI question for weak specialty
     """
     # Get weak areas
     weak_sources = get_weak_areas(db, user_id)
 
-    # Get unanswered questions in weak areas
+    # Get top 50 unanswered questions using SQL sorting (much faster)
     if weak_sources:
-        pool = get_unanswered_questions(db, user_id, weak_sources)
+        pool = get_unanswered_questions(db, user_id, weak_sources, limit=50)
     else:
-        # No weak areas yet, use all unanswered questions
-        pool = get_unanswered_questions(db, user_id)
+        # No weak areas yet, use all unanswered questions (top 50 by weight)
+        pool = get_unanswered_questions(db, user_id, limit=50)
 
     if not pool:
-        # User has answered all questions, restart pool
-        pool = db.query(Question).all()
+        # User has answered all questions, get top 50 from entire database
+        pool = db.query(Question).order_by(Question.recency_weight.desc()).limit(50).all()
+
+    if not pool:
+        return None
 
     # AI Integration: 30% chance to generate new question for weak specialty
     if use_ai and weak_sources and random.random() < 0.3:
@@ -126,16 +137,9 @@ def select_next_question(db: Session, user_id: str, use_ai: bool = True) -> Opti
             print(f"AI generation failed, falling back to database: {str(e)}")
             # Fall through to normal selection
 
-    # Normal selection: Apply recency weighting and sort
-    weighted_pool = sorted(
-        pool,
-        key=lambda q: (q.recency_weight or 0.0) * random.uniform(0.8, 1.2),  # Add randomness
-        reverse=True
-    )
-
-    # Select from top 20% (prevents always showing same questions)
-    top_20_percent = max(1, int(len(weighted_pool) * 0.2))
-    selected = random.choice(weighted_pool[:top_20_percent])
+    # Optimized selection: Pool is already sorted by SQL, just pick randomly from top 20%
+    top_20_percent = max(1, int(len(pool) * 0.2))
+    selected = random.choice(pool[:top_20_percent])
 
     return selected
 

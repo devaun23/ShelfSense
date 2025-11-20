@@ -135,27 +135,24 @@ export default function StudyPage() {
       <main className={`h-screen overflow-hidden bg-black text-white transition-all duration-300 ${
         sidebarOpen ? 'md:ml-64' : 'ml-0'
       }`}>
-        <div className="h-full flex flex-col max-w-5xl mx-auto px-4 py-3">
+        <div className="h-full flex flex-col mx-auto px-8 py-6 pt-16" style={{ maxWidth: sidebarOpen ? '1200px' : '1400px' }}>
           {/* Stats bar */}
-          <div className="flex justify-between items-center text-xs text-gray-500 mb-2 flex-shrink-0">
+          <div className="flex justify-end items-center text-base mb-4 flex-shrink-0">
             <div>
-              Question {questionCount + 1}
-            </div>
-            <div>
-              {correctCount} / {questionCount} correct
-              {questionCount > 0 && ` (${Math.round((correctCount / questionCount) * 100)}%)`}
+              <span className="text-gray-500 font-semibold">Question </span>
+              <span className="text-white font-bold">{questionCount + 1}</span>
             </div>
           </div>
 
           {/* Question Vignette - scrollable but compact */}
-          <div className="mb-3 overflow-y-auto flex-shrink min-h-0 border-b border-gray-800 pb-2" style={{ maxHeight: '35vh' }}>
-            <p className="text-xs leading-normal whitespace-pre-wrap pr-2">
+          <div className="mb-6 overflow-y-auto flex-shrink min-h-0 border-b border-gray-800 pb-4" style={{ maxHeight: '40vh' }}>
+            <p className="text-base leading-loose whitespace-pre-wrap pr-2 font-bold">
               {question.vignette}
             </p>
           </div>
 
           {/* Answer Choices - fixed, no scroll */}
-          <div className="space-y-1.5 mb-3 flex-shrink-0">
+          <div className="space-y-3 mb-6 flex-shrink-0">
             {question.choices.map((choice, index) => {
               const isSelected = selectedAnswer === choice;
               const isCorrectAnswer = feedback && choice === feedback.correct_answer;
@@ -181,9 +178,9 @@ export default function StudyPage() {
                   key={index}
                   onClick={() => !feedback && setSelectedAnswer(choice)}
                   disabled={!!feedback}
-                  className={`w-full p-2 border ${borderColor} ${bgColor} rounded text-left transition-all duration-200 hover:border-[#2C5282] disabled:cursor-not-allowed text-xs`}
+                  className={`w-full p-3 border-2 ${borderColor} ${bgColor} rounded-lg text-left transition-all duration-200 hover:border-[#2C5282] disabled:cursor-not-allowed text-base font-medium`}
                 >
-                  <span className="text-gray-400 mr-2 text-xs">{String.fromCharCode(65 + index)}.</span>
+                  <span className="text-gray-400 mr-3 text-base font-semibold">{String.fromCharCode(65 + index)}.</span>
                   {choice}
                 </button>
               );
@@ -192,27 +189,14 @@ export default function StudyPage() {
 
           {/* Feedback Section */}
           {feedback && (
-            <div className={`p-3 border-l-4 mb-2 overflow-y-auto flex-shrink min-h-0 ${
+            <div className={`p-4 border-l-4 mb-4 ${
               feedback.is_correct ? 'border-emerald-500 bg-emerald-500/5' : 'border-red-500 bg-red-500/5'
-            }`} style={{ maxHeight: '20vh' }}>
-              <h3 className={`text-sm font-semibold mb-1 ${
+            }`}>
+              <h3 className={`text-lg font-bold ${
                 feedback.is_correct ? 'text-emerald-500' : 'text-red-500'
               }`}>
-                {feedback.is_correct ? 'Correct' : 'Incorrect'}
+                {feedback.is_correct ? 'Correct' : `Incorrect - Correct: ${feedback.correct_answer}`}
               </h3>
-              {!feedback.is_correct && (
-                <p className="text-gray-300 mb-1 text-xs">
-                  Correct: <strong>{feedback.correct_answer}</strong>
-                </p>
-              )}
-              {feedback.explanation && (
-                <p className="text-gray-300 leading-normal text-xs">
-                  {feedback.explanation}
-                </p>
-              )}
-              <div className="mt-2 text-xs text-gray-500">
-                {feedback.source}
-              </div>
             </div>
           )}
 
@@ -222,25 +206,18 @@ export default function StudyPage() {
               <button
                 onClick={handleSubmit}
                 disabled={!selectedAnswer}
-                className="px-8 py-3 bg-[#1E3A5F] hover:bg-[#2C5282] disabled:bg-gray-800 disabled:cursor-not-allowed text-white rounded-lg transition-colors duration-200"
+                className="px-10 py-4 bg-[#1E3A5F] hover:bg-[#2C5282] disabled:bg-gray-800 disabled:cursor-not-allowed text-white rounded-lg transition-colors duration-200 text-base font-semibold"
               >
                 Submit Answer
               </button>
             ) : (
               <button
                 onClick={handleNext}
-                className="px-8 py-3 bg-[#1E3A5F] hover:bg-[#2C5282] text-white rounded-lg transition-colors duration-200"
+                className="px-10 py-4 bg-[#1E3A5F] hover:bg-[#2C5282] text-white rounded-lg transition-colors duration-200 text-base font-semibold"
               >
                 Next Question
               </button>
             )}
-
-            <button
-              onClick={() => router.push('/')}
-              className="px-8 py-3 border border-gray-700 hover:border-[#1E3A5F] text-white rounded-lg transition-colors duration-200"
-            >
-              End Session
-            </button>
           </div>
         </div>
       </main>

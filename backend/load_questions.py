@@ -15,8 +15,8 @@ from app.models.models import Question
 def load_questions_from_json():
     """Load all questions from master database JSON"""
 
-    # Path to master database
-    json_path = Path(__file__).parent.parent / "data" / "extracted_questions" / "shelfsense_master_database.json"
+    # Path to master database (using CLEANED version)
+    json_path = Path(__file__).parent.parent / "data" / "extracted_questions" / "shelfsense_master_database_cleaned.json"
 
     if not json_path.exists():
         print(f"Error: {json_path} not found")

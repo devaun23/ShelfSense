@@ -30,9 +30,9 @@ class Question(Base):
     answer_key = Column(String, nullable=False)
     choices = Column(JSON, nullable=False)  # List of answer choices
     explanation = Column(Text, nullable=True)
-    source = Column(String, nullable=True)
-    recency_tier = Column(Integer, nullable=True)
-    recency_weight = Column(Float, nullable=True)
+    source = Column(String, nullable=True, index=True)  # Indexed for filtering by specialty
+    recency_tier = Column(Integer, nullable=True, index=True)  # Indexed for filtering by tier
+    recency_weight = Column(Float, nullable=True, index=True)  # Indexed for sorting by recency
     extra_data = Column(JSON, nullable=True)  # Additional data
 
     # Relationships

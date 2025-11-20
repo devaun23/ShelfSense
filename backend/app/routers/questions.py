@@ -44,10 +44,14 @@ def get_next_question(user_id: str, db: Session = Depends(get_db)):
     """
     Get next question for user using adaptive algorithm
     """
-    question = select_next_question(db, user_id)
+    question = select_next_question(db, user_id, use_ai=False)
 
     if not question:
         raise HTTPException(status_code=404, detail="No questions available")
+
+    # Validate question has exactly 5 choices
+    if not question.choices or len(question.choices) != 5:
+        raise HTTPException(status_code=500, detail="Invalid question format")
 
     return QuestionResponse(
         id=question.id,
@@ -97,21 +101,44 @@ def submit_answer(request: SubmitAnswerRequest, db: Session = Depends(get_db)):
 
 
 @router.get("/random", response_model=QuestionResponse)
-def get_random_question(db: Session = Depends(get_db), specialty: Optional[str] = None):
+def get_random_question(db: Session = Depends(get_db), specialty: Optional[str] = None, use_ai: bool = False):
     """
-    Generate a new AI question or get from cache
+    Get a random question from database (AI generation disabled by default)
     """
-    try:
-        # Generate new question using AI
-        question = generate_and_save_question(db, specialty=specialty)
+    # AI generation is now opt-in via query parameter
+    if use_ai:
+        try:
+            # Try to generate new question using AI
+            question = generate_and_save_question(db, specialty=specialty)
 
-        return QuestionResponse(
-            id=question.id,
-            vignette=question.vignette,
-            choices=question.choices,
-            source=question.source or "AI Generated",
-            recency_weight=question.recency_weight or 1.0
-        )
-    except Exception as e:
-        print(f"Error generating question: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Failed to generate question: {str(e)}")
+            # Validate AI-generated question
+            if not question.choices or len(question.choices) != 5:
+                raise ValueError("AI generated invalid question format")
+
+            return QuestionResponse(
+                id=question.id,
+                vignette=question.vignette,
+                choices=question.choices,
+                source=question.source or "AI Generated",
+                recency_weight=question.recency_weight or 1.0
+            )
+        except Exception as e:
+            print(f"AI generation failed, falling back to database: {str(e)}")
+
+    # Default: Get a random question from the database
+    question = select_next_question(db, "demo-user-1", use_ai=False)
+
+    if not question:
+        raise HTTPException(status_code=404, detail="No questions available")
+
+    # Validate question has exactly 5 choices
+    if not question.choices or len(question.choices) != 5:
+        raise HTTPException(status_code=500, detail="Invalid question format")
+
+    return QuestionResponse(
+        id=question.id,
+        vignette=question.vignette,
+        choices=question.choices,
+        source=question.source or "Database",
+        recency_weight=question.recency_weight or 0.5
+    )

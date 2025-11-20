@@ -6,7 +6,7 @@ interface ProgressBarProps {
 
 export default function ProgressBar({ progress }: ProgressBarProps) {
   return (
-    <div className="fixed top-0 left-0 right-0 h-[6px] bg-gray-900 z-[9999]">
+    <div className="fixed top-0 left-0 right-0 h-[10px] bg-gray-900 z-[9999]">
       <div
         className="h-full bg-[#4169E1] transition-all duration-500 ease-out shadow-lg"
         style={{
