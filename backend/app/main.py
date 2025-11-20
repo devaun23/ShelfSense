@@ -19,7 +19,11 @@ app = FastAPI(
 # CORS middleware for Next.js frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Next.js dev server
+    allow_origins=[
+        "http://localhost:3000",  # Next.js dev server
+        "https://shelfsense99.netlify.app",  # Production frontend
+        "https://*.netlify.app",  # Any Netlify preview deploys
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
