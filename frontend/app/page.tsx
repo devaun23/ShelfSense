@@ -12,7 +12,6 @@ export default function Home() {
   const [greeting, setGreeting] = useState('');
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
-  const [queueStats, setQueueStats] = useState({ completed: 0, queueSize: 10 });
   const [streak, setStreak] = useState(0);
   const router = useRouter();
   const { user, isLoading } = useUser();
@@ -128,22 +127,6 @@ export default function Home() {
       const response = await fetch(`${apiUrl}/api/analytics/stats?user_id=${user.userId}`);
       if (response.ok) {
         const data = await response.json();
-
-        // Adaptive queue: starts at 10, grows based on performance
-        const completed = data.total_attempts || 0;
-        const incorrectCount = data.incorrect_count || 0;
-
-        // Calculate adaptive queue size (starts at 10, adds more if struggling)
-        let queueSize = 10;
-        if (incorrectCount > 0) {
-          // Add 2 questions for every incorrect answer
-          queueSize = Math.min(10 + (incorrectCount * 2), 50); // Cap at 50
-        }
-
-        setQueueStats({
-          completed: completed,
-          queueSize: queueSize
-        });
         setStreak(data.streak || 0);
       }
     } catch (error) {
@@ -172,24 +155,6 @@ export default function Home() {
                 </p>
               </div>
             )}
-
-            {/* Queue Progress */}
-            <div className="flex flex-col items-center space-y-3">
-              <div className="text-gray-400 text-sm uppercase tracking-wide">Question Queue</div>
-              <div className="text-5xl font-bold text-white" style={{ fontFamily: 'var(--font-cormorant)' }}>
-                {queueStats.completed}/{queueStats.queueSize} Completed
-              </div>
-              {/* Progress Bar */}
-              <div className="w-full max-w-md h-2 bg-gray-800 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-[#1E3A5F] transition-all duration-500"
-                  style={{ width: `${(queueStats.completed / queueStats.queueSize) * 100}%` }}
-                />
-              </div>
-              <div className="text-gray-500 text-sm">
-                {queueStats.queueSize - queueStats.completed} remaining in queue
-              </div>
-            </div>
 
             {/* Start button */}
             <div className="pt-4 flex flex-col items-center gap-4">
