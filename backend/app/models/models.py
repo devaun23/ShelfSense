@@ -37,9 +37,11 @@ class Question(Base):
     recency_tier = Column(Integer, nullable=True, index=True)  # Indexed for filtering by tier
     recency_weight = Column(Float, nullable=True, index=True)  # Indexed for sorting by recency
     extra_data = Column(JSON, nullable=True)  # Additional data
+    rejected = Column(Boolean, default=False, index=True)  # User rejected this question
 
     # Relationships
     attempts = relationship("QuestionAttempt", back_populates="question")
+    ratings = relationship("QuestionRating", back_populates="question")
 
 
 class QuestionAttempt(Base):
@@ -113,3 +115,19 @@ class ChatMessage(Base):
     # Relationships
     user = relationship("User")
     question = relationship("Question")
+
+
+class QuestionRating(Base):
+    """Stores user ratings and feedback for questions"""
+    __tablename__ = "question_ratings"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    question_id = Column(String, ForeignKey("questions.id"), nullable=False, index=True)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False, index=True)
+    rating = Column(Boolean, nullable=False)  # TRUE = approved (✓), FALSE = rejected (✗)
+    feedback_text = Column(Text, nullable=True)  # User's explanation
+    created_at = Column(DateTime, default=datetime.utcnow, index=True)
+
+    # Relationships
+    user = relationship("User")
+    question = relationship("Question", back_populates="ratings")

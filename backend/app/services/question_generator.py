@@ -11,6 +11,13 @@ from openai import OpenAI
 from sqlalchemy.orm import Session
 from app.models.models import Question
 from app.models.models import generate_uuid
+from app.services.step2ck_content_outline import (
+    get_weighted_specialty,
+    get_high_yield_topic,
+    get_question_type,
+    CLINICAL_SETTINGS,
+    COMMON_DISTRACTORS
+)
 
 # Initialize OpenAI client
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
@@ -101,20 +108,30 @@ def get_example_questions(db: Session, specialty: Optional[str] = None, limit: i
 def generate_question(db: Session, specialty: Optional[str] = None, topic: Optional[str] = None) -> Dict:
     """
     Generate a novel USMLE Step 2 CK question using OpenAI
-    Learns from your existing question database to maintain quality and style
+    Follows official USMLE content distribution and targets high-yield topics
 
     Args:
         db: Database session
-        specialty: Medical specialty (e.g., "Internal Medicine", "Surgery")
-        topic: Specific topic within specialty (optional)
+        specialty: Medical specialty (if None, weighted by USMLE distribution)
+        topic: Specific topic within specialty (if None, selects high-yield topic)
 
     Returns:
         Dictionary containing generated question data
     """
 
-    # Select random specialty if not provided
+    # Use USMLE-weighted specialty selection
     if not specialty:
-        specialty = random.choice(SPECIALTIES)
+        specialty = get_weighted_specialty()
+
+    # Select high-yield topic if not provided
+    if not topic:
+        topic = get_high_yield_topic(specialty)
+
+    # Select question type based on NBME distribution
+    question_type = get_question_type()
+
+    # Select clinical setting
+    clinical_setting = random.choice(CLINICAL_SETTINGS)
 
     # Get training statistics from ENTIRE database
     stats = get_training_statistics(db, specialty)
@@ -142,38 +159,61 @@ def generate_question(db: Session, specialty: Optional[str] = None, topic: Optio
             example_context += f"SOURCE: {ex['source']}\n"
             example_context += "─" * 60 + "\n\n"
 
-    # Construct enhanced generation prompt with training data
-    prompt = f"""You are an expert USMLE Step 2 CK question writer. You will generate a NOVEL, high-quality clinical vignette question for {specialty}.
+    # Construct enhanced generation prompt with training data and high-yield focus
+    prompt = f"""You are an expert USMLE Step 2 CK question writer creating exam-quality questions for a medical student targeting a 280+ Step 2 CK score and 99th percentile shelf exams.
 
-CRITICAL REQUIREMENTS:
+QUESTION SPECIFICATIONS (USMLE Official Blueprint):
+- DISCIPLINE: {specialty} (Following USMLE distribution: Medicine 55-65%, Surgery 20-30%, Pediatrics 17-27%, OB/GYN 10-20%, Psychiatry 10-15%)
+- HIGH-YIELD TOPIC: {topic} (From First Aid Step 2 CK high-yield material)
+- COMPETENCY TESTED: {question_type} (Following USMLE task distribution)
+- CLINICAL SETTING: {clinical_setting}
+
+CRITICAL REQUIREMENTS FOR HIGH-QUALITY QUESTIONS:
 1. Study the training examples carefully - match their clinical depth, writing style, and format
 2. Create a completely NEW question (do not copy examples, but learn from their structure)
-3. Vignette: 3-5 sentences with patient demographics, chief complaint, relevant history, physical exam, and diagnostics
-4. Provide exactly 5 DISTINCT answer choices (A-E) - each must be medically plausible
-5. NO DUPLICATES - verify all 5 choices are completely different
-6. NO TYPOS - triple-check spelling, grammar, and medical terminology
-7. Use proper medical units WITHOUT spaces: mg/dL, mEq/L, mmHg (not "mg/d L" or "mEq/ L")
-8. Answer choices should test clinical reasoning and diagnostic ability
-9. Explanation must be educational and cite pathophysiology or clinical guidelines
-10. Match the difficulty level and style of the training examples
+3. Vignette structure (3-5 sentences):
+   - Patient demographics (age, gender, relevant history)
+   - Chief complaint with timeline
+   - Pertinent positives AND negatives from history
+   - Physical examination findings (vital signs, specific exam findings)
+   - Laboratory/imaging results if applicable
+4. Answer choices MUST be:
+   - Exactly 5 DISTINCT options (A-E)
+   - Each medically plausible (no obviously wrong choices)
+   - Testing clinical reasoning at Step 2 CK level (60-70% difficulty)
+   - Following current evidence-based guidelines
+5. Quality standards:
+   - NO DUPLICATES - verify all 5 choices are completely different
+   - NO TYPOS - triple-check spelling, grammar, and medical terminology
+   - Use proper medical units WITHOUT spaces: mg/dL, mEq/L, mmHg, mm Hg, beats/min
+   - Realistic lab values and vital signs
+   - Current treatment guidelines (not outdated practices)
+6. Explanation must:
+   - Cite pathophysiology or clinical guidelines
+   - Explain why the correct answer is right
+   - Briefly mention why key distractors are wrong
+   - Be educational and clinically accurate
 
-{f'SPECIFIC FOCUS: {topic}' if topic else 'FOCUS: Generate a question on a high-yield topic for this specialty'}
+{f'SPECIFIC TOPIC: {topic}' if topic else 'TOPIC: High-yield clinical scenario for this specialty'}
 
 {example_context}
 
-NOW GENERATE A COMPLETELY NEW QUESTION that:
-- Is as clinically accurate as the examples
-- Uses similar writing style and detail level
-- Tests important clinical knowledge
-- Has 5 unique, plausible answer choices
-- Contains ZERO typos or formatting errors
+DIFFICULTY TARGET: 60-70% of examinees should answer correctly (Step 2 CK standard)
 
-Return ONLY valid JSON:
+NOW GENERATE A COMPLETELY NEW, EXAM-QUALITY QUESTION that:
+- Matches the clinical depth and realism of the training examples
+- Tests important diagnostic or management knowledge
+- Has 5 unique, plausible answer choices (no "gimmies")
+- Uses current evidence-based medicine
+- Contains ZERO typos, spacing errors, or formatting issues
+- Would appear on an actual USMLE Step 2 CK exam
+
+Return ONLY valid JSON (no additional text):
 {{
-  "vignette": "A [age]-year-old [gender] with a history of... presents with... On examination... Laboratory studies show...",
-  "choices": ["Choice A (unique)", "Choice B (unique)", "Choice C (unique)", "Choice D (unique)", "Choice E (unique)"],
+  "vignette": "A [age]-year-old [gender] with a history of [relevant conditions] presents to [setting] with [chief complaint and timeline]. [Additional history]. On examination, temperature is [X]°C ([X]°F), pulse is [X]/min, respirations are [X]/min, and blood pressure is [X]/[X] mm Hg. [Physical exam findings]. Laboratory studies show [relevant labs with units].",
+  "choices": ["Specific management/diagnosis A", "Specific management/diagnosis B", "Specific management/diagnosis C", "Specific management/diagnosis D", "Specific management/diagnosis E"],
   "answer_key": "B",
-  "explanation": "The correct answer is B because [pathophysiology/clinical reasoning]...",
+  "explanation": "The correct answer is B because [pathophysiology and clinical reasoning based on current guidelines]. Other choices are incorrect because [brief explanation of why key distractors don't apply to this patient].",
   "specialty": "{specialty}"
 }}"""
 
@@ -182,10 +222,10 @@ Return ONLY valid JSON:
         response = client.chat.completions.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": "You are an expert medical educator specializing in USMLE Step 2 CK question writing. Generate only valid JSON responses."},
+                {"role": "system", "content": "You are an expert USMLE Step 2 CK question writer. You create exam-quality clinical vignettes that test medical knowledge at the level of a third-year medical student. Generate only valid JSON responses with clinically accurate content following current evidence-based guidelines."},
                 {"role": "user", "content": prompt}
             ],
-            temperature=0.8,
+            temperature=0.7,  # Balanced: creative but consistent
             max_tokens=1500,
             response_format={"type": "json_object"}
         )

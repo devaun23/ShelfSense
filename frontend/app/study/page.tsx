@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import ProgressBar from '@/components/ProgressBar';
 import Sidebar from '@/components/Sidebar';
 import AIChat from '@/components/AIChat';
+import QuestionRating from '@/components/QuestionRating';
 import { useUser } from '@/contexts/UserContext';
 
 interface Question {
@@ -157,8 +158,10 @@ export default function StudyPage() {
         <main className={`min-h-screen bg-black text-white transition-all duration-300 ${
           sidebarOpen ? 'md:ml-64' : 'ml-0'
         }`}>
-          <div className="flex items-center justify-center min-h-screen">
-            <p className="text-gray-400">Loading question...</p>
+          <div className="flex flex-col items-center justify-center min-h-screen gap-4">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1E3A5F]"></div>
+            <p className="text-gray-400">Generating your next AI question...</p>
+            <p className="text-gray-600 text-sm">High-yield Step 2 CK content</p>
           </div>
         </main>
       </>
@@ -351,6 +354,15 @@ export default function StudyPage() {
             )}
           </div>
         </div>
+
+        {/* Question Rating - Bottom Right Corner (only after feedback) */}
+        {feedback && question && user && (
+          <QuestionRating
+            questionId={question.id}
+            userId={user.userId}
+            onRatingComplete={handleNext}
+          />
+        )}
       </main>
     </>
   );

@@ -6,7 +6,7 @@ from datetime import datetime
 import json
 
 from app.database import get_db
-from app.models.models import Question, QuestionAttempt
+from app.models.models import Question, QuestionAttempt, QuestionRating
 from app.services.adaptive import select_next_question
 from app.services.question_generator import generate_and_save_question
 
@@ -129,14 +129,15 @@ def submit_answer(request: SubmitAnswerRequest, db: Session = Depends(get_db)):
 
 
 @router.get("/random", response_model=QuestionResponse)
-def get_random_question(db: Session = Depends(get_db), specialty: Optional[str] = None, use_ai: bool = False):
+def get_random_question(db: Session = Depends(get_db), specialty: Optional[str] = None, use_ai: bool = True):
     """
-    Get a random question from database (AI generation disabled by default)
+    Generate a new AI question on-demand (default behavior)
+    Pure AI generation - no NBME questions shown to user
     """
-    # AI generation is now opt-in via query parameter
+    # Always generate AI questions on-demand
     if use_ai:
         try:
-            # Try to generate new question using AI
+            # Generate new question using AI
             question = generate_and_save_question(db, specialty=specialty)
 
             # Validate AI-generated question
@@ -151,10 +152,11 @@ def get_random_question(db: Session = Depends(get_db), specialty: Optional[str] 
                 recency_weight=question.recency_weight or 1.0
             )
         except Exception as e:
-            print(f"AI generation failed, falling back to database: {str(e)}")
+            print(f"AI generation failed: {str(e)}")
+            raise HTTPException(status_code=500, detail="Failed to generate question")
 
-    # Default: Get a random question from the database
-    question = select_next_question(db, "demo-user-1", use_ai=False)
+    # Fallback: Get a random non-rejected question from database (for testing only)
+    question = db.query(Question).filter(Question.rejected == False).order_by(Question.recency_weight.desc()).first()
 
     if not question:
         raise HTTPException(status_code=404, detail="No questions available")
@@ -169,4 +171,51 @@ def get_random_question(db: Session = Depends(get_db), specialty: Optional[str] 
         choices=question.choices,
         source=question.source or "Database",
         recency_weight=question.recency_weight or 0.5
+    )
+
+
+class RateQuestionRequest(BaseModel):
+    question_id: str
+    user_id: str
+    rating: bool  # TRUE = approved (✓), FALSE = rejected (✗)
+    feedback_text: Optional[str] = None
+
+
+class RateQuestionResponse(BaseModel):
+    success: bool
+    message: str
+
+
+@router.post("/rate", response_model=RateQuestionResponse)
+def rate_question(request: RateQuestionRequest, db: Session = Depends(get_db)):
+    """
+    Rate a question (approve ✓ or reject ✗) with optional feedback
+    Rejected questions are marked and won't be shown again
+    """
+    # Get the question
+    question = db.query(Question).filter(Question.id == request.question_id).first()
+
+    if not question:
+        raise HTTPException(status_code=404, detail="Question not found")
+
+    # Create rating record
+    rating = QuestionRating(
+        question_id=request.question_id,
+        user_id=request.user_id,
+        rating=request.rating,
+        feedback_text=request.feedback_text,
+        created_at=datetime.utcnow()
+    )
+
+    db.add(rating)
+
+    # If rejected, mark the question
+    if not request.rating:
+        question.rejected = True
+
+    db.commit()
+
+    return RateQuestionResponse(
+        success=True,
+        message="Rating saved successfully"
     )
