@@ -73,6 +73,7 @@ def debug_db_stats():
         return {
             "database_url": DATABASE_URL,
             "openai_key_set": bool(os.getenv('OPENAI_API_KEY')),
+            "openai_key_prefix": os.getenv('OPENAI_API_KEY', '')[:15] + "..." if os.getenv('OPENAI_API_KEY') else None,
             "nbme_questions": nbme_count,
             "ai_questions": ai_count,
             "total_questions": total
@@ -85,3 +86,35 @@ def debug_db_stats():
         }
     finally:
         db.close()
+
+
+@app.get("/debug/test-openai")
+def test_openai_connection():
+    """Test OpenAI API connection"""
+    import os
+    from openai import OpenAI
+
+    try:
+        client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+
+        # Try a simple API call
+        response = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[{"role": "user", "content": "Say 'test'"}],
+            max_tokens=10
+        )
+
+        return {
+            "status": "success",
+            "api_key_prefix": os.getenv('OPENAI_API_KEY', '')[:15] + "...",
+            "response": response.choices[0].message.content
+        }
+    except Exception as e:
+        import traceback
+        return {
+            "status": "error",
+            "error": str(e),
+            "traceback": traceback.format_exc(),
+            "api_key_set": bool(os.getenv('OPENAI_API_KEY')),
+            "api_key_prefix": os.getenv('OPENAI_API_KEY', '')[:15] + "..." if os.getenv('OPENAI_API_KEY') else None
+        }
