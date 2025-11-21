@@ -33,12 +33,14 @@ export default function StudyPage() {
   const [questionCount, setQuestionCount] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const [queueStats, setQueueStats] = useState({ completed: 0, queueSize: 10 });
+  const [expandedChoices, setExpandedChoices] = useState<Set<string>>(new Set());
   const [startTime, setStartTime] = useState<number>(0);
 
   const loadNextQuestion = async () => {
     setLoading(true);
     setSelectedAnswer(null);
     setFeedback(null);
+    setExpandedChoices(new Set());
     setStartTime(Date.now());
 
     try {
@@ -187,76 +189,110 @@ export default function StudyPage() {
             </div>
           </div>
 
-          {/* Question Vignette - scrollable but compact */}
-          <div className="mb-6 overflow-y-auto flex-shrink min-h-0 border-b border-gray-800 pb-4" style={{ maxHeight: '40vh' }}>
-            <p className="text-base leading-loose whitespace-pre-wrap pr-2 font-bold">
+          {/* Question Vignette - fits on screen, no scroll */}
+          <div className="mb-6 flex-shrink border-b border-gray-800 pb-4">
+            <p className="text-sm leading-relaxed whitespace-pre-wrap font-bold">
               {question.vignette}
             </p>
           </div>
 
-          {/* Answer Choices - fixed, no scroll */}
-          <div className="space-y-3 mb-6 flex-shrink-0">
+          {/* Answer Choices - dropdown style with separators */}
+          <div className="mb-6 flex-shrink-0 border border-gray-700 rounded-lg divide-y divide-gray-700">
             {question.choices.map((choice, index) => {
+              const letter = String.fromCharCode(65 + index);
               const isSelected = selectedAnswer === choice;
+              const isExpanded = expandedChoices.has(choice);
               const isCorrectAnswer = feedback && choice === feedback.correct_answer;
+              const isIncorrect = feedback && isSelected && !feedback.is_correct;
 
-              let borderColor = 'border-gray-700';
               let bgColor = 'bg-transparent';
-
-              if (feedback) {
-                if (isCorrectAnswer) {
-                  borderColor = 'border-emerald-500';
-                  bgColor = 'bg-emerald-500/10';
-                } else if (isSelected && !feedback.is_correct) {
-                  borderColor = 'border-red-500';
-                  bgColor = 'bg-red-500/10';
-                }
+              if (isCorrectAnswer && isExpanded) {
+                bgColor = 'bg-emerald-500/10';
+              } else if (isIncorrect && isExpanded) {
+                bgColor = 'bg-red-500/10';
               } else if (isSelected) {
-                borderColor = 'border-[#1E3A5F]';
                 bgColor = 'bg-[#1E3A5F]/10';
               }
 
+              const toggleExpand = () => {
+                const newExpanded = new Set(expandedChoices);
+                if (isExpanded) {
+                  newExpanded.delete(choice);
+                } else {
+                  newExpanded.add(choice);
+                }
+                setExpandedChoices(newExpanded);
+              };
+
               return (
-                <button
-                  key={index}
-                  onClick={() => !feedback && setSelectedAnswer(choice)}
-                  disabled={!!feedback}
-                  className={`w-full p-3 border-2 ${borderColor} ${bgColor} rounded-lg text-left transition-all duration-200 hover:border-[#2C5282] disabled:cursor-not-allowed text-base font-medium`}
-                >
-                  <span className="text-gray-400 mr-3 text-base font-semibold">{String.fromCharCode(65 + index)}.</span>
-                  {choice}
-                </button>
+                <div key={index} className={`transition-colors ${bgColor}`}>
+                  {/* Choice Button */}
+                  <button
+                    onClick={() => !feedback && setSelectedAnswer(choice)}
+                    disabled={!!feedback}
+                    className="w-full p-4 flex items-center justify-between text-left hover:bg-gray-900/30 transition-colors disabled:cursor-default"
+                  >
+                    <div className="flex items-center gap-3 flex-1">
+                      <span className="text-gray-400 text-base font-semibold">{letter}.</span>
+                      <span className="text-base font-medium text-white">{choice}</span>
+                    </div>
+
+                    {/* Status indicators */}
+                    <div className="flex items-center gap-2">
+                      {isSelected && !feedback && (
+                        <div className="w-2 h-2 rounded-full bg-blue-500" />
+                      )}
+                      {feedback && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleExpand();
+                          }}
+                          className="p-1 hover:bg-gray-800 rounded transition-colors"
+                        >
+                          <svg
+                            className={`w-5 h-5 transition-transform ${
+                              isExpanded ? 'rotate-180' : ''
+                            } ${isCorrectAnswer ? 'text-emerald-500' : isIncorrect ? 'text-red-500' : 'text-gray-400'}`}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </button>
+                      )}
+                    </div>
+                  </button>
+
+                  {/* Explanation Dropdown */}
+                  {feedback && isExpanded && (
+                    <div className="px-4 pb-4 pt-2 border-t border-gray-700/50">
+                      <div className={`text-sm ${isCorrectAnswer ? 'text-emerald-400' : isIncorrect ? 'text-red-400' : 'text-gray-400'} font-semibold mb-2`}>
+                        {isCorrectAnswer ? '✓ Correct Answer' : isIncorrect ? '✗ Incorrect' : 'Explanation'}
+                      </div>
+                      <div className="text-sm text-gray-300 leading-relaxed">
+                        {/* Placeholder for individual choice explanation */}
+                        {isCorrectAnswer
+                          ? feedback.explanation || 'This is the correct answer for this patient.'
+                          : 'Explanation for why this choice is incorrect will appear here.'}
+                      </div>
+                    </div>
+                  )}
+                </div>
               );
             })}
           </div>
 
-          {/* Feedback Section */}
-          {feedback && (
-            <div className="space-y-4 mb-4">
-              <div className={`p-4 border-l-4 ${
-                feedback.is_correct ? 'border-emerald-500 bg-emerald-500/5' : 'border-red-500 bg-red-500/5'
-              }`}>
-                <h3 className={`text-lg font-bold ${
-                  feedback.is_correct ? 'text-emerald-500' : 'text-red-500'
-                }`}>
-                  {feedback.is_correct ? 'Correct!' : `Incorrect - Correct Answer: ${feedback.correct_answer}`}
-                </h3>
-                {feedback.explanation && (
-                  <div className="mt-3 text-sm text-gray-300 whitespace-pre-wrap">
-                    {feedback.explanation}
-                  </div>
-                )}
-              </div>
-
-              {/* AI Chat Component */}
-              {question && user && (
-                <AIChat
-                  questionId={question.id}
-                  userId={user.userId}
-                  isCorrect={feedback.is_correct}
-                  userAnswer={selectedAnswer || ''}
-                />
-              )}
+          {/* AI Chat below answer choices */}
+          {feedback && question && user && (
+            <div className="mb-4">
+              <AIChat
+                questionId={question.id}
+                userId={user.userId}
+                isCorrect={feedback.is_correct}
+                userAnswer={selectedAnswer || ''}
+              />
             </div>
           )}
 
