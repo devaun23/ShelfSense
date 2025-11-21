@@ -175,14 +175,13 @@ export default function Home() {
 
               {/* Three Icons Row */}
               <div className="flex items-center justify-center gap-12 pt-8">
-                {/* Streak Counter - Fire Icon */}
+                {/* Streak Counter - Just the Number */}
                 <div
-                  className="flex flex-col items-center gap-1 cursor-pointer hover:scale-110 transition-transform group"
+                  className="cursor-pointer hover:scale-110 transition-transform group"
                   title="Current Streak"
                 >
-                  <span className="text-3xl">🔥</span>
                   <span
-                    className={`text-xl font-bold ${getStreakColor(streak)}`}
+                    className={`text-4xl font-bold ${getStreakColor(streak)}`}
                     style={{
                       fontFamily: 'var(--font-cormorant)',
                       ...(streak % 101 === 0 && streak > 0 ? {
@@ -203,18 +202,21 @@ export default function Home() {
                   title="Analytics"
                 >
                   <svg className="w-10 h-10 text-gray-500 hover:text-gray-400 transition-colors" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                    {/* Caduceus staff */}
-                    <line x1="12" y1="3" x2="12" y2="21" strokeLinecap="round" />
-                    {/* Wings */}
-                    <path d="M12 5 Q8 3 6 5 Q8 6 12 5 Z" strokeLinecap="round" strokeLinejoin="round" />
-                    <path d="M12 5 Q16 3 18 5 Q16 6 12 5 Z" strokeLinecap="round" strokeLinejoin="round" />
-                    {/* Left snake */}
-                    <path d="M8 8 Q12 10 8 12 Q12 14 8 16 Q12 18 8 20" strokeLinecap="round" fill="none" />
-                    {/* Right snake */}
-                    <path d="M16 8 Q12 10 16 12 Q12 14 16 16 Q12 18 16 20" strokeLinecap="round" fill="none" />
+                    {/* Central staff */}
+                    <line x1="12" y1="4" x2="12" y2="20" strokeLinecap="round" />
+                    {/* Wings at top */}
+                    <path d="M12 6 Q9 4 7 5.5 Q9 6.5 12 6" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M12 6 Q15 4 17 5.5 Q15 6.5 12 6" strokeLinecap="round" strokeLinejoin="round" />
+                    {/* Intertwined snakes - left snake starts on left */}
+                    <path d="M9 8 Q12 9 15 10 Q12 11 9 12 Q12 13 15 14 Q12 15 9 16" strokeLinecap="round" />
+                    {/* Right snake starts on right */}
+                    <path d="M15 8 Q12 9 9 10 Q12 11 15 12 Q12 13 9 14 Q12 15 15 16" strokeLinecap="round" />
                     {/* Snake heads */}
-                    <circle cx="8" cy="8" r="1" fill="currentColor" />
-                    <circle cx="16" cy="8" r="1" fill="currentColor" />
+                    <circle cx="9" cy="8" r="0.8" fill="currentColor" />
+                    <circle cx="15" cy="8" r="0.8" fill="currentColor" />
+                    {/* Snake tails */}
+                    <circle cx="9" cy="16" r="0.6" fill="currentColor" />
+                    <circle cx="15" cy="16" r="0.6" fill="currentColor" />
                   </svg>
                 </div>
 
