@@ -173,26 +173,45 @@ export default function Home() {
                 Start
               </button>
 
-              {/* Streak Counter */}
-              {streak > 0 && (
-                <div className="flex items-center gap-2">
-                  <span className="text-2xl">🔥</span>
-                  <span
-                    className={`text-3xl font-bold ${getStreakColor(streak)}`}
-                    style={{
-                      fontFamily: 'var(--font-cormorant)',
-                      ...(streak % 101 === 0 && streak > 0 ? {
-                        backgroundImage: 'linear-gradient(to right, #ef4444, #f59e0b, #10b981, #3b82f6, #8b5cf6)',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        backgroundClip: 'text'
-                      } : {})
-                    }}
-                  >
-                    {streak} day
-                  </span>
+              {/* Three Icons Row */}
+              <div className="flex items-center justify-center gap-8 pt-2">
+                {/* Streak Counter - Fire Icon */}
+                {streak > 0 && (
+                  <div className="flex flex-col items-center gap-1 cursor-pointer hover:scale-110 transition-transform">
+                    <span className="text-3xl">🔥</span>
+                    <span
+                      className={`text-xl font-bold ${getStreakColor(streak)}`}
+                      style={{
+                        fontFamily: 'var(--font-cormorant)',
+                        ...(streak % 101 === 0 && streak > 0 ? {
+                          backgroundImage: 'linear-gradient(to right, #ef4444, #f59e0b, #10b981, #3b82f6, #8b5cf6)',
+                          WebkitBackgroundClip: 'text',
+                          WebkitTextFillColor: 'transparent',
+                          backgroundClip: 'text'
+                        } : {})
+                      }}
+                    >
+                      {streak}
+                    </span>
+                  </div>
+                )}
+
+                {/* Analytics - Caduceus Icon */}
+                <div className="flex flex-col items-center gap-1 cursor-pointer hover:scale-110 transition-transform">
+                  <svg className="w-8 h-8 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                  </svg>
+                  <span className="text-xs text-gray-500">Analytics</span>
                 </div>
-              )}
+
+                {/* Calendar - Heatmap Icon */}
+                <div className="flex flex-col items-center gap-1 cursor-pointer hover:scale-110 transition-transform">
+                  <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <span className="text-xs text-gray-500">Calendar</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
