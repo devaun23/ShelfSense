@@ -49,3 +49,39 @@ def root():
 @app.get("/health")
 def health_check():
     return {"status": "healthy"}
+
+
+@app.get("/debug/db-stats")
+def debug_db_stats():
+    """Debug endpoint to check database status"""
+    from app.database import SessionLocal, DATABASE_URL
+    from app.models.models import Question
+    import os
+
+    db = SessionLocal()
+    try:
+        nbme_count = db.query(Question).filter(
+            ~Question.source.like('%AI Generated%')
+        ).count()
+
+        ai_count = db.query(Question).filter(
+            Question.source.like('%AI Generated%')
+        ).count()
+
+        total = db.query(Question).count()
+
+        return {
+            "database_url": DATABASE_URL,
+            "openai_key_set": bool(os.getenv('OPENAI_API_KEY')),
+            "nbme_questions": nbme_count,
+            "ai_questions": ai_count,
+            "total_questions": total
+        }
+    except Exception as e:
+        return {
+            "error": str(e),
+            "database_url": DATABASE_URL,
+            "openai_key_set": bool(os.getenv('OPENAI_API_KEY'))
+        }
+    finally:
+        db.close()
