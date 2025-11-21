@@ -158,10 +158,15 @@ export default function StudyPage() {
         <main className={`min-h-screen bg-black text-white transition-all duration-300 ${
           sidebarOpen ? 'md:ml-64' : 'ml-0'
         }`}>
-          <div className="flex flex-col items-center justify-center min-h-screen gap-4">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1E3A5F]"></div>
-            <p className="text-gray-400">Generating your next AI question...</p>
-            <p className="text-gray-600 text-sm">High-yield Step 2 CK content</p>
+          <div className="flex items-center justify-center min-h-screen">
+            {/* Solid white gear icon */}
+            <svg
+              className="animate-spin h-16 w-16 text-white"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path d="M12 2C11.172 2 10.5 2.672 10.5 3.5V5.145C9.419 5.408 8.414 5.877 7.536 6.514L6.379 5.357C5.793 4.771 4.843 4.771 4.257 5.357C3.671 5.943 3.671 6.893 4.257 7.479L5.414 8.636C4.777 9.514 4.308 10.519 4.045 11.6H2.5C1.672 11.6 1 12.272 1 13.1C1 13.928 1.672 14.6 2.5 14.6H4.145C4.408 15.681 4.877 16.686 5.514 17.564L4.357 18.721C3.771 19.307 3.771 20.257 4.357 20.843C4.943 21.429 5.893 21.429 6.479 20.843L7.636 19.686C8.514 20.323 9.519 20.792 10.6 21.055V22.5C10.6 23.328 11.272 24 12.1 24C12.928 24 13.6 23.328 13.6 22.5V20.855C14.681 20.592 15.686 20.123 16.564 19.486L17.721 20.643C18.307 21.229 19.257 21.229 19.843 20.643C20.429 20.057 20.429 19.107 19.843 18.521L18.686 17.364C19.323 16.486 19.792 15.481 20.055 14.4H21.5C22.328 14.4 23 13.728 23 12.9C23 12.072 22.328 11.4 21.5 11.4H19.855C19.592 10.319 19.123 9.314 18.486 8.436L19.643 7.279C20.229 6.693 20.229 5.743 19.643 5.157C19.057 4.571 18.107 4.571 17.521 5.157L16.364 6.314C15.486 5.677 14.481 5.208 13.4 4.945V3.5C13.4 2.672 12.728 2 11.9 2H12ZM12 8C14.209 8 16 9.791 16 12C16 14.209 14.209 16 12 16C9.791 16 8 14.209 8 12C8 9.791 9.791 8 12 8Z" />
+            </svg>
           </div>
         </main>
       </>
