@@ -18,6 +18,7 @@ from app.services.step2ck_content_outline import (
     CLINICAL_SETTINGS,
     COMMON_DISTRACTORS
 )
+from app.services.nbme_gold_book_principles import get_generation_principles
 
 # Initialize OpenAI client
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
@@ -133,6 +134,9 @@ def generate_question(db: Session, specialty: Optional[str] = None, topic: Optio
     # Select clinical setting
     clinical_setting = random.choice(CLINICAL_SETTINGS)
 
+    # Get NBME Gold Book principles
+    gold_book_principles = get_generation_principles()
+
     # Get training statistics from ENTIRE database
     stats = get_training_statistics(db, specialty)
 
@@ -197,6 +201,19 @@ CRITICAL REQUIREMENTS FOR HIGH-QUALITY QUESTIONS:
 {f'SPECIFIC TOPIC: {topic}' if topic else 'TOPIC: High-yield clinical scenario for this specialty'}
 
 {example_context}
+
+NBME GOLD BOOK PRINCIPLES (CRITICAL - FOLLOW EXACTLY):
+1. COVER THE OPTIONS RULE: Question MUST be answerable from stem + lead-in ALONE, WITHOUT looking at options
+2. VIGNETTE TEMPLATE:
+   First sentence: Age, gender, setting, presenting complaint, duration
+   Subsequent: History, physical exam, labs/imaging, treatment
+   Lead-in: Focused question allowing single best answer without seeing options
+3. SINGLE BEST ANSWER: Options homogeneous, evaluated on single dimension, ONE clearly best answer
+4. ALL RELEVANT FACTS: All facts needed to answer are in stem (not in options)
+5. PATIENTS DO NOT LIE: All patient-reported information is accurate
+6. CLASSIC CASES: Use classic presentations (not "zebras"), no red herrings, avoid tricks
+7. NO TRIVIA: Test important concepts, not obscure facts
+8. HOMOGENEOUS OPTIONS: All options same category (all diagnoses OR all treatments, etc.)
 
 DIFFICULTY TARGET: 60-70% of examinees should answer correctly (Step 2 CK standard)
 
