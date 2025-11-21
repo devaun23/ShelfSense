@@ -85,7 +85,7 @@ export default function Sidebar({ isOpen, onToggle, isHomePage = false }: Sideba
 
             {/* Step 2 CK Header */}
             <div className="px-3 py-2 border-t border-gray-800 pt-4">
-              <h3 className="text-lg font-semibold text-white" style={{ fontFamily: 'var(--font-cormorant)' }}>
+              <h3 className="text-lg font-semibold text-gray-400" style={{ fontFamily: 'var(--font-cormorant)' }}>
                 Step 2 CK
               </h3>
             </div>

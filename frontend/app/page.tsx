@@ -108,9 +108,16 @@ export default function Home() {
 
     // Generate personalized greeting and load stats
     if (user) {
+      // Track visits today using localStorage
+      const today = new Date().toDateString();
+      const visitKey = `visits_${user.userId}_${today}`;
+      const visitsToday = parseInt(localStorage.getItem(visitKey) || '0') + 1;
+      localStorage.setItem(visitKey, visitsToday.toString());
+
       const personalizedGreeting = generateGreeting({
         firstName: user.firstName,
-        hour: new Date().getHours()
+        hour: new Date().getHours(),
+        visitsToday: visitsToday
       });
       setGreeting(personalizedGreeting);
 
