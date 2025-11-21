@@ -152,8 +152,11 @@ def get_random_question(db: Session = Depends(get_db), specialty: Optional[str] 
                 recency_weight=question.recency_weight or 1.0
             )
         except Exception as e:
+            import traceback
+            error_details = traceback.format_exc()
             print(f"AI generation failed: {str(e)}")
-            raise HTTPException(status_code=500, detail="Failed to generate question")
+            print(f"Full traceback: {error_details}")
+            raise HTTPException(status_code=500, detail=f"Failed to generate question: {str(e)}")
 
     # Fallback: Get a random non-rejected question from database (for testing only)
     question = db.query(Question).filter(Question.rejected == False).order_by(Question.recency_weight.desc()).first()
