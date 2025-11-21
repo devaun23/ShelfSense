@@ -15,10 +15,20 @@ interface Question {
   recency_weight: number;
 }
 
+interface Explanation {
+  type?: string;
+  principle?: string;
+  clinical_reasoning?: string;
+  correct_answer_explanation?: string;
+  distractor_explanations?: Record<string, string>;
+  educational_objective?: string;
+  concept?: string;
+}
+
 interface Feedback {
   is_correct: boolean;
   correct_answer: string;
-  explanation: string | null;
+  explanation: Explanation | null;
   source: string;
 }
 
@@ -272,10 +282,35 @@ export default function StudyPage() {
                         {isCorrectAnswer ? '✓ Correct Answer' : isUserWrongChoice ? '✗ Your Answer (Incorrect)' : 'Why this is wrong'}
                       </div>
                       <div className="text-sm text-gray-300 leading-relaxed">
-                        {/* Placeholder for individual choice explanation */}
-                        {isCorrectAnswer
-                          ? feedback.explanation || 'This is the correct answer for this patient.'
-                          : 'Explanation for why this choice is incorrect will appear here.'}
+                        {(() => {
+                          if (!feedback.explanation) {
+                            return isCorrectAnswer
+                              ? 'This is the correct answer for this patient.'
+                              : 'Explanation for why this choice is incorrect will appear here.';
+                          }
+
+                          if (isCorrectAnswer) {
+                            // Show principle + clinical reasoning + correct answer explanation
+                            const parts = [];
+                            if (feedback.explanation.principle) {
+                              parts.push(feedback.explanation.principle);
+                            }
+                            if (feedback.explanation.clinical_reasoning) {
+                              parts.push(feedback.explanation.clinical_reasoning);
+                            }
+                            if (feedback.explanation.correct_answer_explanation) {
+                              parts.push(feedback.explanation.correct_answer_explanation);
+                            }
+                            return parts.length > 0 ? parts.join(' ') : 'This is the correct answer for this patient.';
+                          } else {
+                            // Show distractor explanation for this specific choice
+                            const distractorExplanations = feedback.explanation.distractor_explanations;
+                            if (distractorExplanations && distractorExplanations[letter]) {
+                              return distractorExplanations[letter];
+                            }
+                            return 'Explanation for why this choice is incorrect will appear here.';
+                          }
+                        })()}
                       </div>
                     </div>
                   )}

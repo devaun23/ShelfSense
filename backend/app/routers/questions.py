@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from pydantic import BaseModel
 from datetime import datetime
+import json
 
 from app.database import get_db
 from app.models.models import Question, QuestionAttempt
@@ -35,7 +36,7 @@ class SubmitAnswerRequest(BaseModel):
 class AnswerFeedback(BaseModel):
     is_correct: bool
     correct_answer: str
-    explanation: Optional[str]
+    explanation: Optional[Dict[str, Any]]  # Now returns structured explanation
     source: str
 
 
@@ -102,10 +103,27 @@ def submit_answer(request: SubmitAnswerRequest, db: Session = Depends(get_db)):
         source=question.source
     )
 
+    # Parse explanation - handle both old string format and new JSON format
+    parsed_explanation = None
+    if question.explanation:
+        if isinstance(question.explanation, dict):
+            # Already a dictionary
+            parsed_explanation = question.explanation
+        elif isinstance(question.explanation, str):
+            # Try to parse as JSON
+            try:
+                parsed_explanation = json.loads(question.explanation)
+            except json.JSONDecodeError:
+                # Old string format - wrap it
+                parsed_explanation = {
+                    "correct_answer_explanation": question.explanation,
+                    "distractor_explanations": {}
+                }
+
     return AnswerFeedback(
         is_correct=is_correct,
         correct_answer=question.answer_key,
-        explanation=question.explanation,
+        explanation=parsed_explanation,
         source=question.source or "Unknown"
     )
 
