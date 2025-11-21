@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/Users/devaun/ShelfSense/backend/clean_with_validation.py", line 34, in <module>
+    client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+  File "/Users/devaun/ShelfSense/backend/venv/lib/python3.13/site-packages/openai/_client.py", line 137, in __init__
+    raise OpenAIError(
+        "The api_key client option must be set either by passing api_key to the client or by setting the OPENAI_API_KEY environment variable"
+    )
+openai.OpenAIError: The api_key client option must be set either by passing api_key to the client or by setting the OPENAI_API_KEY environment variable

@@ -203,14 +203,17 @@ export default function StudyPage() {
               const isSelected = selectedAnswer === choice;
               const isExpanded = expandedChoices.has(choice);
               const isCorrectAnswer = feedback && choice === feedback.correct_answer;
-              const isIncorrect = feedback && isSelected && !feedback.is_correct;
+              const isUserWrongChoice = feedback && isSelected && !feedback.is_correct;
+              const isWrongChoice = feedback && !isCorrectAnswer;
 
               let bgColor = 'bg-transparent';
               if (isCorrectAnswer && isExpanded) {
                 bgColor = 'bg-emerald-500/10';
-              } else if (isIncorrect && isExpanded) {
+              } else if (isUserWrongChoice && isExpanded) {
                 bgColor = 'bg-red-500/10';
-              } else if (isSelected) {
+              } else if (isWrongChoice && isExpanded) {
+                bgColor = 'bg-gray-800/20';
+              } else if (isSelected && !feedback) {
                 bgColor = 'bg-[#1E3A5F]/10';
               }
 
@@ -226,16 +229,16 @@ export default function StudyPage() {
 
               return (
                 <div key={index} className={`transition-colors ${bgColor}`}>
-                  {/* Choice Button */}
-                  <button
-                    onClick={() => !feedback && setSelectedAnswer(choice)}
-                    disabled={!!feedback}
-                    className="w-full p-4 flex items-center justify-between text-left hover:bg-gray-900/30 transition-colors disabled:cursor-default"
-                  >
-                    <div className="flex items-center gap-3 flex-1">
+                  {/* Choice Row */}
+                  <div className="w-full p-4 flex items-center justify-between">
+                    <button
+                      onClick={() => !feedback && setSelectedAnswer(choice)}
+                      disabled={!!feedback}
+                      className="flex items-center gap-3 flex-1 text-left"
+                    >
                       <span className="text-gray-400 text-base font-semibold">{letter}.</span>
                       <span className="text-base font-medium text-white">{choice}</span>
-                    </div>
+                    </button>
 
                     {/* Status indicators */}
                     <div className="flex items-center gap-2">
@@ -244,16 +247,13 @@ export default function StudyPage() {
                       )}
                       {feedback && (
                         <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleExpand();
-                          }}
+                          onClick={toggleExpand}
                           className="p-1 hover:bg-gray-800 rounded transition-colors"
                         >
                           <svg
                             className={`w-5 h-5 transition-transform ${
                               isExpanded ? 'rotate-180' : ''
-                            } ${isCorrectAnswer ? 'text-emerald-500' : isIncorrect ? 'text-red-500' : 'text-gray-400'}`}
+                            } ${isCorrectAnswer ? 'text-emerald-500' : isUserWrongChoice ? 'text-red-500' : 'text-gray-400'}`}
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -263,13 +263,13 @@ export default function StudyPage() {
                         </button>
                       )}
                     </div>
-                  </button>
+                  </div>
 
                   {/* Explanation Dropdown */}
                   {feedback && isExpanded && (
                     <div className="px-4 pb-4 pt-2 border-t border-gray-700/50">
-                      <div className={`text-sm ${isCorrectAnswer ? 'text-emerald-400' : isIncorrect ? 'text-red-400' : 'text-gray-400'} font-semibold mb-2`}>
-                        {isCorrectAnswer ? '✓ Correct Answer' : isIncorrect ? '✗ Incorrect' : 'Explanation'}
+                      <div className={`text-sm ${isCorrectAnswer ? 'text-emerald-400' : isUserWrongChoice ? 'text-red-400' : 'text-gray-400'} font-semibold mb-2`}>
+                        {isCorrectAnswer ? '✓ Correct Answer' : isUserWrongChoice ? '✗ Your Answer (Incorrect)' : 'Why this is wrong'}
                       </div>
                       <div className="text-sm text-gray-300 leading-relaxed">
                         {/* Placeholder for individual choice explanation */}
@@ -284,9 +284,9 @@ export default function StudyPage() {
             })}
           </div>
 
-          {/* AI Chat below answer choices */}
+          {/* AI Chat below answer choices - compact version */}
           {feedback && question && user && (
-            <div className="mb-4">
+            <div className="mb-4 flex-shrink-0">
               <AIChat
                 questionId={question.id}
                 userId={user.userId}
