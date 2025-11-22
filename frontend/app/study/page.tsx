@@ -207,9 +207,9 @@ export default function StudyPage() {
             </div>
           </div>
 
-          {/* Question Vignette - fits on screen, no scroll */}
+          {/* Question Vignette - larger text */}
           <div className="mb-6 flex-shrink border-b border-gray-800 pb-4">
-            <p className="text-sm leading-relaxed whitespace-pre-wrap font-bold">
+            <p className="text-lg leading-relaxed whitespace-pre-wrap font-semibold">
               {question.vignette}
             </p>
           </div>
@@ -246,16 +246,49 @@ export default function StudyPage() {
               };
 
               return (
-                <div key={index} className={`transition-colors ${bgColor}`}>
+                <div key={index} className={`transition-colors duration-100 ${bgColor}`}>
                   {/* Choice Row */}
-                  <div className="w-full p-4 flex items-center justify-between">
+                  <div className="w-full p-5 flex items-center justify-between">
                     <button
-                      onClick={() => !feedback && setSelectedAnswer(choice)}
+                      onClick={async () => {
+                        if (!feedback && question && user) {
+                          setSelectedAnswer(choice);
+
+                          // Auto-submit immediately
+                          const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+
+                          try {
+                            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+                            const response = await fetch(`${apiUrl}/api/questions/submit`, {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({
+                                question_id: question.id,
+                                user_id: user.userId,
+                                user_answer: choice,
+                                time_spent_seconds: timeSpent,
+                              }),
+                            });
+
+                            if (response.ok) {
+                              const data: Feedback = await response.json();
+                              setFeedback(data);
+                              setQuestionCount(prev => prev + 1);
+                              if (data.is_correct) {
+                                setCorrectCount(prev => prev + 1);
+                              }
+                              loadQueueStats();
+                            }
+                          } catch (error) {
+                            console.error('Error submitting answer:', error);
+                          }
+                        }
+                      }}
                       disabled={!!feedback}
-                      className="flex items-center gap-3 flex-1 text-left"
+                      className="flex items-center gap-4 flex-1 text-left hover:bg-gray-800/30 rounded-lg p-3 -m-3 transition-colors duration-150"
                     >
-                      <span className="text-gray-400 text-base font-semibold">{letter}.</span>
-                      <span className="text-base font-medium text-white">{choice}</span>
+                      <span className="text-gray-400 text-lg font-semibold min-w-[2rem]">{letter}.</span>
+                      <span className="text-lg font-medium text-white leading-relaxed">{choice}</span>
                     </button>
 
                     {/* Status indicators */}
@@ -266,10 +299,10 @@ export default function StudyPage() {
                       {feedback && (
                         <button
                           onClick={toggleExpand}
-                          className="p-1 hover:bg-gray-800 rounded transition-colors"
+                          className="p-1 hover:bg-gray-800 rounded transition-colors duration-100"
                         >
                           <svg
-                            className={`w-5 h-5 transition-transform ${
+                            className={`w-5 h-5 transition-transform duration-150 ${
                               isExpanded ? 'rotate-180' : ''
                             } ${isCorrectAnswer ? 'text-emerald-500' : isUserWrongChoice ? 'text-red-500' : 'text-gray-400'}`}
                             fill="none"
@@ -285,11 +318,11 @@ export default function StudyPage() {
 
                   {/* Explanation Dropdown */}
                   {feedback && isExpanded && (
-                    <div className="px-4 pb-4 pt-2 border-t border-gray-700/50">
-                      <div className={`text-sm ${isCorrectAnswer ? 'text-emerald-400' : isUserWrongChoice ? 'text-red-400' : 'text-gray-400'} font-semibold mb-2`}>
+                    <div className="px-5 pb-5 pt-3 border-t border-gray-700/50">
+                      <div className={`text-base ${isCorrectAnswer ? 'text-emerald-400' : isUserWrongChoice ? 'text-red-400' : 'text-gray-400'} font-semibold mb-3`}>
                         {isCorrectAnswer ? '✓ Correct Answer' : isUserWrongChoice ? '✗ Your Answer (Incorrect)' : 'Why this is wrong'}
                       </div>
-                      <div className="text-sm text-gray-300 leading-relaxed">
+                      <div className="text-base text-gray-300 leading-relaxed">
                         {(() => {
                           if (!feedback.explanation) {
                             return isCorrectAnswer
@@ -339,25 +372,17 @@ export default function StudyPage() {
             </div>
           )}
 
-          {/* Action Buttons */}
-          <div className="flex gap-4 flex-shrink-0">
-            {!feedback ? (
-              <button
-                onClick={handleSubmit}
-                disabled={!selectedAnswer}
-                className="px-10 py-4 bg-[#1E3A5F] hover:bg-[#2C5282] disabled:bg-gray-800 disabled:cursor-not-allowed text-white rounded-lg transition-colors duration-200 text-base font-semibold"
-              >
-                Submit Answer
-              </button>
-            ) : (
+          {/* Action Buttons - Only show Next Question after feedback */}
+          {feedback && (
+            <div className="flex gap-4 flex-shrink-0">
               <button
                 onClick={handleNext}
-                className="px-10 py-4 bg-[#1E3A5F] hover:bg-[#2C5282] text-white rounded-lg transition-colors duration-200 text-base font-semibold"
+                className="px-10 py-4 bg-[#1E3A5F] hover:bg-[#2C5282] text-white rounded-lg transition-colors duration-200 text-lg font-semibold"
               >
                 Next Question
               </button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         {/* Question Rating - Bottom Right Corner (only after feedback) */}

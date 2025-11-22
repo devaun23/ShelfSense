@@ -230,7 +230,17 @@ Return ONLY valid JSON (no additional text):
   "vignette": "A [age]-year-old [gender] with a history of [relevant conditions] presents to [setting] with [chief complaint and timeline]. [Additional history]. On examination, temperature is [X]°C ([X]°F), pulse is [X]/min, respirations are [X]/min, and blood pressure is [X]/[X] mm Hg. [Physical exam findings]. Laboratory studies show [relevant labs with units].",
   "choices": ["Specific management/diagnosis A", "Specific management/diagnosis B", "Specific management/diagnosis C", "Specific management/diagnosis D", "Specific management/diagnosis E"],
   "answer_key": "B",
-  "explanation": "The correct answer is B because [pathophysiology and clinical reasoning based on current guidelines]. Other choices are incorrect because [brief explanation of why key distractors don't apply to this patient].",
+  "explanation": {{
+    "principle": "Core medical principle or pathophysiology being tested",
+    "clinical_reasoning": "Step-by-step clinical reasoning for this specific patient",
+    "correct_answer_explanation": "Why choice B is the best answer for this patient",
+    "distractor_explanations": {{
+      "A": "Why choice A is wrong for this patient",
+      "C": "Why choice C is wrong for this patient",
+      "D": "Why choice D is wrong for this patient",
+      "E": "Why choice E is wrong for this patient"
+    }}
+  }},
   "specialty": "{specialty}"
 }}"""
 
