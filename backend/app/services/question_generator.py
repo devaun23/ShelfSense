@@ -231,16 +231,24 @@ Return ONLY valid JSON (no additional text):
   "choices": ["Specific management/diagnosis A", "Specific management/diagnosis B", "Specific management/diagnosis C", "Specific management/diagnosis D", "Specific management/diagnosis E"],
   "answer_key": "B",
   "explanation": {{
-    "principle": "Core medical principle or pathophysiology being tested",
-    "clinical_reasoning": "Step-by-step clinical reasoning for this specific patient",
-    "correct_answer_explanation": "Why choice B is the best answer for this patient",
+    "principle": "State the core medical principle concisely using clinical language",
+    "clinical_reasoning": "Use structured format with arrows (→) to show diagnostic/therapeutic pathway. Example: 'History + exam → provisional diagnosis → confirm with test → treatment'. Keep it clear and flowing with logical progression.",
+    "correct_answer_explanation": "Explain why this is correct using clear clinical logic. Use arrow notation (→) to show cause-effect or step-progression when relevant. Example: 'Risk factors → pathophysiology → clinical presentation → indicated management'",
     "distractor_explanations": {{
-      "A": "Why choice A is wrong for this patient",
-      "C": "Why choice C is wrong for this patient",
-      "D": "Why choice D is wrong for this patient",
-      "E": "Why choice E is wrong for this patient"
+      "A": "Concise reason why wrong. Use arrows if showing why pathway leads elsewhere. Example: 'This would be used if patient had X → leading to Y, but patient has Z instead'",
+      "C": "Concise reason why wrong. Focus on key differentiating factor",
+      "D": "Concise reason why wrong. Mention when this would be appropriate instead",
+      "E": "Concise reason why wrong. State the critical difference"
     }}
   }},
+
+EXPLANATION FORMATTING RULES:
+- Use arrows (→) to show progression, causation, or logical flow
+- Keep each explanation focused and clear without unnecessary words
+- Use line breaks naturally (no bullet points or numbered lists)
+- Example good format: "Patient presents with X → suggesting Y → confirmed by Z → therefore treatment is A"
+- Make explanations educational but concise
+- Use clinical reasoning flow rather than paragraph style
   "specialty": "{specialty}"
 }}"""
 

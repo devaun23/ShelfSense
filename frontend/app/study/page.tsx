@@ -229,14 +229,23 @@ export default function StudyPage() {
               const isWrongChoice = feedback && !isCorrectAnswer;
 
               let bgColor = 'bg-transparent';
-              if (isCorrectAnswer && isExpanded) {
-                bgColor = 'bg-emerald-500/10';
-              } else if (isUserWrongChoice && isExpanded) {
-                bgColor = 'bg-red-500/10';
-              } else if (isWrongChoice && isExpanded) {
-                bgColor = 'bg-gray-800/20';
-              } else if (isSelected && !feedback) {
-                bgColor = 'bg-[#1E3A5F]/10';
+              let borderColor = '';
+
+              if (feedback) {
+                // After feedback - show results
+                if (isCorrectAnswer) {
+                  bgColor = 'bg-emerald-500/20';
+                  borderColor = 'border-l-4 border-l-emerald-500';
+                } else if (isUserWrongChoice) {
+                  bgColor = 'bg-red-500/20';
+                  borderColor = 'border-l-4 border-l-red-500';
+                } else if (isWrongChoice) {
+                  bgColor = 'bg-gray-800/10';
+                }
+              } else if (isSelected) {
+                // Before feedback - highlight selected answer
+                bgColor = 'bg-blue-500/30';
+                borderColor = 'border-l-4 border-l-blue-500';
               }
 
               const toggleExpand = () => {
@@ -250,7 +259,7 @@ export default function StudyPage() {
               };
 
               return (
-                <div key={index} className={`transition-colors duration-100 ${bgColor}`}>
+                <div key={index} className={`transition-all duration-200 ${bgColor} ${borderColor}`}>
                   {/* Choice Row */}
                   <div className="w-full p-5 flex items-center justify-between">
                     <button
@@ -282,6 +291,16 @@ export default function StudyPage() {
                                 setCorrectCount(prev => prev + 1);
                               }
                               loadQueueStats();
+
+                              // Auto-expand correct answer and user's wrong answer (Amboss-style)
+                              const newExpanded = new Set<string>();
+                              if (data.correct_answer) {
+                                newExpanded.add(data.correct_answer);
+                              }
+                              if (!data.is_correct && choice) {
+                                newExpanded.add(choice);
+                              }
+                              setExpandedChoices(newExpanded);
                             }
                           } catch (error) {
                             console.error('Error submitting answer:', error);
@@ -326,7 +345,7 @@ export default function StudyPage() {
                       <div className={`text-base ${isCorrectAnswer ? 'text-emerald-400' : isUserWrongChoice ? 'text-red-400' : 'text-gray-400'} font-semibold mb-3`}>
                         {isCorrectAnswer ? '✓ Correct Answer' : isUserWrongChoice ? '✗ Your Answer (Incorrect)' : 'Why this is wrong'}
                       </div>
-                      <div className="text-base text-gray-300 leading-relaxed">
+                      <div className="text-base text-gray-300 leading-relaxed space-y-3">
                         {(() => {
                           if (!feedback.explanation) {
                             return isCorrectAnswer
@@ -335,23 +354,34 @@ export default function StudyPage() {
                           }
 
                           if (isCorrectAnswer) {
-                            // Show principle + clinical reasoning + correct answer explanation
-                            const parts = [];
-                            if (feedback.explanation.principle) {
-                              parts.push(feedback.explanation.principle);
-                            }
-                            if (feedback.explanation.clinical_reasoning) {
-                              parts.push(feedback.explanation.clinical_reasoning);
-                            }
-                            if (feedback.explanation.correct_answer_explanation) {
-                              parts.push(feedback.explanation.correct_answer_explanation);
-                            }
-                            return parts.length > 0 ? parts.join(' ') : 'This is the correct answer for this patient.';
+                            // Show principle + clinical reasoning + correct answer explanation with structure
+                            return (
+                              <>
+                                {feedback.explanation.principle && (
+                                  <div className="text-white font-medium">
+                                    {feedback.explanation.principle}
+                                  </div>
+                                )}
+                                {feedback.explanation.clinical_reasoning && (
+                                  <div className="text-gray-300">
+                                    {feedback.explanation.clinical_reasoning}
+                                  </div>
+                                )}
+                                {feedback.explanation.correct_answer_explanation && (
+                                  <div className="text-gray-300">
+                                    {feedback.explanation.correct_answer_explanation}
+                                  </div>
+                                )}
+                                {!feedback.explanation.principle && !feedback.explanation.clinical_reasoning && !feedback.explanation.correct_answer_explanation && (
+                                  <div>This is the correct answer for this patient.</div>
+                                )}
+                              </>
+                            );
                           } else {
                             // Show distractor explanation for this specific choice
                             const distractorExplanations = feedback.explanation.distractor_explanations;
                             if (distractorExplanations && distractorExplanations[letter]) {
-                              return distractorExplanations[letter];
+                              return <div>{distractorExplanations[letter]}</div>;
                             }
                             return 'Explanation for why this choice is incorrect will appear here.';
                           }
