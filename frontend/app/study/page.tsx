@@ -195,10 +195,10 @@ export default function StudyPage() {
       {/* Progress bar only appears during questions */}
       <ProgressBar progress={progress} />
 
-      <main className={`h-screen overflow-hidden bg-black text-white transition-all duration-300 ${
+      <main className={`min-h-screen bg-black text-white transition-all duration-300 ${
         sidebarOpen ? 'md:ml-64' : 'ml-0'
       }`}>
-        <div className="h-full flex flex-col mx-auto px-8 py-6 pt-16" style={{ maxWidth: sidebarOpen ? '1200px' : '1400px' }}>
+        <div className="flex flex-col mx-auto px-8 py-6 pt-16 pb-32" style={{ maxWidth: sidebarOpen ? '1200px' : '1400px' }}>
           {/* Stats bar */}
           <div className="flex justify-end items-center gap-6 text-base mb-4 flex-shrink-0">
             <div>
@@ -211,9 +211,9 @@ export default function StudyPage() {
             </div>
           </div>
 
-          {/* Question Vignette - larger text */}
-          <div className="mb-6 flex-shrink border-b border-gray-800 pb-4">
-            <p className="text-lg leading-relaxed whitespace-pre-wrap font-semibold">
+          {/* Question Vignette - MUCH larger text */}
+          <div className="mb-6 flex-shrink border-b border-gray-800 pb-6">
+            <p className="text-2xl leading-relaxed whitespace-pre-wrap font-semibold">
               {question.vignette}
             </p>
           </div>
@@ -261,7 +261,7 @@ export default function StudyPage() {
               return (
                 <div key={index} className={`transition-all duration-200 ${bgColor} ${borderColor}`}>
                   {/* Choice Row */}
-                  <div className="w-full p-5 flex items-center justify-between">
+                  <div className="w-full p-3 flex items-center justify-between">
                     <button
                       onClick={async () => {
                         if (!feedback && question && user) {
@@ -308,10 +308,10 @@ export default function StudyPage() {
                         }
                       }}
                       disabled={!!feedback}
-                      className="flex items-center gap-4 flex-1 text-left hover:bg-gray-800/30 rounded-lg p-3 -m-3 transition-colors duration-150"
+                      className="flex items-center gap-2 flex-1 text-left hover:bg-gray-700/60 rounded-lg p-2 -m-2 transition-all duration-100 ease-out"
                     >
-                      <span className="text-gray-400 text-lg font-semibold min-w-[2rem]">{letter}.</span>
-                      <span className="text-lg font-medium text-white leading-relaxed">{choice}</span>
+                      <span className="text-gray-400 text-sm font-semibold min-w-[1.5rem]">{letter}.</span>
+                      <span className="text-sm font-normal text-white leading-snug">{choice}</span>
                     </button>
 
                     {/* Status indicators */}
