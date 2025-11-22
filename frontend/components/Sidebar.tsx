@@ -8,7 +8,6 @@ interface SidebarProps {
   isOpen: boolean;
   onToggle: () => void;
   isHomePage?: boolean;
-  hideToggle?: boolean;
 }
 
 const clerkships = [
@@ -22,7 +21,7 @@ const clerkships = [
   { name: 'Psychiatry', available: false },
 ];
 
-export default function Sidebar({ isOpen, onToggle, isHomePage = false, hideToggle = false }: SidebarProps) {
+export default function Sidebar({ isOpen, onToggle, isHomePage = false }: SidebarProps) {
   const [selectedSpecialty, setSelectedSpecialty] = useState<string>('Internal Medicine');
   const [showFeedback, setShowFeedback] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
@@ -158,13 +157,12 @@ export default function Sidebar({ isOpen, onToggle, isHomePage = false, hideTogg
         <div className="fixed left-0 top-0 h-full w-[1px] bg-gray-700 z-40" />
       )}
 
-      {/* Toggle Button - Thicker and more visible, hidden when scrolling */}
+      {/* Toggle Button - Thicker and more visible */}
       <button
         onClick={onToggle}
-        className={`fixed left-4 top-4 z-[60] px-3 py-2 text-gray-300 hover:text-white transition-all duration-300 text-2xl font-bold ${
-          hideToggle ? 'opacity-0 pointer-events-none' : 'opacity-100'
-        }`}
+        className="fixed left-4 top-4 z-[60] px-3 py-2 text-gray-300 hover:text-white transition-colors duration-200 text-2xl font-bold"
         style={{ lineHeight: '1' }}
+        aria-label={isOpen ? 'Close sidebar' : 'Open sidebar'}
       >
         {isOpen ? '←' : '→'}
       </button>

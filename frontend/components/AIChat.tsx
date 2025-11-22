@@ -83,6 +83,8 @@ export default function AIChat({ questionId, userId, isCorrect, userAnswer }: AI
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
         className="w-full px-4 py-3 flex items-center justify-between hover:bg-gray-900/50 transition-colors group"
+        aria-label={isExpanded ? 'Collapse AI chat' : 'Expand AI chat'}
+        aria-expanded={isExpanded}
       >
         <div className="flex items-center gap-3">
           {/* Star Icon with Eyes */}
@@ -205,6 +207,7 @@ export default function AIChat({ questionId, userId, isCorrect, userAnswer }: AI
                 onClick={sendMessage}
                 disabled={!input.trim() || loading}
                 className="px-4 py-2 bg-[#1E3A5F] hover:bg-[#2C5282] disabled:bg-gray-800 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
+                aria-label="Send message"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
