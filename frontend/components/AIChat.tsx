@@ -30,6 +30,28 @@ export default function AIChat({ questionId, userId, isCorrect, userAnswer }: AI
     scrollToBottom();
   }, [messages]);
 
+  // Load chat history when component mounts or question changes
+  useEffect(() => {
+    const loadChatHistory = async () => {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+        const response = await fetch(`${apiUrl}/api/chat/history/${questionId}?user_id=${userId}`);
+        if (response.ok) {
+          const data = await response.json();
+          const loadedMessages: Message[] = data.messages.map((msg: any) => ({
+            role: msg.role,
+            content: msg.message
+          }));
+          setMessages(loadedMessages);
+        }
+      } catch (error) {
+        console.error('Error loading chat history:', error);
+      }
+    };
+
+    loadChatHistory();
+  }, [questionId, userId]);
+
   const sendMessage = async () => {
     if (!input.trim() || loading) return;
 

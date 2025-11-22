@@ -175,10 +175,10 @@ export default function Home() {
 
               {/* Three Icons Row */}
               <div className="flex items-center justify-center gap-12 pt-8">
-                {/* Streak Counter - Just the Number */}
+                {/* Streak Counter with Label */}
                 <div
-                  className="cursor-pointer hover:scale-110 transition-transform group"
-                  title="Current Streak"
+                  className="cursor-pointer hover:scale-110 transition-transform group flex flex-col items-center"
+                  title="Your current study streak"
                 >
                   <span
                     className={`text-4xl font-bold ${getStreakColor(streak)}`}
@@ -194,12 +194,14 @@ export default function Home() {
                   >
                     {streak}
                   </span>
+                  <span className="text-xs text-gray-500 mt-1 uppercase tracking-wide">Day Streak</span>
                 </div>
 
                 {/* Analytics - Caduceus Medical Symbol */}
                 <div
+                  onClick={() => router.push('/study')}
                   className="cursor-pointer hover:scale-110 transition-transform group relative"
-                  title="Analytics"
+                  title="Start Studying"
                 >
                   <svg className="w-10 h-10 text-gray-500 hover:text-gray-400 transition-colors" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                     {/* Central staff */}
@@ -222,8 +224,9 @@ export default function Home() {
 
                 {/* Calendar - Heatmap Icon */}
                 <div
+                  onClick={() => router.push('/reviews')}
                   className="cursor-pointer hover:scale-110 transition-transform group relative"
-                  title="Calendar"
+                  title="Review Calendar"
                 >
                   <svg className="w-10 h-10 text-gray-500 hover:text-gray-400 transition-colors" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                     <rect x="3" y="4" width="18" height="18" rx="2" ry="2" strokeLinecap="round" strokeLinejoin="round" />
