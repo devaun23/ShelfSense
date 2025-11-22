@@ -238,9 +238,9 @@ export default function StudyPage() {
             </div>
           </div>
 
-          {/* Question Vignette - MUCH larger text */}
+          {/* Question Vignette - Slightly smaller for balance */}
           <div className="mb-6 flex-shrink border-b border-gray-800 pb-6">
-            <p className="text-2xl leading-relaxed whitespace-pre-wrap font-semibold">
+            <p className="text-xl leading-relaxed whitespace-pre-wrap font-semibold">
               {question.vignette}
             </p>
           </div>
@@ -341,7 +341,7 @@ export default function StudyPage() {
                       className="flex items-center gap-2 flex-1 text-left hover:bg-gray-700/60 rounded-lg p-2 -m-2 transition-all duration-100 ease-out"
                     >
                       <span className="text-gray-400 text-sm font-semibold min-w-[1.5rem]">{letter}.</span>
-                      <span className="text-sm font-normal text-white leading-snug">{choice}</span>
+                      <span className="text-base font-normal text-white leading-snug">{choice}</span>
                     </button>
 
                     {/* Status indicators */}

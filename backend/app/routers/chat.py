@@ -25,10 +25,12 @@ class ChatRequest(BaseModel):
     user_id: str
     question_id: str
     message: str
+    user_answer: str | None = None
+    is_correct: bool | None = None
 
 
 class ChatResponse(BaseModel):
-    message: str
+    response: str
     created_at: datetime
 
 
@@ -158,7 +160,7 @@ Your role:
         db.commit()
 
         return ChatResponse(
-            message=ai_message,
+            response=ai_message,
             created_at=ai_msg.created_at
         )
 

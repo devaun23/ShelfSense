@@ -302,12 +302,21 @@ EXPLANATION FORMATTING RULES:
 def save_generated_question(db: Session, question_data: Dict) -> Question:
     """Save a generated question to the database"""
 
+    import json
+
+    # Convert explanation dict to JSON string for storage
+    explanation_data = question_data.get("explanation")
+    if isinstance(explanation_data, dict):
+        explanation_json = json.dumps(explanation_data)
+    else:
+        explanation_json = explanation_data
+
     question = Question(
         id=generate_uuid(),
         vignette=question_data["vignette"],
         choices=question_data["choices"],
         answer_key=question_data["answer_key"],
-        explanation=question_data.get("explanation"),
+        explanation=explanation_json,
         source=question_data.get("source", "AI Generated"),
         recency_weight=question_data.get("recency_weight", 1.0),
         recency_tier=1,  # AI-generated questions are tier 1 (most recent/accurate)
