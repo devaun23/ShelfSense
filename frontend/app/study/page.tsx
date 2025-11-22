@@ -200,10 +200,14 @@ export default function StudyPage() {
       }`}>
         <div className="h-full flex flex-col mx-auto px-8 py-6 pt-16" style={{ maxWidth: sidebarOpen ? '1200px' : '1400px' }}>
           {/* Stats bar */}
-          <div className="flex justify-end items-center text-base mb-4 flex-shrink-0">
+          <div className="flex justify-end items-center gap-6 text-base mb-4 flex-shrink-0">
             <div>
               <span className="text-gray-500 font-semibold">Queue: </span>
-              <span className="text-white font-bold">{queueStats.completed}/{queueStats.queueSize} Completed</span>
+              <span className="text-white font-bold">{queueStats.queueSize}</span>
+            </div>
+            <div>
+              <span className="text-gray-500 font-semibold">Completed: </span>
+              <span className="text-white font-bold">{queueStats.completed}</span>
             </div>
           </div>
 
