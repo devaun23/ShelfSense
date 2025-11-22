@@ -47,6 +47,7 @@ export default function StudyPage() {
   const [expandedChoices, setExpandedChoices] = useState<Set<string>>(new Set());
   const [startTime, setStartTime] = useState<number>(0);
   const [nextQuestion, setNextQuestion] = useState<Question | null>(null);
+  const [hideToggle, setHideToggle] = useState(false);
 
   const preloadNextQuestion = async () => {
     // Silently pre-load the next question in the background
@@ -108,6 +109,17 @@ export default function StudyPage() {
       loadQueueStats();
     }
   }, [user, userLoading, router]);
+
+  // Scroll listener to hide toggle button when scrolling down
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      setHideToggle(scrollPosition > 100);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const loadQueueStats = async () => {
     if (!user) return;
@@ -181,7 +193,7 @@ export default function StudyPage() {
   if (loading) {
     return (
       <>
-        <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
+        <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} hideToggle={hideToggle} />
         <main className={`min-h-screen bg-black text-white transition-all duration-300 ${
           sidebarOpen ? 'md:ml-64' : 'ml-0'
         }`}>
@@ -203,7 +215,7 @@ export default function StudyPage() {
   if (!question) {
     return (
       <>
-        <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
+        <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} hideToggle={hideToggle} />
         <main className={`min-h-screen bg-black text-white transition-all duration-300 ${
           sidebarOpen ? 'md:ml-64' : 'ml-0'
         }`}>
@@ -217,7 +229,7 @@ export default function StudyPage() {
 
   return (
     <>
-      <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
+      <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} hideToggle={hideToggle} />
 
       {/* Progress bar only appears during questions */}
       <ProgressBar progress={progress} />
