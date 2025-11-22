@@ -47,6 +47,7 @@ export default function StudyPage() {
   const [expandedChoices, setExpandedChoices] = useState<Set<string>>(new Set());
   const [startTime, setStartTime] = useState<number>(0);
   const [nextQuestion, setNextQuestion] = useState<Question | null>(null);
+  const [totalQuestions, setTotalQuestions] = useState<number>(1994); // Default fallback
 
   const preloadNextQuestion = async () => {
     // Silently pre-load the next question in the background
@@ -106,6 +107,7 @@ export default function StudyPage() {
     if (user && !question) {
       loadNextQuestion();
       loadQueueStats();
+      loadTotalQuestions();
     }
   }, [user, userLoading, router]);
 
@@ -145,6 +147,20 @@ export default function StudyPage() {
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [question, selectedAnswer, feedback]);
+
+  const loadTotalQuestions = async () => {
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const response = await fetch(`${apiUrl}/api/questions/count`);
+      if (response.ok) {
+        const data = await response.json();
+        setTotalQuestions(data.total);
+      }
+    } catch (error) {
+      console.error('Error loading total questions:', error);
+      // Keep default fallback value
+    }
+  };
 
   const loadQueueStats = async () => {
     if (!user) return;
@@ -226,7 +242,7 @@ export default function StudyPage() {
     loadNextQuestion();
   };
 
-  const progress = questionCount > 0 ? (questionCount / 1994) * 100 : 0;
+  const progress = questionCount > 0 ? (questionCount / totalQuestions) * 100 : 0;
 
   if (loading) {
     return (
@@ -272,7 +288,7 @@ export default function StudyPage() {
       <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
 
       {/* Progress bar only appears during questions */}
-      <ProgressBar progress={progress} />
+      <ProgressBar progress={progress} questionCount={questionCount} totalQuestions={totalQuestions} />
 
       <main className={`min-h-screen bg-black text-white transition-all duration-300 ${
         sidebarOpen ? 'md:ml-64' : 'ml-0'

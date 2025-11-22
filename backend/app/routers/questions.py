@@ -222,3 +222,12 @@ def rate_question(request: RateQuestionRequest, db: Session = Depends(get_db)):
         success=True,
         message="Rating saved successfully"
     )
+
+
+@router.get("/count")
+def get_question_count(db: Session = Depends(get_db)):
+    """
+    Get total number of questions in the database
+    """
+    total = db.query(Question).count()
+    return {"total": total}

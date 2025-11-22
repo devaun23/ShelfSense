@@ -25,16 +25,48 @@ export default function Sidebar({ isOpen, onToggle, isHomePage = false }: Sideba
   const [selectedSpecialty, setSelectedSpecialty] = useState<string>('Internal Medicine');
   const [showFeedback, setShowFeedback] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const router = useRouter();
   const { user } = useUser();
 
+  // Swipe detection - minimum swipe distance (in px)
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+
+    // Close sidebar on left swipe
+    if (isLeftSwipe && isOpen) {
+      onToggle();
+    }
+
+    setTouchStart(null);
+    setTouchEnd(null);
+  };
+
   return (
     <>
-      {/* Sidebar */}
+      {/* Sidebar - Full width on mobile, 256px on desktop */}
       <div
         className={`fixed left-0 top-0 h-full bg-black border-r border-gray-800 transition-all duration-300 z-50 ${
-          isOpen ? 'w-64' : 'w-0'
+          isOpen ? 'w-full md:w-64' : 'w-0'
         } overflow-hidden`}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
       >
         <div className="p-6 pt-16 h-full flex flex-col">
           <div className={`mb-6 transition-all duration-300 ${isOpen ? 'ml-8' : 'ml-0'}`}>
