@@ -46,25 +46,52 @@ export default function StudyPage() {
   const [queueStats, setQueueStats] = useState({ completed: 0, queueSize: 10 });
   const [expandedChoices, setExpandedChoices] = useState<Set<string>>(new Set());
   const [startTime, setStartTime] = useState<number>(0);
+  const [nextQuestion, setNextQuestion] = useState<Question | null>(null);
 
-  const loadNextQuestion = async () => {
-    setLoading(true);
-    setSelectedAnswer(null);
-    setFeedback(null);
-    setExpandedChoices(new Set());
-    setStartTime(Date.now());
-
+  const preloadNextQuestion = async () => {
+    // Silently pre-load the next question in the background
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
       const response = await fetch(`${apiUrl}/api/questions/random`);
       if (response.ok) {
         const data = await response.json();
-        setQuestion(data);
+        setNextQuestion(data);
       }
     } catch (error) {
-      console.error('Error loading question:', error);
-    } finally {
+      console.error('Error preloading question:', error);
+    }
+  };
+
+  const loadNextQuestion = async () => {
+    setSelectedAnswer(null);
+    setFeedback(null);
+    setExpandedChoices(new Set());
+    setStartTime(Date.now());
+
+    // If we have a pre-loaded question, use it instantly
+    if (nextQuestion) {
+      setQuestion(nextQuestion);
+      setNextQuestion(null);
       setLoading(false);
+      // Start pre-loading the NEXT question
+      preloadNextQuestion();
+    } else {
+      // Fallback: load synchronously
+      setLoading(true);
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+        const response = await fetch(`${apiUrl}/api/questions/random`);
+        if (response.ok) {
+          const data = await response.json();
+          setQuestion(data);
+          // Start pre-loading for next time
+          preloadNextQuestion();
+        }
+      } catch (error) {
+        console.error('Error loading question:', error);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -301,6 +328,9 @@ export default function StudyPage() {
                                 newExpanded.add(choice);
                               }
                               setExpandedChoices(newExpanded);
+
+                              // Pre-load next question in background for instant loading
+                              preloadNextQuestion();
                             }
                           } catch (error) {
                             console.error('Error submitting answer:', error);
