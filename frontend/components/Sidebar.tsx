@@ -27,8 +27,19 @@ export default function Sidebar({ isOpen, onToggle, isHomePage = false }: Sideba
   const [showAbout, setShowAbout] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const [emailCopied, setEmailCopied] = useState(false);
   const router = useRouter();
   const { user } = useUser();
+
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText('devaun0506@gmail.com');
+      setEmailCopied(true);
+      setTimeout(() => setEmailCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy email:', err);
+    }
+  };
 
   // Swipe detection - minimum swipe distance (in px)
   const minSwipeDistance = 50;
@@ -90,20 +101,40 @@ export default function Sidebar({ isOpen, onToggle, isHomePage = false }: Sideba
                 Feedback
               </button>
               {showFeedback && (
-                <p className="mt-3 text-sm text-gray-400 leading-relaxed">
-                  Please email me at <a href="mailto:devaun0506@gmail.com" className="text-blue-400 hover:text-blue-300 underline">devaun0506@gmail.com</a> at anytime for feedback on this product.
-                </p>
+                <div className="mt-3 text-sm text-gray-400 leading-relaxed">
+                  <p>Please email me at anytime for feedback on this product.</p>
+                  <div className="mt-2 flex items-center gap-2">
+                    <a href="mailto:devaun0506@gmail.com" className="text-blue-400 hover:text-blue-300 underline">
+                      devaun0506@gmail.com
+                    </a>
+                    <button
+                      onClick={copyEmail}
+                      className="p-1 hover:bg-gray-800 rounded transition-colors"
+                      title="Copy email address"
+                    >
+                      {emailCopied ? (
+                        <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      ) : (
+                        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
+                </div>
               )}
             </div>
 
-            {/* About Me Section */}
+            {/* About ShelfSense Section */}
             <div className="px-3 py-2 mb-4">
               <button
                 onClick={() => setShowAbout(!showAbout)}
                 className="text-lg font-semibold text-white hover:text-gray-300 transition-colors"
                 style={{ fontFamily: 'var(--font-cormorant)' }}
               >
-                About Me
+                About ShelfSense
               </button>
               {showAbout && (
                 <p className="mt-3 text-sm text-gray-400 leading-relaxed">
@@ -129,55 +160,64 @@ export default function Sidebar({ isOpen, onToggle, isHomePage = false }: Sideba
               </div>
 
               <div className="space-y-1">
-                {clerkships.map((clerkship) => (
+                {clerkships.filter(c => c.available).map((clerkship) => (
                   <button
                     key={clerkship.name}
-                    onClick={() => clerkship.available && setSelectedSpecialty(clerkship.name)}
-                    disabled={!clerkship.available}
+                    onClick={() => setSelectedSpecialty(clerkship.name)}
                     className={`w-full text-left px-3 py-2 rounded transition-colors text-lg font-semibold ${
-                      clerkship.available
-                        ? selectedSpecialty === clerkship.name
-                          ? 'bg-gray-900 text-white'
-                          : 'text-gray-400 hover:text-white hover:bg-gray-900'
-                        : 'text-gray-700 cursor-not-allowed'
+                      selectedSpecialty === clerkship.name
+                        ? 'bg-gray-900 text-white'
+                        : 'text-gray-400 hover:text-white hover:bg-gray-900'
                     }`}
                     style={{ fontFamily: 'var(--font-cormorant)' }}
                   >
                     {clerkship.name}
-                    {!clerkship.available && (
-                      <span className="ml-2 text-xs text-gray-600 font-normal">(Coming Soon)</span>
-                    )}
                   </button>
                 ))}
               </div>
             </div>
           </nav>
 
-          {/* Exit Door Icon at bottom right - only shown when NOT on home page */}
+          {/* User Profile Section at bottom */}
+          {user && (
+            <div className="mt-auto pt-4 border-t border-gray-800">
+              <div className="px-3 py-3">
+                <div className="text-sm text-gray-400 mb-1">Logged in as</div>
+                <div className="text-white font-semibold mb-3">{user.firstName} {user.lastName}</div>
+                <button
+                  onClick={() => {
+                    localStorage.removeItem('user');
+                    router.push('/login');
+                  }}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-900 hover:bg-gray-800 text-red-400 hover:text-red-300 rounded-lg transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                  <span>Logout</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Home Icon at bottom right - only shown when NOT on home page */}
           {!isHomePage && (
-            <div className="mt-auto pt-4 flex justify-end px-3 pb-4">
+            <div className="pt-4 flex justify-end px-3 pb-4">
               <button
                 onClick={() => router.push('/')}
-                className="flex items-center gap-2 p-2 text-white hover:bg-gray-900 rounded-lg transition-colors group"
-                title="Exit Session"
+                className="flex items-center gap-2 px-3 py-2 text-gray-400 hover:text-white hover:bg-gray-900 rounded-lg transition-colors"
+                aria-label="Go to home page"
               >
                 <svg
                   className="w-5 h-5"
-                  viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
                 >
-                  {/* Door frame */}
-                  <rect x="3" y="3" width="18" height="18" rx="2" />
-                  {/* Door opening */}
-                  <path d="M9 3v18" />
-                  {/* Door handle */}
-                  <circle cx="15" cy="12" r="1" fill="currentColor" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                 </svg>
-                <span className="text-sm opacity-0 group-hover:opacity-100 transition-opacity">Exit</span>
+                <span className="text-sm font-medium">Home</span>
               </button>
             </div>
           )}

@@ -174,7 +174,7 @@ export default function AIChat({ questionId, userId, isCorrect, userAnswer }: AI
       {isExpanded && (
         <div className="border-t border-gray-700">
           {/* Messages */}
-          <div className="max-h-32 overflow-y-auto p-3 space-y-2">
+          <div className="max-h-96 overflow-y-auto p-3 space-y-2">
             {messages.length === 0 && (
               <div className="text-center text-gray-500 text-sm py-8">
                 Ask me anything about this question!<br />

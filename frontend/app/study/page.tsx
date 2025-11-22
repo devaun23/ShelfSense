@@ -364,13 +364,19 @@ export default function StudyPage() {
 
             {/* Queue and Completed Stats */}
             <div className="flex gap-6">
-              <div>
+              <div className="group relative">
                 <span className="text-gray-400 font-semibold">Queue: </span>
                 <span className="text-white font-bold">{queueStats.queueSize}</span>
+                <div className="absolute hidden group-hover:block bottom-full mb-2 right-0 w-64 p-2 bg-gray-900 border border-gray-700 rounded text-xs text-gray-300 shadow-lg z-10">
+                  Questions you'll review soon based on spaced repetition
+                </div>
               </div>
-              <div>
+              <div className="group relative">
                 <span className="text-gray-400 font-semibold">Completed: </span>
                 <span className="text-white font-bold">{queueStats.completed}</span>
+                <div className="absolute hidden group-hover:block bottom-full mb-2 right-0 w-64 p-2 bg-gray-900 border border-gray-700 rounded text-xs text-gray-300 shadow-lg z-10">
+                  Total questions you've answered in all study sessions
+                </div>
               </div>
             </div>
           </div>
