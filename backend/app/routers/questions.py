@@ -6,9 +6,10 @@ from datetime import datetime
 import json
 
 from app.database import get_db
-from app.models.models import Question, QuestionAttempt, QuestionRating
+from app.models.models import Question, QuestionAttempt, QuestionRating, generate_uuid
 from app.services.adaptive import select_next_question
-from app.services.question_generator import generate_and_save_question
+from app.services.question_generator import generate_and_save_question, save_generated_question
+from app.services.question_agent import generate_question_with_agent
 
 router = APIRouter(prefix="/api/questions", tags=["questions"])
 
@@ -129,16 +130,24 @@ def submit_answer(request: SubmitAnswerRequest, db: Session = Depends(get_db)):
 
 
 @router.get("/random", response_model=QuestionResponse)
-def get_random_question(db: Session = Depends(get_db), specialty: Optional[str] = None, use_ai: bool = True):
+def get_random_question(db: Session = Depends(get_db), specialty: Optional[str] = None, use_ai: bool = True, use_agent: bool = True):
     """
     Generate a new AI question on-demand (default behavior)
     Pure AI generation - no NBME questions shown to user
+    Uses agent-based generation by default for higher quality
     """
     # Always generate AI questions on-demand
     if use_ai:
         try:
-            # Generate new question using AI
-            question = generate_and_save_question(db, specialty=specialty)
+            if use_agent:
+                # Use agent-based generation (higher quality, multi-step reasoning)
+                print(f"[API] Using agent-based generation for {specialty or 'random specialty'}...")
+                question_data = generate_question_with_agent(db, specialty=specialty)
+                question = save_generated_question(db, question_data)
+            else:
+                # Use simple generation (faster, less sophisticated)
+                print(f"[API] Using simple generation for {specialty or 'random specialty'}...")
+                question = generate_and_save_question(db, specialty=specialty)
 
             # Validate AI-generated question
             if not question.choices or len(question.choices) != 5:
