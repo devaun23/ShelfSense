@@ -14,6 +14,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func, and_, Integer
 from app.models.models import Question, QuestionAttempt
 from app.services.question_generator import generate_and_save_question
+from app.services.question_cache import get_cached_or_generate_question
 
 def get_weak_areas(db: Session, user_id: str, threshold: float = 0.6) -> List[str]:
     """
@@ -24,7 +25,7 @@ def get_weak_areas(db: Session, user_id: str, threshold: float = 0.6) -> List[st
     attempts_by_source = db.query(
         Question.source,
         func.count(QuestionAttempt.id).label('total'),
-        func.sum(func.cast(QuestionAttempt.is_correct, Integer)).label('correct')
+        func.sum(func.cast(QuestionAttempt.is_correct, Integer())).label('correct')
     ).join(
         QuestionAttempt, Question.id == QuestionAttempt.question_id
     ).filter(
@@ -129,8 +130,8 @@ def select_next_question(db: Session, user_id: str, use_ai: bool = True) -> Opti
                 if specialty:
                     break
 
-            # Generate AI question for weak area
-            ai_question = generate_and_save_question(db, specialty=specialty)
+            # Generate AI question for weak area (with caching)
+            ai_question = get_cached_or_generate_question(db, user_id, specialty=specialty)
             return ai_question
 
         except Exception as e:
@@ -196,7 +197,7 @@ def get_performance_by_source(db: Session, user_id: str) -> Dict[str, Dict]:
     results = db.query(
         Question.source,
         func.count(QuestionAttempt.id).label('total'),
-        func.sum(func.cast(QuestionAttempt.is_correct, Integer)).label('correct')
+        func.sum(func.cast(QuestionAttempt.is_correct, Integer())).label('correct')
     ).join(
         QuestionAttempt, Question.id == QuestionAttempt.question_id
     ).filter(

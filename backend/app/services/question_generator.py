@@ -6,8 +6,10 @@ Generates novel USMLE Step 2 CK questions using OpenAI
 import os
 import json
 import random
+import time
 from typing import Optional, Dict, List
 from openai import OpenAI
+from openai import APIError, RateLimitError, APIConnectionError
 from sqlalchemy.orm import Session
 from app.models.models import Question
 from app.models.models import generate_uuid
@@ -23,6 +25,11 @@ from app.services.nbme_gold_book_principles import get_generation_principles
 # Initialize OpenAI client
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
+# Retry configuration
+MAX_RETRIES = 3
+INITIAL_RETRY_DELAY = 1.0  # seconds
+MAX_RETRY_DELAY = 10.0  # seconds
+
 SPECIALTIES = [
     "Internal Medicine",
     "Surgery",
@@ -33,6 +40,62 @@ SPECIALTIES = [
     "Emergency Medicine",
     "Preventive Medicine"
 ]
+
+
+def retry_with_exponential_backoff(
+    func,
+    max_retries: int = MAX_RETRIES,
+    initial_delay: float = INITIAL_RETRY_DELAY,
+    max_delay: float = MAX_RETRY_DELAY
+):
+    """
+    Retry a function with exponential backoff
+
+    Args:
+        func: Function to retry
+        max_retries: Maximum number of retry attempts
+        initial_delay: Initial delay in seconds
+        max_delay: Maximum delay between retries
+
+    Returns:
+        Function result if successful
+
+    Raises:
+        Exception: Last exception if all retries fail
+    """
+    def wrapper(*args, **kwargs):
+        delay = initial_delay
+        last_exception = None
+
+        for attempt in range(max_retries + 1):
+            try:
+                return func(*args, **kwargs)
+            except (RateLimitError, APIConnectionError, APIError) as e:
+                last_exception = e
+
+                if attempt == max_retries:
+                    # Last attempt failed, raise the exception
+                    print(f"All {max_retries} retry attempts failed")
+                    raise
+
+                # Calculate delay with exponential backoff
+                delay = min(delay * 2, max_delay)
+
+                print(f"API call failed (attempt {attempt + 1}/{max_retries + 1}): {str(e)}")
+                print(f"Retrying in {delay:.1f} seconds...")
+
+                time.sleep(delay)
+
+            except Exception as e:
+                # Non-retryable exception (e.g., validation error)
+                print(f"Non-retryable error: {str(e)}")
+                raise
+
+        # Should never reach here, but just in case
+        if last_exception:
+            raise last_exception
+
+    return wrapper
 
 
 def get_training_statistics(db: Session, specialty: Optional[str] = None) -> Dict:
@@ -253,17 +316,21 @@ EXPLANATION FORMATTING RULES:
 }}"""
 
     try:
-        # Call OpenAI API
-        response = client.chat.completions.create(
-            model="gpt-4o",
-            messages=[
-                {"role": "system", "content": "You are an expert USMLE Step 2 CK question writer. You create exam-quality clinical vignettes that test medical knowledge at the level of a third-year medical student. Generate only valid JSON responses with clinically accurate content following current evidence-based guidelines."},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.7,  # Balanced: creative but consistent
-            max_tokens=1500,
-            response_format={"type": "json_object"}
-        )
+        # Call OpenAI API with retry logic
+        def make_api_call():
+            return client.chat.completions.create(
+                model="gpt-4o",
+                messages=[
+                    {"role": "system", "content": "You are an expert USMLE Step 2 CK question writer. You create exam-quality clinical vignettes that test medical knowledge at the level of a third-year medical student. Generate only valid JSON responses with clinically accurate content following current evidence-based guidelines."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.7,  # Balanced: creative but consistent
+                max_tokens=1500,
+                response_format={"type": "json_object"}
+            )
+
+        # Wrap with retry logic
+        response = retry_with_exponential_backoff(make_api_call)()
 
         # Parse response
         generated_data = json.loads(response.choices[0].message.content)

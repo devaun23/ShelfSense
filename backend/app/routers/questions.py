@@ -9,6 +9,8 @@ from app.database import get_db
 from app.models.models import Question, QuestionAttempt, QuestionRating
 from app.services.adaptive import select_next_question
 from app.services.question_generator import generate_and_save_question
+from app.services.question_cache import get_cache_stats, get_cached_or_generate_question
+from app.middleware.rate_limiter import check_ai_generation_rate_limit, get_rate_limiter_stats
 
 router = APIRouter(prefix="/api/questions", tags=["questions"])
 
@@ -129,16 +131,34 @@ def submit_answer(request: SubmitAnswerRequest, db: Session = Depends(get_db)):
 
 
 @router.get("/random", response_model=QuestionResponse)
-def get_random_question(db: Session = Depends(get_db), specialty: Optional[str] = None, use_ai: bool = True):
+def get_random_question(
+    db: Session = Depends(get_db),
+    specialty: Optional[str] = None,
+    use_ai: bool = True,
+    use_cache: bool = True,
+    user_id: Optional[str] = "demo-user-1"
+):
     """
     Generate a new AI question on-demand (default behavior)
     Pure AI generation - no NBME questions shown to user
+
+    Args:
+        specialty: Filter by specialty
+        use_ai: Whether to use AI generation (default True)
+        use_cache: Whether to use cached questions (default True, reduces API costs)
+        user_id: User ID for cache lookup (default demo-user-1)
     """
     # Always generate AI questions on-demand
     if use_ai:
         try:
-            # Generate new question using AI
-            question = generate_and_save_question(db, specialty=specialty)
+            # Check rate limit for AI generation
+            rate_limit_info = check_ai_generation_rate_limit(user_id)
+
+            # Generate new question using AI (with optional caching)
+            if use_cache:
+                question = get_cached_or_generate_question(db, user_id, specialty=specialty)
+            else:
+                question = generate_and_save_question(db, specialty=specialty)
 
             # Validate AI-generated question
             if not question.choices or len(question.choices) != 5:
@@ -231,3 +251,31 @@ def get_question_count(db: Session = Depends(get_db)):
     """
     total = db.query(Question).count()
     return {"total": total}
+
+
+@router.get("/cache-stats")
+def get_cache_statistics(db: Session = Depends(get_db)):
+    """
+    Get caching statistics to monitor API cost savings
+
+    Returns:
+        - total_ai_questions_generated: Total AI questions created
+        - ai_questions_used: Questions that have been answered
+        - ai_questions_unused: Questions available for reuse (cache hits)
+        - reuse_percentage: How often questions are reused (cost savings)
+        - estimated_api_calls_saved: Approximate API calls saved by caching
+    """
+    return get_cache_stats(db)
+
+
+@router.get("/rate-limit-stats")
+def get_rate_limit_statistics():
+    """
+    Get rate limiter statistics
+
+    Returns:
+        - total_users_tracked: Number of users being tracked
+        - total_active_requests: Current active requests in memory
+        - rate_limits: Configuration for each rate limit type
+    """
+    return get_rate_limiter_stats()
