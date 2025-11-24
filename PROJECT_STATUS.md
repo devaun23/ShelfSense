@@ -185,12 +185,19 @@
 
 #### 2. **Study Modes** ✅ COMPLETE
    - [x] **Timed Mode** - Simulates real exam with countdown timer (6 mins/question)
+     * Backend API: POST /api/study-modes/start-session
+     * Frontend: /study-modes/timed with session config and results screen
    - [x] **Tutor Mode** - Immediate feedback after each question
+     * Uses existing /study page with immediate feedback
    - [x] **Challenge Mode** - Only hard questions (< 60% global accuracy)
+     * Backend API: GET /api/study-modes/challenge-questions
+     * Frontend: /study-modes/challenge with difficulty stats
    - [x] **Review Mode** - Today's spaced repetition reviews
-   - [x] Study session API: POST /api/study-modes/start-session
-   - [x] Challenge questions endpoint: GET /api/study-modes/challenge-questions
-   - [ ] Frontend study mode UI (pending)
+     * Backend API: GET /api/study-modes/review-schedule
+     * Frontend: /study-modes/review with review calendar
+   - [x] Study modes selection page (/study-modes) with mode cards
+   - [x] Study modes navigation link in Sidebar
+   - [x] Full frontend implementation for all 4 modes
 
 #### 3. **Production Deployment** ✅ COMPLETE
    - [x] Vercel configuration (vercel.json)
