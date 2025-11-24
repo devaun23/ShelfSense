@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from app.database import engine, Base
-from app.routers import questions, analytics, users, reviews, chat, clerk_webhook
+from app.routers import questions, analytics, users, reviews, chat, clerk_webhook, study_modes
 from app.middleware.performance_monitor import PerformanceMonitorMiddleware, get_performance_stats, get_slow_requests
 
 # Load environment variables
@@ -40,6 +40,7 @@ app.include_router(analytics.router)
 app.include_router(reviews.router)  # Spaced repetition
 app.include_router(chat.router)  # AI chat
 app.include_router(clerk_webhook.router)  # Clerk webhooks
+app.include_router(study_modes.router)  # Study modes
 
 
 @app.get("/")

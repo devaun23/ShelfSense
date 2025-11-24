@@ -1,8 +1,8 @@
 # ShelfSense - Project Status & Roadmap
 
 **Last Updated:** November 24, 2025
-**Current Phase:** Phase 5 Complete - Testing & Optimization
-**Status:** ✅ Production-Ready Platform (All Optimizations Complete)
+**Current Phase:** Phase 6 In Progress - Scale & Monetization
+**Status:** ✅ Core Features Complete + Study Modes Implemented
 
 ---
 
@@ -173,31 +173,50 @@
 
 ## 🎯 PHASE 6: Scale & Monetization
 
-### Features to Add
-1. **Spaced Repetition**
-   - Schedule review of missed questions
-   - Implement SM-2 algorithm
-   - Email reminders
+### ✅ Completed Features
 
-2. **Study Modes**
-   - Timed mode (simulate real exam)
-   - Tutor mode (immediate feedback)
-   - Challenge mode (hard questions only)
+#### 1. **Spaced Repetition** ✅ COMPLETE
+   - [x] SM-2 algorithm implementation
+   - [x] Scheduled reviews system
+   - [x] Learning stages (Learning → Review → Mastered)
+   - [x] Review calendar endpoint: GET /api/study-modes/review-schedule
+   - [x] Review statistics: GET /api/study-modes/review-stats
+   - [ ] Email reminders (pending)
 
-3. **Content Expansion**
-   - Add more PDF sources (UWorld, Amboss)
-   - Generate questions for Step 1, Step 3
-   - Topic-specific deep dives
+#### 2. **Study Modes** ✅ COMPLETE
+   - [x] **Timed Mode** - Simulates real exam with countdown timer (6 mins/question)
+   - [x] **Tutor Mode** - Immediate feedback after each question
+   - [x] **Challenge Mode** - Only hard questions (< 60% global accuracy)
+   - [x] **Review Mode** - Today's spaced repetition reviews
+   - [x] Study session API: POST /api/study-modes/start-session
+   - [x] Challenge questions endpoint: GET /api/study-modes/challenge-questions
+   - [ ] Frontend study mode UI (pending)
 
-4. **Social Features**
-   - Leaderboards
-   - Study groups
-   - Question discussion forums
+#### 3. **Production Deployment** ✅ COMPLETE
+   - [x] Vercel configuration (vercel.json)
+   - [x] Railway configuration (railway.toml)
+   - [x] Environment variable templates (.env.example)
+   - [x] Comprehensive deployment guide (DEPLOYMENT.md)
+   - [x] Security headers configuration
+   - [x] CORS settings for production
+   - [ ] Actual deployment to production (pending)
 
-5. **Mobile App**
-   - React Native version
-   - Offline mode
-   - Push notifications
+### 🚧 Pending Features
+
+#### 4. **Content Expansion**
+   - [ ] Add more PDF sources (UWorld, Amboss)
+   - [ ] Generate questions for Step 1, Step 3
+   - [ ] Topic-specific deep dives
+
+#### 5. **Social Features**
+   - [ ] Leaderboards
+   - [ ] Study groups
+   - [ ] Question discussion forums
+
+#### 6. **Mobile App**
+   - [ ] React Native version
+   - [ ] Offline mode
+   - [ ] Push notifications
 
 ### Monetization Strategy
 1. **Freemium Model**
