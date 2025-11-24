@@ -121,10 +121,17 @@
 - [ ] Monitor generation latency (< 3s target)
 - [ ] Database indexing for faster queries
 
-#### 3. User Authentication (Week 2)
-- [ ] Add Clerk or Auth0 integration
-- [ ] Replace "demo-user-1" with real user IDs
-- [ ] Persistent user accounts
+#### 3. User Authentication (Week 2) ✅ COMPLETED
+- [x] Add Clerk integration
+  * Installed @clerk/nextjs package
+  * Created middleware for route protection
+  * Built custom sign-in/sign-up pages
+  * Configured webhook for user sync
+  * Added clerk_id to User model
+  * Created database migration script
+  * Comprehensive setup guide (CLERK_SETUP.md)
+- [ ] Replace "demo-user-1" with real user IDs (after Clerk setup)
+- [ ] Persistent user accounts (enabled via Clerk)
 - [ ] Study session history
 - [ ] Performance dashboards
 
