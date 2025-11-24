@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, Float, Boolean, DateTime, JSON, ForeignKey, Text
+from sqlalchemy import Column, String, Integer, Float, Boolean, DateTime, JSON, ForeignKey, Text, Index
 from sqlalchemy.orm import relationship
 from datetime import datetime
 import uuid
@@ -44,32 +44,45 @@ class Question(Base):
     attempts = relationship("QuestionAttempt", back_populates="question")
     ratings = relationship("QuestionRating", back_populates="question")
 
+    # Composite indexes for adaptive algorithm queries
+    __table_args__ = (
+        Index('idx_source_recency', 'source', 'recency_weight'),  # Filter by specialty + sort
+        Index('idx_rejected_recency', 'rejected', 'recency_weight'),  # Exclude rejected + sort
+    )
+
 
 class QuestionAttempt(Base):
     __tablename__ = "question_attempts"
 
     id = Column(String, primary_key=True, default=generate_uuid)
-    user_id = Column(String, ForeignKey("users.id"), nullable=False)
-    question_id = Column(String, ForeignKey("questions.id"), nullable=False)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False, index=True)
+    question_id = Column(String, ForeignKey("questions.id"), nullable=False, index=True)
     user_answer = Column(String, nullable=True)
-    is_correct = Column(Boolean, nullable=False)
+    is_correct = Column(Boolean, nullable=False, index=True)
     time_spent_seconds = Column(Integer, nullable=True)
     hover_events = Column(JSON, nullable=True)  # Track which choices were hovered
     scroll_events = Column(JSON, nullable=True)  # Track scrolling behavior
     confidence_level = Column(Integer, nullable=True)  # 1-5 scale
-    attempted_at = Column(DateTime, default=datetime.utcnow)
+    attempted_at = Column(DateTime, default=datetime.utcnow, index=True)
 
     # Relationships
     user = relationship("User", back_populates="attempts")
     question = relationship("Question", back_populates="attempts")
+
+    # Composite indexes for common query patterns
+    __table_args__ = (
+        Index('idx_user_question', 'user_id', 'question_id'),  # Check if user answered question
+        Index('idx_user_attempted_at', 'user_id', 'attempted_at'),  # User's recent attempts
+        Index('idx_user_correct', 'user_id', 'is_correct'),  # User's accuracy queries
+    )
 
 
 class UserPerformance(Base):
     __tablename__ = "user_performance"
 
     id = Column(String, primary_key=True, default=generate_uuid)
-    user_id = Column(String, ForeignKey("users.id"), nullable=False)
-    session_date = Column(DateTime, default=datetime.utcnow)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False, index=True)
+    session_date = Column(DateTime, default=datetime.utcnow, index=True)
     questions_answered = Column(Integer, default=0)
     accuracy_overall = Column(Float, default=0.0)  # Percentage
     accuracy_weighted = Column(Float, default=0.0)  # Recency-weighted accuracy
@@ -80,6 +93,11 @@ class UserPerformance(Base):
 
     # Relationships
     user = relationship("User", back_populates="performance")
+
+    # Composite index for historical performance queries
+    __table_args__ = (
+        Index('idx_user_session_date', 'user_id', 'session_date'),  # User's performance over time
+    )
 
 
 class ScheduledReview(Base):
@@ -100,6 +118,12 @@ class ScheduledReview(Base):
     # Relationships
     user = relationship("User")
     question = relationship("Question")
+
+    # Composite index for spaced repetition queries
+    __table_args__ = (
+        Index('idx_user_scheduled', 'user_id', 'scheduled_for'),  # Upcoming reviews for user
+        Index('idx_user_stage', 'user_id', 'learning_stage'),  # User's learning stages
+    )
 
 
 class ChatMessage(Base):

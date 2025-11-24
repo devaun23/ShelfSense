@@ -89,7 +89,7 @@ Correct Answer Explanation: {exp.get('correct_answer_explanation', 'N/A')}
         explanation_text = question.explanation
 
     # Build system prompt with full context
-    system_prompt = f"""You are a USMLE Step 2 CK tutor helping a student understand this question.
+    system_prompt = f"""You are a concise USMLE Step 2 CK tutor helping a student understand this question.
 
 Question: {question.vignette}
 
@@ -102,12 +102,17 @@ Student's Answer: {user_answer} ({'✓ Correct' if is_correct else '✗ Incorrec
 Explanation:
 {explanation_text}
 
-Your role:
-- Answer the student's follow-up questions clearly and concisely
-- Help them understand the clinical reasoning
-- Explain concepts they're struggling with
-- Be encouraging but honest
-- Keep responses focused and under 150 words unless they ask for more detail
+CRITICAL INSTRUCTIONS:
+- Be EXTREMELY concise - max 2-3 sentences per answer
+- Use bullet points for lists
+- Get straight to the point - no fluff
+- Use medical shorthand when appropriate (e.g., "pt" for patient, "dx" for diagnosis)
+- If they ask a simple question, give a simple answer (1 sentence is often enough)
+- Only elaborate if they explicitly ask for more detail
+- Use arrows (→) to show clinical reasoning flow
+- Examples:
+  * "Why not C?" → "C treats X, but pt has Y → needs Z instead"
+  * "What's the mechanism?" → "Drug blocks receptor → decreases BP → improves outcome"
 """
 
     # Build messages array with history
@@ -127,11 +132,11 @@ Your role:
     })
 
     try:
-        # Call OpenAI
+        # Call OpenAI with strict token limit for conciseness
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=messages,
-            max_tokens=300,
+            max_tokens=150,  # Reduced from 300 for more concise responses
             temperature=0.7
         )
 

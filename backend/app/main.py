@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from app.database import engine, Base
 from app.routers import questions, analytics, users, reviews, chat, clerk_webhook
+from app.middleware.performance_monitor import PerformanceMonitorMiddleware, get_performance_stats, get_slow_requests
 
 # Load environment variables
 load_dotenv()
@@ -15,6 +16,9 @@ app = FastAPI(
     description="Adaptive learning platform for USMLE Step 2 CK",
     version="1.0.0"
 )
+
+# Performance monitoring middleware (must be first)
+app.add_middleware(PerformanceMonitorMiddleware)
 
 # CORS middleware for Next.js frontend
 app.add_middleware(
@@ -119,3 +123,32 @@ def test_openai_connection():
             "api_key_set": bool(os.getenv('OPENAI_API_KEY')),
             "api_key_prefix": os.getenv('OPENAI_API_KEY', '')[:15] + "..." if os.getenv('OPENAI_API_KEY') else None
         }
+
+
+@app.get("/debug/performance-stats")
+def debug_performance_stats(endpoint: str = None):
+    """
+    Get performance statistics for API endpoints
+
+    Tracks:
+    - Request count
+    - Average, min, max latency
+    - 95th percentile latency
+    - Slow requests (> 3s)
+    """
+    return get_performance_stats(endpoint)
+
+
+@app.get("/debug/slow-requests")
+def debug_slow_requests(threshold_seconds: float = 3.0):
+    """
+    Get list of slow requests above threshold
+
+    Default threshold: 3 seconds (AI generation target)
+    """
+    slow_requests = get_slow_requests(threshold_seconds)
+    return {
+        "threshold_seconds": threshold_seconds,
+        "count": len(slow_requests),
+        "requests": slow_requests
+    }
