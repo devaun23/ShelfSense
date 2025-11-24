@@ -11,6 +11,7 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(String, primary_key=True, default=generate_uuid)
+    clerk_id = Column(String, unique=True, nullable=True, index=True)  # Clerk user ID
     full_name = Column(String, nullable=False)
     first_name = Column(String, nullable=False, index=True)
     email = Column(String, unique=True, nullable=False, index=True)
