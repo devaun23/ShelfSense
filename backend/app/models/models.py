@@ -131,3 +131,30 @@ class QuestionRating(Base):
     # Relationships
     user = relationship("User")
     question = relationship("Question", back_populates="ratings")
+
+
+class ErrorAnalysis(Base):
+    """Stores AI-powered error analysis for incorrect question attempts"""
+    __tablename__ = "error_analyses"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    attempt_id = Column(String, ForeignKey("question_attempts.id"), nullable=False, index=True)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False, index=True)
+    question_id = Column(String, ForeignKey("questions.id"), nullable=False, index=True)
+
+    # Error categorization
+    error_type = Column(String, nullable=False, index=True)  # knowledge_gap, premature_closure, etc.
+    confidence = Column(Float, nullable=True)  # AI's confidence in categorization (0-1)
+    explanation = Column(Text, nullable=False)  # Why this error occurred
+    missed_detail = Column(Text, nullable=True)  # Specific fact/symptom student missed
+    correct_reasoning = Column(Text, nullable=True)  # Correct clinical reasoning pathway
+    coaching_question = Column(Text, nullable=True)  # Socratic question for reasoning coach
+
+    # Metadata
+    created_at = Column(DateTime, default=datetime.utcnow, index=True)
+    user_acknowledged = Column(Boolean, default=False)  # Did user view this analysis?
+
+    # Relationships
+    user = relationship("User")
+    question = relationship("Question")
+    attempt = relationship("QuestionAttempt")

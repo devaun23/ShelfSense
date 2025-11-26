@@ -6,10 +6,12 @@ from datetime import datetime
 import json
 
 from app.database import get_db
-from app.models.models import Question, QuestionAttempt, QuestionRating, generate_uuid
+from app.models.models import Question, QuestionAttempt, QuestionRating, ErrorAnalysis, generate_uuid
 from app.services.adaptive import select_next_question
 from app.services.question_generator import generate_and_save_question, save_generated_question
 from app.services.question_agent import generate_question_with_agent
+from app.services.error_categorization import categorize_error
+import threading
 
 router = APIRouter(prefix="/api/questions", tags=["questions"])
 
@@ -39,6 +41,22 @@ class AnswerFeedback(BaseModel):
     correct_answer: str
     explanation: Optional[Dict[str, Any]]  # Now returns structured explanation
     source: str
+
+
+class ErrorAnalysisResponse(BaseModel):
+    error_type: str
+    error_name: str
+    error_icon: str
+    error_color: str
+    confidence: float
+    explanation: str
+    missed_detail: str
+    correct_reasoning: str
+    coaching_question: str
+    user_acknowledged: bool
+
+    class Config:
+        from_attributes = True
 
 
 @router.get("/next", response_model=QuestionResponse)
@@ -93,6 +111,7 @@ def submit_answer(request: SubmitAnswerRequest, db: Session = Depends(get_db)):
 
     db.add(attempt)
     db.commit()
+    db.refresh(attempt)  # Get the attempt ID
 
     # Schedule spaced repetition review
     from app.services.spaced_repetition import schedule_review
@@ -103,6 +122,49 @@ def submit_answer(request: SubmitAnswerRequest, db: Session = Depends(get_db)):
         is_correct=is_correct,
         source=question.source
     )
+
+    # Trigger error analysis asynchronously if incorrect
+    if not is_correct:
+        def analyze_error_async():
+            """Background task to analyze error without blocking response"""
+            from app.database import SessionLocal
+            db_async = SessionLocal()
+            try:
+                error_analysis = categorize_error(
+                    question_text=question.vignette,
+                    correct_answer=question.answer_key,
+                    user_answer=request.user_answer,
+                    choices=question.choices,
+                    time_spent=request.time_spent_seconds
+                )
+
+                # Save to database
+                error_record = ErrorAnalysis(
+                    attempt_id=attempt.id,
+                    user_id=request.user_id,
+                    question_id=request.question_id,
+                    error_type=error_analysis.get("error_type", "knowledge_gap"),
+                    confidence=error_analysis.get("confidence", 0.5),
+                    explanation=error_analysis.get("explanation", ""),
+                    missed_detail=error_analysis.get("missed_detail", ""),
+                    correct_reasoning=error_analysis.get("correct_reasoning", ""),
+                    coaching_question=error_analysis.get("coaching_question", "")
+                )
+
+                db_async.add(error_record)
+                db_async.commit()
+                print(f"✅ Error analysis complete for attempt {attempt.id}: {error_analysis.get('error_type')}")
+
+            except Exception as e:
+                print(f"❌ Error in background error analysis: {str(e)}")
+                db_async.rollback()
+            finally:
+                db_async.close()
+
+        # Launch in background thread
+        thread = threading.Thread(target=analyze_error_async)
+        thread.daemon = True
+        thread.start()
 
     # Parse explanation - handle both old string format and new JSON format
     parsed_explanation = None
@@ -240,3 +302,58 @@ def get_question_count(db: Session = Depends(get_db)):
     """
     total = db.query(Question).count()
     return {"total": total}
+
+
+@router.get("/error-analysis/{question_id}", response_model=Optional[ErrorAnalysisResponse])
+def get_error_analysis(question_id: str, user_id: str, db: Session = Depends(get_db)):
+    """
+    Get error analysis for the most recent incorrect attempt of this question by this user
+    """
+    from app.services.error_categorization import ERROR_TYPES
+
+    # Find the most recent error analysis for this question + user
+    error_analysis = db.query(ErrorAnalysis).filter(
+        ErrorAnalysis.question_id == question_id,
+        ErrorAnalysis.user_id == user_id
+    ).order_by(
+        ErrorAnalysis.created_at.desc()
+    ).first()
+
+    if not error_analysis:
+        return None
+
+    # Get metadata from taxonomy
+    error_metadata = ERROR_TYPES.get(error_analysis.error_type, {})
+
+    return ErrorAnalysisResponse(
+        error_type=error_analysis.error_type,
+        error_name=error_metadata.get("name", "Unknown Error"),
+        error_icon=error_metadata.get("icon", "�"),
+        error_color=error_metadata.get("color", "gray"),
+        confidence=error_analysis.confidence or 0.5,
+        explanation=error_analysis.explanation or "",
+        missed_detail=error_analysis.missed_detail or "",
+        correct_reasoning=error_analysis.correct_reasoning or "",
+        coaching_question=error_analysis.coaching_question or "",
+        user_acknowledged=error_analysis.user_acknowledged or False
+    )
+
+
+@router.post("/acknowledge-error/{question_id}")
+def acknowledge_error(question_id: str, user_id: str, db: Session = Depends(get_db)):
+    """
+    Mark error analysis as acknowledged by user
+    """
+    error_analysis = db.query(ErrorAnalysis).filter(
+        ErrorAnalysis.question_id == question_id,
+        ErrorAnalysis.user_id == user_id
+    ).order_by(
+        ErrorAnalysis.created_at.desc()
+    ).first()
+
+    if error_analysis:
+        error_analysis.user_acknowledged = True
+        db.commit()
+        return {"success": True}
+
+    return {"success": False, "message": "Error analysis not found"}
