@@ -17,7 +17,7 @@ from sqlalchemy.orm import Session
 
 from app.database import SessionLocal
 from app.models.models import GenerationJob, Question, generate_uuid
-from app.services.question_agent import QuestionAgent
+from app.services.question_agent import QuestionGenerationAgent
 from app.utils.api_retry import openai_retry, RetryConfig
 
 # Configure logging
@@ -140,7 +140,7 @@ async def run_batch_generation(
         failed = 0
 
         # Create question agent
-        agent = QuestionAgent(db)
+        agent = QuestionGenerationAgent(db)
 
         for i in range(count):
             # Check if job was cancelled

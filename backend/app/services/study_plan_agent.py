@@ -13,13 +13,13 @@ The agent creates actionable, time-bound study plans that maximize
 learning efficiency while preventing burnout.
 """
 
-import os
+
 import json
 from typing import Dict, List, Optional, Tuple
 from datetime import datetime, timedelta, date
 from sqlalchemy.orm import Session
 from sqlalchemy import func, and_, or_
-from openai import OpenAI
+from app.utils.openai_client import get_openai_client
 
 from app.models.models import (
     User, Question, QuestionAttempt, UserPerformance,
@@ -27,7 +27,7 @@ from app.models.models import (
 )
 from app.services.adaptive_learning_engine import AdaptiveLearningEngineAgent
 
-client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+
 
 # Study configuration constants
 DEFAULT_DAILY_QUESTIONS = 40
@@ -67,7 +67,7 @@ class StudyPlanAgent:
         if response_format:
             kwargs["response_format"] = response_format
 
-        response = client.chat.completions.create(**kwargs)
+        response = get_openai_client().chat.completions.create(**kwargs)
         return response.choices[0].message.content
 
     # =========================================================================

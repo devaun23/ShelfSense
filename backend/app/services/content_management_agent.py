@@ -11,14 +11,14 @@ Handles all content lifecycle operations including:
 - Content freshness scoring
 """
 
-import os
+
 import json
 import math
 from datetime import datetime, timedelta
 from typing import Optional, Dict, List, Any, Tuple
 from sqlalchemy.orm import Session
 from sqlalchemy import func, and_, or_, desc, asc
-from openai import OpenAI
+from app.utils.openai_client import get_openai_client
 
 from app.models.models import (
     Question, QuestionRating, QuestionAttempt,
@@ -27,7 +27,7 @@ from app.models.models import (
     User, ExplanationQualityLog
 )
 
-client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+
 
 # Content status constants
 class ContentStatus:

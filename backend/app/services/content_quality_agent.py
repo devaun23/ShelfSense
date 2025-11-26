@@ -15,13 +15,13 @@ The agent ensures every practice question meets ShelfSense standards:
 - Compliance with NBME Gold Book principles
 """
 
-import os
+
 import json
 from typing import Dict, List, Optional, Tuple
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 from sqlalchemy import func, and_, or_
-from openai import OpenAI
+from app.utils.openai_client import get_openai_client
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
 
@@ -33,7 +33,7 @@ from app.services.adaptive_learning_engine import (
     EXPLANATION_QUALITY_RULES
 )
 
-client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+
 
 
 class ContentQualityAgent:
@@ -67,7 +67,7 @@ class ContentQualityAgent:
         if response_format:
             kwargs["response_format"] = response_format
 
-        response = client.chat.completions.create(**kwargs)
+        response = get_openai_client().chat.completions.create(**kwargs)
         return response.choices[0].message.content
 
     # =========================================================================

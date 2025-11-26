@@ -9,14 +9,12 @@ Enhanced with:
 - Parallelized pipeline for faster generation
 """
 
-import os
 import json
 import random
 import time
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
 from typing import Optional, Dict, List, Tuple
-from openai import OpenAI
 from sqlalchemy.orm import Session
 from app.models.models import Question
 from app.services.step2ck_content_outline import (
@@ -42,8 +40,7 @@ from app.services.ai_question_analytics import (
     get_user_learning_stage,
     get_generation_recommendations
 )
-
-client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+from app.utils.openai_client import get_openai_client
 
 
 class QuestionGenerationAgent:
@@ -71,7 +68,7 @@ class QuestionGenerationAgent:
         if response_format:
             kwargs["response_format"] = response_format
 
-        response = client.chat.completions.create(**kwargs)
+        response = get_openai_client().chat.completions.create(**kwargs)
         return response.choices[0].message.content
 
     def step1_analyze_examples(self, specialty: str, examples: List[Dict]) -> Dict:
