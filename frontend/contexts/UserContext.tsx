@@ -48,6 +48,11 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
   // Load user preferences from localStorage on mount
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      setPrefsLoaded(true);
+      return;
+    }
+
     if (clerkUser?.id) {
       const storedPrefs = localStorage.getItem(`${USER_PREFERENCES_KEY}_${clerkUser.id}`);
       if (storedPrefs) {
@@ -65,6 +70,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
   // Save preferences to localStorage when they change
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+
     if (clerkUser?.id && prefsLoaded) {
       localStorage.setItem(
         `${USER_PREFERENCES_KEY}_${clerkUser.id}`,
