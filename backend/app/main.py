@@ -1,5 +1,6 @@
 import os
 import sentry_sdk
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
@@ -24,10 +25,33 @@ if sentry_dsn:
 # Create database tables
 Base.metadata.create_all(bind=engine)
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Application lifespan handler - runs on startup and shutdown."""
+    # STARTUP: Initialize the massive question pool
+    if os.getenv("ENABLE_POOL_WARMING", "true").lower() == "true":
+        try:
+            from app.services.massive_pool import initialize_massive_pool
+            print("[Startup] Initializing massive question pool...")
+            initialize_massive_pool()
+            print("[Startup] Massive pool initialized successfully")
+        except Exception as e:
+            print(f"[Startup] Warning: Pool initialization failed: {e}")
+            # Don't crash on pool init failure - app can still work
+    else:
+        print("[Startup] Pool warming disabled via ENABLE_POOL_WARMING=false")
+
+    yield  # Application runs here
+
+    # SHUTDOWN: Cleanup if needed
+    print("[Shutdown] Cleaning up...")
+
 app = FastAPI(
     title="ShelfSense API",
     description="Adaptive learning platform for USMLE Step 2 CK",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan
 )
 
 # CORS middleware for Next.js frontend

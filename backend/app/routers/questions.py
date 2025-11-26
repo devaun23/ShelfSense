@@ -262,9 +262,12 @@ def get_random_question(
     """
     Get an AI-generated question - INSTANT from pre-generated pool.
 
+    This endpoint now uses the MassivePool system for truly instant delivery.
+    Questions are pre-generated in background and served in <100ms.
+
     Args:
         specialty: Optional specialty filter (Medicine, Surgery, etc.)
-        user_id: Optional user ID to exclude already-answered questions
+        user_id: Optional user ID for personalized question selection
         use_ai: If True, use AI generation (default)
         instant: If True, serve from pre-generated pool (default, <100ms)
                  If False, generate on-demand (slower, 10-30s)
@@ -274,6 +277,29 @@ def get_random_question(
     """
     if use_ai:
         try:
+            if instant and user_id:
+                # INSTANT + ADAPTIVE: Get from massive pool matched to user's needs
+                from app.services.massive_pool import get_instant_question_adaptive
+                print(f"[API] Getting adaptive instant question for user {user_id[:8] if user_id else 'anon'}...")
+
+                question = get_instant_question_adaptive(
+                    db,
+                    user_id=user_id,
+                    preferred_specialty=specialty
+                )
+
+                if question:
+                    return QuestionResponse(
+                        id=question.id,
+                        vignette=question.vignette,
+                        choices=question.choices,
+                        source=question.source or "AI Generated",
+                        recency_weight=question.recency_weight or 1.0
+                    )
+
+                # Fallback to legacy pool if massive pool empty
+                print(f"[API] Massive pool empty, trying legacy pool...")
+
             if instant:
                 # INSTANT: Get from pre-generated pool (<100ms)
                 print(f"[API] Getting instant question for {specialty or 'any specialty'}...")
@@ -334,6 +360,21 @@ def get_question_pool_stats(db: Session = Depends(get_db)):
 
     Returns count of available questions per specialty.
     """
+    # Try new massive pool stats first
+    try:
+        from app.services.massive_pool import get_detailed_pool_stats
+        detailed_stats = get_detailed_pool_stats(db)
+        return {
+            "pool_stats": detailed_stats,
+            "status": detailed_stats.get("health", "unknown"),
+            "total": detailed_stats.get("total", 0),
+            "by_specialty": detailed_stats.get("by_specialty", {}),
+            "low_stock": detailed_stats.get("low_stock", [])
+        }
+    except Exception as e:
+        print(f"[API] Massive pool stats failed, using legacy: {e}")
+
+    # Fallback to legacy stats
     stats = get_pool_stats(db)
     return {
         "pool_stats": stats,
@@ -343,7 +384,8 @@ def get_question_pool_stats(db: Session = Depends(get_db)):
 
 @router.post("/pool/warm")
 def warm_question_pool(
-    target_per_specialty: int = 20,
+    target_total: int = 500,
+    use_massive_pool: bool = True,
     background_tasks: BackgroundTasks = None
 ):
     """
@@ -353,13 +395,29 @@ def warm_question_pool(
     Use /pool/stats to monitor progress.
 
     Args:
-        target_per_specialty: Number of questions per specialty to generate (default: 20)
+        target_total: Total number of questions to generate (default: 500)
+        use_massive_pool: Use new massive pool system (default: True)
     """
-    warm_pool_async(target_per_specialty)
+    if use_massive_pool:
+        try:
+            from app.services.massive_pool import warm_pool_async as massive_warm
+            massive_warm(target_total)
+            return {
+                "status": "warming",
+                "message": f"Massive pool warming started (target: {target_total} total questions)",
+                "check_progress": "/api/questions/pool/stats",
+                "system": "massive_pool"
+            }
+        except Exception as e:
+            print(f"[API] Massive pool warming failed, using legacy: {e}")
+
+    # Fallback to legacy pool warming
+    warm_pool_async(target_total // 8)  # Divide by number of specialties
     return {
         "status": "warming",
-        "message": f"Pool warming started with target {target_per_specialty} per specialty",
-        "check_progress": "/api/questions/pool/stats"
+        "message": f"Legacy pool warming started with target {target_total // 8} per specialty",
+        "check_progress": "/api/questions/pool/stats",
+        "system": "legacy_pool"
     }
 
 
