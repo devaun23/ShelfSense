@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
 import { useUser } from '@/contexts/UserContext';
+import CalendarHeatmap from '@/components/CalendarHeatmap';
 
 interface ReviewStats {
   total_due_today: number;
@@ -28,14 +29,37 @@ interface DayReviews {
   }>;
 }
 
+interface HeatmapData {
+  date: string;
+  count: number;
+  accuracy?: number;
+}
+
+interface HeatmapResponse {
+  data: HeatmapData[];
+  summary: {
+    total_days_active: number;
+    total_questions: number;
+    avg_per_active_day: number;
+    longest_streak: number;
+    current_streak: number;
+    date_range: {
+      start: string;
+      end: string;
+    };
+  };
+}
+
 export default function ReviewsPage() {
   const router = useRouter();
   const { user, isLoading: userLoading } = useUser();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [stats, setStats] = useState<ReviewStats | null>(null);
   const [upcoming, setUpcoming] = useState<DayReviews[]>([]);
+  const [heatmapData, setHeatmapData] = useState<HeatmapResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [daysToShow, setDaysToShow] = useState(7);
+  const [activeTab, setActiveTab] = useState<'upcoming' | 'activity'>('upcoming');
 
   useEffect(() => {
     // Redirect to login if not authenticated
@@ -56,18 +80,26 @@ export default function ReviewsPage() {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
-      // Load stats
-      const statsResponse = await fetch(`${apiUrl}/api/reviews/stats?user_id=${user.userId}`);
+      // Load all data in parallel
+      const [statsResponse, upcomingResponse, heatmapResponse] = await Promise.all([
+        fetch(`${apiUrl}/api/reviews/stats?user_id=${user.userId}`),
+        fetch(`${apiUrl}/api/reviews/upcoming?user_id=${user.userId}&days=${daysToShow}`),
+        fetch(`${apiUrl}/api/analytics/activity-heatmap?user_id=${user.userId}&days=365`)
+      ]);
+
       if (statsResponse.ok) {
         const statsData = await statsResponse.json();
         setStats(statsData);
       }
 
-      // Load upcoming reviews
-      const upcomingResponse = await fetch(`${apiUrl}/api/reviews/upcoming?user_id=${user.userId}&days=${daysToShow}`);
       if (upcomingResponse.ok) {
         const upcomingData = await upcomingResponse.json();
         setUpcoming(upcomingData.days || []);
+      }
+
+      if (heatmapResponse.ok) {
+        const heatmapDataRes = await heatmapResponse.json();
+        setHeatmapData(heatmapDataRes);
       }
     } catch (error) {
       console.error('Error loading review data:', error);
@@ -187,114 +219,201 @@ export default function ReviewsPage() {
             </div>
           )}
 
-          {/* Upcoming Calendar */}
-          <div className="mb-6 flex items-center justify-between">
-            <h2 className="text-2xl font-bold" style={{ fontFamily: 'var(--font-cormorant)' }}>
+          {/* Tab Navigation */}
+          <div className="flex gap-2 mb-6">
+            <button
+              onClick={() => setActiveTab('upcoming')}
+              className={`px-5 py-2.5 rounded-full text-sm transition-all ${
+                activeTab === 'upcoming'
+                  ? 'bg-[#4169E1] text-white'
+                  : 'bg-gray-900 border border-gray-800 text-gray-400 hover:text-white hover:border-gray-700'
+              }`}
+            >
               Upcoming Reviews
-            </h2>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setDaysToShow(7)}
-                className={`px-4 py-2 rounded-lg transition-colors ${
-                  daysToShow === 7 ? 'bg-[#1E3A5F] text-white' : 'bg-gray-900 text-gray-400 hover:text-white'
-                }`}
-              >
-                7 days
-              </button>
-              <button
-                onClick={() => setDaysToShow(14)}
-                className={`px-4 py-2 rounded-lg transition-colors ${
-                  daysToShow === 14 ? 'bg-[#1E3A5F] text-white' : 'bg-gray-900 text-gray-400 hover:text-white'
-                }`}
-              >
-                14 days
-              </button>
-              <button
-                onClick={() => setDaysToShow(30)}
-                className={`px-4 py-2 rounded-lg transition-colors ${
-                  daysToShow === 30 ? 'bg-[#1E3A5F] text-white' : 'bg-gray-900 text-gray-400 hover:text-white'
-                }`}
-              >
-                30 days
-              </button>
-            </div>
+            </button>
+            <button
+              onClick={() => setActiveTab('activity')}
+              className={`px-5 py-2.5 rounded-full text-sm transition-all ${
+                activeTab === 'activity'
+                  ? 'bg-[#4169E1] text-white'
+                  : 'bg-gray-900 border border-gray-800 text-gray-400 hover:text-white hover:border-gray-700'
+              }`}
+            >
+              Activity Heatmap
+            </button>
           </div>
 
-          {/* Calendar View */}
-          <div className="space-y-3">
-            {upcoming.length === 0 && (
-              <div className="text-center py-12 text-gray-500">
-                <p className="text-xl mb-2">No reviews scheduled yet</p>
-                <p className="text-sm">Start answering questions to build your review schedule!</p>
+          {/* Activity Heatmap Tab */}
+          {activeTab === 'activity' && (
+            <div className="mb-8">
+              {/* Heatmap Summary Stats */}
+              {heatmapData?.summary && (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                  <div className="bg-gray-900 border border-gray-800 rounded-lg p-4 text-center">
+                    <div className="text-2xl font-bold text-emerald-400">
+                      {heatmapData.summary.current_streak}
+                    </div>
+                    <div className="text-xs text-gray-500 uppercase tracking-wider mt-1">Current Streak</div>
+                  </div>
+                  <div className="bg-gray-900 border border-gray-800 rounded-lg p-4 text-center">
+                    <div className="text-2xl font-bold text-purple-400">
+                      {heatmapData.summary.longest_streak}
+                    </div>
+                    <div className="text-xs text-gray-500 uppercase tracking-wider mt-1">Longest Streak</div>
+                  </div>
+                  <div className="bg-gray-900 border border-gray-800 rounded-lg p-4 text-center">
+                    <div className="text-2xl font-bold text-blue-400">
+                      {heatmapData.summary.total_days_active}
+                    </div>
+                    <div className="text-xs text-gray-500 uppercase tracking-wider mt-1">Days Active</div>
+                  </div>
+                  <div className="bg-gray-900 border border-gray-800 rounded-lg p-4 text-center">
+                    <div className="text-2xl font-bold text-white">
+                      {heatmapData.summary.avg_per_active_day}
+                    </div>
+                    <div className="text-xs text-gray-500 uppercase tracking-wider mt-1">Avg/Day</div>
+                  </div>
+                </div>
+              )}
+
+              {/* Calendar Heatmap */}
+              <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+                <h3 className="text-lg font-semibold mb-4" style={{ fontFamily: 'var(--font-cormorant)' }}>
+                  Study Activity (Past Year)
+                </h3>
+                {heatmapData?.data ? (
+                  <CalendarHeatmap
+                    data={heatmapData.data}
+                    colorScheme="green"
+                    onClick={(date, data) => {
+                      if (data && data.count > 0) {
+                        console.log(`Clicked ${date}: ${data.count} questions, ${data.accuracy}% accuracy`);
+                      }
+                    }}
+                  />
+                ) : (
+                  <div className="text-center py-12 text-gray-500">
+                    <p>No activity data yet</p>
+                    <p className="text-sm mt-2">Start answering questions to build your activity history!</p>
+                  </div>
+                )}
               </div>
-            )}
-            {upcoming.map((day) => (
-              <div
-                key={day.date}
-                className="bg-gray-900 border border-gray-800 rounded-lg p-6 hover:border-gray-700 transition-colors"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <div className="text-lg font-semibold">{formatDate(day.date)}</div>
-                    <div className="text-sm text-gray-400">
-                      {new Date(day.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+            </div>
+          )}
+
+          {/* Upcoming Reviews Tab */}
+          {activeTab === 'upcoming' && (
+            <>
+              {/* Days Filter */}
+              <div className="mb-6 flex items-center justify-between">
+                <h2 className="text-xl font-bold" style={{ fontFamily: 'var(--font-cormorant)' }}>
+                  Scheduled Reviews
+                </h2>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setDaysToShow(7)}
+                    className={`px-4 py-2 rounded-lg transition-colors ${
+                      daysToShow === 7 ? 'bg-[#1E3A5F] text-white' : 'bg-gray-900 text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    7 days
+                  </button>
+                  <button
+                    onClick={() => setDaysToShow(14)}
+                    className={`px-4 py-2 rounded-lg transition-colors ${
+                      daysToShow === 14 ? 'bg-[#1E3A5F] text-white' : 'bg-gray-900 text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    14 days
+                  </button>
+                  <button
+                    onClick={() => setDaysToShow(30)}
+                    className={`px-4 py-2 rounded-lg transition-colors ${
+                      daysToShow === 30 ? 'bg-[#1E3A5F] text-white' : 'bg-gray-900 text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    30 days
+                  </button>
+                </div>
+              </div>
+
+              {/* Calendar View */}
+              <div className="space-y-3">
+                {upcoming.length === 0 && (
+                  <div className="text-center py-12 text-gray-500">
+                    <p className="text-xl mb-2">No reviews scheduled yet</p>
+                    <p className="text-sm">Start answering questions to build your review schedule!</p>
+                  </div>
+                )}
+                {upcoming.map((day) => (
+                  <div
+                    key={day.date}
+                    className="bg-gray-900 border border-gray-800 rounded-lg p-6 hover:border-gray-700 transition-colors"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <div className="text-lg font-semibold">{formatDate(day.date)}</div>
+                        <div className="text-sm text-gray-400">
+                          {new Date(day.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                        </div>
+                      </div>
+                      <div className="text-3xl font-bold text-blue-400">
+                        {day.count}
+                      </div>
+                    </div>
+
+                    {/* Stage breakdown */}
+                    <div className="flex flex-wrap gap-2">
+                      {Object.entries(
+                        day.questions.reduce((acc, q) => {
+                          acc[q.learning_stage] = (acc[q.learning_stage] || 0) + 1;
+                          return acc;
+                        }, {} as Record<string, number>)
+                      ).map(([stage, count]) => (
+                        <span
+                          key={stage}
+                          className={`px-3 py-1 rounded-full text-xs font-semibold ${getStageColor(stage)}`}
+                        >
+                          {stage}: {count}
+                        </span>
+                      ))}
                     </div>
                   </div>
-                  <div className="text-3xl font-bold text-blue-400">
-                    {day.count}
+                ))}
+              </div>
+
+              {/* Learning Stages Legend */}
+              <div className="mt-8 p-6 bg-gray-900 border border-gray-800 rounded-lg">
+                <h3 className="text-lg font-semibold mb-4">Learning Stages</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getStageColor('New')} mb-2`}>
+                      New
+                    </span>
+                    <p className="text-sm text-gray-400">First time seeing this question</p>
+                  </div>
+                  <div>
+                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getStageColor('Learning')} mb-2`}>
+                      Learning
+                    </span>
+                    <p className="text-sm text-gray-400">Building memory (1-3 day intervals)</p>
+                  </div>
+                  <div>
+                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getStageColor('Review')} mb-2`}>
+                      Review
+                    </span>
+                    <p className="text-sm text-gray-400">Reinforcing knowledge (7-14 day intervals)</p>
+                  </div>
+                  <div>
+                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getStageColor('Mastered')} mb-2`}>
+                      Mastered
+                    </span>
+                    <p className="text-sm text-gray-400">Long-term retention (30+ day intervals)</p>
                   </div>
                 </div>
-
-                {/* Stage breakdown */}
-                <div className="flex flex-wrap gap-2">
-                  {Object.entries(
-                    day.questions.reduce((acc, q) => {
-                      acc[q.learning_stage] = (acc[q.learning_stage] || 0) + 1;
-                      return acc;
-                    }, {} as Record<string, number>)
-                  ).map(([stage, count]) => (
-                    <span
-                      key={stage}
-                      className={`px-3 py-1 rounded-full text-xs font-semibold ${getStageColor(stage)}`}
-                    >
-                      {stage}: {count}
-                    </span>
-                  ))}
-                </div>
               </div>
-            ))}
-          </div>
-
-          {/* Learning Stages Legend */}
-          <div className="mt-8 p-6 bg-gray-900 border border-gray-800 rounded-lg">
-            <h3 className="text-lg font-semibold mb-4">Learning Stages</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getStageColor('New')} mb-2`}>
-                  New
-                </span>
-                <p className="text-sm text-gray-400">First time seeing this question</p>
-              </div>
-              <div>
-                <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getStageColor('Learning')} mb-2`}>
-                  Learning
-                </span>
-                <p className="text-sm text-gray-400">Building memory (1-3 day intervals)</p>
-              </div>
-              <div>
-                <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getStageColor('Review')} mb-2`}>
-                  Review
-                </span>
-                <p className="text-sm text-gray-400">Reinforcing knowledge (7-14 day intervals)</p>
-              </div>
-              <div>
-                <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getStageColor('Mastered')} mb-2`}>
-                  Mastered
-                </span>
-                <p className="text-sm text-gray-400">Long-term retention (30+ day intervals)</p>
-              </div>
-            </div>
-          </div>
+            </>
+          )}
         </div>
       </main>
     </>

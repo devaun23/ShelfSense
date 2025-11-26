@@ -256,6 +256,88 @@ def get_score_breakdown(user_id: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=f"Error fetching score details: {str(e)}")
 
 
+@router.get("/activity-heatmap")
+def get_activity_heatmap(
+    user_id: str,
+    days: int = Query(default=365, ge=30, le=365),
+    db: Session = Depends(get_db)
+):
+    """
+    Get daily activity data for calendar heatmap visualization.
+
+    Args:
+        user_id: User identifier
+        days: Number of days to include (30-365, default 365)
+
+    Returns:
+        Array of daily data with date, count (questions answered), and accuracy
+    """
+    from sqlalchemy import Integer
+
+    end_date = datetime.now().date()
+    start_date = end_date - timedelta(days=days)
+
+    # Get daily activity data
+    daily_data = db.query(
+        func.date(QuestionAttempt.created_at).label('date'),
+        func.count(QuestionAttempt.id).label('count'),
+        func.sum(func.cast(QuestionAttempt.is_correct, Integer)).label('correct')
+    ).filter(
+        QuestionAttempt.user_id == user_id,
+        func.date(QuestionAttempt.created_at) >= start_date,
+        func.date(QuestionAttempt.created_at) <= end_date
+    ).group_by(
+        func.date(QuestionAttempt.created_at)
+    ).order_by(
+        func.date(QuestionAttempt.created_at)
+    ).all()
+
+    # Format response
+    heatmap_data = []
+    for row in daily_data:
+        accuracy = round((row.correct or 0) / row.count * 100, 1) if row.count > 0 else 0
+        heatmap_data.append({
+            "date": str(row.date),
+            "count": row.count,
+            "accuracy": accuracy
+        })
+
+    # Calculate summary stats
+    total_days_active = len(daily_data)
+    total_questions = sum(d["count"] for d in heatmap_data)
+    avg_per_day = round(total_questions / total_days_active, 1) if total_days_active > 0 else 0
+
+    # Find longest streak
+    dates_active = set(d["date"] for d in heatmap_data)
+    current_streak = 0
+    longest_streak = 0
+    check_date = end_date
+
+    while check_date >= start_date:
+        date_str = str(check_date)
+        if date_str in dates_active:
+            current_streak += 1
+            longest_streak = max(longest_streak, current_streak)
+        else:
+            current_streak = 0
+        check_date -= timedelta(days=1)
+
+    return {
+        "data": heatmap_data,
+        "summary": {
+            "total_days_active": total_days_active,
+            "total_questions": total_questions,
+            "avg_per_active_day": avg_per_day,
+            "longest_streak": longest_streak,
+            "current_streak": calculate_streak(db, user_id),
+            "date_range": {
+                "start": str(start_date),
+                "end": str(end_date)
+            }
+        }
+    }
+
+
 @router.get("/specialty-breakdown")
 def get_specialty_breakdown(user_id: str, db: Session = Depends(get_db)):
     """
