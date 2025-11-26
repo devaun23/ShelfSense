@@ -1,14 +1,28 @@
 @import "tailwindcss";
 
+/* MINIMAL DESIGN SYSTEM - CSS Variables */
+:root {
+  --accent: #4169E1;
+  --accent-light: #5B7FE8;
+  --accent-dark: #2E4FA8;
+  --success: #10b981;
+  --error: #ef4444;
+  --transition: 200ms;
+  --font-cormorant: 'Cormorant', Georgia, serif;
+}
+
 body {
   background-color: #000;
   color: #fff;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom scrollbar for black theme */
+/* Minimal Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -16,26 +30,54 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1E3A5F;
+  background: var(--accent);
   border-radius: 4px;
+  transition: background var(--transition);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #2C5282;
+  background: var(--accent-light);
 }
 
-/* Accessible focus rings for keyboard navigation */
+/* Subtle Focus Rings */
 button:focus-visible,
 a:focus-visible,
 input:focus-visible,
-textarea:focus-visible {
-  outline: 2px solid #60A5FA;
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
-  border-radius: 4px;
+  transition: outline var(--transition);
 }
 
-/* Specific focus styles for interactive elements */
-[role="button"]:focus-visible {
-  outline: 2px solid #60A5FA;
-  outline-offset: 2px;
+/* Selection Styling */
+::selection {
+  background-color: rgba(65, 105, 225, 0.3);
+  color: #fff;
+}
+
+/* Smooth Transitions - Subtle */
+button,
+a,
+input,
+textarea,
+select {
+  transition: all var(--transition) ease-out;
+}
+
+/* Disabled State */
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+/* Accessibility - Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

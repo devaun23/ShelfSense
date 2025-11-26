@@ -64,39 +64,39 @@ export default function QuestionRating({ questionId, userId, onRatingComplete }:
 
   return (
     <>
-      {/* Floating Rating Buttons - Bottom Right */}
-      <div className="fixed bottom-8 right-8 flex gap-3 z-50">
+      {/* Minimal Floating Rating Buttons - Bottom Right */}
+      <div className="fixed bottom-6 right-6 flex gap-2 z-50">
         <button
           onClick={() => handleRatingClick(true)}
-          className="w-14 h-14 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center shadow-lg transition-all hover:scale-110"
-          title="Approve question (✓)"
+          className="w-12 h-12 rounded-lg bg-gray-900 hover:bg-[#10b981] border border-gray-800 hover:border-[#10b981] text-gray-400 hover:text-white flex items-center justify-center transition-all"
+          title="Good question"
         >
-          <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
           </svg>
         </button>
         <button
           onClick={() => handleRatingClick(false)}
-          className="w-14 h-14 rounded-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center shadow-lg transition-all hover:scale-110"
-          title="Reject question (✗)"
+          className="w-12 h-12 rounded-lg bg-gray-900 hover:bg-[#ef4444] border border-gray-800 hover:border-[#ef4444] text-gray-400 hover:text-white flex items-center justify-center transition-all"
+          title="Bad question"
         >
-          <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
       </div>
 
-      {/* Feedback Modal */}
+      {/* Minimal Feedback Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[100] p-4">
-          <div className="bg-gray-900 rounded-lg max-w-md w-full p-6 border border-gray-700">
-            <h2 className="text-xl font-bold text-white mb-2">
-              {selectedRating ? '✓ Great!' : '✗ What went wrong?'}
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-[100] p-4">
+          <div className="bg-gray-950 rounded-lg max-w-md w-full p-6 border border-gray-800">
+            <h2 className="text-xl font-semibold text-white mb-2">
+              {selectedRating ? 'Good Question' : 'Report Issue'}
             </h2>
-            <p className="text-gray-400 text-sm mb-4">
+            <p className="text-gray-500 text-sm mb-4">
               {selectedRating
-                ? 'Optional: Tell us what made this question good'
-                : 'Help the AI improve by explaining the issue'}
+                ? 'What made this question good?'
+                : 'Help improve by explaining the issue'}
             </p>
 
             <textarea
@@ -104,25 +104,25 @@ export default function QuestionRating({ questionId, userId, onRatingComplete }:
               onChange={(e) => setFeedback(e.target.value)}
               placeholder={
                 selectedRating
-                  ? 'e.g., "Excellent clinical vignette, realistic distractors"'
-                  : 'e.g., "Distractors too obvious" or "Lab values unrealistic"'
+                  ? 'Optional feedback...'
+                  : 'What was wrong with this question?'
               }
-              className="w-full h-32 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#1E3A5F] resize-none"
+              className="w-full h-24 px-4 py-3 bg-black border border-gray-800 rounded-lg text-white placeholder-gray-600 focus:border-[#4169E1] resize-none"
               autoFocus
             />
 
-            <div className="flex gap-3 mt-4">
+            <div className="flex gap-2 mt-4">
               <button
                 onClick={handleSubmit}
                 disabled={submitting}
-                className="flex-1 px-4 py-3 bg-[#1E3A5F] hover:bg-[#2C5282] disabled:bg-gray-700 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-semibold"
+                className="flex-1 px-4 py-3 bg-[#4169E1] hover:bg-[#5B7FE8] disabled:bg-gray-800 text-white rounded-lg transition-colors"
               >
-                {submitting ? 'Submitting...' : 'Submit & Next Question'}
+                {submitting ? 'Submitting...' : 'Submit'}
               </button>
               <button
                 onClick={handleSkip}
                 disabled={submitting}
-                className="px-4 py-3 bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:cursor-not-allowed text-gray-300 rounded-lg transition-colors"
+                className="px-4 py-3 bg-gray-900 hover:bg-gray-800 disabled:bg-gray-900 text-gray-400 rounded-lg transition-colors"
               >
                 Skip
               </button>

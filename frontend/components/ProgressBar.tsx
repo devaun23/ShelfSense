@@ -8,17 +8,18 @@ interface ProgressBarProps {
 
 export default function ProgressBar({ progress, questionCount, totalQuestions }: ProgressBarProps) {
   return (
-    <div className="fixed top-0 left-0 right-0 bg-gray-900 z-[9999]">
+    <div className="fixed top-0 left-0 right-0 bg-black z-[9999]">
+      {/* Minimal progress bar - 2px height, no glow */}
       <div
-        className="h-[10px] bg-[#4169E1] transition-all duration-500 ease-out shadow-lg"
+        className="h-[2px] bg-[#4169E1] transition-all duration-300 ease-out"
         style={{
-          width: `${Math.min(100, Math.max(0, progress))}%`,
-          boxShadow: '0 0 12px rgba(65, 105, 225, 0.9)'
+          width: `${Math.min(100, Math.max(0, progress))}%`
         }}
       />
+      {/* Text stats - subtle gray */}
       {questionCount !== undefined && totalQuestions !== undefined && (
-        <div className="flex justify-center items-center py-1 text-xs text-gray-400">
-          <span>{questionCount}/{totalQuestions} ({Math.round(progress)}%)</span>
+        <div className="flex justify-center items-center py-2 text-sm text-gray-500">
+          <span>{questionCount}/{totalQuestions}</span>
         </div>
       )}
     </div>
