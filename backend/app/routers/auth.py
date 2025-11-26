@@ -554,3 +554,108 @@ async def simple_register(
         first_name=new_user.first_name,
         email=new_user.email
     )
+
+
+# ==================== Clerk Auth Integration ====================
+
+class ClerkSyncRequest(BaseModel):
+    clerk_user_id: str
+    email: Optional[EmailStr] = None
+    full_name: str
+    first_name: str
+    image_url: Optional[str] = None
+
+
+class ClerkSyncResponse(BaseModel):
+    user_id: str
+    clerk_user_id: str
+    full_name: str
+    first_name: str
+    email: Optional[str] = None
+    synced: bool
+
+    class Config:
+        from_attributes = True
+
+
+@router.post("/clerk-sync", response_model=ClerkSyncResponse)
+async def clerk_sync(
+    request: ClerkSyncRequest,
+    db: Session = Depends(get_db)
+):
+    """
+    Sync user from Clerk authentication.
+    Creates or updates a user based on their Clerk ID.
+    Called automatically when a user signs in via Clerk.
+    """
+    # First, try to find user by Clerk ID (stored in id field now)
+    existing_user = db.query(User).filter(User.id == request.clerk_user_id).first()
+
+    if existing_user:
+        # Update existing user
+        existing_user.full_name = request.full_name
+        existing_user.first_name = request.first_name
+        if request.email:
+            existing_user.email = request.email
+        existing_user.last_login = datetime.utcnow()
+        db.commit()
+        db.refresh(existing_user)
+
+        return ClerkSyncResponse(
+            user_id=existing_user.id,
+            clerk_user_id=request.clerk_user_id,
+            full_name=existing_user.full_name,
+            first_name=existing_user.first_name,
+            email=existing_user.email,
+            synced=True
+        )
+
+    # If not found by Clerk ID, check by email (for migration from old system)
+    if request.email:
+        email_user = db.query(User).filter(User.email == request.email).first()
+        if email_user:
+            # Migrate existing email user to Clerk - update their ID
+            # This is a one-time migration for existing users
+            old_id = email_user.id
+            email_user.id = request.clerk_user_id
+            email_user.full_name = request.full_name
+            email_user.first_name = request.first_name
+            email_user.last_login = datetime.utcnow()
+            db.commit()
+            db.refresh(email_user)
+
+            return ClerkSyncResponse(
+                user_id=email_user.id,
+                clerk_user_id=request.clerk_user_id,
+                full_name=email_user.full_name,
+                first_name=email_user.first_name,
+                email=email_user.email,
+                synced=True
+            )
+
+    # Create new user with Clerk ID
+    new_user = User(
+        id=request.clerk_user_id,  # Use Clerk ID as the user ID
+        full_name=request.full_name,
+        first_name=request.first_name,
+        email=request.email,
+        email_verified=True,  # Clerk handles verification
+        last_login=datetime.utcnow()
+    )
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+
+    # Create default settings
+    settings = UserSettings(user_id=new_user.id)
+    db.add(settings)
+    db.commit()
+
+    return ClerkSyncResponse(
+        user_id=new_user.id,
+        clerk_user_id=request.clerk_user_id,
+        full_name=new_user.full_name,
+        first_name=new_user.first_name,
+        email=new_user.email,
+        synced=True
+    )
