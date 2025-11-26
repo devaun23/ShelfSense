@@ -144,17 +144,17 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
               <span>Reviews</span>
             </button>
             <button
-              onClick={() => router.push('/flagged')}
+              onClick={() => router.push('/analytics?view=weak')}
               className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors ${
-                pathname === '/flagged'
+                pathname === '/analytics' && searchParams.get('view') === 'weak'
                   ? 'text-white bg-gray-900'
                   : 'text-gray-400 hover:text-white hover:bg-gray-900'
               }`}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 3v18M3 3h12l-3 4.5 3 4.5H3" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
-              <span>Flagged</span>
+              <span>Weak Areas</span>
             </button>
           </div>
         </nav>
@@ -188,8 +188,8 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
                   </svg>
                 </button>
-                <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                  Send feedback
+                <span className="absolute right-full top-1/2 -translate-y-1/2 mr-2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                  Feedback
                 </span>
               </div>
             </div>

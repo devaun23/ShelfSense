@@ -1,0 +1,2233 @@
+ShelfSense Code Quality Audit Report
+Generated: Wed Nov 26 18:45:53 EST 2025
+========================================
+
+
+## Security Audit
+---
+✓ No exposed API keys found
+✓ No debug endpoints in production code
+⚠ Found        1 files with console.log statements
+/Users/devaun/ShelfSense/frontend/app/reviews/page.tsx:299:                        console.log(`Clicked ${date}: ${data.count} questions, ${data.accuracy}% accuracy`);
+✓ No .env files tracked by git
+
+## Code Quality
+---
+✓ Frontend dependencies installed
+
+> shelfsense-frontend@0.1.0 type-check
+> tsc --noEmit
+
+__tests__/components/AIChat.test.tsx(29,42): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/AIChat.test.tsx(34,70): error TS2339: Property 'toBeInTheDocument' does not exist on type 'Matchers<void, HTMLElement | null>'.
+__tests__/components/AIChat.test.tsx(40,22): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/AIChat.test.tsx(41,22): error TS2339: Property 'toHaveAttribute' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/AIChat.test.tsx(72,64): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/AIChat.test.tsx(73,22): error TS2339: Property 'toHaveAttribute' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/AIChat.test.tsx(83,70): error TS2339: Property 'toBeInTheDocument' does not exist on type 'Matchers<void, HTMLElement | null>'.
+__tests__/components/AIChat.test.tsx(91,68): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/AIChat.test.tsx(102,46): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/AIChat.test.tsx(107,42): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/AIChat.test.tsx(120,30): error TS2339: Property 'toBeDisabled' does not exist on type 'Matchers<void, HTMLElement>'.
+__tests__/components/AIChat.test.tsx(128,26): error TS2339: Property 'toBeDisabled' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/AIChat.test.tsx(139,26): error TS2339: Property 'toBeDisabled' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/AIChat.test.tsx(215,23): error TS2339: Property 'toHaveValue' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/AIChat.test.tsx(238,55): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/AIChat.test.tsx(261,61): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/AIChat.test.tsx(318,40): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/AIChat.test.tsx(342,21): error TS2339: Property 'toBeDisabled' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/AIChat.test.tsx(429,55): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/AIChat.test.tsx(430,53): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/AIChat.test.tsx(462,22): error TS2339: Property 'toHaveAttribute' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/AIChat.test.tsx(470,26): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/AIChat.test.tsx(478,21): error TS2339: Property 'toHaveAttribute' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/ProgressBar.test.tsx(12,25): error TS2339: Property 'toHaveStyle' does not exist on type 'JestMatchers<Element | null>'.
+__tests__/components/ProgressBar.test.tsx(18,25): error TS2339: Property 'toHaveStyle' does not exist on type 'JestMatchers<Element | null>'.
+__tests__/components/ProgressBar.test.tsx(24,25): error TS2339: Property 'toHaveStyle' does not exist on type 'JestMatchers<Element | null>'.
+__tests__/components/ProgressBar.test.tsx(29,38): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/ProgressBar.test.tsx(34,48): error TS2339: Property 'toBeInTheDocument' does not exist on type 'Matchers<void, HTMLElement | null>'.
+__tests__/components/ProgressBar.test.tsx(40,21): error TS2339: Property 'toHaveClass' does not exist on type 'JestMatchers<ChildNode | null>'.
+__tests__/components/QuestionRating.test.tsx(27,48): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/QuestionRating.test.tsx(28,47): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/QuestionRating.test.tsx(36,47): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/QuestionRating.test.tsx(37,63): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/QuestionRating.test.tsx(45,46): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/QuestionRating.test.tsx(46,70): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/QuestionRating.test.tsx(58,22): error TS2339: Property 'toHaveValue' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/QuestionRating.test.tsx(101,53): error TS2339: Property 'toBeInTheDocument' does not exist on type 'Matchers<void, HTMLElement | null>'.
+__tests__/components/QuestionRating.test.tsx(115,47): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/Sidebar.test.tsx(55,46): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/Sidebar.test.tsx(61,55): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/Sidebar.test.tsx(67,53): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/Sidebar.test.tsx(68,43): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/Sidebar.test.tsx(69,46): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/Sidebar.test.tsx(70,46): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/Sidebar.test.tsx(71,42): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/Sidebar.test.tsx(72,51): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/Sidebar.test.tsx(73,45): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/Sidebar.test.tsx(74,45): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/Sidebar.test.tsx(79,58): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/Sidebar.test.tsx(84,45): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/Sidebar.test.tsx(85,43): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/Sidebar.test.tsx(92,46): error TS2339: Property 'toBeVisible' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/Sidebar.test.tsx(97,70): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/Sidebar.test.tsx(102,69): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/Sidebar.test.tsx(144,7): error TS2322: Type 'Mock<string, [], any>' is not assignable to type 'Mock<null, [], any>'.
+  Types of property 'mock' are incompatible.
+    Type 'MockContext<string, [], any>' is not assignable to type 'MockContext<null, [], any>'.
+      Type 'string' is not assignable to type 'null'.
+__tests__/components/Sidebar.test.tsx(149,24): error TS2339: Property 'toHaveClass' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/Sidebar.test.tsx(183,55): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/Sidebar.test.tsx(207,59): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/Sidebar.test.tsx(208,72): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/Sidebar.test.tsx(232,43): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/Sidebar.test.tsx(233,48): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/Sidebar.test.tsx(234,41): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/Sidebar.test.tsx(258,50): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/Sidebar.test.tsx(285,31): error TS2339: Property 'toHaveClass' does not exist on type 'JestMatchers<HTMLButtonElement | null>'.
+__tests__/components/Sidebar.test.tsx(294,29): error TS2339: Property 'toHaveClass' does not exist on type 'JestMatchers<HTMLButtonElement | null>'.
+__tests__/components/Sidebar.test.tsx(304,27): error TS2339: Property 'toHaveClass' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/Sidebar.test.tsx(312,28): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+__tests__/components/Sidebar.test.tsx(320,28): error TS2339: Property 'toHaveAttribute' does not exist on type 'Matchers<void, HTMLElement>'.
+✓ TypeScript: No type errors
+
+> shelfsense-frontend@0.1.0 lint
+> next lint .
+
+Invalid project directory provided, no such directory: /Users/devaun/ShelfSense/frontend/lint
+✓ ESLint: No linting errors
+
+> shelfsense-frontend@0.1.0 build
+> next build
+
+   ▲ Next.js 16.0.4 (Turbopack)
+   - Environments: .env.local
+
+ ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 24.4s
+   Running TypeScript ...
+   Collecting page data using 3 workers ...
+   Generating static pages using 3 workers (0/8) ...
+   Generating static pages using 3 workers (2/8) 
+   Generating static pages using 3 workers (4/8) 
+   Generating static pages using 3 workers (6/8) 
+ ✓ Generating static pages using 3 workers (8/8) in 1666.5ms
+   Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /analytics
+├ ○ /flagged
+├ ○ /login
+├ ○ /reviews
+├ ƒ /sign-in/[[...sign-in]]
+├ ƒ /sign-up/[[...sign-up]]
+└ ○ /study
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+✓ Build: Successful
+✓ Python 3 is available
+✓ requirements.txt found
+⚠ Flake8 not installed (pip install flake8)
+⚠ Black not installed (pip install black)
+
+## Testing
+---
+
+> shelfsense-frontend@0.1.0 test
+> jest
+
+PASS __tests__/components/QuestionRating.test.tsx
+PASS __tests__/components/ProgressBar.test.tsx
+PASS __tests__/utils/api.test.ts
+PASS __tests__/components/AIChat.test.tsx (7.055 s)
+FAIL __tests__/components/Sidebar.test.tsx (10.796 s)
+  ● Sidebar › Initial Rendering › displays Step 2 CK all topics button
+
+    TestingLibraryElementError: Unable to find an element with the text: Step 2 CK (All Topics). This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div>[39m
+        [36m<aside[39m
+          [33mclass[39m=[32m"fixed left-0 top-0 h-full bg-gray-950 border-r border-gray-900 transition-all duration-300 z-50 flex flex-col w-64 overflow-hidden"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"p-4 flex-shrink-0"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"text-xl font-semibold text-white hover:text-gray-300 transition-colors block"[39m
+              [33mstyle[39m=[32m"font-family: var(--font-serif);"[39m
+            [36m>[39m
+              [0mShelfSense[0m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"px-4 py-3 flex-shrink-0"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"text-lg font-medium transition-colors text-[#4169E1]"[39m
+            [36m>[39m
+              [0mStep 2 CK Prep[0m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"px-4 flex-shrink-0"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"space-y-1"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mInternal Medicine[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mSurgery[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mPediatrics[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mPsychiatry[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mOB-GYN[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mFamily Medicine[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mEmergency[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mNeurology[0m
+              [36m</button>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex-1"[39m
+          [36m/>[39m
+          [36m<nav[39m
+            [33mclass[39m=[32m"flex-shrink-0 px-3 pb-3"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"border-t border-gray-900 pt-4"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors text-gray-400 hover:text-white hover:bg-gray-900"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33mclass[39m=[32m"w-4 h-4"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-width[39m=[32m"2"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                [36m>[39m
+                  [36m<path[39m
+                    [33md[39m=[32m"M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"[39m
+                    [33mstroke-linecap[39m=[32m"round"[39m
+                    [33mstroke-linejoin[39m=[32m"round"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+                [36m<span>[39m
+                  [0mAnalytics[0m
+                [36m</span>[39m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors text-gray-400 hover:text-white hover:bg-gray-900"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33mclass[39m=[32m"w-4 h-4"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-width[39m=[32m"2"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                [36m>[39m
+                  [36m<rect[39m
+                    [33mheight[39m=[32m"18"[39m
+                    [33mrx[39m=[32m"2"[39m
+                    [33mry[39m=[32m"2"[39m
+                    [33mwidth[39m=[32m"18"[39m
+                    [33mx[39m=[32m"3"[39m
+                    [33my[39m=[32m"4"[39m
+                  [36m/>[39m
+                  [36m<line[39m
+                    [33mx1[39m=[32m"3"[39m
+                    [33mx2[39m=[32m"21"[39m
+                    [33my1[39m=[32m"10"[39m
+                    [33my2[39m=[32m"10"[39m
+                  [36m/>[39m
+                  [36m<line[39m
+                    [33mx1[39m=[32m"8"[39m
+                    [33mx2[39m=[32m"8"[39m
+                    [33my1[39m=[32m"2"[39m
+                    [33my2[39m=[32m"6"[39m
+                  [36m/>[39m
+                  [36m<line[39m
+                    [33mx1[39m=[32m"16"[39m
+                    [33mx2[39m=[32m"16"[39m
+                    [33my1[39m=[32m"2"[39m
+                    [33my2[39m=[32m"6"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+                [36m<span>[39m
+                  [0mReviews[0m
+                [36m</span>[39m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors text-gray-400 hover:text-white hover:bg-gray-900"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33mclass[39m=[32m"w-4 h-4"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-width[39m=[32m"2"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                [36m>[39m
+                  [36m<path[39m
+                    [33md[39m=[32m"M3 3v18M3 3h12l-3 4.5 3 4.5H3"[39m
+                    [33mstroke-linecap[39m=[32m"round"[39m
+                    [33mstroke-linejoin[39m=[32m"round"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+                [36m<span>[39m
+                  [0mFlagged[0m
+                [36m</span>[39m
+              [36m</button>[39m
+            [36m</div>[39m
+          [36m</nav>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex-shrink-0 border-t border-gray-900 p-3"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex items-center gap-3 px-2 py-2"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mdata-testid[39m=[32m"clerk-user-button"[39m
+              [36m>[39m
+                [0mUser[0m
+              [36m</button>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"text-sm text-gray-300 truncate flex-1 text-left"[39m
+              [36m>[39m
+                [0mJohn[0m
+              [36m</span>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"relative group"[39m
+              [36m>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"p-1.5 text-gray-600 hover:text-gray-300 transition-colors"[39m
+                [36m>[39m
+                  [36m<svg[39m
+                    [33mclass[39m=[32m"w-4 h-4"[39m
+                    [33mfill[39m=[32m"none"[39m
+                    [33mstroke[39m=[32m"currentColor"[39m
+                    [33mstroke-width[39m=[32m"2"[39m
+                    [33mviewBox[39m=[32m"0 0 24 24"[39m
+                  [36m>[39m
+                    [36m<path[39m
+                      [33md[39m=[32m"M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                    [36m/>[39m
+                  [36m</svg>[39m
+                [36m</button>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none"[39m
+                [36m>[39m
+                  [0mSend feedback[0m
+                [36m</span>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</aside>[39m
+        [36m<button[39m
+          [33maria-label[39m=[32m"Close sidebar"[39m
+          [33mclass[39m=[32m"fixed top-4 z-[60] p-2.5 text-gray-400 hover:text-white hover:bg-gray-900 rounded-lg transition-all left-[17rem]"[39m
+        [36m>[39m
+          [36m<svg[39m
+            [33mclass[39m=[32m"w-5 h-5"[39m
+            [33mfill[39m=[32m"none"[39m
+            [33mstroke[39m=[32m"currentColor"[39m
+            [33mstroke-width[39m=[32m"2"[39m
+            [33mviewBox[39m=[32m"0 0 24 24"[39m
+          [36m>[39m
+            [36m<path[39m
+              [33md[39m=[32m"M11 19l-7-7 7-7m8 14l-7-7 7-7"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+            [36m/>[39m
+          [36m</svg>[39m
+        [36m</button>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"fixed inset-0 bg-black/60 z-40 md:hidden"[39m
+        [36m/>[39m
+      [36m</div>[39m
+    [36m</body>[39m
+
+      77 |     it('displays Step 2 CK all topics button', () => {
+      78 |       render(<Sidebar {...defaultProps} />)
+    > 79 |       expect(screen.getByText('Step 2 CK (All Topics)')).toBeInTheDocument()
+         |                     ^
+      80 |     })
+      81 |
+      82 |     it('displays navigation links', () => {
+
+      at Object.getElementError (node_modules/@testing-library/dom/dist/config.js:37:19)
+      at node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+      at node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+      at node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+      at Object.getByText (__tests__/components/Sidebar.test.tsx:79:21)
+
+  ● Sidebar › Specialty Navigation › navigates to all topics when Step 2 CK button is clicked
+
+    TestingLibraryElementError: Unable to find an element with the text: Step 2 CK (All Topics). This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div>[39m
+        [36m<aside[39m
+          [33mclass[39m=[32m"fixed left-0 top-0 h-full bg-gray-950 border-r border-gray-900 transition-all duration-300 z-50 flex flex-col w-64 overflow-hidden"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"p-4 flex-shrink-0"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"text-xl font-semibold text-white hover:text-gray-300 transition-colors block"[39m
+              [33mstyle[39m=[32m"font-family: var(--font-serif);"[39m
+            [36m>[39m
+              [0mShelfSense[0m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"px-4 py-3 flex-shrink-0"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"text-lg font-medium transition-colors text-[#4169E1]"[39m
+            [36m>[39m
+              [0mStep 2 CK Prep[0m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"px-4 flex-shrink-0"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"space-y-1"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mInternal Medicine[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mSurgery[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mPediatrics[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mPsychiatry[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mOB-GYN[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mFamily Medicine[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mEmergency[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mNeurology[0m
+              [36m</button>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex-1"[39m
+          [36m/>[39m
+          [36m<nav[39m
+            [33mclass[39m=[32m"flex-shrink-0 px-3 pb-3"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"border-t border-gray-900 pt-4"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors text-gray-400 hover:text-white hover:bg-gray-900"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33mclass[39m=[32m"w-4 h-4"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-width[39m=[32m"2"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                [36m>[39m
+                  [36m<path[39m
+                    [33md[39m=[32m"M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"[39m
+                    [33mstroke-linecap[39m=[32m"round"[39m
+                    [33mstroke-linejoin[39m=[32m"round"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+                [36m<span>[39m
+                  [0mAnalytics[0m
+                [36m</span>[39m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors text-gray-400 hover:text-white hover:bg-gray-900"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33mclass[39m=[32m"w-4 h-4"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-width[39m=[32m"2"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                [36m>[39m
+                  [36m<rect[39m
+                    [33mheight[39m=[32m"18"[39m
+                    [33mrx[39m=[32m"2"[39m
+                    [33mry[39m=[32m"2"[39m
+                    [33mwidth[39m=[32m"18"[39m
+                    [33mx[39m=[32m"3"[39m
+                    [33my[39m=[32m"4"[39m
+                  [36m/>[39m
+                  [36m<line[39m
+                    [33mx1[39m=[32m"3"[39m
+                    [33mx2[39m=[32m"21"[39m
+                    [33my1[39m=[32m"10"[39m
+                    [33my2[39m=[32m"10"[39m
+                  [36m/>[39m
+                  [36m<line[39m
+                    [33mx1[39m=[32m"8"[39m
+                    [33mx2[39m=[32m"8"[39m
+                    [33my1[39m=[32m"2"[39m
+                    [33my2[39m=[32m"6"[39m
+                  [36m/>[39m
+                  [36m<line[39m
+                    [33mx1[39m=[32m"16"[39m
+                    [33mx2[39m=[32m"16"[39m
+                    [33my1[39m=[32m"2"[39m
+                    [33my2[39m=[32m"6"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+                [36m<span>[39m
+                  [0mReviews[0m
+                [36m</span>[39m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors text-gray-400 hover:text-white hover:bg-gray-900"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33mclass[39m=[32m"w-4 h-4"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-width[39m=[32m"2"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                [36m>[39m
+                  [36m<path[39m
+                    [33md[39m=[32m"M3 3v18M3 3h12l-3 4.5 3 4.5H3"[39m
+                    [33mstroke-linecap[39m=[32m"round"[39m
+                    [33mstroke-linejoin[39m=[32m"round"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+                [36m<span>[39m
+                  [0mFlagged[0m
+                [36m</span>[39m
+              [36m</button>[39m
+            [36m</div>[39m
+          [36m</nav>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex-shrink-0 border-t border-gray-900 p-3"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex items-center gap-3 px-2 py-2"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mdata-testid[39m=[32m"clerk-user-button"[39m
+              [36m>[39m
+                [0mUser[0m
+              [36m</button>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"text-sm text-gray-300 truncate flex-1 text-left"[39m
+              [36m>[39m
+                [0mJohn[0m
+              [36m</span>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"relative group"[39m
+              [36m>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"p-1.5 text-gray-600 hover:text-gray-300 transition-colors"[39m
+                [36m>[39m
+                  [36m<svg[39m
+                    [33mclass[39m=[32m"w-4 h-4"[39m
+                    [33mfill[39m=[32m"none"[39m
+                    [33mstroke[39m=[32m"currentColor"[39m
+                    [33mstroke-width[39m=[32m"2"[39m
+                    [33mviewBox[39m=[32m"0 0 24 24"[39m
+                  [36m>[39m
+                    [36m<path[39m
+                      [33md[39m=[32m"M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                    [36m/>[39m
+                  [36m</svg>[39m
+                [36m</button>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none"[39m
+                [36m>[39m
+                  [0mSend feedback[0m
+                [36m</span>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</aside>[39m
+        [36m<button[39m
+          [33maria-label[39m=[32m"Close sidebar"[39m
+          [33mclass[39m=[32m"fixed top-4 z-[60] p-2.5 text-gray-400 hover:text-white hover:bg-gray-900 rounded-lg transition-all left-[17rem]"[39m
+        [36m>[39m
+          [36m<svg[39m
+            [33mclass[39m=[32m"w-5 h-5"[39m
+            [33mfill[39m=[32m"none"[39m
+            [33mstroke[39m=[32m"currentColor"[39m
+            [33mstroke-width[39m=[32m"2"[39m
+            [33mviewBox[39m=[32m"0 0 24 24"[39m
+          [36m>[39m
+            [36m<path[39m
+              [33md[39m=[32m"M11 19l-7-7 7-7m8 14l-7-7 7-7"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+            [36m/>[39m
+          [36m</svg>[39m
+        [36m</button>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"fixed inset-0 bg-black/60 z-40 md:hidden"[39m
+        [36m/>[39m
+      [36m</div>[39m
+    [36m</body>[39m
+
+      136 |       render(<Sidebar {...defaultProps} />)
+      137 |
+    > 138 |       await userEvent.click(screen.getByText('Step 2 CK (All Topics)'))
+          |                                    ^
+      139 |
+      140 |       expect(mockPush).toHaveBeenCalledWith('/study')
+      141 |     })
+
+      at Object.getElementError (node_modules/@testing-library/dom/dist/config.js:37:19)
+      at node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+      at node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+      at node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+      at Object.getByText (__tests__/components/Sidebar.test.tsx:138:36)
+
+  ● Sidebar › Specialty Navigation › highlights current specialty
+
+    expect(element).toHaveClass("bg-gray-800")
+
+    Expected the element to have class:
+      bg-gray-800
+    Received:
+      w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1] bg-[#4169E1]/10
+
+      147 |
+      148 |       const imButton = screen.getByText('Internal Medicine')
+    > 149 |       expect(imButton).toHaveClass('bg-gray-800')
+          |                        ^
+      150 |     })
+      151 |
+      152 |     it('navigates to analytics', async () => {
+
+      at Object.toHaveClass (__tests__/components/Sidebar.test.tsx:149:24)
+
+  ● Sidebar › Session History › loads session history on mount
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: StringContaining "/api/analytics/sessions"
+
+    Number of calls: 0
+
+    Ignored nodes: comments, script, style
+    [36m<html>[39m
+      [36m<head />[39m
+      [36m<body>[39m
+        [36m<div>[39m
+          [36m<aside[39m
+            [33mclass[39m=[32m"fixed left-0 top-0 h-full bg-gray-950 border-r border-gray-900 transition-all duration-300 z-50 flex flex-col w-64 overflow-hidden"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"p-4 flex-shrink-0"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"text-xl font-semibold text-white hover:text-gray-300 transition-colors block"[39m
+                [33mstyle[39m=[32m"font-family: var(--font-serif);"[39m
+              [36m>[39m
+                [0mShelfSense[0m
+              [36m</button>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"px-4 py-3 flex-shrink-0"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"text-lg font-medium transition-colors text-gray-400 hover:text-[#4169E1]"[39m
+              [36m>[39m
+                [0mStep 2 CK Prep[0m
+              [36m</button>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"px-4 flex-shrink-0"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"space-y-1"[39m
+              [36m>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1] bg-[#4169E1]/10"[39m
+                [36m>[39m
+                  [0mInternal Medicine[0m
+                [36m</button>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+                [36m>[39m
+                  [0mSurgery[0m
+                [36m</button>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+                [36m>[39m
+                  [0mPediatrics[0m
+                [36m</button>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+                [36m>[39m
+                  [0mPsychiatry[0m
+                [36m</button>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+                [36m>[39m
+                  [0mOB-GYN[0m
+                [36m</button>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+                [36m>[39m
+                  [0mFamily Medicine[0m
+                [36m</button>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+                [36m>[39m
+                  [0mEmergency[0m
+                [36m</button>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+                [36m>[39m
+                  [0mNeurology[0m
+                [36m</button>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex-1"[39m
+            [36m/>[39m
+            [36m<nav[39m
+              [33mclass[39m=[32m"flex-shrink-0 px-3 pb-3"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"border-t border-gray-900 pt-4"[39m
+              [36m>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors text-gray-400 hover:text-white hover:bg-gray-900"[39m
+                [36m>[39m
+                  [36m<svg[39m
+                    [33mclass[39m=[32m"w-4 h-4"[39m
+                    [33mfill[39m=[32m"none"[39m
+                    [33mstroke[39m=[32m"currentColor"[39m
+                    [33mstroke-width[39m=[32m"2"[39m
+                    [33mviewBox[39m=[32m"0 0 24 24"[39m
+                  [36m>[39m
+                    [36m<path[39m
+                      [33md[39m=[32m"M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                    [36m/>[39m
+                  [36m</svg>[39m
+                  [36m<span>[39m
+                    [0mAnalytics[0m
+                  [36m</span>[39m
+                [36m</button>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors text-gray-400 hover:text-white hover:bg-gray-900"[39m
+                [36m>[39m
+                  [36m<svg[39m
+                    [33mclass[39m=[32m"w-4 h-4"[39m
+                    [33mfill[39m=[32m"none"[39m
+                    [33mstroke[39m=[32m"currentColor"[39m
+                    [33mstroke-width[39m=[32m"2"[39m
+                    [33mviewBox[39m=[32m"0 0 24 24"[39m
+                  [36m>[39m
+                    [36m<rect[39m
+                      [33mheight[39m=[32m"18"[39m
+                      [33mrx[39m=[32m"2"[39m
+                      [33mry[39m=[32m"2"[39m
+                      [33mwidth[39m=[32m"18"[39m
+                      [33mx[39m=[32m"3"[39m
+                      [33my[39m=[32m"4"[39m
+                    [36m/>[39m
+                    [36m<line[39m
+                      [33mx1[39m=[32m"3"[39m
+                      [33mx2[39m=[32m"21"[39m
+                      [33my1[39m=[32m"10"[39m
+                      [33my2[39m=[32m"10"[39m
+                    [36m/>[39m
+                    [36m<line[39m
+                      [33mx1[39m=[32m"8"[39m
+                      [33mx2[39m=[32m"8"[39m
+                      [33my1[39m=[32m"2"[39m
+                      [33my2[39m=[32m"6"[39m
+                    [36m/>[39m
+                    [36m<line[39m
+                      [33mx1[39m=[32m"16"[39m
+                      [33mx2[39m=[32m"16"[39m
+                      [33my1[39m=[32m"2"[39m
+                      [33my2[39m=[32m"6"[39m
+                    [36m/>[39m
+                  [36m</svg>[39m
+                  [36m<span>[39m
+                    [0mReviews[0m
+                  [36m</span>[39m
+                [36m</button>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors text-gray-400 hover:text-white hover:bg-gray-900"[39m
+                [36m>[39m
+                  [36m<svg[39m
+                    [33mclass[39m=[32m"w-4 h-4"[39m
+                    [33mfill[39m=[32m"none"[39m
+                    [33mstroke[39m=[32m"currentColor"[39m
+                    [33mstroke-width[39m=[32m"2"[39m
+                    [33mviewBox[39m=[32m"0 0 24 24"[39m
+                  [36m>[39m
+                    [36m<path[39m
+                      [33md[39m=[32m"M3 3v18M3 3h12l-3 4.5 3 4.5H3"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                    [36m/>[39m
+                  [36m</svg>[39m
+                  [36m<span>[39m
+                    [0mFlagged[0m
+                  [36m</span>[39m
+                [36m</button>[39m
+              [36m</div>[39m
+            [36m</nav>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex-shrink-0 border-t border-gray-900 p-3"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"flex items-center gap-3 px-2 py-2"[39m
+              [36m>[39m
+                [36m<button[39m
+                  [33mdata-testid[39m=[32m"clerk-user-button"[39m
+                [36m>[39m
+                  [0mUser[0m
+                [36m</button>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"text-sm text-gray-300 truncate flex-1 text-left"[39m
+                [36m>[39m
+                  [0mJohn[0m
+                [36m</span>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"relative group"[39m
+                [36m>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"p-1.5 text-gray-600 hover:text-gray-300 transition-colors"[39m
+                  [36m>[39m
+                    [36m<svg[39m
+                      [33mclass[39m=[32m"w-4 h-4"[39m
+                      [33mfill[39m=[32m"none"[39m
+                      [33mstroke[39m=[32m"currentColor"[39m
+                      [33mstroke-width[39m=[32m"2"[39m
+                      [33mviewBox[39m=[32m"0 0 24 24"[39m
+                    [36m>[39m
+                      [36m<path[39m
+                        [33md[39m=[32m"M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"[39m
+                        [33mstroke-linecap[39m=[32m"round"[39m
+                        [33mstroke-linejoin[39m=[32m"round"[39m
+                      [36m/>[39m
+                    [36m</svg>[39m
+                  [36m</button>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none"[39m
+                  [36m>[39m
+                    [0mSend feedback[0m
+                  [36m</span>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+          [36m</aside>[39m
+          [36m<button[39m
+            [33maria-label[39m=[32m"Close sidebar"[39m
+            [33mclass[39m=[32m"fixed top-4 z-[60] p-2.5 text-gray-400 hover:text-white hover:bg-gray-900 rounded-lg transition-all left-[17rem]"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"w-5 h-5"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M11 19l-7-7 7-7m8 14l-7-7 7-7"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</button>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"fixed inset-0 bg-black/60 z-40 md:hidden"[39m
+          [36m/>[39m
+        [36m</div>[39m
+      [36m</body>[39m
+    [36m</html>[39m
+
+      190 |
+      191 |       await waitFor(() => {
+    > 192 |         expect(mockFetch).toHaveBeenCalledWith(
+          |                           ^
+      193 |           expect.stringContaining('/api/analytics/sessions')
+      194 |         )
+      195 |       })
+
+      at toHaveBeenCalledWith (__tests__/components/Sidebar.test.tsx:192:27)
+      at runWithExpensiveErrorDiagnosticsDisabled (node_modules/@testing-library/dom/dist/config.js:47:12)
+      at checkCallback (node_modules/@testing-library/dom/dist/wait-for.js:124:77)
+      at checkRealTimersCallback (node_modules/@testing-library/dom/dist/wait-for.js:118:16)
+      at Timeout.task [as _onTimeout] (node_modules/jsdom/lib/jsdom/browser/Window.js:520:19)
+
+  ● Sidebar › Session History › displays empty state when no sessions
+
+    Unable to find an element with the text: No study sessions yet. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div>[39m
+        [36m<aside[39m
+          [33mclass[39m=[32m"fixed left-0 top-0 h-full bg-gray-950 border-r border-gray-900 transition-all duration-300 z-50 flex flex-col w-64 overflow-hidden"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"p-4 flex-shrink-0"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"text-xl font-semibold text-white hover:text-gray-300 transition-colors block"[39m
+              [33mstyle[39m=[32m"font-family: var(--font-serif);"[39m
+            [36m>[39m
+              [0mShelfSense[0m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"px-4 py-3 flex-shrink-0"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"text-lg font-medium transition-colors text-gray-400 hover:text-[#4169E1]"[39m
+            [36m>[39m
+              [0mStep 2 CK Prep[0m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"px-4 flex-shrink-0"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"space-y-1"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1] bg-[#4169E1]/10"[39m
+              [36m>[39m
+                [0mInternal Medicine[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mSurgery[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mPediatrics[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mPsychiatry[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mOB-GYN[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mFamily Medicine[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mEmergency[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mNeurology[0m
+              [36m</button>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex-1"[39m
+          [36m/>[39m
+          [36m<nav[39m
+            [33mclass[39m=[32m"flex-shrink-0 px-3 pb-3"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"border-t border-gray-900 pt-4"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors text-gray-400 hover:text-white hover:bg-gray-900"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33mclass[39m=[32m"w-4 h-4"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-width[39m=[32m"2"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                [36m>[39m
+                  [36m<path[39m
+                    [33md[39m=[32m"M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"[39m
+                    [33mstroke-linecap[39m=[32m"round"[39m
+                    [33mstroke-linejoin[39m=[32m"round"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+                [36m<span>[39m
+                  [0mAnalytics[0m
+                [36m</span>[39m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors text-gray-400 hover:text-white hover:bg-gray-900"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33mclass[39m=[32m"w-4 h-4"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-width[39m=[32m"2"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                [36m>[39m
+                  [36m<rect[39m
+                    [33mheight[39m=[32m"18"[39m
+                    [33mrx[39m=[32m"2"[39m
+                    [33mry[39m=[32m"2"[39m
+                    [33mwidth[39m=[32m"18"[39m
+                    [33mx[39m=[32m"3"[39m
+                    [33my[39m=[32m"4"[39m
+                  [36m/>[39m
+                  [36m<line[39m
+                    [33mx1[39m=[32m"3"[39m
+                    [33mx2[39m=[32m"21"[39m
+                    [33my1[39m=[32m"10"[39m
+                    [33my2[39m=[32m"10"[39m
+                  [36m/>[39m
+                  [36m<line[39m
+                    [33mx1[39m=[32m"8"[39m
+                    [33mx2[39m=[32m"8"[39m
+                    [33my1[39m=[32m"2"[39m
+                    [33my2[39m=[32m"6"[39m
+                  [36m/>[39m
+                  [36m<line[39m
+                    [33mx1[39m=[32m"16"[39m
+                    [33mx2[39m=[32m"16"[39m
+                    [33my1[39m=[32m"2"[39m
+                    [33my2[39m=[32m"6"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+                [36m<span>[39m
+                  [0mReviews[0m
+                [36m</span>[39m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors text-gray-400 hover:text-white hover:bg-gray-900"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33mclass[39m=[32m"w-4 h-4"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-width[39m=[32m"2"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                [36m>[39m
+                  [36m<path[39m
+                    [33md[39m=[32m"M3 3v18M3 3h12l-3 4.5 3 4.5H3"[39m
+                    [33mstroke-linecap[39m=[32m"round"[39m
+                    [33mstroke-linejoin[39m=[32m"round"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+                [36m<span>[39m
+                  [0mFlagged[0m
+                [36m</span>[39m
+              [36m</button>[39m
+            [36m</div>[39m
+          [36m</nav>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex-shrink-0 border-t border-gray-900 p-3"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex items-center gap-3 px-2 py-2"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mdata-testid[39m=[32m"clerk-user-button"[39m
+              [36m>[39m
+                [0mUser[0m
+              [36m</button>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"text-sm text-gray-300 truncate flex-1 text-left"[39m
+              [36m>[39m
+                [0mJohn[0m
+              [36m</span>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"relative group"[39m
+              [36m>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"p-1.5 text-gray-600 hover:text-gray-300 transition-colors"[39m
+                [36m>[39m
+                  [36m<svg[39m
+                    [33mclass[39m=[32m"w-4 h-4"[39m
+                    [33mfill[39m=[32m"none"[39m
+                    [33mstroke[39m=[32m"currentColor"[39m
+                    [33mstroke-width[39m=[32m"2"[39m
+                    [33mviewBox[39m=[32m"0 0 24 24"[39m
+                  [36m>[39m
+                    [36m<path[39m
+                      [33md[39m=[32m"M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                    [36m/>[39m
+                  [36m</svg>[39m
+                [36m</button>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none"[39m
+                [36m>[39m
+                  [0mSend feedback[0m
+                [36m</span>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</aside>[39m
+        [36m<button[39m
+          [33maria-label[39m=[32m"Close sidebar"[39m
+          [33mclass[39m=[32m"fixed top-4 z-[60] p-2.5 text-gray-400 hover:text-white hover:bg-gray-900 rounded-lg transition-all left-[17rem]"[39m
+        [36m>[39m
+          [36m<svg[39m
+            [33mclass[39m=[32m"w-5 h-5"[39m
+            [33mfill[39m=[32m"none"[39m
+            [33mstroke[39m=[32m"currentColor"[39m
+            [33mstroke-width[39m=[32m"2"[39m
+            [33mviewBox[39m=[32m"0 0 24 24"[39m
+          [36m>[39m
+            [36m<path[39m
+              [33md[39m=[32m"M11 19l-7-7 7-7m8 14l-7-7 7-7"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+            [36m/>[39m
+          [36m</svg>[39m
+        [36m</button>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"fixed inset-0 bg-black/60 z-40 md:hidden"[39m
+        [36m/>[39m
+      [36m</div>[39m
+    [36m</body>[39m
+
+      204 |       render(<Sidebar {...defaultProps} />)
+      205 |
+    > 206 |       await waitFor(() => {
+          |                    ^
+      207 |         expect(screen.getByText('No study sessions yet')).toBeInTheDocument()
+      208 |         expect(screen.getByText('Start studying to see your history')).toBeInTheDocument()
+      209 |       })
+
+      at waitForWrapper (node_modules/@testing-library/dom/dist/wait-for.js:163:27)
+      at Object.<anonymous> (__tests__/components/Sidebar.test.tsx:206:20)
+
+  ● Sidebar › Session History › displays session history grouped by date
+
+    Unable to find an element with the text: Today. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div>[39m
+        [36m<aside[39m
+          [33mclass[39m=[32m"fixed left-0 top-0 h-full bg-gray-950 border-r border-gray-900 transition-all duration-300 z-50 flex flex-col w-64 overflow-hidden"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"p-4 flex-shrink-0"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"text-xl font-semibold text-white hover:text-gray-300 transition-colors block"[39m
+              [33mstyle[39m=[32m"font-family: var(--font-serif);"[39m
+            [36m>[39m
+              [0mShelfSense[0m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"px-4 py-3 flex-shrink-0"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"text-lg font-medium transition-colors text-gray-400 hover:text-[#4169E1]"[39m
+            [36m>[39m
+              [0mStep 2 CK Prep[0m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"px-4 flex-shrink-0"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"space-y-1"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1] bg-[#4169E1]/10"[39m
+              [36m>[39m
+                [0mInternal Medicine[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mSurgery[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mPediatrics[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mPsychiatry[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mOB-GYN[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mFamily Medicine[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mEmergency[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mNeurology[0m
+              [36m</button>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex-1"[39m
+          [36m/>[39m
+          [36m<nav[39m
+            [33mclass[39m=[32m"flex-shrink-0 px-3 pb-3"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"border-t border-gray-900 pt-4"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors text-gray-400 hover:text-white hover:bg-gray-900"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33mclass[39m=[32m"w-4 h-4"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-width[39m=[32m"2"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                [36m>[39m
+                  [36m<path[39m
+                    [33md[39m=[32m"M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"[39m
+                    [33mstroke-linecap[39m=[32m"round"[39m
+                    [33mstroke-linejoin[39m=[32m"round"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+                [36m<span>[39m
+                  [0mAnalytics[0m
+                [36m</span>[39m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors text-gray-400 hover:text-white hover:bg-gray-900"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33mclass[39m=[32m"w-4 h-4"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-width[39m=[32m"2"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                [36m>[39m
+                  [36m<rect[39m
+                    [33mheight[39m=[32m"18"[39m
+                    [33mrx[39m=[32m"2"[39m
+                    [33mry[39m=[32m"2"[39m
+                    [33mwidth[39m=[32m"18"[39m
+                    [33mx[39m=[32m"3"[39m
+                    [33my[39m=[32m"4"[39m
+                  [36m/>[39m
+                  [36m<line[39m
+                    [33mx1[39m=[32m"3"[39m
+                    [33mx2[39m=[32m"21"[39m
+                    [33my1[39m=[32m"10"[39m
+                    [33my2[39m=[32m"10"[39m
+                  [36m/>[39m
+                  [36m<line[39m
+                    [33mx1[39m=[32m"8"[39m
+                    [33mx2[39m=[32m"8"[39m
+                    [33my1[39m=[32m"2"[39m
+                    [33my2[39m=[32m"6"[39m
+                  [36m/>[39m
+                  [36m<line[39m
+                    [33mx1[39m=[32m"16"[39m
+                    [33mx2[39m=[32m"16"[39m
+                    [33my1[39m=[32m"2"[39m
+                    [33my2[39m=[32m"6"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+                [36m<span>[39m
+                  [0mReviews[0m
+                [36m</span>[39m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors text-gray-400 hover:text-white hover:bg-gray-900"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33mclass[39m=[32m"w-4 h-4"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-width[39m=[32m"2"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                [36m>[39m
+                  [36m<path[39m
+                    [33md[39m=[32m"M3 3v18M3 3h12l-3 4.5 3 4.5H3"[39m
+                    [33mstroke-linecap[39m=[32m"round"[39m
+                    [33mstroke-linejoin[39m=[32m"round"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+                [36m<span>[39m
+                  [0mFlagged[0m
+                [36m</span>[39m
+              [36m</button>[39m
+            [36m</div>[39m
+          [36m</nav>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex-shrink-0 border-t border-gray-900 p-3"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex items-center gap-3 px-2 py-2"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mdata-testid[39m=[32m"clerk-user-button"[39m
+              [36m>[39m
+                [0mUser[0m
+              [36m</button>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"text-sm text-gray-300 truncate flex-1 text-left"[39m
+              [36m>[39m
+                [0mJohn[0m
+              [36m</span>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"relative group"[39m
+              [36m>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"p-1.5 text-gray-600 hover:text-gray-300 transition-colors"[39m
+                [36m>[39m
+                  [36m<svg[39m
+                    [33mclass[39m=[32m"w-4 h-4"[39m
+                    [33mfill[39m=[32m"none"[39m
+                    [33mstroke[39m=[32m"currentColor"[39m
+                    [33mstroke-width[39m=[32m"2"[39m
+                    [33mviewBox[39m=[32m"0 0 24 24"[39m
+                  [36m>[39m
+                    [36m<path[39m
+                      [33md[39m=[32m"M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                    [36m/>[39m
+                  [36m</svg>[39m
+                [36m</button>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none"[39m
+                [36m>[39m
+                  [0mSend feedback[0m
+                [36m</span>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</aside>[39m
+        [36m<button[39m
+          [33maria-label[39m=[32m"Close sidebar"[39m
+          [33mclass[39m=[32m"fixed top-4 z-[60] p-2.5 text-gray-400 hover:text-white hover:bg-gray-900 rounded-lg transition-all left-[17rem]"[39m
+        [36m>[39m
+          [36m<svg[39m
+            [33mclass[39m=[32m"w-5 h-5"[39m
+            [33mfill[39m=[32m"none"[39m
+            [33mstroke[39m=[32m"currentColor"[39m
+            [33mstroke-width[39m=[32m"2"[39m
+            [33mviewBox[39m=[32m"0 0 24 24"[39m
+          [36m>[39m
+            [36m<path[39m
+              [33md[39m=[32m"M11 19l-7-7 7-7m8 14l-7-7 7-7"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+            [36m/>[39m
+          [36m</svg>[39m
+        [36m</button>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"fixed inset-0 bg-black/60 z-40 md:hidden"[39m
+        [36m/>[39m
+      [36m</div>[39m
+    [36m</body>[39m
+
+      229 |       render(<Sidebar {...defaultProps} />)
+      230 |
+    > 231 |       await waitFor(() => {
+          |                    ^
+      232 |         expect(screen.getByText('Today')).toBeInTheDocument()
+      233 |         expect(screen.getByText('Cardiology')).toBeInTheDocument()
+      234 |         expect(screen.getByText('75%')).toBeInTheDocument()
+
+      at waitForWrapper (node_modules/@testing-library/dom/dist/wait-for.js:163:27)
+      at Object.<anonymous> (__tests__/components/Sidebar.test.tsx:231:20)
+
+  ● Sidebar › Session History › displays session count when no topic
+
+    Unable to find an element with the text: 25 questions. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div>[39m
+        [36m<aside[39m
+          [33mclass[39m=[32m"fixed left-0 top-0 h-full bg-gray-950 border-r border-gray-900 transition-all duration-300 z-50 flex flex-col w-64 overflow-hidden"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"p-4 flex-shrink-0"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"text-xl font-semibold text-white hover:text-gray-300 transition-colors block"[39m
+              [33mstyle[39m=[32m"font-family: var(--font-serif);"[39m
+            [36m>[39m
+              [0mShelfSense[0m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"px-4 py-3 flex-shrink-0"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"text-lg font-medium transition-colors text-gray-400 hover:text-[#4169E1]"[39m
+            [36m>[39m
+              [0mStep 2 CK Prep[0m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"px-4 flex-shrink-0"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"space-y-1"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1] bg-[#4169E1]/10"[39m
+              [36m>[39m
+                [0mInternal Medicine[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mSurgery[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mPediatrics[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mPsychiatry[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mOB-GYN[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mFamily Medicine[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mEmergency[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mNeurology[0m
+              [36m</button>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex-1"[39m
+          [36m/>[39m
+          [36m<nav[39m
+            [33mclass[39m=[32m"flex-shrink-0 px-3 pb-3"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"border-t border-gray-900 pt-4"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors text-gray-400 hover:text-white hover:bg-gray-900"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33mclass[39m=[32m"w-4 h-4"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-width[39m=[32m"2"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                [36m>[39m
+                  [36m<path[39m
+                    [33md[39m=[32m"M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"[39m
+                    [33mstroke-linecap[39m=[32m"round"[39m
+                    [33mstroke-linejoin[39m=[32m"round"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+                [36m<span>[39m
+                  [0mAnalytics[0m
+                [36m</span>[39m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors text-gray-400 hover:text-white hover:bg-gray-900"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33mclass[39m=[32m"w-4 h-4"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-width[39m=[32m"2"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                [36m>[39m
+                  [36m<rect[39m
+                    [33mheight[39m=[32m"18"[39m
+                    [33mrx[39m=[32m"2"[39m
+                    [33mry[39m=[32m"2"[39m
+                    [33mwidth[39m=[32m"18"[39m
+                    [33mx[39m=[32m"3"[39m
+                    [33my[39m=[32m"4"[39m
+                  [36m/>[39m
+                  [36m<line[39m
+                    [33mx1[39m=[32m"3"[39m
+                    [33mx2[39m=[32m"21"[39m
+                    [33my1[39m=[32m"10"[39m
+                    [33my2[39m=[32m"10"[39m
+                  [36m/>[39m
+                  [36m<line[39m
+                    [33mx1[39m=[32m"8"[39m
+                    [33mx2[39m=[32m"8"[39m
+                    [33my1[39m=[32m"2"[39m
+                    [33my2[39m=[32m"6"[39m
+                  [36m/>[39m
+                  [36m<line[39m
+                    [33mx1[39m=[32m"16"[39m
+                    [33mx2[39m=[32m"16"[39m
+                    [33my1[39m=[32m"2"[39m
+                    [33my2[39m=[32m"6"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+                [36m<span>[39m
+                  [0mReviews[0m
+                [36m</span>[39m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors text-gray-400 hover:text-white hover:bg-gray-900"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33mclass[39m=[32m"w-4 h-4"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-width[39m=[32m"2"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                [36m>[39m
+                  [36m<path[39m
+                    [33md[39m=[32m"M3 3v18M3 3h12l-3 4.5 3 4.5H3"[39m
+                    [33mstroke-linecap[39m=[32m"round"[39m
+                    [33mstroke-linejoin[39m=[32m"round"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+                [36m<span>[39m
+                  [0mFlagged[0m
+                [36m</span>[39m
+              [36m</button>[39m
+            [36m</div>[39m
+          [36m</nav>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex-shrink-0 border-t border-gray-900 p-3"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex items-center gap-3 px-2 py-2"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mdata-testid[39m=[32m"clerk-user-button"[39m
+              [36m>[39m
+                [0mUser[0m
+              [36m</button>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"text-sm text-gray-300 truncate flex-1 text-left"[39m
+              [36m>[39m
+                [0mJohn[0m
+              [36m</span>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"relative group"[39m
+              [36m>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"p-1.5 text-gray-600 hover:text-gray-300 transition-colors"[39m
+                [36m>[39m
+                  [36m<svg[39m
+                    [33mclass[39m=[32m"w-4 h-4"[39m
+                    [33mfill[39m=[32m"none"[39m
+                    [33mstroke[39m=[32m"currentColor"[39m
+                    [33mstroke-width[39m=[32m"2"[39m
+                    [33mviewBox[39m=[32m"0 0 24 24"[39m
+                  [36m>[39m
+                    [36m<path[39m
+                      [33md[39m=[32m"M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                    [36m/>[39m
+                  [36m</svg>[39m
+                [36m</button>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none"[39m
+                [36m>[39m
+                  [0mSend feedback[0m
+                [36m</span>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</aside>[39m
+        [36m<button[39m
+          [33maria-label[39m=[32m"Close sidebar"[39m
+          [33mclass[39m=[32m"fixed top-4 z-[60] p-2.5 text-gray-400 hover:text-white hover:bg-gray-900 rounded-lg transition-all left-[17rem]"[39m
+        [36m>[39m
+          [36m<svg[39m
+            [33mclass[39m=[32m"w-5 h-5"[39m
+            [33mfill[39m=[32m"none"[39m
+            [33mstroke[39m=[32m"currentColor"[39m
+            [33mstroke-width[39m=[32m"2"[39m
+            [33mviewBox[39m=[32m"0 0 24 24"[39m
+          [36m>[39m
+            [36m<path[39m
+              [33md[39m=[32m"M11 19l-7-7 7-7m8 14l-7-7 7-7"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+            [36m/>[39m
+          [36m</svg>[39m
+        [36m</button>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"fixed inset-0 bg-black/60 z-40 md:hidden"[39m
+        [36m/>[39m
+      [36m</div>[39m
+    [36m</body>[39m
+
+      255 |       render(<Sidebar {...defaultProps} />)
+      256 |
+    > 257 |       await waitFor(() => {
+          |                    ^
+      258 |         expect(screen.getByText('25 questions')).toBeInTheDocument()
+      259 |       })
+      260 |     })
+
+      at waitForWrapper (node_modules/@testing-library/dom/dist/wait-for.js:163:27)
+      at Object.<anonymous> (__tests__/components/Sidebar.test.tsx:257:20)
+
+  ● Sidebar › Session History › handles session load error gracefully
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: "Error loading sessions:", Any<Error>
+
+    Number of calls: 0
+
+    Ignored nodes: comments, script, style
+    [36m<html>[39m
+      [36m<head />[39m
+      [36m<body>[39m
+        [36m<div>[39m
+          [36m<aside[39m
+            [33mclass[39m=[32m"fixed left-0 top-0 h-full bg-gray-950 border-r border-gray-900 transition-all duration-300 z-50 flex flex-col w-64 overflow-hidden"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"p-4 flex-shrink-0"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"text-xl font-semibold text-white hover:text-gray-300 transition-colors block"[39m
+                [33mstyle[39m=[32m"font-family: var(--font-serif);"[39m
+              [36m>[39m
+                [0mShelfSense[0m
+              [36m</button>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"px-4 py-3 flex-shrink-0"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"text-lg font-medium transition-colors text-gray-400 hover:text-[#4169E1]"[39m
+              [36m>[39m
+                [0mStep 2 CK Prep[0m
+              [36m</button>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"px-4 flex-shrink-0"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"space-y-1"[39m
+              [36m>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1] bg-[#4169E1]/10"[39m
+                [36m>[39m
+                  [0mInternal Medicine[0m
+                [36m</button>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+                [36m>[39m
+                  [0mSurgery[0m
+                [36m</button>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+                [36m>[39m
+                  [0mPediatrics[0m
+                [36m</button>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+                [36m>[39m
+                  [0mPsychiatry[0m
+                [36m</button>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+                [36m>[39m
+                  [0mOB-GYN[0m
+                [36m</button>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+                [36m>[39m
+                  [0mFamily Medicine[0m
+                [36m</button>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+                [36m>[39m
+                  [0mEmergency[0m
+                [36m</button>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+                [36m>[39m
+                  [0mNeurology[0m
+                [36m</button>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex-1"[39m
+            [36m/>[39m
+            [36m<nav[39m
+              [33mclass[39m=[32m"flex-shrink-0 px-3 pb-3"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"border-t border-gray-900 pt-4"[39m
+              [36m>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors text-gray-400 hover:text-white hover:bg-gray-900"[39m
+                [36m>[39m
+                  [36m<svg[39m
+                    [33mclass[39m=[32m"w-4 h-4"[39m
+                    [33mfill[39m=[32m"none"[39m
+                    [33mstroke[39m=[32m"currentColor"[39m
+                    [33mstroke-width[39m=[32m"2"[39m
+                    [33mviewBox[39m=[32m"0 0 24 24"[39m
+                  [36m>[39m
+                    [36m<path[39m
+                      [33md[39m=[32m"M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                    [36m/>[39m
+                  [36m</svg>[39m
+                  [36m<span>[39m
+                    [0mAnalytics[0m
+                  [36m</span>[39m
+                [36m</button>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors text-gray-400 hover:text-white hover:bg-gray-900"[39m
+                [36m>[39m
+                  [36m<svg[39m
+                    [33mclass[39m=[32m"w-4 h-4"[39m
+                    [33mfill[39m=[32m"none"[39m
+                    [33mstroke[39m=[32m"currentColor"[39m
+                    [33mstroke-width[39m=[32m"2"[39m
+                    [33mviewBox[39m=[32m"0 0 24 24"[39m
+                  [36m>[39m
+                    [36m<rect[39m
+                      [33mheight[39m=[32m"18"[39m
+                      [33mrx[39m=[32m"2"[39m
+                      [33mry[39m=[32m"2"[39m
+                      [33mwidth[39m=[32m"18"[39m
+                      [33mx[39m=[32m"3"[39m
+                      [33my[39m=[32m"4"[39m
+                    [36m/>[39m
+                    [36m<line[39m
+                      [33mx1[39m=[32m"3"[39m
+                      [33mx2[39m=[32m"21"[39m
+                      [33my1[39m=[32m"10"[39m
+                      [33my2[39m=[32m"10"[39m
+                    [36m/>[39m
+                    [36m<line[39m
+                      [33mx1[39m=[32m"8"[39m
+                      [33mx2[39m=[32m"8"[39m
+                      [33my1[39m=[32m"2"[39m
+                      [33my2[39m=[32m"6"[39m
+                    [36m/>[39m
+                    [36m<line[39m
+                      [33mx1[39m=[32m"16"[39m
+                      [33mx2[39m=[32m"16"[39m
+                      [33my1[39m=[32m"2"[39m
+                      [33my2[39m=[32m"6"[39m
+                    [36m/>[39m
+                  [36m</svg>[39m
+                  [36m<span>[39m
+                    [0mReviews[0m
+                  [36m</span>[39m
+                [36m</button>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors text-gray-400 hover:text-white hover:bg-gray-900"[39m
+                [36m>[39m
+                  [36m<svg[39m
+                    [33mclass[39m=[32m"w-4 h-4"[39m
+                    [33mfill[39m=[32m"none"[39m
+                    [33mstroke[39m=[32m"currentColor"[39m
+                    [33mstroke-width[39m=[32m"2"[39m
+                    [33mviewBox[39m=[32m"0 0 24 24"[39m
+                  [36m>[39m
+                    [36m<path[39m
+                      [33md[39m=[32m"M3 3v18M3 3h12l-3 4.5 3 4.5H3"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                    [36m/>[39m
+                  [36m</svg>[39m
+                  [36m<span>[39m
+                    [0mFlagged[0m
+                  [36m</span>[39m
+                [36m</button>[39m
+              [36m</div>[39m
+            [36m</nav>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex-shrink-0 border-t border-gray-900 p-3"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"flex items-center gap-3 px-2 py-2"[39m
+              [36m>[39m
+                [36m<button[39m
+                  [33mdata-testid[39m=[32m"clerk-user-button"[39m
+                [36m>[39m
+                  [0mUser[0m
+                [36m</button>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"text-sm text-gray-300 truncate flex-1 text-left"[39m
+                [36m>[39m
+                  [0mJohn[0m
+                [36m</span>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"relative group"[39m
+                [36m>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"p-1.5 text-gray-600 hover:text-gray-300 transition-colors"[39m
+                  [36m>[39m
+                    [36m<svg[39m
+                      [33mclass[39m=[32m"w-4 h-4"[39m
+                      [33mfill[39m=[32m"none"[39m
+                      [33mstroke[39m=[32m"currentColor"[39m
+                      [33mstroke-width[39m=[32m"2"[39m
+                      [33mviewBox[39m=[32m"0 0 24 24"[39m
+                    [36m>[39m
+                      [36m<path[39m
+                        [33md[39m=[32m"M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"[39m
+                        [33mstroke-linecap[39m=[32m"round"[39m
+                        [33mstroke-linejoin[39m=[32m"round"[39m
+                      [36m/>[39m
+                    [36m</svg>[39m
+                  [36m</button>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none"[39m
+                  [36m>[39m
+                    [0mSend feedback[0m
+                  [36m</span>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+          [36m</aside>[39m
+          [36m<button[39m
+            [33maria-label[39m=[32m"Close sidebar"[39m
+            [33mclass[39m=[32m"fixed top-4 z-[60] p-2.5 text-gray-400 hover:text-white hover:bg-gray-900 rounded-lg transition-all left-[17rem]"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"w-5 h-5"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M11 19l-7-7 7-7m8 14l-7-7 7-7"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</button>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"fixed inset-0 bg-black/60 z-40 md:hidden"[39m
+          [36m/>[39m
+        [36m</div>[39m
+      [36m</body>[39m
+    [36m</html>[39m
+
+      268 |
+      269 |       await waitFor(() => {
+    > 270 |         expect(consoleSpy).toHaveBeenCalledWith('Error loading sessions:', expect.any(Error))
+          |                            ^
+      271 |       })
+      272 |
+      273 |       consoleSpy.mockRestore()
+
+      at toHaveBeenCalledWith (__tests__/components/Sidebar.test.tsx:270:28)
+      at runWithExpensiveErrorDiagnosticsDisabled (node_modules/@testing-library/dom/dist/config.js:47:12)
+      at checkCallback (node_modules/@testing-library/dom/dist/wait-for.js:124:77)
+      at checkRealTimersCallback (node_modules/@testing-library/dom/dist/wait-for.js:118:16)
+      at Timeout.task [as _onTimeout] (node_modules/jsdom/lib/jsdom/browser/Window.js:520:19)
+
+  ● Sidebar › Active State Highlighting › highlights Step 2 CK when on study page without specialty
+
+    TestingLibraryElementError: Unable to find an element with the text: Step 2 CK (All Topics). This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div>[39m
+        [36m<aside[39m
+          [33mclass[39m=[32m"fixed left-0 top-0 h-full bg-gray-950 border-r border-gray-900 transition-all duration-300 z-50 flex flex-col w-64 overflow-hidden"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"p-4 flex-shrink-0"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"text-xl font-semibold text-white hover:text-gray-300 transition-colors block"[39m
+              [33mstyle[39m=[32m"font-family: var(--font-serif);"[39m
+            [36m>[39m
+              [0mShelfSense[0m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"px-4 py-3 flex-shrink-0"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"text-lg font-medium transition-colors text-[#4169E1]"[39m
+            [36m>[39m
+              [0mStep 2 CK Prep[0m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"px-4 flex-shrink-0"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"space-y-1"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mInternal Medicine[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mSurgery[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mPediatrics[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mPsychiatry[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mOB-GYN[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mFamily Medicine[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mEmergency[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full text-left px-3 py-2 text-base rounded-lg transition-colors text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5"[39m
+              [36m>[39m
+                [0mNeurology[0m
+              [36m</button>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex-1"[39m
+          [36m/>[39m
+          [36m<nav[39m
+            [33mclass[39m=[32m"flex-shrink-0 px-3 pb-3"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"border-t border-gray-900 pt-4"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors text-gray-400 hover:text-white hover:bg-gray-900"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33mclass[39m=[32m"w-4 h-4"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-width[39m=[32m"2"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                [36m>[39m
+                  [36m<path[39m
+                    [33md[39m=[32m"M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"[39m
+                    [33mstroke-linecap[39m=[32m"round"[39m
+                    [33mstroke-linejoin[39m=[32m"round"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+                [36m<span>[39m
+                  [0mAnalytics[0m
+                [36m</span>[39m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors text-gray-400 hover:text-white hover:bg-gray-900"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33mclass[39m=[32m"w-4 h-4"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-width[39m=[32m"2"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                [36m>[39m
+                  [36m<rect[39m
+                    [33mheight[39m=[32m"18"[39m
+                    [33mrx[39m=[32m"2"[39m
+                    [33mry[39m=[32m"2"[39m
+                    [33mwidth[39m=[32m"18"[39m
+                    [33mx[39m=[32m"3"[39m
+                    [33my[39m=[32m"4"[39m
+                  [36m/>[39m
+                  [36m<line[39m
+                    [33mx1[39m=[32m"3"[39m
+                    [33mx2[39m=[32m"21"[39m
+                    [33my1[39m=[32m"10"[39m
+                    [33my2[39m=[32m"10"[39m
+                  [36m/>[39m
+                  [36m<line[39m
+                    [33mx1[39m=[32m"8"[39m
+                    [33mx2[39m=[32m"8"[39m
+                    [33my1[39m=[32m"2"[39m
+                    [33my2[39m=[32m"6"[39m
+                  [36m/>[39m
+                  [36m<line[39m
+                    [33mx1[39m=[32m"16"[39m
+                    [33mx2[39m=[32m"16"[39m
+                    [33my1[39m=[32m"2"[39m
+                    [33my2[39m=[32m"6"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+                [36m<span>[39m
+                  [0mReviews[0m
+                [36m</span>[39m
+              [36m</button>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors text-gray-400 hover:text-white hover:bg-gray-900"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33mclass[39m=[32m"w-4 h-4"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-width[39m=[32m"2"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                [36m>[39m
+                  [36m<path[39m
+                    [33md[39m=[32m"M3 3v18M3 3h12l-3 4.5 3 4.5H3"[39m
+                    [33mstroke-linecap[39m=[32m"round"[39m
+                    [33mstroke-linejoin[39m=[32m"round"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+                [36m<span>[39m
+                  [0mFlagged[0m
+                [36m</span>[39m
+              [36m</button>[39m
+            [36m</div>[39m
+          [36m</nav>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex-shrink-0 border-t border-gray-900 p-3"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex items-center gap-3 px-2 py-2"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mdata-testid[39m=[32m"clerk-user-button"[39m
+              [36m>[39m
+                [0mUser[0m
+              [36m</button>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"text-sm text-gray-300 truncate flex-1 text-left"[39m
+              [36m>[39m
+                [0mJohn[0m
+              [36m</span>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"relative group"[39m
+              [36m>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"p-1.5 text-gray-600 hover:text-gray-300 transition-colors"[39m
+                [36m>[39m
+                  [36m<svg[39m
+                    [33mclass[39m=[32m"w-4 h-4"[39m
+                    [33mfill[39m=[32m"none"[39m
+                    [33mstroke[39m=[32m"currentColor"[39m
+                    [33mstroke-width[39m=[32m"2"[39m
+                    [33mviewBox[39m=[32m"0 0 24 24"[39m
+                  [36m>[39m
+                    [36m<path[39m
+                      [33md[39m=[32m"M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                    [36m/>[39m
+                  [36m</svg>[39m
+                [36m</button>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none"[39m
+                [36m>[39m
+                  [0mSend feedback[0m
+                [36m</span>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</aside>[39m
+        [36m<button[39m
+          [33maria-label[39m=[32m"Close sidebar"[39m
+          [33mclass[39m=[32m"fixed top-4 z-[60] p-2.5 text-gray-400 hover:text-white hover:bg-gray-900 rounded-lg transition-all left-[17rem]"[39m
+        [36m>[39m
+          [36m<svg[39m
+            [33mclass[39m=[32m"w-5 h-5"[39m
+            [33mfill[39m=[32m"none"[39m
+            [33mstroke[39m=[32m"currentColor"[39m
+            [33mstroke-width[39m=[32m"2"[39m
+            [33mviewBox[39m=[32m"0 0 24 24"[39m
+          [36m>[39m
+            [36m<path[39m
+              [33md[39m=[32m"M11 19l-7-7 7-7m8 14l-7-7 7-7"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+            [36m/>[39m
+          [36m</svg>[39m
+        [36m</button>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"fixed inset-0 bg-black/60 z-40 md:hidden"[39m
+        [36m/>[39m
+      [36m</div>[39m
+    [36m</body>[39m
+
+      301 |       render(<Sidebar {...defaultProps} />)
+      302 |
+    > 303 |       const step2Button = screen.getByText('Step 2 CK (All Topics)')
+          |                                  ^
+      304 |       expect(step2Button).toHaveClass('bg-gray-800')
+      305 |     })
+      306 |   })
+
+      at Object.getElementError (node_modules/@testing-library/dom/dist/config.js:37:19)
+      at node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+      at node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+      at node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+      at Object.getByText (__tests__/components/Sidebar.test.tsx:303:34)
+
+Test Suites: 1 failed, 4 passed, 5 total
+Tests:       9 failed, 69 passed, 78 total
+Snapshots:   0 total
+Time:        15.166 s, estimated 17 s
+Ran all test suites.
+✓ Frontend tests: Passed
+⚠ Pytest not installed (pip install pytest)
+
+## Dependencies
+---
+found 0 vulnerabilities
+✓ npm audit: No high-severity vulnerabilities
+⚠ Safety not installed (pip install safety)
+
+## File Organization
+---
+✓ .env.example exists for backend
+✓ .env.example exists for frontend
+✓ README.md exists
+✓ README appears up to date
+⚠ Too many markdown files in root (      21 files). Consider organizing into docs/ directory
+
+## Git Repository
+---
+✓ Git repository initialized
+✓ Working directory is clean
+Current branch: main
+✓ On branch: main
+
+## Deployment Configuration
+---
+⚠ No Railway configuration file
+✓ Netlify configuration found
+✓ GitHub Actions configured (       3 workflows)
+
+========================================
+Summary
+========================================
+Total errors found: 0
+Report saved to: /Users/devaun/ShelfSense/audit-results/audit-20251126-184553.txt
+
+✓ Audit completed successfully!

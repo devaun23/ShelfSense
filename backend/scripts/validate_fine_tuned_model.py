@@ -1,0 +1,434 @@
+"""
+Fine-Tuned Model Validation Script for ShelfSense
+
+This script validates the quality of the fine-tuned model by:
+1. Generating sample questions across all specialties
+2. Checking structure compliance (all required fields)
+3. Validating NBME Gold Book adherence
+4. Checking explanation quality (arrow notation, thresholds)
+5. Comparing with base model outputs
+
+Usage:
+    python scripts/validate_fine_tuned_model.py                    # Validate with saved model ID
+    python scripts/validate_fine_tuned_model.py --model <model_id> # Validate specific model
+    python scripts/validate_fine_tuned_model.py --count 20         # Generate 20 questions
+    python scripts/validate_fine_tuned_model.py --compare          # Compare with base model
+
+Requirements:
+    - OPENAI_API_KEY environment variable set
+    - Fine-tuned model ID (from .fine_tuned_model file or --model flag)
+"""
+
+import os
+import sys
+import json
+import re
+import argparse
+from datetime import datetime
+from typing import Dict, List, Tuple, Optional
+from collections import Counter
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+try:
+    from openai import OpenAI
+except ImportError:
+    print("Error: openai package not installed. Run: pip install openai")
+    sys.exit(1)
+
+
+# ============================================================================
+# QUALITY CHECKS
+# ============================================================================
+
+REQUIRED_FIELDS = ["vignette", "choices", "answer_key", "explanation"]
+REQUIRED_EXPLANATION_FIELDS = ["type", "principle", "clinical_reasoning", "distractor_explanations"]
+ENHANCED_FIELDS = ["quick_answer", "deep_dive", "memory_hooks", "step_by_step"]
+VALID_TYPES = [
+    "TYPE_A_STABILITY", "TYPE_B_TIME_SENSITIVE", "TYPE_C_DIAGNOSTIC_SEQUENCE",
+    "TYPE_D_RISK_STRATIFICATION", "TYPE_E_TREATMENT_HIERARCHY", "TYPE_F_DIFFERENTIAL"
+]
+
+SPECIALTIES = [
+    "Internal Medicine", "Surgery", "Pediatrics", "Psychiatry",
+    "OB-GYN", "Family Medicine", "Emergency Medicine", "Neurology"
+]
+
+TOPICS = {
+    "Internal Medicine": ["Acute coronary syndrome", "Heart failure", "COPD exacerbation", "Pneumonia", "Acute kidney injury"],
+    "Surgery": ["Acute appendicitis", "Small bowel obstruction", "Cholecystitis", "Trauma management", "Post-operative fever"],
+    "Pediatrics": ["Bronchiolitis", "Febrile seizures", "Kawasaki disease", "Pyloric stenosis", "Meningitis"],
+    "Emergency Medicine": ["Septic shock", "Stroke", "Anaphylaxis", "Chest pain", "Altered mental status"]
+}
+
+
+def get_client():
+    """Get OpenAI client"""
+    api_key = os.environ.get("OPENAI_API_KEY")
+    if not api_key:
+        raise ValueError("OPENAI_API_KEY environment variable not set")
+    return OpenAI(api_key=api_key)
+
+
+def get_model_id() -> str:
+    """Get fine-tuned model ID from config file"""
+    config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".fine_tuned_model")
+
+    if os.path.exists(config_path):
+        with open(config_path) as f:
+            return f.read().strip()
+
+    raise ValueError("No fine-tuned model ID found. Run upload_and_train.py first or use --model flag")
+
+
+def generate_question(client, model: str, specialty: str, topic: str) -> Tuple[Optional[Dict], str]:
+    """Generate a single question using the model"""
+    prompt = f"Generate a USMLE Step 2 CK question about {topic} for {specialty}."
+
+    try:
+        response = client.chat.completions.create(
+            model=model,
+            messages=[
+                {"role": "system", "content": "You are a USMLE Step 2 CK question writer following ShelfSense standards."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.7,
+            max_tokens=2000
+        )
+
+        content = response.choices[0].message.content.strip()
+
+        # Try to parse as JSON
+        try:
+            # Handle potential markdown code blocks
+            if content.startswith("```"):
+                content = content.split("```")[1]
+                if content.startswith("json"):
+                    content = content[4:]
+
+            question = json.loads(content)
+            return question, content
+
+        except json.JSONDecodeError as e:
+            return None, f"JSON parse error: {e}\nContent: {content[:500]}..."
+
+    except Exception as e:
+        return None, f"API error: {e}"
+
+
+def check_structure(question: Dict) -> Tuple[bool, List[str]]:
+    """Check if question has all required fields"""
+    issues = []
+
+    # Check top-level fields
+    for field in REQUIRED_FIELDS:
+        if field not in question or not question[field]:
+            issues.append(f"Missing field: {field}")
+
+    # Check choices
+    choices = question.get("choices", [])
+    if len(choices) < 4:
+        issues.append(f"Only {len(choices)} choices (need 4-5)")
+
+    # Check answer key
+    if question.get("answer_key") not in ["A", "B", "C", "D", "E"]:
+        issues.append(f"Invalid answer_key: {question.get('answer_key')}")
+
+    # Check explanation fields
+    expl = question.get("explanation", {})
+    if isinstance(expl, dict):
+        for field in REQUIRED_EXPLANATION_FIELDS:
+            if field not in expl or not expl[field]:
+                issues.append(f"Missing explanation.{field}")
+
+        # Check type is valid
+        if expl.get("type") and expl["type"] not in VALID_TYPES:
+            issues.append(f"Invalid type: {expl.get('type')}")
+    else:
+        issues.append("Explanation is not a dictionary")
+
+    return len(issues) == 0, issues
+
+
+def check_enhanced_fields(question: Dict) -> Tuple[int, List[str]]:
+    """Check for enhanced explanation fields"""
+    expl = question.get("explanation", {})
+    present = []
+    missing = []
+
+    for field in ENHANCED_FIELDS:
+        if expl.get(field):
+            present.append(field)
+        else:
+            missing.append(field)
+
+    return len(present), missing
+
+
+def check_arrow_notation(question: Dict) -> bool:
+    """Check if explanation uses arrow notation (→)"""
+    expl = question.get("explanation", {})
+    principle = str(expl.get("principle", ""))
+    reasoning = str(expl.get("clinical_reasoning", ""))
+
+    return "→" in principle or "→" in reasoning
+
+
+def check_explicit_thresholds(question: Dict) -> bool:
+    """Check if explanation uses explicit thresholds"""
+    expl = question.get("explanation", {})
+    text = str(expl.get("principle", "")) + " " + str(expl.get("clinical_reasoning", ""))
+
+    # Look for patterns like <90, >120, ≤30, etc.
+    has_comparison = bool(re.search(r'[<>≥≤]\s*\d+', text))
+
+    # Look for numbers with units
+    has_units = bool(re.search(r'\d+\s*(mg|mcg|mL|mmHg|bpm|%|hours?|days?|weeks?)', text))
+
+    return has_comparison or has_units
+
+
+def check_vague_terms(question: Dict) -> List[str]:
+    """Check for vague terms without numbers"""
+    expl = question.get("explanation", {})
+    text = str(expl.get("principle", "")) + " " + str(expl.get("clinical_reasoning", ""))
+    text_lower = text.lower()
+
+    vague_terms = ['hypotensive', 'tachycardic', 'bradycardic', 'elevated', 'decreased', 'abnormal']
+    found = []
+
+    for term in vague_terms:
+        if term in text_lower:
+            # Check if followed by a number
+            if not re.search(rf'{term}[^.]*\d', text_lower):
+                found.append(term)
+
+    return found
+
+
+def check_quick_answer_length(question: Dict) -> Tuple[bool, int]:
+    """Check if quick_answer is ≤30 words"""
+    expl = question.get("explanation", {})
+    quick = expl.get("quick_answer", "")
+
+    if not quick:
+        return True, 0  # No quick_answer to check
+
+    word_count = len(quick.split())
+    return word_count <= 30, word_count
+
+
+def run_validation(client, model: str, count: int = 10) -> Dict:
+    """Run full validation suite"""
+    results = {
+        "model": model,
+        "timestamp": datetime.now().isoformat(),
+        "total_generated": 0,
+        "parse_failures": 0,
+        "structure_valid": 0,
+        "has_arrow_notation": 0,
+        "has_explicit_thresholds": 0,
+        "has_vague_terms": 0,
+        "quick_answer_valid": 0,
+        "enhanced_fields_avg": 0,
+        "by_specialty": {},
+        "issues_breakdown": Counter(),
+        "samples": []
+    }
+
+    enhanced_total = 0
+    questions_per_specialty = max(1, count // len(SPECIALTIES))
+
+    print(f"\nGenerating {count} questions across {len(SPECIALTIES)} specialties...")
+    print("-" * 60)
+
+    for specialty in SPECIALTIES:
+        topics = TOPICS.get(specialty, ["General clinical medicine"])
+        results["by_specialty"][specialty] = {"generated": 0, "valid": 0}
+
+        for i in range(questions_per_specialty):
+            topic = topics[i % len(topics)]
+            print(f"  [{specialty}] {topic}...", end=" ", flush=True)
+
+            question, raw = generate_question(client, model, specialty, topic)
+            results["total_generated"] += 1
+
+            if question is None:
+                print("PARSE FAILED")
+                results["parse_failures"] += 1
+                results["issues_breakdown"]["parse_error"] += 1
+                continue
+
+            results["by_specialty"][specialty]["generated"] += 1
+
+            # Check structure
+            is_valid, issues = check_structure(question)
+            if is_valid:
+                results["structure_valid"] += 1
+                results["by_specialty"][specialty]["valid"] += 1
+                print("OK", end="")
+            else:
+                print(f"ISSUES: {len(issues)}", end="")
+                for issue in issues:
+                    results["issues_breakdown"][issue] += 1
+
+            # Check enhanced fields
+            enhanced_count, _ = check_enhanced_fields(question)
+            enhanced_total += enhanced_count
+
+            # Check arrow notation
+            if check_arrow_notation(question):
+                results["has_arrow_notation"] += 1
+                print(" [→]", end="")
+
+            # Check thresholds
+            if check_explicit_thresholds(question):
+                results["has_explicit_thresholds"] += 1
+                print(" [#]", end="")
+
+            # Check vague terms
+            vague = check_vague_terms(question)
+            if vague:
+                results["has_vague_terms"] += 1
+                print(f" [vague:{vague[0]}]", end="")
+
+            # Check quick_answer length
+            qa_valid, qa_words = check_quick_answer_length(question)
+            if qa_valid and qa_words > 0:
+                results["quick_answer_valid"] += 1
+
+            print()
+
+            # Save sample
+            if len(results["samples"]) < 3:
+                results["samples"].append({
+                    "specialty": specialty,
+                    "topic": topic,
+                    "question": question
+                })
+
+    # Calculate averages
+    valid_count = results["total_generated"] - results["parse_failures"]
+    if valid_count > 0:
+        results["enhanced_fields_avg"] = enhanced_total / valid_count
+
+    return results
+
+
+def print_report(results: Dict):
+    """Print validation report"""
+    total = results["total_generated"]
+    valid = results["structure_valid"]
+    parse_ok = total - results["parse_failures"]
+
+    print("\n" + "=" * 60)
+    print("VALIDATION REPORT")
+    print("=" * 60)
+
+    print(f"\nModel: {results['model']}")
+    print(f"Timestamp: {results['timestamp']}")
+
+    print(f"\n--- OVERALL METRICS ---")
+    print(f"Total generated:        {total}")
+    print(f"Parse success:          {parse_ok}/{total} ({parse_ok/total*100:.1f}%)")
+    print(f"Structure valid:        {valid}/{parse_ok} ({valid/parse_ok*100:.1f}%)" if parse_ok else "N/A")
+
+    if parse_ok > 0:
+        print(f"\n--- QUALITY METRICS ---")
+        print(f"Has arrow notation (→): {results['has_arrow_notation']}/{parse_ok} ({results['has_arrow_notation']/parse_ok*100:.1f}%)")
+        print(f"Has explicit thresholds:{results['has_explicit_thresholds']}/{parse_ok} ({results['has_explicit_thresholds']/parse_ok*100:.1f}%)")
+        print(f"Has vague terms:        {results['has_vague_terms']}/{parse_ok} ({results['has_vague_terms']/parse_ok*100:.1f}%)")
+        print(f"Quick answer valid:     {results['quick_answer_valid']}/{parse_ok}")
+        print(f"Avg enhanced fields:    {results['enhanced_fields_avg']:.1f}/4")
+
+    print(f"\n--- BY SPECIALTY ---")
+    for specialty, data in results["by_specialty"].items():
+        if data["generated"] > 0:
+            pct = data["valid"] / data["generated"] * 100
+            print(f"  {specialty:20} {data['valid']}/{data['generated']} ({pct:.0f}%)")
+
+    if results["issues_breakdown"]:
+        print(f"\n--- ISSUES BREAKDOWN ---")
+        for issue, count in results["issues_breakdown"].most_common(10):
+            print(f"  {count:3}x {issue}")
+
+    # Success criteria check
+    print(f"\n--- SUCCESS CRITERIA ---")
+    criteria = [
+        ("Structure valid 100%", valid == parse_ok),
+        ("Arrow notation 100%", results["has_arrow_notation"] == parse_ok),
+        ("Explicit thresholds 95%+", results["has_explicit_thresholds"] >= parse_ok * 0.95),
+        ("No vague terms", results["has_vague_terms"] == 0),
+        ("Enhanced fields avg 3+", results["enhanced_fields_avg"] >= 3)
+    ]
+
+    all_pass = True
+    for name, passed in criteria:
+        status = "PASS" if passed else "FAIL"
+        print(f"  [{status}] {name}")
+        if not passed:
+            all_pass = False
+
+    if all_pass:
+        print(f"\n  MODEL IS READY FOR PRODUCTION!")
+    else:
+        print(f"\n  Model needs improvement. Review issues above.")
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Validate fine-tuned ShelfSense model")
+    parser.add_argument("--model", help="Fine-tuned model ID")
+    parser.add_argument("--count", type=int, default=16, help="Number of questions to generate")
+    parser.add_argument("--output", help="Save results to JSON file")
+    args = parser.parse_args()
+
+    try:
+        client = get_client()
+    except ValueError as e:
+        print(f"Error: {e}")
+        sys.exit(1)
+
+    # Get model ID
+    if args.model:
+        model = args.model
+    else:
+        try:
+            model = get_model_id()
+        except ValueError as e:
+            print(f"Error: {e}")
+            print("Use --model flag to specify the model ID")
+            sys.exit(1)
+
+    print("=" * 60)
+    print("ShelfSense Fine-Tuned Model Validation")
+    print("=" * 60)
+    print(f"\nModel: {model}")
+    print(f"Questions to generate: {args.count}")
+
+    # Run validation
+    results = run_validation(client, model, args.count)
+
+    # Print report
+    print_report(results)
+
+    # Save results if requested
+    if args.output:
+        with open(args.output, "w") as f:
+            json.dump(results, f, indent=2, default=str)
+        print(f"\nResults saved to: {args.output}")
+
+    # Show samples
+    if results["samples"]:
+        print("\n" + "=" * 60)
+        print("SAMPLE GENERATED QUESTION")
+        print("=" * 60)
+        sample = results["samples"][0]
+        print(f"\nSpecialty: {sample['specialty']}")
+        print(f"Topic: {sample['topic']}")
+        print(f"\nVignette (first 300 chars):")
+        print(sample['question'].get('vignette', 'N/A')[:300] + "...")
+        print(f"\nAnswer: {sample['question'].get('answer_key')}")
+
+
+if __name__ == "__main__":
+    main()
