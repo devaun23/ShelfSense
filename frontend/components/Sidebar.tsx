@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useUser } from '@/contexts/UserContext';
+import { UserButton, SignOutButton } from '@clerk/nextjs';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -35,7 +36,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const { user, logout } = useUser();
+  const { user } = useUser();
 
   // Get current specialty from URL
   const currentSpecialty = searchParams.get('specialty');
@@ -83,10 +84,6 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
     }
   };
 
-  const handleLogout = () => {
-    logout();
-    router.push('/login');
-  };
 
   // Group sessions by date
   const groupSessionsByDate = (sessions: StudySession[]) => {
@@ -248,55 +245,32 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
         {/* Bottom Section - User Profile */}
         {user && (
           <div className="flex-shrink-0 border-t border-gray-900 p-3">
-            <div className="relative">
+            <div className="flex items-center gap-3 px-2 py-2">
+              {/* Clerk UserButton */}
+              <UserButton
+                appearance={{
+                  elements: {
+                    avatarBox: 'w-8 h-8',
+                  },
+                }}
+                afterSignOutUrl="/sign-in"
+              />
+
+              {/* Name */}
+              <span className="text-sm text-gray-300 truncate flex-1 text-left">
+                {user.firstName}
+              </span>
+
+              {/* Feedback button */}
               <button
-                onClick={() => setShowSettings(!showSettings)}
-                className="w-full flex items-center gap-3 px-2 py-2 hover:bg-gray-900 rounded-lg transition-colors"
+                onClick={() => window.location.href = 'mailto:devaun0506@gmail.com?subject=ShelfSense Feedback'}
+                className="p-1.5 text-gray-600 hover:text-gray-300 transition-colors"
+                title="Send feedback"
               >
-                {/* Avatar with initials */}
-                <div className="w-8 h-8 rounded-full bg-[#4169E1] flex items-center justify-center text-white text-sm font-medium flex-shrink-0">
-                  {getInitials(user.fullName)}
-                </div>
-
-                {/* Name */}
-                <span className="text-sm text-gray-300 truncate flex-1 text-left">
-                  {user.firstName}
-                </span>
-
-                {/* Settings icon */}
-                <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <circle cx="12" cy="12" r="1" />
-                  <circle cx="12" cy="5" r="1" />
-                  <circle cx="12" cy="19" r="1" />
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
                 </svg>
               </button>
-
-              {/* Settings Dropdown */}
-              {showSettings && (
-                <div className="absolute bottom-full left-0 right-0 mb-2 bg-gray-900 border border-gray-800 rounded-lg shadow-lg overflow-hidden">
-                  <button
-                    onClick={() => {
-                      setShowSettings(false);
-                      window.location.href = 'mailto:devaun0506@gmail.com?subject=ShelfSense Feedback';
-                    }}
-                    className="w-full text-left px-4 py-3 text-sm text-gray-300 hover:bg-gray-800 transition-colors flex items-center gap-3"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-                    </svg>
-                    Send feedback
-                  </button>
-                  <button
-                    onClick={handleLogout}
-                    className="w-full text-left px-4 py-3 text-sm text-gray-300 hover:bg-gray-800 transition-colors flex items-center gap-3 border-t border-gray-800"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                    </svg>
-                    Log out
-                  </button>
-                </div>
-              )}
             </div>
           </div>
         )}
