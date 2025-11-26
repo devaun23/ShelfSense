@@ -1,3 +1,5 @@
+import os
+import sentry_sdk
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
@@ -7,6 +9,17 @@ from app.middleware.rate_limiter import RateLimitMiddleware
 
 # Load environment variables
 load_dotenv()
+
+# Initialize Sentry for error monitoring
+sentry_dsn = os.getenv("SENTRY_DSN")
+if sentry_dsn:
+    sentry_sdk.init(
+        dsn=sentry_dsn,
+        traces_sample_rate=0.1,  # 10% of transactions for performance monitoring
+        profiles_sample_rate=0.1,  # 10% of sampled transactions for profiling
+        environment=os.getenv("ENVIRONMENT", "development"),
+        enable_tracing=True,
+    )
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
@@ -65,3 +78,10 @@ def root():
 @app.get("/health")
 def health_check():
     return {"status": "healthy"}
+
+
+@app.get("/sentry-debug")
+async def trigger_error():
+    """Test endpoint to verify Sentry is capturing errors."""
+    division_by_zero = 1 / 0
+    return {"error": "This should not be reached"}
