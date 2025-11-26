@@ -33,6 +33,11 @@ from app.services.specialty_prompts import (
     get_specialty_validation_rules,
     get_specialty_vitals
 )
+from app.services.adaptive import (
+    get_user_weakness_profile,
+    get_targeting_prompt_context,
+    get_user_difficulty_target
+)
 
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
@@ -788,6 +793,228 @@ Return JSON:
 
         raise ValueError(f"Failed after {max_retries + 1} attempts")
 
+    def generate_targeted_question(self, specialty: str, topic: str,
+                                   weakness_profile: Dict,
+                                   targeting_context: str,
+                                   max_retries: int = 2) -> Dict:
+        """
+        Generate a question specifically targeting user's weaknesses.
+
+        This modifies the standard generation pipeline to incorporate
+        weakness-specific guidance into each step.
+
+        Args:
+            specialty: Target specialty (from user's weak areas)
+            topic: Target topic (from recent wrong answers)
+            weakness_profile: Full weakness profile dict
+            targeting_context: Formatted context string for prompts
+            max_retries: Number of retry attempts
+
+        Returns:
+            Generated question dictionary with targeting metadata
+        """
+        start_time = time.time()
+
+        difficulty = weakness_profile.get("difficulty_target", "medium")
+        most_common_error = weakness_profile.get("most_common_error")
+
+        question_type = get_question_type()
+        specialty_demographics = get_specialty_demographics(specialty)
+        clinical_setting = specialty_demographics.get('setting', random.choice(CLINICAL_SETTINGS))
+
+        # Get example questions
+        examples = self._get_example_questions(specialty, limit=5)
+
+        retry_count = 0
+        quality_scores = {}
+
+        while retry_count <= max_retries:
+            try:
+                print(f"[Targeted] Step 1/6: Analyzing examples for {specialty}...")
+                analysis = self.step1_analyze_examples(specialty, examples)
+
+                # Modified step 2 with targeting context
+                print(f"[Targeted] Step 2/6: Creating targeted scenario...")
+                scenario = self._create_targeted_scenario(
+                    specialty, topic, question_type, clinical_setting,
+                    analysis, difficulty, targeting_context, most_common_error
+                )
+
+                # Score check
+                scenario_score, scenario_issues = self.score_clinical_scenario(scenario, specialty)
+                quality_scores["scenario"] = scenario_score
+                if scenario_score < 0.6:
+                    retry_count += 1
+                    continue
+
+                print(f"[Targeted] Step 3/6: Generating answer choices...")
+                choices_data = self.step3_generate_answer_choices(scenario, specialty, difficulty)
+
+                choices_score, choices_issues = self.score_answer_choices(choices_data)
+                quality_scores["choices"] = choices_score
+                if choices_score < 0.6:
+                    retry_count += 1
+                    continue
+
+                print(f"[Targeted] Step 4/6: Writing clinical vignette...")
+                vignette = self.step4_write_vignette(scenario, analysis)
+
+                vignette_score, vignette_issues = self.score_vignette(vignette, scenario)
+                quality_scores["vignette"] = vignette_score
+                if vignette_score < 0.6:
+                    retry_count += 1
+                    continue
+
+                print(f"[Targeted] Step 5/6: Creating explanation...")
+                explanation = self.step5_create_explanation(scenario, choices_data)
+
+                print(f"[Targeted] Step 6/6: Validating quality...")
+                passes_quality, issues = self.step6_quality_validation(
+                    vignette, choices_data, explanation, scenario, specialty
+                )
+
+                total_time = time.time() - start_time
+
+                if passes_quality:
+                    avg_score = sum(quality_scores.values()) / len(quality_scores)
+                    print(f"[Targeted] ✓ Generated in {total_time:.1f}s (score: {avg_score:.2f})")
+
+                    return {
+                        "vignette": vignette.strip(),
+                        "choices": choices_data['choices'],
+                        "answer_key": choices_data['correct_answer_letter'],
+                        "explanation": explanation,
+                        "source": f"AI Targeted - {specialty}",
+                        "specialty": specialty,
+                        "recency_weight": 1.0,
+                        "metadata": {
+                            "topic": topic,
+                            "question_type": question_type,
+                            "clinical_setting": clinical_setting,
+                            "difficulty": difficulty,
+                            "generation_method": "weakness_targeted",
+                            "targeted_weakness": weakness_profile.get("recommended_focus"),
+                            "targeted_error_pattern": most_common_error,
+                            "quality_scores": quality_scores,
+                            "generation_time_seconds": total_time
+                        }
+                    }
+                else:
+                    retry_count += 1
+                    print(f"[Targeted] ✗ Validation failed: {', '.join(issues)}")
+
+            except Exception as e:
+                retry_count += 1
+                print(f"[Targeted] Error: {e}")
+                if retry_count > max_retries:
+                    raise
+
+        raise ValueError(f"Targeted generation failed after {max_retries + 1} attempts")
+
+    def _create_targeted_scenario(self, specialty: str, topic: str,
+                                  question_type: str, clinical_setting: str,
+                                  analysis: Dict, difficulty: str,
+                                  targeting_context: str,
+                                  error_pattern: Optional[str]) -> Dict:
+        """
+        Create a clinical scenario specifically designed to address user's weaknesses.
+
+        This is a modified version of step2 that incorporates targeting guidance.
+        """
+        specialty_context = get_specialty_prompt_context(specialty, question_type)
+        specialty_demographics = get_specialty_demographics(specialty)
+
+        # Error-specific scenario guidance
+        error_scenario_guidance = {
+            "knowledge_gap": """
+TARGETING KNOWLEDGE GAP:
+- Focus on testing a specific, teachable concept
+- The correct answer should reinforce foundational knowledge
+- Include clear clinical features that map to the concept being tested
+- Explanation should be highly educational""",
+            "premature_closure": """
+TARGETING PREMATURE CLOSURE:
+- Create a scenario where 2-3 diagnoses initially seem plausible
+- Include features that differentiate between similar conditions
+- The "obvious" answer should NOT be correct
+- Test the student's ability to consider full differential""",
+            "misread_stem": """
+TARGETING MISREAD STEM:
+- Include one subtle but CRITICAL clinical detail
+- This detail should change the diagnosis/management
+- Place it naturally within the vignette (not at the very end)
+- Test attention to clinical details""",
+            "faulty_reasoning": """
+TARGETING FAULTY REASONING:
+- Create a multi-step reasoning question
+- Test: presentation → diagnosis → pathophysiology → management
+- Include a step where students commonly make logical errors
+- Correct answer requires complete reasoning pathway""",
+            "test_taking_error": """
+TARGETING TEST-TAKING ERROR:
+- Create a clear, unambiguous scenario
+- Correct answer should be clearly best when analyzed
+- Build student confidence with solid clinical reasoning
+- Avoid "trick" elements""",
+            "time_pressure": """
+TARGETING TIME PRESSURE:
+- Keep vignette concise and focused
+- Include all necessary information efficiently
+- Clear lead-in question
+- Test clinical efficiency"""
+        }
+
+        error_guidance = error_scenario_guidance.get(error_pattern, "") if error_pattern else ""
+
+        system_prompt = f"""You are an expert clinician creating a TARGETED patient scenario.
+This question is specifically designed to address a student's identified weakness.
+
+{specialty_context}
+
+{targeting_context}
+
+{error_guidance}"""
+
+        user_prompt = f"""Create a clinical scenario TARGETING THE USER'S WEAKNESS.
+
+SPECIFICATIONS:
+- Specialty: {specialty}
+- Topic: {topic}
+- Question type: {question_type}
+- Clinical setting: {clinical_setting or specialty_demographics.get('setting', 'clinic')}
+- Target difficulty: {difficulty}
+
+PATIENT PROFILE:
+- Age range: {specialty_demographics.get('age_range', '45-65 years')}
+- Risk factors: {', '.join(specialty_demographics.get('risk_factors', []))}
+
+QUALITY GUIDELINES:
+{json.dumps(analysis, indent=2)}
+
+Create a scenario that:
+1. Directly addresses the user's identified weakness
+2. Tests the specific concept they've been missing
+3. Uses realistic clinical presentation for the specialty
+4. Has clear clinical reasoning to the correct answer
+5. Includes teaching value in the explanation
+
+Return JSON:
+{{
+  "patient_demographics": "Age, gender, relevant medical history",
+  "presenting_complaint": "Chief complaint with specific timeline",
+  "history_details": "Pertinent positives and negatives from history",
+  "physical_exam": "Vital signs (with units) and specific physical findings",
+  "diagnostic_data": "Labs, imaging, or other test results with realistic values",
+  "clinical_question": "What is being asked",
+  "correct_answer_concept": "What the correct answer should be",
+  "reasoning": "Why this tests the user's weakness",
+  "teaching_point": "The key concept the user should learn from this question"
+}}"""
+
+        response = self._call_llm(system_prompt, user_prompt, temperature=0.8,
+                                  response_format={"type": "json_object"})
+        return json.loads(response)
+
     def _get_example_questions(self, specialty: Optional[str] = None, limit: int = 5) -> List[Dict]:
         """Get example questions from database for analysis"""
 
@@ -884,3 +1111,57 @@ def generate_questions_batch(db: Session, count: int = 5,
 
     # Filter out None results
     return [q for q in results if q is not None]
+
+
+def generate_weakness_targeted_question(db: Session, user_id: str) -> Dict:
+    """
+    Generate a question specifically targeting the user's weaknesses.
+
+    This is the core of adaptive learning - generating questions that
+    directly address the user's weak areas and error patterns.
+
+    Args:
+        db: Database session
+        user_id: User ID to get weakness profile for
+
+    Returns:
+        Generated question dictionary targeting user's weaknesses
+    """
+    # Get user's weakness profile
+    weakness_profile = get_user_weakness_profile(db, user_id)
+
+    # Determine specialty to target
+    specialty = None
+    topic = None
+
+    if weakness_profile.get("weak_specialties"):
+        # Target the weakest specialty
+        weakest = weakness_profile["weak_specialties"][0]
+        specialty = weakest["specialty"]
+        print(f"[Targeted] Targeting weak specialty: {specialty} ({weakest['accuracy']:.0%})")
+    else:
+        # No clear weakness - use weighted random
+        specialty = get_weighted_specialty()
+
+    # Get a topic, preferring recently missed topics
+    if weakness_profile.get("recent_wrong_topics"):
+        # Try to use a recently missed topic
+        recent_topics = weakness_profile["recent_wrong_topics"]
+        topic = random.choice(recent_topics) if recent_topics else None
+
+    if not topic:
+        topic = get_high_yield_topic(specialty)
+
+    # Get targeting context for prompts
+    targeting_context = get_targeting_prompt_context(weakness_profile)
+
+    # Generate with targeting
+    agent = QuestionGenerationAgent(db)
+    question = agent.generate_targeted_question(
+        specialty=specialty,
+        topic=topic,
+        weakness_profile=weakness_profile,
+        targeting_context=targeting_context
+    )
+
+    return question

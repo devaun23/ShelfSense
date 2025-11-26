@@ -11,7 +11,7 @@ from app.services.adaptive import select_next_question
 from app.services.question_generator import generate_and_save_question, save_generated_question
 from app.services.question_agent import generate_question_with_agent
 from app.services.question_pool import get_instant_question, get_pool_stats, warm_pool_async
-from app.services.adaptive import get_user_difficulty_target
+from app.services.adaptive import get_user_difficulty_target, get_user_weakness_profile
 from app.services.error_categorization import categorize_error
 import threading
 
@@ -319,6 +319,88 @@ def get_difficulty_target(user_id: str, db: Session = Depends(get_db)):
         "difficulty": difficulty_info,
         "recommendation": f"Generate {difficulty_info['difficulty_level']} questions targeting {difficulty_info['target_correct_rate']:.0%} correct rate"
     }
+
+
+@router.get("/weakness-profile/{user_id}")
+def get_weakness_profile(user_id: str, db: Session = Depends(get_db)):
+    """
+    Get comprehensive weakness profile for a user.
+
+    Returns weak specialties, error patterns, missed concepts, and recommended focus.
+    This is used to generate targeted questions for adaptive learning.
+    """
+    profile = get_user_weakness_profile(db, user_id)
+    return {
+        "user_id": user_id,
+        "profile": profile,
+        "has_weaknesses": bool(profile.get("weak_specialties") or profile.get("most_common_error"))
+    }
+
+
+@router.get("/targeted/{user_id}", response_model=QuestionResponse)
+def get_targeted_question(user_id: str, db: Session = Depends(get_db)):
+    """
+    Generate a question specifically targeting the user's weaknesses.
+
+    This is the core adaptive learning endpoint - it generates questions
+    designed to address the user's specific weak areas and error patterns.
+
+    The question will:
+    - Target the user's weakest specialty
+    - Address their most common error pattern
+    - Test concepts they've recently missed
+    - Use appropriate difficulty level
+
+    Falls back to standard generation if no weakness profile exists.
+    """
+    from app.services.question_agent import generate_weakness_targeted_question
+
+    try:
+        # Get weakness profile first to check if we have enough data
+        profile = get_user_weakness_profile(db, user_id)
+
+        has_data = (
+            profile.get("weak_specialties") or
+            profile.get("most_common_error") or
+            profile.get("missed_concepts")
+        )
+
+        if has_data:
+            # Generate targeted question
+            print(f"[API] Generating targeted question for user {user_id}")
+            print(f"[API] Targeting: {profile.get('recommended_focus')}")
+
+            question_data = generate_weakness_targeted_question(db, user_id)
+            question = save_generated_question(db, question_data)
+
+            return QuestionResponse(
+                id=question.id,
+                vignette=question.vignette,
+                choices=question.choices,
+                source=question.source or "AI Targeted",
+                recency_weight=question.recency_weight or 1.0
+            )
+        else:
+            # Not enough data - use standard instant generation
+            print(f"[API] No weakness data for user {user_id}, using standard generation")
+            question = get_instant_question(db, user_id=user_id)
+
+            if not question:
+                raise HTTPException(status_code=404, detail="Could not generate question")
+
+            return QuestionResponse(
+                id=question.id,
+                vignette=question.vignette,
+                choices=question.choices,
+                source=question.source or "AI Generated",
+                recency_weight=question.recency_weight or 1.0
+            )
+
+    except Exception as e:
+        import traceback
+        print(f"[API] Targeted generation failed: {e}")
+        print(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=f"Failed to generate targeted question: {str(e)}")
 
 
 class RateQuestionRequest(BaseModel):
