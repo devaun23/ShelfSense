@@ -43,7 +43,8 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
       }, 100);
       return () => clearTimeout(timer);
     }
-  }, [pathname, searchParams, isOpen, onToggle]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname, searchParams]);
 
   const handleSpecialtyClick = (apiName: string | null) => {
     if (apiName) {
@@ -81,8 +82,8 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
             onClick={() => handleSpecialtyClick(null)}
             className={`text-lg font-medium transition-colors ${
               pathname === '/study' && !currentSpecialty
-                ? 'text-[#4169E1]'
-                : 'text-gray-400 hover:text-[#4169E1]'
+                ? 'text-white'
+                : 'text-gray-400 hover:text-white'
             }`}
           >
             Step 2 CK Prep
@@ -98,8 +99,8 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
                 onClick={() => handleSpecialtyClick(shelf.apiName)}
                 className={`w-full text-left px-3 py-2 text-base rounded-lg transition-colors ${
                   currentSpecialty === shelf.apiName
-                    ? 'text-[#4169E1] bg-[#4169E1]/10'
-                    : 'text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5'
+                    ? 'text-white bg-gray-800'
+                    : 'text-gray-400 hover:text-white hover:bg-gray-900'
                 }`}
               >
                 {shelf.name}
