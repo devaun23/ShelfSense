@@ -16,15 +16,11 @@ export default function Home() {
   const { user, isLoading } = useUser();
 
   useEffect(() => {
-    if (!isLoading && !user) {
-      router.push('/login');
-      return;
-    }
-
+    // Middleware handles auth redirect - just load stats when user is available
     if (user) {
       loadUserStats();
     }
-  }, [user, isLoading, router]);
+  }, [user]);
 
   const loadUserStats = async () => {
     if (!user) return;
