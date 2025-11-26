@@ -314,8 +314,8 @@ describe('AIChat', () => {
       await userEvent.type(input, 'Test')
       await userEvent.click(screen.getByRole('button', { name: /send message/i }))
 
-      // Should show loading dots
-      expect(screen.getByText('My question to AI') || true).toBeTruthy() // Fallback assertion
+      // Should show the user's message was sent
+      expect(screen.getByText('Test')).toBeInTheDocument()
     })
 
     it('disables input while loading', async () => {

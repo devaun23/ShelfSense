@@ -17,19 +17,16 @@ The agent ensures all practice questions have:
 - Compliance with ShelfSense quality rules and NBME standards
 """
 
-import os
 import json
 from typing import Dict, List, Optional, Tuple
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 from sqlalchemy import func, and_, Integer, Float, desc, case
-from openai import OpenAI
 from app.models.models import (
     Question, QuestionAttempt, User, UserPerformance,
     ErrorAnalysis, ScheduledReview
 )
-
-client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+from app.utils.openai_client import get_openai_client
 
 # Explanation type definitions following ShelfSense framework
 EXPLANATION_TYPES = {
@@ -105,7 +102,7 @@ class AdaptiveLearningEngineAgent:
         if response_format:
             kwargs["response_format"] = response_format
 
-        response = client.chat.completions.create(**kwargs)
+        response = get_openai_client().chat.completions.create(**kwargs)
         return response.choices[0].message.content
 
     # =========================================================================

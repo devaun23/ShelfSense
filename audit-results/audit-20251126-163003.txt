@@ -1,0 +1,741 @@
+ShelfSense Code Quality Audit Report
+Generated: Wed Nov 26 16:30:03 EST 2025
+========================================
+
+
+## Security Audit
+---
+✓ No exposed API keys found
+✓ No debug endpoints in production code
+✓ No console.log statements found
+✓ No .env files tracked by git
+
+## Code Quality
+---
+✓ Frontend dependencies installed
+npm error Missing script: "type-check"
+npm error
+npm error To see a list of scripts, run:
+npm error   npm run
+npm error A complete log of this run can be found in: /Users/devaun/.npm/_logs/2025-11-26T21_30_35_375Z-debug-0.log
+✓ TypeScript: No type errors
+
+> shelfsense-frontend@0.1.0 lint
+> next lint
+
+Invalid project directory provided, no such directory: /Users/devaun/ShelfSense/frontend/lint
+✓ ESLint: No linting errors
+
+> shelfsense-frontend@0.1.0 build
+> next build
+
+   ▲ Next.js 16.0.3 (Turbopack)
+   - Environments: .env.local
+
+ ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 48s
+   Running TypeScript ...
+   Collecting page data using 3 workers ...
+   Generating static pages using 3 workers (0/7) ...
+Error occurred prerendering page "/_not-found". Read more: https://nextjs.org/docs/messages/prerender-error
+Error: @clerk/clerk-react: The publishableKey passed to Clerk is invalid. You can get your Publishable key at https://dashboard.clerk.com/last-active?path=api-keys. (key=pk_test_YOUR_PUBLISHABLE_KEY)
+    at ignore-listed frames {
+  digest: '5331310'
+}
+Export encountered an error on /_not-found/page: /_not-found, exiting the build.
+ ⨯ Next.js build worker exited with code: 1 and signal: null
+✓ Build: Successful
+✓ Python 3 is available
+✓ requirements.txt found
+⚠ Flake8 not installed (pip install flake8)
+⚠ Black not installed (pip install black)
+
+## Testing
+---
+
+> shelfsense-frontend@0.1.0 test
+> jest
+
+FAIL __tests__/components/Sidebar.test.tsx
+  ● Test suite failed to run
+
+    Jest encountered an unexpected token
+
+    Jest failed to parse a file. This happens e.g. when your code or its dependencies use non-standard JavaScript syntax, or when Jest is not configured to support such syntax.
+
+    Out of the box Jest supports Babel, which will be used to transform your files into valid JS based on your Babel configuration.
+
+    By default "node_modules" folder is ignored by transformers.
+
+    Here's what you can do:
+     • If you are trying to use ECMAScript Modules, see https://jestjs.io/docs/ecmascript-modules for how to enable it.
+     • If you are trying to use TypeScript, see https://jestjs.io/docs/getting-started#using-typescript
+     • To have some of your "node_modules" files transformed, you can specify a custom "transformIgnorePatterns" in your config.
+     • If you need a custom transformation specify a "transform" option in your config.
+     • If you simply want to mock your non-JS modules (e.g. binary assets) you can stub them out with the "moduleNameMapper" config option.
+
+    You'll find more details and examples of these config options in the docs:
+    https://jestjs.io/docs/configuration
+    For information about custom transformations, see:
+    https://jestjs.io/docs/code-transformation
+
+    Details:
+
+    /Users/devaun/ShelfSense/frontend/node_modules/@clerk/backend/dist/runtime/browser/crypto.mjs:1
+    ({"Object.<anonymous>":function(module,exports,require,__dirname,__filename,jest){export const webcrypto = crypto;
+                                                                                      ^^^^^^
+
+    SyntaxError: Unexpected token 'export'
+
+      14 |   id: string;
+      15 |   date: string;
+    > 16 |   questionsAnswered: number;
+         |                 ^
+      17 |   correctCount: number;
+      18 |   topic?: string;
+      19 | }
+
+      at Runtime.createScriptFromCode (node_modules/jest-runtime/build/index.js:1505:14)
+      at Object.<anonymous> (node_modules/@clerk/backend/src/runtime.ts:16:37)
+      at Object.<anonymous> (node_modules/@clerk/nextjs/src/server/headers-utils.ts:1:27)
+      at Object.<anonymous> (node_modules/@clerk/nextjs/dist/cjs/app-router/keyless-actions.js:41:28)
+      at Object.<anonymous> (node_modules/@clerk/nextjs/src/app-router/client/ClerkProvider.tsx:18:45)
+      at Object.<anonymous> (node_modules/@clerk/nextjs/src/client-boundary/ClerkProvider.tsx:6:37)
+      at Object.<anonymous> (node_modules/@clerk/nextjs/src/components.client.ts:1:31)
+      at Object.<anonymous> (node_modules/@clerk/nextjs/src/index.ts:70:35)
+      at Object.<anonymous> (components/Sidebar.tsx:16:17)
+      at Object.<anonymous> (__tests__/components/Sidebar.test.tsx:21:57)
+
+PASS __tests__/components/QuestionRating.test.tsx (9.508 s)
+PASS __tests__/utils/api.test.ts
+PASS __tests__/components/ProgressBar.test.tsx
+FAIL __tests__/components/AIChat.test.tsx (16.492 s)
+  ● Console
+
+    console.error
+      An update to AIChat inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+      45 |       return
+      46 |     }
+    > 47 |     originalError.call(console, ...args)
+         |                   ^
+      48 |   }
+      49 | })
+      50 |
+
+      at console.call [as error] (jest.setup.js:47:19)
+      at node_modules/react-dom/cjs/react-dom-client.development.js:18758:19
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom-client.development.js:18757:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:16409:11)
+      at dispatchSetStateInternal (node_modules/react-dom/cjs/react-dom-client.development.js:9170:13)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom-client.development.js:9127:7)
+      at setMessages (components/AIChat.tsx:45:11)
+
+    console.error
+      An update to AIChat inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+      45 |       return
+      46 |     }
+    > 47 |     originalError.call(console, ...args)
+         |                   ^
+      48 |   }
+      49 | })
+      50 |
+
+      at console.call [as error] (jest.setup.js:47:19)
+      at node_modules/react-dom/cjs/react-dom-client.development.js:18758:19
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom-client.development.js:18757:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:16409:11)
+      at dispatchSetStateInternal (node_modules/react-dom/cjs/react-dom-client.development.js:9170:13)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom-client.development.js:9127:7)
+      at setMessages (components/AIChat.tsx:45:11)
+
+    console.error
+      An update to AIChat inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+      45 |       return
+      46 |     }
+    > 47 |     originalError.call(console, ...args)
+         |                   ^
+      48 |   }
+      49 | })
+      50 |
+
+      at console.call [as error] (jest.setup.js:47:19)
+      at node_modules/react-dom/cjs/react-dom-client.development.js:18758:19
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom-client.development.js:18757:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:16409:11)
+      at dispatchSetStateInternal (node_modules/react-dom/cjs/react-dom-client.development.js:9170:13)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom-client.development.js:9127:7)
+      at setMessages (components/AIChat.tsx:45:11)
+
+    console.error
+      An update to AIChat inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+      45 |       return
+      46 |     }
+    > 47 |     originalError.call(console, ...args)
+         |                   ^
+      48 |   }
+      49 | })
+      50 |
+
+      at console.call [as error] (jest.setup.js:47:19)
+      at node_modules/react-dom/cjs/react-dom-client.development.js:18758:19
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom-client.development.js:18757:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:16409:11)
+      at dispatchSetStateInternal (node_modules/react-dom/cjs/react-dom-client.development.js:9170:13)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom-client.development.js:9127:7)
+      at setMessages (components/AIChat.tsx:45:11)
+
+    console.error
+      An update to AIChat inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+      45 |       return
+      46 |     }
+    > 47 |     originalError.call(console, ...args)
+         |                   ^
+      48 |   }
+      49 | })
+      50 |
+
+      at console.call [as error] (jest.setup.js:47:19)
+      at node_modules/react-dom/cjs/react-dom-client.development.js:18758:19
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom-client.development.js:18757:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:16409:11)
+      at dispatchSetStateInternal (node_modules/react-dom/cjs/react-dom-client.development.js:9170:13)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom-client.development.js:9127:7)
+      at setMessages (components/AIChat.tsx:45:11)
+
+  ● AIChat › Sending Messages › sends message on button click
+
+    TypeError: messagesEndRef.current?.scrollIntoView is not a function
+
+      24 |
+      25 |   const scrollToBottom = () => {
+    > 26 |     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+         |                             ^
+      27 |   };
+      28 |
+      29 |   useEffect(() => {
+
+      at scrollIntoView (components/AIChat.tsx:26:29)
+      at scrollToBottom (components/AIChat.tsx:30:5)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom-client.development.js:13249:29)
+      at commitHookPassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:13336:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15484:13)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:15439:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15519:11)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18432:9)
+      at flushPendingEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18358:14)
+      at flushSpawnedWork (node_modules/react-dom/cjs/react-dom-client.development.js:18323:44)
+      at commitRoot (node_modules/react-dom/cjs/react-dom-client.development.js:17955:9)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16667:15)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:18972:7)
+      at flushSyncWorkAcrossRoots_impl (node_modules/react-dom/cjs/react-dom-client.development.js:18814:21)
+      at processRootScheduleInMicrotask (node_modules/react-dom/cjs/react-dom-client.development.js:18853:9)
+      at node_modules/react-dom/cjs/react-dom-client.development.js:18982:11
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at Object.<anonymous>.process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at Object.eventWrapper (node_modules/@testing-library/react/dist/pure.js:107:28)
+      at Object.wrapEvent (node_modules/@testing-library/user-event/dist/cjs/event/wrapEvent.js:6:28)
+      at Object.dispatchEvent (node_modules/@testing-library/user-event/dist/cjs/event/dispatchEvent.js:45:22)
+      at Object.dispatchUIEvent (node_modules/@testing-library/user-event/dist/cjs/event/dispatchEvent.js:22:26)
+      at Mouse.up (node_modules/@testing-library/user-event/dist/cjs/system/pointer/mouse.js:100:30)
+      at PointerHost.release (node_modules/@testing-library/user-event/dist/cjs/system/pointer/index.js:87:24)
+      at pointerAction (node_modules/@testing-library/user-event/dist/cjs/pointer/index.js:54:47)
+      at Object.pointer (node_modules/@testing-library/user-event/dist/cjs/pointer/index.js:27:9)
+      at Object.asyncWrapper (node_modules/@testing-library/react/dist/pure.js:88:22)
+      at Object.<anonymous> (__tests__/components/AIChat.test.tsx:160:7)
+
+  ● AIChat › Sending Messages › sends message on Enter key
+
+    TypeError: messagesEndRef.current?.scrollIntoView is not a function
+
+      24 |
+      25 |   const scrollToBottom = () => {
+    > 26 |     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+         |                             ^
+      27 |   };
+      28 |
+      29 |   useEffect(() => {
+
+      at scrollIntoView (components/AIChat.tsx:26:29)
+      at scrollToBottom (components/AIChat.tsx:30:5)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom-client.development.js:13249:29)
+      at commitHookPassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:13336:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15484:13)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:15439:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15519:11)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18432:9)
+      at flushPendingEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18358:14)
+      at flushSpawnedWork (node_modules/react-dom/cjs/react-dom-client.development.js:18323:44)
+      at commitRoot (node_modules/react-dom/cjs/react-dom-client.development.js:17955:9)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16667:15)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:18972:7)
+      at flushSyncWorkAcrossRoots_impl (node_modules/react-dom/cjs/react-dom-client.development.js:18814:21)
+      at processRootScheduleInMicrotask (node_modules/react-dom/cjs/react-dom-client.development.js:18853:9)
+      at node_modules/react-dom/cjs/react-dom-client.development.js:18982:11
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at Object.<anonymous>.process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at Object.eventWrapper (node_modules/@testing-library/react/dist/pure.js:107:28)
+      at fireEvent (node_modules/@testing-library/dom/dist/events.js:12:35)
+      at Function.fireEvent.<computed> [as keyPress] (node_modules/@testing-library/dom/dist/events.js:110:36)
+      at Function.fireEvent.<computed> [as keyPress] (node_modules/@testing-library/react/dist/fire-event.js:15:52)
+      at Object.keyPress (__tests__/components/AIChat.test.tsx:189:17)
+
+  ● AIChat › Sending Messages › clears input after sending
+
+    TypeError: messagesEndRef.current?.scrollIntoView is not a function
+
+      24 |
+      25 |   const scrollToBottom = () => {
+    > 26 |     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+         |                             ^
+      27 |   };
+      28 |
+      29 |   useEffect(() => {
+
+      at scrollIntoView (components/AIChat.tsx:26:29)
+      at scrollToBottom (components/AIChat.tsx:30:5)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom-client.development.js:13249:29)
+      at commitHookPassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:13336:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15484:13)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:15439:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15519:11)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18432:9)
+      at flushPendingEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18358:14)
+      at flushSpawnedWork (node_modules/react-dom/cjs/react-dom-client.development.js:18323:44)
+      at commitRoot (node_modules/react-dom/cjs/react-dom-client.development.js:17955:9)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16667:15)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:18972:7)
+      at flushSyncWorkAcrossRoots_impl (node_modules/react-dom/cjs/react-dom-client.development.js:18814:21)
+      at processRootScheduleInMicrotask (node_modules/react-dom/cjs/react-dom-client.development.js:18853:9)
+      at node_modules/react-dom/cjs/react-dom-client.development.js:18982:11
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at Object.<anonymous>.process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at Object.eventWrapper (node_modules/@testing-library/react/dist/pure.js:107:28)
+      at Object.wrapEvent (node_modules/@testing-library/user-event/dist/cjs/event/wrapEvent.js:6:28)
+      at Object.dispatchEvent (node_modules/@testing-library/user-event/dist/cjs/event/dispatchEvent.js:45:22)
+      at Object.dispatchUIEvent (node_modules/@testing-library/user-event/dist/cjs/event/dispatchEvent.js:22:26)
+      at Mouse.up (node_modules/@testing-library/user-event/dist/cjs/system/pointer/mouse.js:100:30)
+      at PointerHost.release (node_modules/@testing-library/user-event/dist/cjs/system/pointer/index.js:87:24)
+      at pointerAction (node_modules/@testing-library/user-event/dist/cjs/pointer/index.js:54:47)
+      at Object.pointer (node_modules/@testing-library/user-event/dist/cjs/pointer/index.js:27:9)
+      at Object.asyncWrapper (node_modules/@testing-library/react/dist/pure.js:88:22)
+      at Object.<anonymous> (__tests__/components/AIChat.test.tsx:212:7)
+
+  ● AIChat › Sending Messages › displays user message in chat
+
+    TypeError: messagesEndRef.current?.scrollIntoView is not a function
+
+      24 |
+      25 |   const scrollToBottom = () => {
+    > 26 |     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+         |                             ^
+      27 |   };
+      28 |
+      29 |   useEffect(() => {
+
+      at scrollIntoView (components/AIChat.tsx:26:29)
+      at scrollToBottom (components/AIChat.tsx:30:5)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom-client.development.js:13249:29)
+      at commitHookPassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:13336:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15484:13)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:15439:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15519:11)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18432:9)
+      at flushPendingEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18358:14)
+      at flushSpawnedWork (node_modules/react-dom/cjs/react-dom-client.development.js:18323:44)
+      at commitRoot (node_modules/react-dom/cjs/react-dom-client.development.js:17955:9)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16667:15)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:18972:7)
+      at flushSyncWorkAcrossRoots_impl (node_modules/react-dom/cjs/react-dom-client.development.js:18814:21)
+      at processRootScheduleInMicrotask (node_modules/react-dom/cjs/react-dom-client.development.js:18853:9)
+      at node_modules/react-dom/cjs/react-dom-client.development.js:18982:11
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at Object.<anonymous>.process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at Object.eventWrapper (node_modules/@testing-library/react/dist/pure.js:107:28)
+      at Object.wrapEvent (node_modules/@testing-library/user-event/dist/cjs/event/wrapEvent.js:6:28)
+      at Object.dispatchEvent (node_modules/@testing-library/user-event/dist/cjs/event/dispatchEvent.js:45:22)
+      at Object.dispatchUIEvent (node_modules/@testing-library/user-event/dist/cjs/event/dispatchEvent.js:22:26)
+      at Mouse.up (node_modules/@testing-library/user-event/dist/cjs/system/pointer/mouse.js:100:30)
+      at PointerHost.release (node_modules/@testing-library/user-event/dist/cjs/system/pointer/index.js:87:24)
+      at pointerAction (node_modules/@testing-library/user-event/dist/cjs/pointer/index.js:54:47)
+      at Object.pointer (node_modules/@testing-library/user-event/dist/cjs/pointer/index.js:27:9)
+      at Object.asyncWrapper (node_modules/@testing-library/react/dist/pure.js:88:22)
+      at Object.<anonymous> (__tests__/components/AIChat.test.tsx:235:7)
+
+  ● AIChat › Sending Messages › displays assistant response in chat
+
+    TypeError: messagesEndRef.current?.scrollIntoView is not a function
+
+      24 |
+      25 |   const scrollToBottom = () => {
+    > 26 |     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+         |                             ^
+      27 |   };
+      28 |
+      29 |   useEffect(() => {
+
+      at scrollIntoView (components/AIChat.tsx:26:29)
+      at scrollToBottom (components/AIChat.tsx:30:5)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom-client.development.js:13249:29)
+      at commitHookPassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:13336:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15484:13)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:15439:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15519:11)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18432:9)
+      at flushPendingEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18358:14)
+      at flushSpawnedWork (node_modules/react-dom/cjs/react-dom-client.development.js:18323:44)
+      at commitRoot (node_modules/react-dom/cjs/react-dom-client.development.js:17955:9)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16667:15)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:18972:7)
+      at flushSyncWorkAcrossRoots_impl (node_modules/react-dom/cjs/react-dom-client.development.js:18814:21)
+      at processRootScheduleInMicrotask (node_modules/react-dom/cjs/react-dom-client.development.js:18853:9)
+      at node_modules/react-dom/cjs/react-dom-client.development.js:18982:11
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at Object.<anonymous>.process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at Object.eventWrapper (node_modules/@testing-library/react/dist/pure.js:107:28)
+      at Object.wrapEvent (node_modules/@testing-library/user-event/dist/cjs/event/wrapEvent.js:6:28)
+      at Object.dispatchEvent (node_modules/@testing-library/user-event/dist/cjs/event/dispatchEvent.js:45:22)
+      at Object.dispatchUIEvent (node_modules/@testing-library/user-event/dist/cjs/event/dispatchEvent.js:22:26)
+      at Mouse.up (node_modules/@testing-library/user-event/dist/cjs/system/pointer/mouse.js:100:30)
+      at PointerHost.release (node_modules/@testing-library/user-event/dist/cjs/system/pointer/index.js:87:24)
+      at pointerAction (node_modules/@testing-library/user-event/dist/cjs/pointer/index.js:54:47)
+      at Object.pointer (node_modules/@testing-library/user-event/dist/cjs/pointer/index.js:27:9)
+      at Object.asyncWrapper (node_modules/@testing-library/react/dist/pure.js:88:22)
+      at Object.<anonymous> (__tests__/components/AIChat.test.tsx:258:7)
+
+  ● AIChat › Sending Messages › includes correct request body
+
+    TypeError: messagesEndRef.current?.scrollIntoView is not a function
+
+      24 |
+      25 |   const scrollToBottom = () => {
+    > 26 |     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+         |                             ^
+      27 |   };
+      28 |
+      29 |   useEffect(() => {
+
+      at scrollIntoView (components/AIChat.tsx:26:29)
+      at scrollToBottom (components/AIChat.tsx:30:5)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom-client.development.js:13249:29)
+      at commitHookPassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:13336:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15484:13)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:15439:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15519:11)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18432:9)
+      at flushPendingEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18358:14)
+      at flushSpawnedWork (node_modules/react-dom/cjs/react-dom-client.development.js:18323:44)
+      at commitRoot (node_modules/react-dom/cjs/react-dom-client.development.js:17955:9)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16667:15)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:18972:7)
+      at flushSyncWorkAcrossRoots_impl (node_modules/react-dom/cjs/react-dom-client.development.js:18814:21)
+      at processRootScheduleInMicrotask (node_modules/react-dom/cjs/react-dom-client.development.js:18853:9)
+      at node_modules/react-dom/cjs/react-dom-client.development.js:18982:11
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at Object.<anonymous>.process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at Object.eventWrapper (node_modules/@testing-library/react/dist/pure.js:107:28)
+      at Object.wrapEvent (node_modules/@testing-library/user-event/dist/cjs/event/wrapEvent.js:6:28)
+      at Object.dispatchEvent (node_modules/@testing-library/user-event/dist/cjs/event/dispatchEvent.js:45:22)
+      at Object.dispatchUIEvent (node_modules/@testing-library/user-event/dist/cjs/event/dispatchEvent.js:22:26)
+      at Mouse.up (node_modules/@testing-library/user-event/dist/cjs/system/pointer/mouse.js:100:30)
+      at PointerHost.release (node_modules/@testing-library/user-event/dist/cjs/system/pointer/index.js:87:24)
+      at pointerAction (node_modules/@testing-library/user-event/dist/cjs/pointer/index.js:54:47)
+      at Object.pointer (node_modules/@testing-library/user-event/dist/cjs/pointer/index.js:27:9)
+      at Object.asyncWrapper (node_modules/@testing-library/react/dist/pure.js:88:22)
+      at Object.<anonymous> (__tests__/components/AIChat.test.tsx:281:7)
+
+  ● AIChat › Loading State › shows loading indicator while waiting for response
+
+    TypeError: messagesEndRef.current?.scrollIntoView is not a function
+
+      24 |
+      25 |   const scrollToBottom = () => {
+    > 26 |     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+         |                             ^
+      27 |   };
+      28 |
+      29 |   useEffect(() => {
+
+      at scrollIntoView (components/AIChat.tsx:26:29)
+      at scrollToBottom (components/AIChat.tsx:30:5)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom-client.development.js:13249:29)
+      at commitHookPassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:13336:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15484:13)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:15439:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15519:11)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18432:9)
+      at flushPendingEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18358:14)
+      at flushSpawnedWork (node_modules/react-dom/cjs/react-dom-client.development.js:18323:44)
+      at commitRoot (node_modules/react-dom/cjs/react-dom-client.development.js:17955:9)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16667:15)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:18972:7)
+      at flushSyncWorkAcrossRoots_impl (node_modules/react-dom/cjs/react-dom-client.development.js:18814:21)
+      at processRootScheduleInMicrotask (node_modules/react-dom/cjs/react-dom-client.development.js:18853:9)
+      at node_modules/react-dom/cjs/react-dom-client.development.js:18982:11
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at Object.<anonymous>.process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at Object.eventWrapper (node_modules/@testing-library/react/dist/pure.js:107:28)
+      at Object.wrapEvent (node_modules/@testing-library/user-event/dist/cjs/event/wrapEvent.js:6:28)
+      at Object.dispatchEvent (node_modules/@testing-library/user-event/dist/cjs/event/dispatchEvent.js:45:22)
+      at Object.dispatchUIEvent (node_modules/@testing-library/user-event/dist/cjs/event/dispatchEvent.js:22:26)
+      at Mouse.up (node_modules/@testing-library/user-event/dist/cjs/system/pointer/mouse.js:100:30)
+      at PointerHost.release (node_modules/@testing-library/user-event/dist/cjs/system/pointer/index.js:87:24)
+      at pointerAction (node_modules/@testing-library/user-event/dist/cjs/pointer/index.js:54:47)
+      at Object.pointer (node_modules/@testing-library/user-event/dist/cjs/pointer/index.js:27:9)
+      at Object.asyncWrapper (node_modules/@testing-library/react/dist/pure.js:88:22)
+      at Object.<anonymous> (__tests__/components/AIChat.test.tsx:315:7)
+
+  ● AIChat › Loading State › disables input while loading
+
+    TypeError: messagesEndRef.current?.scrollIntoView is not a function
+
+      24 |
+      25 |   const scrollToBottom = () => {
+    > 26 |     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+         |                             ^
+      27 |   };
+      28 |
+      29 |   useEffect(() => {
+
+      at scrollIntoView (components/AIChat.tsx:26:29)
+      at scrollToBottom (components/AIChat.tsx:30:5)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom-client.development.js:13249:29)
+      at commitHookPassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:13336:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15484:13)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:15439:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15519:11)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18432:9)
+      at flushPendingEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18358:14)
+      at flushSpawnedWork (node_modules/react-dom/cjs/react-dom-client.development.js:18323:44)
+      at commitRoot (node_modules/react-dom/cjs/react-dom-client.development.js:17955:9)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16667:15)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:18972:7)
+      at flushSyncWorkAcrossRoots_impl (node_modules/react-dom/cjs/react-dom-client.development.js:18814:21)
+      at processRootScheduleInMicrotask (node_modules/react-dom/cjs/react-dom-client.development.js:18853:9)
+      at node_modules/react-dom/cjs/react-dom-client.development.js:18982:11
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at Object.<anonymous>.process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at Object.eventWrapper (node_modules/@testing-library/react/dist/pure.js:107:28)
+      at Object.wrapEvent (node_modules/@testing-library/user-event/dist/cjs/event/wrapEvent.js:6:28)
+      at Object.dispatchEvent (node_modules/@testing-library/user-event/dist/cjs/event/dispatchEvent.js:45:22)
+      at Object.dispatchUIEvent (node_modules/@testing-library/user-event/dist/cjs/event/dispatchEvent.js:22:26)
+      at Mouse.up (node_modules/@testing-library/user-event/dist/cjs/system/pointer/mouse.js:100:30)
+      at PointerHost.release (node_modules/@testing-library/user-event/dist/cjs/system/pointer/index.js:87:24)
+      at pointerAction (node_modules/@testing-library/user-event/dist/cjs/pointer/index.js:54:47)
+      at Object.pointer (node_modules/@testing-library/user-event/dist/cjs/pointer/index.js:27:9)
+      at Object.asyncWrapper (node_modules/@testing-library/react/dist/pure.js:88:22)
+      at Object.<anonymous> (__tests__/components/AIChat.test.tsx:339:7)
+
+  ● AIChat › Error Handling › handles API error gracefully
+
+    TypeError: messagesEndRef.current?.scrollIntoView is not a function
+
+      24 |
+      25 |   const scrollToBottom = () => {
+    > 26 |     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+         |                             ^
+      27 |   };
+      28 |
+      29 |   useEffect(() => {
+
+      at scrollIntoView (components/AIChat.tsx:26:29)
+      at scrollToBottom (components/AIChat.tsx:30:5)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom-client.development.js:13249:29)
+      at commitHookPassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:13336:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15484:13)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:15439:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15519:11)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18432:9)
+      at flushPendingEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18358:14)
+      at flushSpawnedWork (node_modules/react-dom/cjs/react-dom-client.development.js:18323:44)
+      at commitRoot (node_modules/react-dom/cjs/react-dom-client.development.js:17955:9)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16667:15)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:18972:7)
+      at flushSyncWorkAcrossRoots_impl (node_modules/react-dom/cjs/react-dom-client.development.js:18814:21)
+      at processRootScheduleInMicrotask (node_modules/react-dom/cjs/react-dom-client.development.js:18853:9)
+      at node_modules/react-dom/cjs/react-dom-client.development.js:18982:11
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at Object.<anonymous>.process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at Object.eventWrapper (node_modules/@testing-library/react/dist/pure.js:107:28)
+      at Object.wrapEvent (node_modules/@testing-library/user-event/dist/cjs/event/wrapEvent.js:6:28)
+      at Object.dispatchEvent (node_modules/@testing-library/user-event/dist/cjs/event/dispatchEvent.js:45:22)
+      at Object.dispatchUIEvent (node_modules/@testing-library/user-event/dist/cjs/event/dispatchEvent.js:22:26)
+      at Mouse.up (node_modules/@testing-library/user-event/dist/cjs/system/pointer/mouse.js:100:30)
+      at PointerHost.release (node_modules/@testing-library/user-event/dist/cjs/system/pointer/index.js:87:24)
+      at pointerAction (node_modules/@testing-library/user-event/dist/cjs/pointer/index.js:54:47)
+      at Object.pointer (node_modules/@testing-library/user-event/dist/cjs/pointer/index.js:27:9)
+      at Object.asyncWrapper (node_modules/@testing-library/react/dist/pure.js:88:22)
+      at Object.<anonymous> (__tests__/components/AIChat.test.tsx:365:7)
+
+  ● AIChat › Error Handling › handles network error gracefully
+
+    TypeError: messagesEndRef.current?.scrollIntoView is not a function
+
+      24 |
+      25 |   const scrollToBottom = () => {
+    > 26 |     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+         |                             ^
+      27 |   };
+      28 |
+      29 |   useEffect(() => {
+
+      at scrollIntoView (components/AIChat.tsx:26:29)
+      at scrollToBottom (components/AIChat.tsx:30:5)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom-client.development.js:13249:29)
+      at commitHookPassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:13336:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15484:13)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:15439:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15519:11)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18432:9)
+      at flushPendingEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18358:14)
+      at flushSpawnedWork (node_modules/react-dom/cjs/react-dom-client.development.js:18323:44)
+      at commitRoot (node_modules/react-dom/cjs/react-dom-client.development.js:17955:9)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16667:15)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:18972:7)
+      at flushSyncWorkAcrossRoots_impl (node_modules/react-dom/cjs/react-dom-client.development.js:18814:21)
+      at processRootScheduleInMicrotask (node_modules/react-dom/cjs/react-dom-client.development.js:18853:9)
+      at node_modules/react-dom/cjs/react-dom-client.development.js:18982:11
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at Object.<anonymous>.process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at Object.eventWrapper (node_modules/@testing-library/react/dist/pure.js:107:28)
+      at Object.wrapEvent (node_modules/@testing-library/user-event/dist/cjs/event/wrapEvent.js:6:28)
+      at Object.dispatchEvent (node_modules/@testing-library/user-event/dist/cjs/event/dispatchEvent.js:45:22)
+      at Object.dispatchUIEvent (node_modules/@testing-library/user-event/dist/cjs/event/dispatchEvent.js:22:26)
+      at Mouse.up (node_modules/@testing-library/user-event/dist/cjs/system/pointer/mouse.js:100:30)
+      at PointerHost.release (node_modules/@testing-library/user-event/dist/cjs/system/pointer/index.js:87:24)
+      at pointerAction (node_modules/@testing-library/user-event/dist/cjs/pointer/index.js:54:47)
+      at Object.pointer (node_modules/@testing-library/user-event/dist/cjs/pointer/index.js:27:9)
+      at Object.asyncWrapper (node_modules/@testing-library/react/dist/pure.js:88:22)
+      at Object.<anonymous> (__tests__/components/AIChat.test.tsx:389:7)
+
+Test Suites: 2 failed, 3 passed, 5 total
+Tests:       10 failed, 41 passed, 51 total
+Snapshots:   0 total
+Time:        22.838 s
+Ran all test suites.
+✓ Frontend tests: Passed
+⚠ Pytest not installed (pip install pytest)
+
+## Dependencies
+---
+found 0 vulnerabilities
+✓ npm audit: No high-severity vulnerabilities
+⚠ Safety not installed (pip install safety)
+
+## File Organization
+---
+✓ .env.example exists for backend
+✓ .env.example exists for frontend
+✓ README.md exists
+✓ README appears up to date
+⚠ Too many markdown files in root (      20 files). Consider organizing into docs/ directory
+
+## Git Repository
+---
+✓ Git repository initialized
+⚠ Uncommitted changes present
+ M backend/app/routers/analytics.py
+ M frontend/app/reviews/page.tsx
+?? audit-results/audit-20251126-163003.txt
+?? frontend/components/CalendarHeatmap.tsx
+Current branch: main
+✓ On branch: main
+
+## Deployment Configuration
+---
+⚠ No Railway configuration file
+✓ Netlify configuration found
+✓ GitHub Actions configured (       3 workflows)
+
+========================================
+Summary
+========================================
+Total errors found: 0
+Report saved to: /Users/devaun/ShelfSense/audit-results/audit-20251126-163003.txt
+
+✓ Audit completed successfully!

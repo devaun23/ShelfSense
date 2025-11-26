@@ -7,7 +7,6 @@ import os
 import json
 import random
 from typing import Optional, Dict, List
-from openai import OpenAI
 from sqlalchemy.orm import Session
 from app.models.models import Question
 from app.models.models import generate_uuid
@@ -19,9 +18,7 @@ from app.services.step2ck_content_outline import (
     COMMON_DISTRACTORS
 )
 from app.services.nbme_gold_book_principles import get_generation_principles
-
-# Initialize OpenAI client
-client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+from app.utils.openai_client import get_openai_client
 
 SPECIALTIES = [
     "Internal Medicine",
@@ -254,7 +251,7 @@ EXPLANATION FORMATTING RULES:
 
     try:
         # Call OpenAI API
-        response = client.chat.completions.create(
+        response = get_openai_client().chat.completions.create(
             model="gpt-4o",
             messages=[
                 {"role": "system", "content": "You are an expert USMLE Step 2 CK question writer. You create exam-quality clinical vignettes that test medical knowledge at the level of a third-year medical student. Generate only valid JSON responses with clinically accurate content following current evidence-based guidelines."},

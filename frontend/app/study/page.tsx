@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic';
 import AIChat from '@/components/AIChat';
 import ErrorAnalysis from '@/components/ErrorAnalysis';
 import QuestionRating from '@/components/QuestionRating';
+import FlagButton from '@/components/FlagButton';
 import { useUser } from '@/contexts/UserContext';
 import { getSpecialtyByApiName, FULL_PREP_MODE, Specialty } from '@/lib/specialties';
 import { SkeletonQuestion, LoadingSpinner } from '@/components/SkeletonLoader';
@@ -327,17 +328,29 @@ function StudyContent() {
                 </span>
               )}
             </div>
-            {/* Keyboard hints - hidden on mobile */}
-            <div className="hidden md:flex gap-3 text-xs text-gray-700">
-              {!feedback && (
-                <>
-                  <span><kbd className="px-1.5 py-0.5 bg-gray-900 rounded text-gray-500">A-E</kbd></span>
-                  <span><kbd className="px-1.5 py-0.5 bg-gray-900 rounded text-gray-500">Enter</kbd></span>
-                </>
+            {/* Flag button and keyboard hints */}
+            <div className="flex items-center gap-3">
+              {/* Flag Button - visible when question is answered */}
+              {feedback && question && user && (
+                <FlagButton
+                  questionId={question.id}
+                  userId={user.userId}
+                  isCorrect={feedback.is_correct}
+                />
               )}
-              {feedback && (
-                <span><kbd className="px-1.5 py-0.5 bg-gray-900 rounded text-gray-500">N</kbd> next</span>
-              )}
+
+              {/* Keyboard hints - hidden on mobile */}
+              <div className="hidden md:flex gap-3 text-xs text-gray-700">
+                {!feedback && (
+                  <>
+                    <span><kbd className="px-1.5 py-0.5 bg-gray-900 rounded text-gray-500">A-E</kbd></span>
+                    <span><kbd className="px-1.5 py-0.5 bg-gray-900 rounded text-gray-500">Enter</kbd></span>
+                  </>
+                )}
+                {feedback && (
+                  <span><kbd className="px-1.5 py-0.5 bg-gray-900 rounded text-gray-500">N</kbd> next</span>
+                )}
+              </div>
             </div>
           </div>
 

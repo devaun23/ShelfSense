@@ -641,6 +641,56 @@ class DailyUsage(Base):
 
 
 # ============================================================================
+# FLAGGED QUESTIONS MODEL (Question Marking System)
+# ============================================================================
+
+class FlaggedQuestion(Base):
+    """
+    Tracks questions flagged/marked by users for later review.
+
+    Unlike incorrect questions (tracked via QuestionAttempt), flagged questions
+    are explicitly marked by users for any reason:
+    - Want to review the concept again
+    - Tricky wording they want to study
+    - High-yield topic to memorize
+    - Uncertain even though they got it right
+
+    This enables custom review sessions of flagged content.
+    """
+    __tablename__ = "flagged_questions"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False, index=True)
+    question_id = Column(String, ForeignKey("questions.id"), nullable=False, index=True)
+
+    # Flag metadata
+    flag_reason = Column(String, nullable=True)  # "review_concept", "tricky_wording", "high_yield", "uncertain", "custom"
+    custom_note = Column(Text, nullable=True)  # User's custom note about why they flagged
+
+    # Context from when flagged
+    flagged_after_correct = Column(Boolean, nullable=True)  # Was the answer correct when flagged?
+    attempt_id = Column(String, ForeignKey("question_attempts.id"), nullable=True)  # Link to the attempt when flagged
+
+    # Organization
+    folder = Column(String, nullable=True, index=True)  # Optional folder/tag for organizing flags
+    priority = Column(Integer, default=1)  # 1-3, higher = more important to review
+
+    # Review tracking
+    times_reviewed = Column(Integer, default=0)  # How many times reviewed since flagging
+    last_reviewed_at = Column(DateTime, nullable=True)
+    review_mastered = Column(Boolean, default=False)  # User marked as mastered/unflag
+
+    # Metadata
+    flagged_at = Column(DateTime, default=datetime.utcnow, index=True)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    user = relationship("User")
+    question = relationship("Question")
+    attempt = relationship("QuestionAttempt")
+
+
+# ============================================================================
 # BATCH GENERATION JOB MODEL
 # ============================================================================
 
@@ -673,6 +723,69 @@ class GenerationJob(Base):
     # Timing
     started_at = Column(DateTime, nullable=True)
     completed_at = Column(DateTime, nullable=True)
+
+    # Metadata
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    user = relationship("User")
+
+
+# ============================================================================
+# STUDY SESSION MODEL (Study Modes)
+# ============================================================================
+
+class StudySession(Base):
+    """
+    Groups question attempts into named study sessions with specific modes.
+
+    Modes:
+    - practice: Free-form questions, no time limit, immediate feedback
+    - timed: Exam simulation with time limit, feedback after completion
+    - tutor: Immediate detailed feedback after each question
+    - challenge: Hard questions only, no hints
+    - review: Spaced repetition review session
+    - weak_focus: Targets user's weak areas
+    """
+    __tablename__ = "study_sessions"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False, index=True)
+
+    # Session type/mode
+    mode = Column(String, nullable=False, index=True)  # practice, timed, tutor, challenge, review, weak_focus
+    name = Column(String, nullable=True)  # Optional custom name
+
+    # Configuration
+    specialty = Column(String, nullable=True, index=True)  # null = mixed specialties
+    difficulty = Column(String, nullable=True)  # easy, medium, hard, adaptive
+    target_count = Column(Integer, nullable=True)  # Target number of questions
+    time_limit_seconds = Column(Integer, nullable=True)  # For timed mode
+
+    # Question pool (pre-selected questions for this session)
+    question_pool = Column(JSON, nullable=True)  # List of question IDs
+    current_index = Column(Integer, default=0)  # Current position in pool
+
+    # Progress tracking
+    questions_answered = Column(Integer, default=0)
+    questions_correct = Column(Integer, default=0)
+    questions_skipped = Column(Integer, default=0)
+
+    # Timing
+    started_at = Column(DateTime, default=datetime.utcnow)
+    ended_at = Column(DateTime, nullable=True)
+    time_spent_seconds = Column(Integer, default=0)
+    paused_at = Column(DateTime, nullable=True)  # For pause/resume
+
+    # Results (calculated on completion)
+    accuracy = Column(Float, nullable=True)
+    avg_time_per_question = Column(Float, nullable=True)
+    score = Column(Integer, nullable=True)  # Calculated score
+    percentile = Column(Integer, nullable=True)  # Compared to other users
+
+    # Status: active, paused, completed, abandoned
+    status = Column(String, default="active", index=True)
 
     # Metadata
     created_at = Column(DateTime, default=datetime.utcnow)

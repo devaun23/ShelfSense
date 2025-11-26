@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from app.database import engine, Base
-from app.routers import questions, analytics, users, reviews, chat, adaptive_engine, auth, profile, sessions, subscription, content_quality, study_plan, content, batch_generation, testing_qa
+from app.routers import questions, analytics, users, reviews, chat, adaptive_engine, auth, profile, sessions, subscription, content_quality, study_plan, content, batch_generation, testing_qa, study_modes, flagged
 from app.middleware.rate_limiter import RateLimitMiddleware
 
 # Load environment variables
@@ -49,6 +49,8 @@ app.include_router(study_plan.router)  # Personalized study plans
 app.include_router(content.router)  # Content Management Agent
 app.include_router(batch_generation.router)  # Batch question generation
 app.include_router(testing_qa.router)  # Testing/QA Agent
+app.include_router(study_modes.router)  # Study Modes (Timed, Tutor, Challenge)
+app.include_router(flagged.router)  # Question flagging/marking system
 
 
 @app.get("/")

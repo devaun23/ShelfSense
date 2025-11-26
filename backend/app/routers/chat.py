@@ -5,13 +5,11 @@ Provides endpoints for chatting with AI about specific questions.
 Uses clinical reasoning frameworks for Socratic-method tutoring.
 """
 
-import os
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from pydantic import BaseModel
 from datetime import datetime
-from openai import OpenAI
 
 from app.database import get_db
 from app.models.models import Question, ChatMessage, ErrorAnalysis, QuestionAttempt
@@ -21,11 +19,9 @@ from app.services.clinical_reasoning import (
     generate_socratic_prompt,
     ReasoningFramework
 )
+from app.utils.openai_client import get_openai_client
 
 router = APIRouter(prefix="/api/chat", tags=["chat"])
-
-# Initialize OpenAI client
-client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 
 class ChatRequest(BaseModel):
@@ -161,7 +157,7 @@ RULES:
 
     try:
         # Call OpenAI - limit tokens for concise responses
-        response = client.chat.completions.create(
+        response = get_openai_client().chat.completions.create(
             model="gpt-4o-mini",
             messages=messages,
             max_tokens=150,  # Enforces brevity (~100 words max)

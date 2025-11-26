@@ -15,10 +15,16 @@ const customJestConfig = {
     '^@/components/(.*)$': '<rootDir>/components/$1',
     '^@/contexts/(.*)$': '<rootDir>/contexts/$1',
     '^@/utils/(.*)$': '<rootDir>/utils/$1',
+    // Mock Clerk packages to avoid ESM issues
+    '^@clerk/nextjs$': '<rootDir>/__mocks__/@clerk/nextjs.js',
+    '^@clerk/nextjs/server$': '<rootDir>/__mocks__/@clerk/nextjs.js',
   },
   testPathIgnorePatterns: [
     '<rootDir>/node_modules/',
     '<rootDir>/.next/',
+  ],
+  transformIgnorePatterns: [
+    '/node_modules/(?!(@clerk)/)',
   ],
   collectCoverageFrom: [
     'app/**/*.{js,jsx,ts,tsx}',

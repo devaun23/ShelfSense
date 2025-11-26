@@ -55,14 +55,10 @@ describe('Sidebar', () => {
       expect(screen.getByText('ShelfSense')).toBeInTheDocument()
     })
 
-    it('displays user initials in avatar', () => {
+    it('displays Clerk UserButton', () => {
       render(<Sidebar {...defaultProps} />)
-      expect(screen.getByText('JD')).toBeInTheDocument()
-    })
-
-    it('displays user first name', () => {
-      render(<Sidebar {...defaultProps} />)
-      expect(screen.getByText('John')).toBeInTheDocument()
+      // Clerk UserButton is mocked and rendered
+      expect(screen.getByTestId('clerk-user-button')).toBeInTheDocument()
     })
 
     it('displays all shelf exam buttons', () => {
@@ -180,46 +176,11 @@ describe('Sidebar', () => {
     })
   })
 
-  describe('User Settings Dropdown', () => {
-    it('shows settings dropdown when user button is clicked', async () => {
+  describe('User Settings', () => {
+    it('renders Clerk UserButton for auth management', () => {
       render(<Sidebar {...defaultProps} />)
-
-      // Click on the user profile button (contains user name)
-      const userButton = screen.getByText('John').closest('button')
-      if (userButton) {
-        await userEvent.click(userButton)
-      }
-
-      expect(screen.getByText('Send feedback')).toBeInTheDocument()
-      expect(screen.getByText('Log out')).toBeInTheDocument()
-    })
-
-    it('hides settings dropdown when clicked again', async () => {
-      render(<Sidebar {...defaultProps} />)
-
-      const userButton = screen.getByText('John').closest('button')
-      if (userButton) {
-        await userEvent.click(userButton) // Open
-        await userEvent.click(userButton) // Close
-      }
-
-      expect(screen.queryByText('Log out')).not.toBeInTheDocument()
-    })
-
-    it('calls logout and navigates to login when log out is clicked', async () => {
-      render(<Sidebar {...defaultProps} />)
-
-      // Open dropdown
-      const userButton = screen.getByText('John').closest('button')
-      if (userButton) {
-        await userEvent.click(userButton)
-      }
-
-      // Click logout
-      await userEvent.click(screen.getByText('Log out'))
-
-      expect(mockLogout).toHaveBeenCalledTimes(1)
-      expect(mockPush).toHaveBeenCalledWith('/login')
+      // Clerk UserButton is rendered (handles sign out etc.)
+      expect(screen.getByTestId('clerk-user-button')).toBeInTheDocument()
     })
   })
 
@@ -313,12 +274,6 @@ describe('Sidebar', () => {
     })
   })
 
-  describe('User Initials', () => {
-    it('generates correct initials from full name', () => {
-      render(<Sidebar {...defaultProps} />)
-      expect(screen.getByText('JD')).toBeInTheDocument()
-    })
-  })
 
   describe('Active State Highlighting', () => {
     it('highlights analytics link when on analytics page', () => {
