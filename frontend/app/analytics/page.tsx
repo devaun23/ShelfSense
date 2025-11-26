@@ -10,15 +10,11 @@ import {
   Line,
   BarChart,
   Bar,
-  PieChart,
-  Pie,
-  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Legend
 } from 'recharts';
 
 interface SpecialtyStats {
@@ -101,8 +97,6 @@ interface DashboardData {
   };
 }
 
-const COLORS = ['#4169E1', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'];
-
 const ERROR_TYPE_LABELS: Record<string, string> = {
   knowledge_gap: 'Knowledge Gap',
   premature_closure: 'Premature Closure',
@@ -112,6 +106,8 @@ const ERROR_TYPE_LABELS: Record<string, string> = {
   time_pressure: 'Time Pressure'
 };
 
+type TabType = 'performance' | 'specialties' | 'insights';
+
 export default function AnalyticsPage() {
   const router = useRouter();
   const { user, isLoading: userLoading } = useUser();
@@ -120,6 +116,13 @@ export default function AnalyticsPage() {
   const [specialtyData, setSpecialtyData] = useState<SpecialtyBreakdown | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Tab and collapsible state
+  const [activeTab, setActiveTab] = useState<TabType>('performance');
+  const [showTrendChart, setShowTrendChart] = useState(true);
+  const [showActivityChart, setShowActivityChart] = useState(true);
+  const [showWeakAreas, setShowWeakAreas] = useState(true);
+  const [showStrongAreas, setShowStrongAreas] = useState(false);
 
   useEffect(() => {
     if (!userLoading && !user) {
@@ -139,7 +142,6 @@ export default function AnalyticsPage() {
       setLoading(true);
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
-      // Fetch both endpoints in parallel
       const [dashboardRes, specialtyRes] = await Promise.all([
         fetch(`${apiUrl}/api/analytics/dashboard?user_id=${user.userId}`),
         fetch(`${apiUrl}/api/analytics/specialty-breakdown?user_id=${user.userId}`)
@@ -189,6 +191,44 @@ export default function AnalyticsPage() {
     return hour > 12 ? `${hour - 12} PM` : `${hour} AM`;
   };
 
+  // Collapsible section component
+  const CollapsibleSection = ({
+    title,
+    isOpen,
+    onToggle,
+    children,
+    badge
+  }: {
+    title: string;
+    isOpen: boolean;
+    onToggle: () => void;
+    children: React.ReactNode;
+    badge?: React.ReactNode;
+  }) => (
+    <div className="border border-gray-800 rounded-2xl overflow-hidden mb-4">
+      <button
+        onClick={onToggle}
+        className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-950 transition-colors"
+      >
+        <div className="flex items-center gap-3">
+          <h3 className="text-base font-medium text-white">{title}</h3>
+          {badge}
+        </div>
+        <svg
+          className={`w-5 h-5 text-gray-500 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      {isOpen && (
+        <div className="px-6 pb-6 border-t border-gray-800">
+          {children}
+        </div>
+      )}
+    </div>
+  );
+
   if (loading) {
     return (
       <>
@@ -207,16 +247,14 @@ export default function AnalyticsPage() {
       <>
         <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
         <main className={`min-h-screen bg-black text-white transition-all duration-300 ${sidebarOpen ? 'md:ml-64' : 'ml-0'}`}>
-          <div className="flex items-center justify-center min-h-screen">
-            <div className="text-center">
-              <p className="text-gray-400 mb-4">{error || 'No analytics data available'}</p>
-              <button
-                onClick={fetchDashboardData}
-                className="px-4 py-2 bg-[#4169E1] text-white rounded-lg hover:bg-[#5B7FE8]"
-              >
-                Retry
-              </button>
-            </div>
+          <div className="flex flex-col items-center justify-center min-h-screen gap-4">
+            <p className="text-gray-400">{error || 'No analytics data available'}</p>
+            <button
+              onClick={fetchDashboardData}
+              className="px-6 py-2.5 bg-[#4169E1] text-white rounded-full hover:bg-[#5B7FE8] transition-colors"
+            >
+              Retry
+            </button>
           </div>
         </main>
       </>
@@ -231,345 +269,350 @@ export default function AnalyticsPage() {
     date: new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
   }));
 
-  const errorPieData = Object.entries(error_distribution.error_counts).map(([type, count]) => ({
-    name: ERROR_TYPE_LABELS[type] || type,
-    value: count
-  }));
+  // Error distribution as array for horizontal bars
+  const errorBarData = Object.entries(error_distribution.error_counts)
+    .map(([type, count]) => ({
+      type,
+      label: ERROR_TYPE_LABELS[type] || type,
+      count
+    }))
+    .sort((a, b) => b.count - a.count);
 
-  const specialtyBarData = Object.entries(score_details.breakdown || {}).map(([source, data]) => ({
-    name: source.split(' - ')[0].slice(0, 15),
-    accuracy: data.accuracy,
-    score: data.score
-  }));
+  const totalErrors = errorBarData.reduce((sum, e) => sum + e.count, 0);
 
   return (
     <>
       <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
 
       <main className={`min-h-screen bg-black text-white transition-all duration-300 ${sidebarOpen ? 'md:ml-64' : 'ml-0'}`}>
-        <div className="max-w-7xl mx-auto px-6 py-8 pt-16">
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-2xl font-semibold text-white" style={{ fontFamily: 'var(--font-cormorant)' }}>
-              Analytics Dashboard
-            </h1>
-            <p className="text-gray-500 text-sm mt-1">Your performance insights and progress tracking</p>
+        <div className="max-w-4xl mx-auto px-6 py-8 pt-16">
+
+          {/* Hero Section - Predicted Score */}
+          <div className="text-center mb-10">
+            <p className="text-gray-500 text-sm mb-2 uppercase tracking-wider">
+              Predicted Step 2 CK Score
+            </p>
+            <div className="flex items-baseline justify-center gap-3 mb-3">
+              <span
+                className="text-7xl font-semibold text-white"
+                style={{ fontFamily: 'var(--font-cormorant)' }}
+              >
+                {summary.predicted_score || '---'}
+              </span>
+              {summary.confidence_interval && (
+                <span className="text-2xl text-gray-600">±{summary.confidence_interval}</span>
+              )}
+            </div>
+            <div className={`flex items-center justify-center gap-2 text-sm ${getTrendColor(score_details.score_trajectory)}`}>
+              <span className="text-lg">{getTrendIcon(score_details.score_trajectory)}</span>
+              <span className="capitalize">{score_details.score_trajectory.replace('_', ' ')}</span>
+            </div>
           </div>
 
-          {/* Score Card - Hero */}
-          <div className="mb-8 p-6 bg-gray-900/50 border border-gray-800 rounded-2xl">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-              <div className="text-center md:text-left">
-                <p className="text-gray-500 text-sm mb-1">Predicted Step 2 CK Score</p>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-5xl font-bold text-[#4169E1]">
-                    {summary.predicted_score || '---'}
+          {/* Stats Row */}
+          <div className="flex justify-center gap-10 border-t border-gray-900 pt-8 mb-10">
+            <div className="text-center">
+              <p className="text-2xl font-semibold text-white" style={{ fontFamily: 'var(--font-cormorant)' }}>
+                {summary.total_questions}
+              </p>
+              <p className="text-xs text-gray-600 uppercase tracking-wider">Questions</p>
+            </div>
+            <div className="text-center">
+              <p className={`text-2xl font-semibold ${getAccuracyColor(summary.overall_accuracy)}`} style={{ fontFamily: 'var(--font-cormorant)' }}>
+                {summary.overall_accuracy}%
+              </p>
+              <p className="text-xs text-gray-600 uppercase tracking-wider">Accuracy</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl font-semibold text-[#4169E1]" style={{ fontFamily: 'var(--font-cormorant)' }}>
+                {summary.streak}
+              </p>
+              <p className="text-xs text-gray-600 uppercase tracking-wider">Day Streak</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl font-semibold text-gray-400" style={{ fontFamily: 'var(--font-cormorant)' }}>
+                {summary.weighted_accuracy}%
+              </p>
+              <p className="text-xs text-gray-600 uppercase tracking-wider">Weighted</p>
+            </div>
+          </div>
+
+          {/* Tab Navigation */}
+          <div className="flex justify-center gap-2 mb-8">
+            {(['performance', 'specialties', 'insights'] as TabType[]).map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-5 py-2.5 rounded-full text-sm capitalize transition-all ${
+                  activeTab === tab
+                    ? 'bg-[#4169E1] text-white'
+                    : 'bg-gray-950 border border-gray-800 text-gray-400 hover:text-white hover:border-gray-700'
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+
+          {/* Performance Tab */}
+          {activeTab === 'performance' && (
+            <div>
+              {/* Accuracy Trend Chart */}
+              <CollapsibleSection
+                title="Performance Trend"
+                isOpen={showTrendChart}
+                onToggle={() => setShowTrendChart(!showTrendChart)}
+              >
+                {trendChartData.length > 0 ? (
+                  <div className="pt-4">
+                    <ResponsiveContainer width="100%" height={280}>
+                      <LineChart data={trendChartData}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
+                        <XAxis dataKey="date" stroke="#6B7280" fontSize={12} />
+                        <YAxis stroke="#6B7280" fontSize={12} domain={[0, 100]} />
+                        <Tooltip
+                          contentStyle={{ backgroundColor: '#111', border: '1px solid #374151', borderRadius: '12px' }}
+                          labelStyle={{ color: '#9CA3AF' }}
+                        />
+                        <Line
+                          type="monotone"
+                          dataKey="accuracy"
+                          stroke="#4169E1"
+                          strokeWidth={2}
+                          dot={{ fill: '#4169E1', strokeWidth: 0, r: 4 }}
+                          name="Accuracy %"
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                ) : (
+                  <div className="py-12 text-center text-gray-500">
+                    Not enough data to show trends
+                  </div>
+                )}
+              </CollapsibleSection>
+
+              {/* Daily Activity Chart */}
+              <CollapsibleSection
+                title="Daily Activity"
+                isOpen={showActivityChart}
+                onToggle={() => setShowActivityChart(!showActivityChart)}
+              >
+                {trendChartData.length > 0 ? (
+                  <div className="pt-4">
+                    <ResponsiveContainer width="100%" height={220}>
+                      <BarChart data={trendChartData}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
+                        <XAxis dataKey="date" stroke="#6B7280" fontSize={12} />
+                        <YAxis stroke="#6B7280" fontSize={12} />
+                        <Tooltip
+                          contentStyle={{ backgroundColor: '#111', border: '1px solid #374151', borderRadius: '12px' }}
+                          labelStyle={{ color: '#9CA3AF' }}
+                        />
+                        <Bar dataKey="questions_answered" fill="#4169E1" name="Questions" radius={[4, 4, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                ) : (
+                  <div className="py-12 text-center text-gray-500">
+                    Start answering questions to see activity
+                  </div>
+                )}
+              </CollapsibleSection>
+
+              {/* Weak Areas */}
+              <CollapsibleSection
+                title="Areas to Improve"
+                isOpen={showWeakAreas}
+                onToggle={() => setShowWeakAreas(!showWeakAreas)}
+                badge={weak_areas.length > 0 ? (
+                  <span className="text-xs text-red-400 bg-red-400/10 px-2 py-0.5 rounded-full">
+                    {weak_areas.length} topics
                   </span>
-                  {summary.confidence_interval && (
-                    <span className="text-gray-500 text-lg">±{summary.confidence_interval}</span>
-                  )}
-                </div>
-                <div className={`flex items-center gap-2 mt-2 ${getTrendColor(score_details.score_trajectory)}`}>
-                  <span className="text-xl">{getTrendIcon(score_details.score_trajectory)}</span>
-                  <span className="text-sm capitalize">{score_details.score_trajectory.replace('_', ' ')}</span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-                <div>
-                  <p className="text-2xl font-semibold text-white">{summary.total_questions}</p>
-                  <p className="text-gray-500 text-xs">Questions</p>
-                </div>
-                <div>
-                  <p className={`text-2xl font-semibold ${getAccuracyColor(summary.overall_accuracy)}`}>
-                    {summary.overall_accuracy}%
-                  </p>
-                  <p className="text-gray-500 text-xs">Accuracy</p>
-                </div>
-                <div>
-                  <p className="text-2xl font-semibold text-white">{summary.streak}</p>
-                  <p className="text-gray-500 text-xs">Day Streak</p>
-                </div>
-                <div>
-                  <p className="text-2xl font-semibold text-gray-400">
-                    {summary.weighted_accuracy}%
-                  </p>
-                  <p className="text-gray-500 text-xs">Weighted</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Charts Row */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            {/* Accuracy Trend Chart */}
-            <div className="p-6 bg-gray-900/50 border border-gray-800 rounded-xl">
-              <h3 className="text-lg font-medium text-white mb-4">Performance Trend</h3>
-              {trendChartData.length > 0 ? (
-                <ResponsiveContainer width="100%" height={250}>
-                  <LineChart data={trendChartData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                    <XAxis dataKey="date" stroke="#6B7280" fontSize={12} />
-                    <YAxis stroke="#6B7280" fontSize={12} domain={[0, 100]} />
-                    <Tooltip
-                      contentStyle={{ backgroundColor: '#1F2937', border: 'none', borderRadius: '8px' }}
-                      labelStyle={{ color: '#9CA3AF' }}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="accuracy"
-                      stroke="#4169E1"
-                      strokeWidth={2}
-                      dot={{ fill: '#4169E1', strokeWidth: 0, r: 3 }}
-                      name="Accuracy %"
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              ) : (
-                <div className="h-[250px] flex items-center justify-center text-gray-500">
-                  Not enough data to show trends
-                </div>
-              )}
-            </div>
-
-            {/* Questions Per Day Chart */}
-            <div className="p-6 bg-gray-900/50 border border-gray-800 rounded-xl">
-              <h3 className="text-lg font-medium text-white mb-4">Daily Activity</h3>
-              {trendChartData.length > 0 ? (
-                <ResponsiveContainer width="100%" height={250}>
-                  <BarChart data={trendChartData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                    <XAxis dataKey="date" stroke="#6B7280" fontSize={12} />
-                    <YAxis stroke="#6B7280" fontSize={12} />
-                    <Tooltip
-                      contentStyle={{ backgroundColor: '#1F2937', border: 'none', borderRadius: '8px' }}
-                      labelStyle={{ color: '#9CA3AF' }}
-                    />
-                    <Bar dataKey="questions_answered" fill="#4169E1" name="Questions" radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              ) : (
-                <div className="h-[250px] flex items-center justify-center text-gray-500">
-                  Start answering questions to see activity
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Specialty Performance & Error Distribution */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            {/* Specialty Bar Chart */}
-            <div className="p-6 bg-gray-900/50 border border-gray-800 rounded-xl">
-              <h3 className="text-lg font-medium text-white mb-4">Performance by Specialty</h3>
-              {specialtyBarData.length > 0 ? (
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={specialtyBarData} layout="vertical">
-                    <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                    <XAxis type="number" stroke="#6B7280" fontSize={12} domain={[0, 100]} />
-                    <YAxis type="category" dataKey="name" stroke="#6B7280" fontSize={11} width={100} />
-                    <Tooltip
-                      contentStyle={{ backgroundColor: '#1F2937', border: 'none', borderRadius: '8px' }}
-                      labelStyle={{ color: '#9CA3AF' }}
-                    />
-                    <Bar dataKey="accuracy" fill="#4169E1" name="Accuracy %" radius={[0, 4, 4, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              ) : (
-                <div className="h-[300px] flex items-center justify-center text-gray-500">
-                  No specialty data yet
-                </div>
-              )}
-            </div>
-
-            {/* Error Distribution Pie Chart */}
-            <div className="p-6 bg-gray-900/50 border border-gray-800 rounded-xl">
-              <h3 className="text-lg font-medium text-white mb-4">Error Analysis</h3>
-              {errorPieData.length > 0 ? (
-                <ResponsiveContainer width="100%" height={300}>
-                  <PieChart>
-                    <Pie
-                      data={errorPieData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={60}
-                      outerRadius={100}
-                      paddingAngle={2}
-                      dataKey="value"
-                    >
-                      {errorPieData.map((_, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip
-                      contentStyle={{ backgroundColor: '#1F2937', border: 'none', borderRadius: '8px' }}
-                    />
-                    <Legend
-                      wrapperStyle={{ fontSize: '12px', color: '#9CA3AF' }}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-              ) : (
-                <div className="h-[300px] flex items-center justify-center text-gray-500">
-                  No error analysis data yet
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Weak & Strong Areas */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            {/* Weak Areas */}
-            <div className="p-6 bg-gray-900/50 border border-gray-800 rounded-xl">
-              <h3 className="text-lg font-medium text-white mb-4">
-                Areas to Improve
-                <span className="text-gray-500 text-sm font-normal ml-2">(&lt;60% accuracy)</span>
-              </h3>
-              {weak_areas.length > 0 ? (
-                <div className="space-y-3">
-                  {weak_areas.slice(0, 5).map((area, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
-                      <div>
-                        <p className="text-white text-sm">{area.source}</p>
-                        <p className="text-gray-500 text-xs">{area.total_questions} questions</p>
-                      </div>
-                      <div className="text-right">
+                ) : undefined}
+              >
+                {weak_areas.length > 0 ? (
+                  <div className="pt-4 space-y-3">
+                    {weak_areas.slice(0, 5).map((area, index) => (
+                      <div key={index} className="flex items-center justify-between p-3 bg-gray-900/50 rounded-xl">
+                        <div>
+                          <p className="text-white text-sm">{area.source}</p>
+                          <p className="text-gray-600 text-xs">{area.total_questions} questions</p>
+                        </div>
                         <p className={`font-medium ${getAccuracyColor(area.accuracy)}`}>
                           {area.accuracy}%
                         </p>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-gray-500 text-center py-8">No weak areas identified yet</p>
-              )}
-            </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="py-8 text-center text-gray-500">No weak areas identified yet</p>
+                )}
+              </CollapsibleSection>
 
-            {/* Strong Areas */}
-            <div className="p-6 bg-gray-900/50 border border-gray-800 rounded-xl">
-              <h3 className="text-lg font-medium text-white mb-4">
-                Strengths
-                <span className="text-gray-500 text-sm font-normal ml-2">(&gt;75% accuracy)</span>
-              </h3>
-              {strong_areas.length > 0 ? (
-                <div className="space-y-3">
-                  {strong_areas.slice(0, 5).map((area, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
-                      <div>
-                        <p className="text-white text-sm">{area.source}</p>
-                        <p className="text-gray-500 text-xs">{area.total_questions} questions</p>
-                      </div>
-                      <div className="text-right">
+              {/* Strong Areas */}
+              <CollapsibleSection
+                title="Strengths"
+                isOpen={showStrongAreas}
+                onToggle={() => setShowStrongAreas(!showStrongAreas)}
+                badge={strong_areas.length > 0 ? (
+                  <span className="text-xs text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full">
+                    {strong_areas.length} topics
+                  </span>
+                ) : undefined}
+              >
+                {strong_areas.length > 0 ? (
+                  <div className="pt-4 space-y-3">
+                    {strong_areas.slice(0, 5).map((area, index) => (
+                      <div key={index} className="flex items-center justify-between p-3 bg-gray-900/50 rounded-xl">
+                        <div>
+                          <p className="text-white text-sm">{area.source}</p>
+                          <p className="text-gray-600 text-xs">{area.total_questions} questions</p>
+                        </div>
                         <p className="font-medium text-emerald-400">
                           {area.accuracy}%
                         </p>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-gray-500 text-center py-8">Keep studying to build mastery</p>
-              )}
+                    ))}
+                  </div>
+                ) : (
+                  <p className="py-8 text-center text-gray-500">Keep studying to build mastery</p>
+                )}
+              </CollapsibleSection>
             </div>
-          </div>
+          )}
 
-          {/* Specialty Breakdown Grid */}
-          {specialtyData && (
-            <div className="mb-8">
-              <h3 className="text-lg font-medium text-white mb-4">Performance by Shelf Exam</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {SPECIALTIES.map((specialty) => {
-                  const stats = specialtyData.specialties[specialty.apiName];
-                  if (!stats) return null;
+          {/* Specialties Tab */}
+          {activeTab === 'specialties' && specialtyData && (
+            <div className="grid grid-cols-2 gap-4">
+              {SPECIALTIES.map((specialty) => {
+                const stats = specialtyData.specialties[specialty.apiName];
 
-                  return (
-                    <button
-                      key={specialty.id}
-                      onClick={() => router.push(`/study?specialty=${encodeURIComponent(specialty.apiName)}`)}
-                      className={`p-4 rounded-xl border ${specialty.borderColor} ${specialty.bgColor} text-left transition-all hover:scale-[1.02]`}
-                    >
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-xl">{specialty.icon}</span>
-                        <span className={`text-sm font-medium ${specialty.color}`}>{specialty.shortName}</span>
+                return (
+                  <button
+                    key={specialty.id}
+                    onClick={() => router.push(`/study?specialty=${encodeURIComponent(specialty.apiName)}`)}
+                    className={`p-5 rounded-2xl border ${specialty.borderColor} ${specialty.bgColor} text-left transition-all hover:scale-[1.02]`}
+                  >
+                    <div className="flex items-center gap-3 mb-3">
+                      <span className="text-2xl">{specialty.icon}</span>
+                      <span className={`text-base font-medium ${specialty.color}`}>
+                        {specialty.shortName}
+                      </span>
+                    </div>
+
+                    {stats && stats.total > 0 ? (
+                      <>
+                        <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden mb-2">
+                          <div
+                            className={`h-full rounded-full ${
+                              stats.accuracy >= 70 ? 'bg-emerald-500' : stats.accuracy >= 50 ? 'bg-yellow-500' : 'bg-red-500'
+                            }`}
+                            style={{ width: `${stats.accuracy}%` }}
+                          />
+                        </div>
+                        <div className="flex justify-between text-xs">
+                          <span className="text-gray-500">{stats.total} questions</span>
+                          <span className={getAccuracyColor(stats.accuracy)}>{stats.accuracy}%</span>
+                        </div>
+                      </>
+                    ) : (
+                      <p className="text-xs text-gray-600">Not started</p>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Insights Tab */}
+          {activeTab === 'insights' && (
+            <div>
+              {/* Behavioral Insights */}
+              <div className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6 mb-4">
+                <h3 className="text-lg font-medium text-white mb-6" style={{ fontFamily: 'var(--font-cormorant)' }}>
+                  Study Patterns
+                </h3>
+
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                  <div className="text-center p-4 bg-gray-800/50 rounded-xl">
+                    <p className="text-2xl font-semibold text-white">
+                      {Math.round(behavioral_insights.time_analysis.avg_time_overall || 0)}s
+                    </p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider mt-1">Avg Time</p>
+                  </div>
+                  <div className="text-center p-4 bg-gray-800/50 rounded-xl">
+                    <p className="text-2xl font-semibold text-emerald-400">
+                      {Math.round(behavioral_insights.time_analysis.avg_time_correct || 0)}s
+                    </p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider mt-1">When Correct</p>
+                  </div>
+                  <div className="text-center p-4 bg-gray-800/50 rounded-xl">
+                    <p className="text-2xl font-semibold text-red-400">
+                      {Math.round(behavioral_insights.time_analysis.avg_time_incorrect || 0)}s
+                    </p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider mt-1">When Wrong</p>
+                  </div>
+                  <div className="text-center p-4 bg-gray-800/50 rounded-xl">
+                    <p className="text-2xl font-semibold text-[#4169E1]">
+                      {behavioral_insights.optimal_conditions.best_hours?.[0]
+                        ? formatHour(behavioral_insights.optimal_conditions.best_hours[0].hour)
+                        : '---'}
+                    </p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider mt-1">Best Time</p>
+                  </div>
+                </div>
+
+                {/* Confidence Calibration */}
+                {behavioral_insights.confidence_analysis.correlation && (
+                  <div className="p-4 bg-[#4169E1]/10 border border-[#4169E1]/30 rounded-xl">
+                    <p className="text-sm text-gray-300">
+                      <span className="text-[#4169E1] font-medium">Confidence Calibration: </span>
+                      {behavioral_insights.confidence_analysis.correlation === 'well_calibrated'
+                        ? 'Your confidence matches your accuracy well'
+                        : behavioral_insights.confidence_analysis.correlation === 'overconfident'
+                        ? 'You may be overconfident - high confidence doesnt always mean correct'
+                        : 'Work on calibrating your confidence with your actual performance'}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Error Distribution - Horizontal Bars */}
+              <div className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6">
+                <h3 className="text-lg font-medium text-white mb-6" style={{ fontFamily: 'var(--font-cormorant)' }}>
+                  Error Patterns
+                </h3>
+
+                {errorBarData.length > 0 ? (
+                  <div className="space-y-4">
+                    {errorBarData.map((error) => (
+                      <div key={error.type} className="flex items-center gap-4">
+                        <span className="text-sm text-gray-400 w-36 truncate">{error.label}</span>
+                        <div className="flex-1 h-2 bg-gray-800 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-[#4169E1] rounded-full transition-all"
+                            style={{ width: `${totalErrors > 0 ? (error.count / totalErrors) * 100 : 0}%` }}
+                          />
+                        </div>
+                        <span className="text-sm text-gray-500 w-8 text-right">{error.count}</span>
                       </div>
-
-                      {stats.total > 0 ? (
-                        <>
-                          <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden mb-2">
-                            <div
-                              className={`h-full ${stats.accuracy >= 70 ? 'bg-emerald-500' : stats.accuracy >= 50 ? 'bg-yellow-500' : 'bg-red-500'}`}
-                              style={{ width: `${stats.accuracy}%` }}
-                            />
-                          </div>
-                          <div className="flex justify-between text-xs">
-                            <span className="text-gray-500">{stats.total} Qs</span>
-                            <span className={getAccuracyColor(stats.accuracy)}>{stats.accuracy}%</span>
-                          </div>
-                        </>
-                      ) : (
-                        <p className="text-xs text-gray-600">Not started</p>
-                      )}
-                    </button>
-                  );
-                })}
+                    ))}
+                  </div>
+                ) : (
+                  <p className="py-8 text-center text-gray-500">No error analysis data yet</p>
+                )}
               </div>
             </div>
           )}
 
-          {/* Behavioral Insights */}
-          <div className="p-6 bg-gray-900/50 border border-gray-800 rounded-xl mb-8">
-            <h3 className="text-lg font-medium text-white mb-4">Study Behavior Insights</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              <div className="text-center p-4 bg-gray-800/50 rounded-lg">
-                <p className="text-2xl font-semibold text-white">
-                  {Math.round(behavioral_insights.time_analysis.avg_time_overall || 0)}s
-                </p>
-                <p className="text-gray-500 text-xs">Avg Time/Question</p>
-              </div>
-              <div className="text-center p-4 bg-gray-800/50 rounded-lg">
-                <p className="text-2xl font-semibold text-emerald-400">
-                  {Math.round(behavioral_insights.time_analysis.avg_time_correct || 0)}s
-                </p>
-                <p className="text-gray-500 text-xs">Avg Time (Correct)</p>
-              </div>
-              <div className="text-center p-4 bg-gray-800/50 rounded-lg">
-                <p className="text-2xl font-semibold text-red-400">
-                  {Math.round(behavioral_insights.time_analysis.avg_time_incorrect || 0)}s
-                </p>
-                <p className="text-gray-500 text-xs">Avg Time (Incorrect)</p>
-              </div>
-              <div className="text-center p-4 bg-gray-800/50 rounded-lg">
-                <p className="text-2xl font-semibold text-[#4169E1]">
-                  {behavioral_insights.optimal_conditions.best_hours?.[0]
-                    ? formatHour(behavioral_insights.optimal_conditions.best_hours[0].hour)
-                    : '---'}
-                </p>
-                <p className="text-gray-500 text-xs">Best Study Time</p>
-              </div>
-            </div>
-
-            {/* Confidence Calibration */}
-            {behavioral_insights.confidence_analysis.correlation && (
-              <div className="mt-6 p-4 bg-gray-800/30 rounded-lg">
-                <p className="text-sm text-gray-400">
-                  <span className="text-white font-medium">Confidence Calibration: </span>
-                  {behavioral_insights.confidence_analysis.correlation === 'well_calibrated'
-                    ? 'Your confidence matches your accuracy well'
-                    : behavioral_insights.confidence_analysis.correlation === 'overconfident'
-                    ? 'You may be overconfident - high confidence doesnt always mean correct'
-                    : 'Work on calibrating your confidence with your actual performance'}
-                </p>
-              </div>
-            )}
-          </div>
-
-          {/* Back to Study Button */}
-          <div className="text-center pb-8">
+          {/* Action Footer */}
+          <div className="text-center pt-10 pb-8">
             <button
               onClick={() => router.push('/study')}
               className="px-8 py-3 bg-[#4169E1] hover:bg-[#5B7FE8] text-white rounded-full transition-colors text-base font-medium"
             >
-              Back to Studying
+              Continue Studying
             </button>
           </div>
         </div>
