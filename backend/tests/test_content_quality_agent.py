@@ -381,7 +381,7 @@ class TestBatchValidation:
 class TestLLMIntegration:
     """Tests for LLM integration with mocks"""
 
-    @patch("app.services.content_quality_agent.client")
+    @patch("app.utils.openai_client.get_openai_client")
     def test_call_llm_uses_correct_model(self, mock_client, db):
         """Test that _call_llm uses the configured model"""
         mock_response = MagicMock()
@@ -396,7 +396,7 @@ class TestLLMIntegration:
         call_args = mock_client.chat.completions.create.call_args
         assert call_args[1]["model"] == "gpt-4o-mini"
 
-    @patch("app.services.content_quality_agent.client")
+    @patch("app.utils.openai_client.get_openai_client")
     def test_call_llm_handles_temperature(self, mock_client, db):
         """Test that temperature is passed correctly"""
         mock_response = MagicMock()

@@ -241,9 +241,11 @@ class TestScoreVignette:
 class TestLLMIntegration:
     """Tests for LLM integration with mocks"""
 
-    @patch("app.services.question_agent.client")
-    def test_call_llm_uses_correct_model(self, mock_client, db):
+    @patch("app.utils.openai_client.get_openai_client")
+    def test_call_llm_uses_correct_model(self, mock_get_client, db):
         """Test that _call_llm uses the configured model"""
+        mock_client = MagicMock()
+        mock_get_client.return_value = mock_client
         mock_response = MagicMock()
         mock_response.choices = [MagicMock()]
         mock_response.choices[0].message.content = "{}"
@@ -255,7 +257,7 @@ class TestLLMIntegration:
         call_args = mock_client.chat.completions.create.call_args
         assert call_args[1]["model"] == "gpt-4o-mini"
 
-    @patch("app.services.question_agent.client")
+    @patch("app.utils.openai_client.get_openai_client")
     def test_call_llm_passes_temperature(self, mock_client, db):
         """Test that temperature is passed correctly"""
         mock_response = MagicMock()
@@ -269,7 +271,7 @@ class TestLLMIntegration:
         call_args = mock_client.chat.completions.create.call_args
         assert call_args[1]["temperature"] == 0.5
 
-    @patch("app.services.question_agent.client")
+    @patch("app.utils.openai_client.get_openai_client")
     def test_call_llm_with_response_format(self, mock_client, db):
         """Test that response_format is passed correctly"""
         mock_response = MagicMock()
@@ -287,7 +289,7 @@ class TestLLMIntegration:
 class TestStep1AnalyzeExamples:
     """Tests for step1_analyze_examples method"""
 
-    @patch("app.services.question_agent.client")
+    @patch("app.utils.openai_client.get_openai_client")
     def test_analyzes_examples_successfully(self, mock_client, db):
         """Test that examples are analyzed correctly"""
         expected_analysis = {
@@ -321,7 +323,7 @@ class TestStep1AnalyzeExamples:
 class TestStep2CreateClinicalScenario:
     """Tests for step2_create_clinical_scenario method"""
 
-    @patch("app.services.question_agent.client")
+    @patch("app.utils.openai_client.get_openai_client")
     def test_creates_scenario_with_all_fields(self, mock_client, db):
         """Test scenario creation includes all required fields"""
         expected_scenario = {
@@ -349,7 +351,7 @@ class TestStep2CreateClinicalScenario:
         assert result["patient_demographics"] == "65-year-old male"
         assert result["correct_answer_concept"] == "PCI"
 
-    @patch("app.services.question_agent.client")
+    @patch("app.utils.openai_client.get_openai_client")
     def test_difficulty_parameter_used(self, mock_client, db):
         """Test that difficulty parameter is incorporated"""
         mock_response = MagicMock()
@@ -443,7 +445,7 @@ class TestGetExampleQuestions:
 class TestGenerateQuestionPipeline:
     """Tests for the full question generation pipeline"""
 
-    @patch("app.services.question_agent.client")
+    @patch("app.utils.openai_client.get_openai_client")
     @patch("app.services.question_agent.get_weighted_specialty")
     @patch("app.services.question_agent.get_high_yield_topic")
     def test_full_pipeline_returns_question(self, mock_topic, mock_specialty, mock_client, db):
@@ -592,7 +594,7 @@ class TestGenerateQuestionsBatch:
 class TestEdgeCases:
     """Tests for edge cases and error handling"""
 
-    @patch("app.services.question_agent.client")
+    @patch("app.utils.openai_client.get_openai_client")
     def test_handles_malformed_llm_response(self, mock_client, db):
         """Test handling of malformed LLM responses"""
         mock_response = MagicMock()
@@ -613,7 +615,7 @@ class TestEdgeCases:
         # Should return empty list, not error
         assert isinstance(examples, list)
 
-    @patch("app.services.question_agent.client")
+    @patch("app.utils.openai_client.get_openai_client")
     @patch("app.services.question_agent.get_weighted_specialty")
     @patch("app.services.question_agent.get_high_yield_topic")
     def test_retry_on_quality_failure(self, mock_topic, mock_specialty, mock_client, db):

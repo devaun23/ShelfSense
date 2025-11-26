@@ -1,21 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useUser } from '@/contexts/UserContext';
-import { UserButton, SignOutButton } from '@clerk/nextjs';
+import { UserButton } from '@clerk/nextjs';
 
 interface SidebarProps {
   isOpen: boolean;
   onToggle: () => void;
-}
-
-interface StudySession {
-  id: string;
-  date: string;
-  questionsAnswered: number;
-  correctCount: number;
-  topic?: string;
 }
 
 // Simple specialty list - no colors, no emojis
@@ -31,8 +23,6 @@ const SHELF_EXAMS = [
 ];
 
 export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
-  const [sessions, setSessions] = useState<StudySession[]>([]);
-  const [showSettings, setShowSettings] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -43,11 +33,6 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
 
   // Auto-close sidebar on mobile when navigating
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768 && isOpen) {
-        onToggle();
-      }
-    };
     // Close on route change for mobile
     if (typeof window !== 'undefined' && window.innerWidth < 768 && isOpen) {
       // Small delay to allow navigation to start
@@ -58,39 +43,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
       }, 100);
       return () => clearTimeout(timer);
     }
-  }, [pathname, searchParams]);
-
-  // Get user initials for avatar
-  const getInitials = (name: string) => {
-    return name
-      .split(' ')
-      .map(n => n[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
-  // Load session history
-  useEffect(() => {
-    if (user) {
-      loadSessionHistory();
-    }
-  }, [user]);
-
-  const loadSessionHistory = async () => {
-    if (!user) return;
-
-    try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-      const response = await fetch(`${apiUrl}/api/analytics/sessions?user_id=${user.userId}`);
-      if (response.ok) {
-        const data = await response.json();
-        setSessions(data.sessions || []);
-      }
-    } catch (error) {
-      console.error('Error loading sessions:', error);
-    }
-  };
+  }, [pathname, searchParams, isOpen, onToggle]);
 
   const handleSpecialtyClick = (apiName: string | null) => {
     if (apiName) {
@@ -102,39 +55,6 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
       onToggle();
     }
   };
-
-
-  // Group sessions by date
-  const groupSessionsByDate = (sessions: StudySession[]) => {
-    const today = new Date().toDateString();
-    const yesterday = new Date(Date.now() - 86400000).toDateString();
-
-    const groups: { [key: string]: StudySession[] } = {
-      'Today': [],
-      'Yesterday': [],
-      'Previous 7 Days': [],
-      'Older': []
-    };
-
-    sessions.forEach(session => {
-      const sessionDate = new Date(session.date).toDateString();
-      const daysDiff = Math.floor((Date.now() - new Date(session.date).getTime()) / 86400000);
-
-      if (sessionDate === today) {
-        groups['Today'].push(session);
-      } else if (sessionDate === yesterday) {
-        groups['Yesterday'].push(session);
-      } else if (daysDiff <= 7) {
-        groups['Previous 7 Days'].push(session);
-      } else {
-        groups['Older'].push(session);
-      }
-    });
-
-    return groups;
-  };
-
-  const groupedSessions = groupSessionsByDate(sessions);
 
   return (
     <>
@@ -155,80 +75,45 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
           </button>
         </div>
 
+        {/* Step 2 CK Prep Title */}
+        <div className="px-4 py-3 flex-shrink-0">
+          <button
+            onClick={() => handleSpecialtyClick(null)}
+            className={`text-lg font-medium transition-colors ${
+              pathname === '/study' && !currentSpecialty
+                ? 'text-[#4169E1]'
+                : 'text-gray-400 hover:text-[#4169E1]'
+            }`}
+          >
+            Step 2 CK Prep
+          </button>
+        </div>
+
         {/* Shelf Exams Section */}
-        <div className="px-3 flex-shrink-0">
-          <div className="px-2 py-2 text-xs text-gray-600 font-medium uppercase tracking-wider">
-            Shelf Exams
-          </div>
-          <div className="flex flex-wrap gap-1.5 mb-4">
+        <div className="px-4 flex-shrink-0">
+          <div className="space-y-1">
             {SHELF_EXAMS.map((shelf) => (
               <button
                 key={shelf.id}
                 onClick={() => handleSpecialtyClick(shelf.apiName)}
-                className={`px-2.5 py-1 text-xs rounded-md transition-colors ${
+                className={`w-full text-left px-3 py-2 text-base rounded-lg transition-colors ${
                   currentSpecialty === shelf.apiName
-                    ? 'bg-gray-800 text-white'
-                    : 'text-gray-500 hover:text-gray-300 hover:bg-gray-900'
+                    ? 'text-[#4169E1] bg-[#4169E1]/10'
+                    : 'text-[#4169E1]/70 hover:text-[#4169E1] hover:bg-[#4169E1]/5'
                 }`}
               >
                 {shelf.name}
               </button>
             ))}
           </div>
-
-          {/* Step 2 CK */}
-          <button
-            onClick={() => handleSpecialtyClick(null)}
-            className={`w-full px-3 py-2 text-sm rounded-lg transition-colors text-left ${
-              pathname === '/study' && !currentSpecialty
-                ? 'bg-gray-800 text-white'
-                : 'text-gray-400 hover:text-white hover:bg-gray-900'
-            }`}
-          >
-            Step 2 CK (All Topics)
-          </button>
         </div>
 
-        {/* Divider */}
-        <div className="border-t border-gray-900 mx-3 my-3" />
+        {/* Spacer */}
+        <div className="flex-1" />
 
-        {/* Session History */}
-        <nav className="flex-1 overflow-y-auto px-2 py-2">
-          {Object.entries(groupedSessions).map(([period, periodSessions]) => {
-            if (periodSessions.length === 0) return null;
-
-            return (
-              <div key={period} className="mb-4">
-                <div className="px-3 py-2 text-xs text-gray-600 font-medium">
-                  {period}
-                </div>
-                <div className="space-y-1">
-                  {periodSessions.map((session) => (
-                    <button
-                      key={session.id}
-                      className="w-full text-left px-3 py-2 text-sm text-gray-400 hover:text-white hover:bg-gray-900 rounded-lg transition-colors truncate"
-                    >
-                      {session.topic || `${session.questionsAnswered} questions`}
-                      <span className="text-gray-600 ml-2">
-                        {Math.round((session.correctCount / session.questionsAnswered) * 100)}%
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-
-          {/* Empty state */}
-          {sessions.length === 0 && (
-            <div className="px-3 py-8 text-center">
-              <p className="text-sm text-gray-600">No study sessions yet</p>
-              <p className="text-xs text-gray-700 mt-1">Start studying to see your history</p>
-            </div>
-          )}
-
-          {/* Quick Links */}
-          <div className="border-t border-gray-900 mt-4 pt-4">
+        {/* Quick Links - at bottom */}
+        <nav className="flex-shrink-0 px-3 pb-3">
+          <div className="border-t border-gray-900 pt-4">
             <button
               onClick={() => router.push('/analytics')}
               className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors ${
