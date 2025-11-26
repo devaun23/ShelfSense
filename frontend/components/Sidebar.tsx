@@ -76,14 +76,14 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
           </button>
         </div>
 
-        {/* Step 2 CK Prep Title */}
-        <div className="px-4 py-3 flex-shrink-0">
+        {/* Step 2 CK Prep - separate tab */}
+        <div className="px-4 pb-2 flex-shrink-0">
           <button
             onClick={() => handleSpecialtyClick(null)}
-            className={`text-lg font-medium transition-colors ${
+            className={`w-full text-left px-3 py-2 text-base rounded-lg transition-colors ${
               pathname === '/study' && !currentSpecialty
-                ? 'text-white'
-                : 'text-gray-400 hover:text-white'
+                ? 'text-white bg-gray-800'
+                : 'text-gray-400 hover:text-white hover:bg-gray-900'
             }`}
           >
             Step 2 CK Prep
@@ -92,6 +92,9 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
 
         {/* Shelf Exams Section */}
         <div className="px-4 flex-shrink-0">
+          <div className="px-3 py-2 text-xs text-gray-600 font-medium uppercase tracking-wider">
+            Shelf Exams
+          </div>
           <div className="space-y-1">
             {SHELF_EXAMS.map((shelf) => (
               <button
