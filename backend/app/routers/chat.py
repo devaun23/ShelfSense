@@ -19,6 +19,12 @@ from app.services.clinical_reasoning import (
     generate_socratic_prompt,
     ReasoningFramework
 )
+from app.services.multi_turn_reasoning import (
+    build_multi_turn_prompt,
+    get_reasoning_state_summary,
+    detect_reasoning_stage,
+    assess_progress
+)
 from app.utils.openai_client import get_openai_client
 
 router = APIRouter(prefix="/api/chat", tags=["chat"])
@@ -32,9 +38,18 @@ class ChatRequest(BaseModel):
     is_correct: bool | None = None
 
 
+class ReasoningState(BaseModel):
+    stage: str
+    progress: str
+    turn: int
+    stages_completed: int
+    total_stages: int
+
+
 class ChatResponse(BaseModel):
     response: str
     created_at: datetime
+    reasoning_state: Optional[ReasoningState] = None
 
 
 class ChatHistoryResponse(BaseModel):
@@ -105,9 +120,25 @@ Correct Answer Explanation: {exp.get('correct_answer_explanation', 'N/A')}
     elif isinstance(question.explanation, str):
         explanation_text = question.explanation
 
-    # Build system prompt - use clinical reasoning framework if error exists
-    if error_type and not is_correct:
-        # Use framework-enhanced Socratic coaching for incorrect answers
+    # Build conversation history for multi-turn reasoning
+    history_dicts = [
+        {"role": msg.role, "message": msg.message}
+        for msg in history
+    ]
+
+    # Build system prompt - use multi-turn reasoning for deeper conversations
+    if error_type and not is_correct and conversation_depth >= 1:
+        # Use multi-turn reasoning for ongoing conversations
+        system_prompt = build_multi_turn_prompt(
+            question_text=question.vignette,
+            user_answer=user_answer,
+            correct_answer=question.answer_key,
+            error_type=error_type,
+            history=history_dicts,
+            current_message=request.message
+        )
+    elif error_type and not is_correct:
+        # Use framework-enhanced Socratic coaching for first incorrect answer
         system_prompt = build_reasoning_coach_prompt(
             error_type=error_type,
             question_text=question.vignette,
@@ -115,10 +146,6 @@ Correct Answer Explanation: {exp.get('correct_answer_explanation', 'N/A')}
             correct_answer=question.answer_key,
             explanation=question.explanation if isinstance(question.explanation, dict) else None
         )
-
-        # Add conversation depth guidance
-        if conversation_depth >= 3:
-            system_prompt += "\n\nNOTE: This is exchange #{} - the student may be stuck. Provide more direct guidance while still encouraging active thinking.".format(conversation_depth + 1)
     else:
         # Standard tutoring prompt for correct answers or no error analysis
         system_prompt = f"""You are a USMLE Step 2 CK tutor. Be EXTREMELY CONCISE.
@@ -188,9 +215,20 @@ RULES:
 
         db.commit()
 
+        # Get reasoning state if in multi-turn mode
+        reasoning_state = None
+        if error_type and not is_correct:
+            state_summary = get_reasoning_state_summary(
+                history=history_dicts,
+                current_message=request.message,
+                error_type=error_type
+            )
+            reasoning_state = ReasoningState(**state_summary)
+
         return ChatResponse(
             response=ai_message,
-            created_at=ai_msg.created_at
+            created_at=ai_msg.created_at,
+            reasoning_state=reasoning_state
         )
 
     except Exception as e:
