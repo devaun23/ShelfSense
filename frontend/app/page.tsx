@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
 import { useUser } from '@/contexts/UserContext';
 import { SPECIALTIES, FULL_PREP_MODE, Specialty } from '@/lib/specialties';
+import { SkeletonSpecialtyGrid, SkeletonStats } from '@/components/SkeletonLoader';
 
 export default function Home() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -13,6 +14,7 @@ export default function Home() {
   const [streak, setStreak] = useState(0);
   const [totalAttempts, setTotalAttempts] = useState(0);
   const [dueToday, setDueToday] = useState(0);
+  const [statsLoading, setStatsLoading] = useState(true);
   const router = useRouter();
   const { user, isLoading } = useUser();
 
@@ -30,6 +32,7 @@ export default function Home() {
   const loadUserStats = async () => {
     if (!user) return;
 
+    setStatsLoading(true);
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
@@ -40,7 +43,7 @@ export default function Home() {
         setStreak(data.streak || 0);
         setPredictedScore(data.predicted_score || null);
         setScoreConfidence(data.score_confidence || null);
-        setTotalAttempts(data.total_attempts || 0);
+        setTotalAttempts(data.total_questions_answered || 0);
       }
 
       // Load review stats
@@ -51,6 +54,8 @@ export default function Home() {
       }
     } catch (error) {
       console.error('Error loading stats:', error);
+    } finally {
+      setStatsLoading(false);
     }
   };
 

@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from pydantic import BaseModel
-from typing import Dict, Optional
+from typing import Dict, Optional, List, Any
 from datetime import datetime, timedelta
 
 from app.database import get_db
@@ -10,6 +10,14 @@ from app.models.models import QuestionAttempt, Question
 from app.services.adaptive import (
     calculate_predicted_score,
     get_performance_by_source
+)
+from app.services.analytics_agent import (
+    get_dashboard_data,
+    get_performance_trends,
+    analyze_behavioral_patterns,
+    get_error_distribution,
+    get_detailed_weak_areas,
+    calculate_predicted_score_detailed
 )
 
 router = APIRouter(prefix="/api/analytics", tags=["analytics"])
@@ -136,3 +144,177 @@ def get_user_stats(user_id: str, db: Session = Depends(get_db)):
         performance_by_source=performance,
         streak=streak
     )
+
+
+# =============================================================================
+# NEW COMPREHENSIVE ANALYTICS ENDPOINTS
+# =============================================================================
+
+@router.get("/dashboard")
+def get_analytics_dashboard(user_id: str, db: Session = Depends(get_db)):
+    """
+    Get complete dashboard data in a single call.
+    Returns all analytics data for the comprehensive dashboard.
+    """
+    try:
+        dashboard_data = get_dashboard_data(db, user_id)
+        return dashboard_data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching dashboard data: {str(e)}")
+
+
+@router.get("/trends")
+def get_trends(
+    user_id: str,
+    days: int = Query(default=30, ge=7, le=90),
+    db: Session = Depends(get_db)
+):
+    """
+    Get performance trends over specified time period.
+
+    Args:
+        user_id: User identifier
+        days: Number of days to analyze (7-90, default 30)
+
+    Returns:
+        Daily data, weekly summary, and overall trend direction
+    """
+    try:
+        trends = get_performance_trends(db, user_id, days)
+        return trends
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching trends: {str(e)}")
+
+
+@router.get("/behavioral")
+def get_behavioral_insights(user_id: str, db: Session = Depends(get_db)):
+    """
+    Get behavioral pattern analysis.
+
+    Returns:
+        - Time analysis (avg time by outcome)
+        - Hover patterns (uncertainty indicators)
+        - Confidence vs accuracy correlation
+        - Optimal study conditions (best time of day)
+    """
+    try:
+        behavioral = analyze_behavioral_patterns(db, user_id)
+        return behavioral
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching behavioral data: {str(e)}")
+
+
+@router.get("/errors")
+def get_error_analysis(user_id: str, db: Session = Depends(get_db)):
+    """
+    Get error type distribution and trends.
+
+    Returns:
+        - Error counts by type
+        - Most common error type
+        - Improvement trends per error type
+    """
+    try:
+        errors = get_error_distribution(db, user_id)
+        return errors
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching error data: {str(e)}")
+
+
+@router.get("/weak-areas")
+def get_weak_areas_detailed(user_id: str, db: Session = Depends(get_db)):
+    """
+    Get detailed weak and strong area analysis.
+
+    Returns:
+        - Weak areas sorted by priority
+        - Strong areas (mastered topics)
+        - Focus recommendations (top 3 areas)
+    """
+    try:
+        areas = get_detailed_weak_areas(db, user_id)
+        return areas
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching weak areas: {str(e)}")
+
+
+@router.get("/score-details")
+def get_score_breakdown(user_id: str, db: Session = Depends(get_db)):
+    """
+    Get detailed predicted score breakdown.
+
+    Returns:
+        - Current predicted score (194-300)
+        - Confidence interval
+        - Score trajectory (improving/declining/stable)
+        - Breakdown by specialty
+    """
+    try:
+        score_data = calculate_predicted_score_detailed(db, user_id)
+        return score_data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching score details: {str(e)}")
+
+
+@router.get("/specialty-breakdown")
+def get_specialty_breakdown(user_id: str, db: Session = Depends(get_db)):
+    """
+    Get performance breakdown by specialty for the dashboard.
+
+    Returns accuracy, questions answered, and predicted scores per specialty.
+    """
+    # Define the 8 main specialties
+    specialties = [
+        "Internal Medicine",
+        "Surgery",
+        "Pediatrics",
+        "Psychiatry",
+        "Obstetrics and Gynecology",
+        "Family Medicine",
+        "Emergency Medicine",
+        "Neurology"
+    ]
+
+    breakdown = {}
+
+    for specialty in specialties:
+        # Get attempts for this specialty (match source containing specialty name)
+        attempts = db.query(
+            QuestionAttempt.is_correct,
+            Question.recency_weight
+        ).join(
+            Question, QuestionAttempt.question_id == Question.id
+        ).filter(
+            QuestionAttempt.user_id == user_id,
+            Question.source.ilike(f"%{specialty}%")
+        ).all()
+
+        total = len(attempts)
+        correct = sum(1 for a in attempts if a.is_correct)
+        accuracy = round((correct / total * 100), 1) if total > 0 else 0
+
+        # Calculate weighted accuracy for predicted score
+        if attempts:
+            total_weight = sum(w or 0.5 for _, w in attempts)
+            weighted_correct = sum((w or 0.5) for c, w in attempts if c)
+            weighted_accuracy = (weighted_correct / total_weight) if total_weight > 0 else 0
+            # Predicted score formula: 194 + (accuracy - 0.6) * 265
+            predicted = int(194 + (weighted_accuracy - 0.6) * 265) if total >= 10 else None
+        else:
+            predicted = None
+
+        breakdown[specialty] = {
+            "total": total,
+            "correct": correct,
+            "accuracy": accuracy,
+            "predicted_score": predicted
+        }
+
+    return {
+        "specialties": breakdown,
+        "total_answered": sum(b["total"] for b in breakdown.values()),
+        "overall_accuracy": round(
+            sum(b["correct"] for b in breakdown.values()) /
+            max(sum(b["total"] for b in breakdown.values()), 1) * 100, 1
+        )
+    }

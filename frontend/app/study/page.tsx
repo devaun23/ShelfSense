@@ -8,6 +8,7 @@ import ErrorAnalysis from '@/components/ErrorAnalysis';
 import QuestionRating from '@/components/QuestionRating';
 import { useUser } from '@/contexts/UserContext';
 import { getSpecialtyByApiName, FULL_PREP_MODE, Specialty } from '@/lib/specialties';
+import { SkeletonQuestion, LoadingSpinner } from '@/components/SkeletonLoader';
 
 interface Question {
   id: string;
@@ -226,15 +227,23 @@ function StudyContent() {
         <main className={`min-h-screen bg-black text-white transition-all duration-300 ${
           sidebarOpen ? 'md:ml-64' : 'ml-0'
         }`}>
-          <div className="flex flex-col items-center justify-center min-h-screen gap-4">
-            <div className="animate-pulse text-gray-500">
-              {specialtyParam ? `Loading ${specialtyParam} question...` : 'Loading question...'}
+          <div className="max-w-3xl mx-auto px-6 py-8 pt-16 pb-32">
+            {/* Loading header */}
+            <div className="flex items-center gap-3 mb-8">
+              <LoadingSpinner size="sm" />
+              <span className="text-gray-500">
+                {specialtyParam ? `Generating ${specialtyParam} question...` : 'Loading question...'}
+              </span>
+              {currentSpecialty && (
+                <div className={`flex items-center gap-2 px-3 py-1 rounded-full ${currentSpecialty.bgColor} ${currentSpecialty.borderColor} border`}>
+                  <span>{currentSpecialty.icon}</span>
+                  <span className={`text-xs font-medium ${currentSpecialty.color}`}>
+                    {currentSpecialty.shortName}
+                  </span>
+                </div>
+              )}
             </div>
-            {currentSpecialty && (
-              <div className={`text-sm ${currentSpecialty.color}`}>
-                {currentSpecialty.icon} {currentSpecialty.name}
-              </div>
-            )}
+            <SkeletonQuestion />
           </div>
         </main>
       </>
