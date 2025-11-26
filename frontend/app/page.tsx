@@ -95,29 +95,11 @@ export default function Home() {
               </h1>
             )}
 
-            {/* Subtitle */}
-            <p className="text-center text-gray-500 mb-12">
-              Select a shelf exam from the sidebar to start studying
-            </p>
-
-            {/* Main CTA - Start Studying */}
-            <div className="mb-8">
-              <button
-                onClick={() => router.push('/study')}
-                className="w-full text-left px-6 py-5 bg-gray-950 border border-gray-800 rounded-2xl hover:border-gray-700 transition-colors group"
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <span className="text-white text-lg">Start studying</span>
-                    <p className="text-gray-600 text-sm mt-1">Mixed questions from all topics</p>
-                  </div>
-                  <div className="w-10 h-10 rounded-full bg-[#4169E1] flex items-center justify-center group-hover:bg-[#5B7FE8] transition-colors">
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                  </div>
-                </div>
-              </button>
+            {/* Subtitle in bubble */}
+            <div className="flex justify-center mb-12">
+              <div className="inline-flex items-center px-4 py-2.5 bg-gray-900/50 border border-gray-800 rounded-full">
+                <span className="text-gray-400 text-sm">Select an exam from the sidebar to start studying</span>
+              </div>
             </div>
 
             {/* Quick Action Buttons */}
