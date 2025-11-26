@@ -67,9 +67,9 @@ log_section "Security Audit"
 
 # Check for exposed secrets
 echo "Checking for exposed secrets..."
-if grep -r "sk-" --include="*.py" --include="*.ts" --include="*.tsx" "$PROJECT_ROOT" 2>/dev/null | grep -v node_modules | grep -v ".git" | grep -q .; then
+if grep -r "sk-" --include="*.py" --include="*.ts" --include="*.tsx" "$PROJECT_ROOT" 2>/dev/null | grep -v node_modules | grep -v ".git" | grep -v venv | grep -v ".env.example" | grep -q .; then
     log_error "Found potential API keys in code!"
-    grep -r "sk-" --include="*.py" --include="*.ts" --include="*.tsx" "$PROJECT_ROOT" 2>/dev/null | grep -v node_modules | grep -v ".git" >> "$REPORT_FILE"
+    grep -r "sk-" --include="*.py" --include="*.ts" --include="*.tsx" "$PROJECT_ROOT" 2>/dev/null | grep -v node_modules | grep -v ".git" | grep -v venv | grep -v ".env.example" >> "$REPORT_FILE"
 else
     log_success "No exposed API keys found"
 fi

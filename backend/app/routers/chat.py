@@ -2,18 +2,25 @@
 AI Chat Router
 
 Provides endpoints for chatting with AI about specific questions.
+Uses clinical reasoning frameworks for Socratic-method tutoring.
 """
 
 import os
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel
 from datetime import datetime
 from openai import OpenAI
 
 from app.database import get_db
-from app.models.models import Question, ChatMessage
+from app.models.models import Question, ChatMessage, ErrorAnalysis, QuestionAttempt
+from app.services.clinical_reasoning import (
+    build_reasoning_coach_prompt,
+    get_framework_for_error,
+    generate_socratic_prompt,
+    ReasoningFramework
+)
 
 router = APIRouter(prefix="/api/chat", tags=["chat"])
 
@@ -43,12 +50,16 @@ def chat_about_question(request: ChatRequest, db: Session = Depends(get_db)):
     """
     Chat with AI about a specific question.
 
+    Uses clinical reasoning frameworks for Socratic-method tutoring when
+    the student answered incorrectly and error analysis exists.
+
     Context includes:
     - Question vignette
     - All answer choices
     - Correct answer
     - User's answer (if available)
     - Framework explanation
+    - Clinical reasoning framework (if error analysis exists)
     """
     # Get question
     question = db.query(Question).filter(Question.id == request.question_id).first()
@@ -62,9 +73,7 @@ def chat_about_question(request: ChatRequest, db: Session = Depends(get_db)):
         question_id=request.question_id
     ).order_by(ChatMessage.created_at).all()
 
-    # Build context for AI
     # Get user's most recent answer if available
-    from app.models.models import QuestionAttempt
     last_attempt = db.query(QuestionAttempt).filter_by(
         user_id=request.user_id,
         question_id=request.question_id
@@ -73,10 +82,22 @@ def chat_about_question(request: ChatRequest, db: Session = Depends(get_db)):
     user_answer = last_attempt.user_answer if last_attempt else "Not yet answered"
     is_correct = last_attempt.is_correct if last_attempt else False
 
+    # Check for error analysis (only exists for incorrect answers)
+    error_analysis = None
+    error_type = None
+    if last_attempt and not is_correct:
+        error_analysis = db.query(ErrorAnalysis).filter_by(
+            attempt_id=last_attempt.id
+        ).first()
+        if error_analysis:
+            error_type = error_analysis.error_type
+
+    # Count conversation exchanges for progressive coaching
+    conversation_depth = len([m for m in history if m.role == "user"])
+
     # Format explanation
     explanation_text = ""
     if isinstance(question.explanation, dict):
-        # Framework-based explanation
         exp = question.explanation
         explanation_text = f"""
 Principle: {exp.get('principle', 'N/A')}
@@ -88,26 +109,38 @@ Correct Answer Explanation: {exp.get('correct_answer_explanation', 'N/A')}
     elif isinstance(question.explanation, str):
         explanation_text = question.explanation
 
-    # Build system prompt with full context
-    system_prompt = f"""You are a USMLE Step 2 CK tutor helping a student understand this question.
+    # Build system prompt - use clinical reasoning framework if error exists
+    if error_type and not is_correct:
+        # Use framework-enhanced Socratic coaching for incorrect answers
+        system_prompt = build_reasoning_coach_prompt(
+            error_type=error_type,
+            question_text=question.vignette,
+            user_answer=user_answer,
+            correct_answer=question.answer_key,
+            explanation=question.explanation if isinstance(question.explanation, dict) else None
+        )
+
+        # Add conversation depth guidance
+        if conversation_depth >= 3:
+            system_prompt += "\n\nNOTE: This is exchange #{} - the student may be stuck. Provide more direct guidance while still encouraging active thinking.".format(conversation_depth + 1)
+    else:
+        # Standard tutoring prompt for correct answers or no error analysis
+        system_prompt = f"""You are a USMLE Step 2 CK tutor. Be EXTREMELY CONCISE.
 
 Question: {question.vignette}
 
-Answer Choices:
-{chr(10).join([f"{chr(65+i)}. {choice}" for i, choice in enumerate(question.choices)])}
+Choices: {', '.join([f"{chr(65+i)}. {choice}" for i, choice in enumerate(question.choices)])}
 
-Correct Answer: {question.answer_key}
-Student's Answer: {user_answer} ({'✓ Correct' if is_correct else '✗ Incorrect'})
+Correct: {question.answer_key}
+Student chose: {user_answer} ({'✓' if is_correct else '✗'})
 
-Explanation:
 {explanation_text}
 
-Your role:
-- Answer the student's follow-up questions clearly and concisely
-- Help them understand the clinical reasoning
-- Explain concepts they're struggling with
-- Be encouraging but honest
-- Keep responses focused and under 150 words unless they ask for more detail
+RULES:
+- 50-80 words max, NEVER exceed 100 words
+- ONE key point per response
+- End with ONE Socratic question
+- No fluff, no praise, just clarity
 """
 
     # Build messages array with history
@@ -127,11 +160,11 @@ Your role:
     })
 
     try:
-        # Call OpenAI
+        # Call OpenAI - limit tokens for concise responses
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=messages,
-            max_tokens=300,
+            max_tokens=150,  # Enforces brevity (~100 words max)
             temperature=0.7
         )
 

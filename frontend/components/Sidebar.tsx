@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useUser } from '@/contexts/UserContext';
 
 interface SidebarProps {
@@ -17,12 +17,28 @@ interface StudySession {
   topic?: string;
 }
 
+// Simple specialty list - no colors, no emojis
+const SHELF_EXAMS = [
+  { id: 'im', name: 'Internal Medicine', apiName: 'Internal Medicine' },
+  { id: 'surgery', name: 'Surgery', apiName: 'Surgery' },
+  { id: 'peds', name: 'Pediatrics', apiName: 'Pediatrics' },
+  { id: 'psych', name: 'Psychiatry', apiName: 'Psychiatry' },
+  { id: 'obgyn', name: 'OB-GYN', apiName: 'Obstetrics and Gynecology' },
+  { id: 'fm', name: 'Family Medicine', apiName: 'Family Medicine' },
+  { id: 'em', name: 'Emergency', apiName: 'Emergency Medicine' },
+  { id: 'neuro', name: 'Neurology', apiName: 'Neurology' },
+];
+
 export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
   const [sessions, setSessions] = useState<StudySession[]>([]);
   const [showSettings, setShowSettings] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { user, logout } = useUser();
+
+  // Get current specialty from URL
+  const currentSpecialty = searchParams.get('specialty');
 
   // Get user initials for avatar
   const getInitials = (name: string) => {
@@ -56,8 +72,12 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
     }
   };
 
-  const handleNewSession = () => {
-    router.push('/study');
+  const handleSpecialtyClick = (apiName: string | null) => {
+    if (apiName) {
+      router.push(`/study?specialty=${encodeURIComponent(apiName)}`);
+    } else {
+      router.push('/study');
+    }
     if (window.innerWidth < 768) {
       onToggle();
     }
@@ -108,30 +128,55 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
           isOpen ? 'w-64' : 'w-0'
         } overflow-hidden`}
       >
-        {/* Top Section - Logo & New Session */}
+        {/* Top Section - Logo */}
         <div className="p-4 flex-shrink-0">
-          {/* Logo */}
           <button
             onClick={() => router.push('/')}
-            className="text-xl font-semibold text-white hover:text-gray-300 transition-colors mb-4 block"
+            className="text-xl font-semibold text-white hover:text-gray-300 transition-colors block"
             style={{ fontFamily: 'var(--font-cormorant)' }}
           >
             ShelfSense
           </button>
+        </div>
 
-          {/* New Session Button */}
+        {/* Shelf Exams Section */}
+        <div className="px-3 flex-shrink-0">
+          <div className="px-2 py-2 text-xs text-gray-600 font-medium uppercase tracking-wider">
+            Shelf Exams
+          </div>
+          <div className="flex flex-wrap gap-1.5 mb-4">
+            {SHELF_EXAMS.map((shelf) => (
+              <button
+                key={shelf.id}
+                onClick={() => handleSpecialtyClick(shelf.apiName)}
+                className={`px-2.5 py-1 text-xs rounded-md transition-colors ${
+                  currentSpecialty === shelf.apiName
+                    ? 'bg-gray-800 text-white'
+                    : 'text-gray-500 hover:text-gray-300 hover:bg-gray-900'
+                }`}
+              >
+                {shelf.name}
+              </button>
+            ))}
+          </div>
+
+          {/* Step 2 CK */}
           <button
-            onClick={handleNewSession}
-            className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-gray-300 hover:bg-gray-900 rounded-lg transition-colors"
+            onClick={() => handleSpecialtyClick(null)}
+            className={`w-full px-3 py-2 text-sm rounded-lg transition-colors text-left ${
+              pathname === '/study' && !currentSpecialty
+                ? 'bg-gray-800 text-white'
+                : 'text-gray-400 hover:text-white hover:bg-gray-900'
+            }`}
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-            </svg>
-            <span>New study session</span>
+            Step 2 CK (All Topics)
           </button>
         </div>
 
-        {/* Middle Section - Session History */}
+        {/* Divider */}
+        <div className="border-t border-gray-900 mx-3 my-3" />
+
+        {/* Session History */}
         <nav className="flex-1 overflow-y-auto px-2 py-2">
           {Object.entries(groupedSessions).map(([period, periodSessions]) => {
             if (periodSessions.length === 0) return null;
@@ -168,6 +213,19 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
 
           {/* Quick Links */}
           <div className="border-t border-gray-900 mt-4 pt-4">
+            <button
+              onClick={() => router.push('/analytics')}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors ${
+                pathname === '/analytics'
+                  ? 'text-white bg-gray-900'
+                  : 'text-gray-400 hover:text-white hover:bg-gray-900'
+              }`}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+              <span>Analytics</span>
+            </button>
             <button
               onClick={() => router.push('/reviews')}
               className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors ${
@@ -219,7 +277,6 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
                   <button
                     onClick={() => {
                       setShowSettings(false);
-                      // Open feedback email
                       window.location.href = 'mailto:devaun0506@gmail.com?subject=ShelfSense Feedback';
                     }}
                     className="w-full text-left px-4 py-3 text-sm text-gray-300 hover:bg-gray-800 transition-colors flex items-center gap-3"
@@ -245,7 +302,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
         )}
       </aside>
 
-      {/* Toggle Button - Only visible on mobile or when sidebar is closed */}
+      {/* Toggle Button */}
       <button
         onClick={onToggle}
         className={`fixed top-4 z-[60] p-2 text-gray-400 hover:text-white hover:bg-gray-900 rounded-lg transition-all ${

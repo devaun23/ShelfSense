@@ -1,0 +1,123 @@
+# ShelfSense Docker Compose Configuration
+# Orchestrates backend, frontend, and supporting services
+
+version: '3.8'
+
+services:
+  # ==========================================================================
+  # Backend - FastAPI Application
+  # ==========================================================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: shelfsense-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=${DATABASE_URL:-sqlite:///./shelfsense.db}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ENVIRONMENT=${ENVIRONMENT:-development}
+      - CORS_ORIGINS=http://localhost:3000,http://frontend:3000
+    volumes:
+      # Mount database for persistence (development only)
+      - backend-data:/app/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - shelfsense-network
+
+  # ==========================================================================
+  # Frontend - Next.js Application
+  # ==========================================================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: shelfsense-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+      - NODE_ENV=${NODE_ENV:-production}
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    networks:
+      - shelfsense-network
+
+  # ==========================================================================
+  # Redis - Caching (Optional, for future use)
+  # ==========================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: shelfsense-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - shelfsense-network
+    profiles:
+      - with-cache  # Only start if explicitly requested
+
+  # ==========================================================================
+  # PostgreSQL - Production Database (Optional)
+  # ==========================================================================
+  postgres:
+    image: postgres:15-alpine
+    container_name: shelfsense-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-shelfsense}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-shelfsense_secret}
+      - POSTGRES_DB=${POSTGRES_DB:-shelfsense}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-shelfsense}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - shelfsense-network
+    profiles:
+      - with-postgres  # Only start if explicitly requested
+
+# ==========================================================================
+# Networks
+# ==========================================================================
+networks:
+  shelfsense-network:
+    driver: bridge
+
+# ==========================================================================
+# Volumes
+# ==========================================================================
+volumes:
+  backend-data:
+    driver: local
+  redis-data:
+    driver: local
+  postgres-data:
+    driver: local

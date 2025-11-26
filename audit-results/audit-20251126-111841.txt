@@ -1,0 +1,166 @@
+ShelfSense Code Quality Audit Report
+Generated: Wed Nov 26 11:18:41 EST 2025
+========================================
+
+
+## Security Audit
+---
+✗ Found potential API keys in code!
+/Users/devaun/ShelfSense/frontend/backend/venv/lib/python3.13/site-packages/pip/_vendor/distro/distro.py:    "plesk-release",
+/Users/devaun/ShelfSense/frontend/backend/venv/lib/python3.13/site-packages/pip/_vendor/cachecontrol/filewrapper.py:    as the temporary files directory is disk-based (sometimes it's a
+/Users/devaun/ShelfSense/backend/venv/lib/python3.13/site-packages/pyasn1/type/univ.py:                INTEGER { disk-full(1), no-disk(-1),
+/Users/devaun/ShelfSense/backend/venv/lib/python3.13/site-packages/pyasn1/type/univ.py:                          disk-not-formatted(2) }
+/Users/devaun/ShelfSense/backend/venv/lib/python3.13/site-packages/pyasn1/type/univ.py:            error ErrorCode ::= disk-full
+/Users/devaun/ShelfSense/backend/venv/lib/python3.13/site-packages/pyasn1/type/univ.py:                ('disk-full', 1), ('no-disk', -1),
+/Users/devaun/ShelfSense/backend/venv/lib/python3.13/site-packages/pyasn1/type/univ.py:                ('disk-not-formatted', 2)
+/Users/devaun/ShelfSense/backend/venv/lib/python3.13/site-packages/pyasn1/type/univ.py:        error = ErrorCode('disk-full')
+/Users/devaun/ShelfSense/backend/venv/lib/python3.13/site-packages/cryptography/hazmat/primitives/serialization/ssh.py:_SK_SSH_ED25519 = b"sk-ssh-ed25519@openssh.com"
+/Users/devaun/ShelfSense/backend/venv/lib/python3.13/site-packages/cryptography/hazmat/primitives/serialization/ssh.py:_SK_SSH_ECDSA_NISTP256 = b"sk-ecdsa-sha2-nistp256@openssh.com"
+/Users/devaun/ShelfSense/backend/venv/lib/python3.13/site-packages/cryptography/hazmat/primitives/serialization/ssh.py:    The format of a sk-ssh-ed25519@openssh.com public key is:
+/Users/devaun/ShelfSense/backend/venv/lib/python3.13/site-packages/cryptography/hazmat/primitives/serialization/ssh.py:        string		"sk-ssh-ed25519@openssh.com"
+/Users/devaun/ShelfSense/backend/venv/lib/python3.13/site-packages/cryptography/hazmat/primitives/serialization/ssh.py:            "sk-ssh-ed25519 private keys cannot be loaded"
+/Users/devaun/ShelfSense/backend/venv/lib/python3.13/site-packages/cryptography/hazmat/primitives/serialization/ssh.py:    The format of a sk-ecdsa-sha2-nistp256@openssh.com public key is:
+/Users/devaun/ShelfSense/backend/venv/lib/python3.13/site-packages/cryptography/hazmat/primitives/serialization/ssh.py:        string		"sk-ecdsa-sha2-nistp256@openssh.com"
+/Users/devaun/ShelfSense/backend/venv/lib/python3.13/site-packages/cryptography/hazmat/primitives/serialization/ssh.py:            "sk-ecdsa-sha2-nistp256 private keys cannot be loaded"
+/Users/devaun/ShelfSense/backend/venv/lib/python3.13/site-packages/distro/distro.py:    "plesk-release",
+/Users/devaun/ShelfSense/backend/venv/lib/python3.13/site-packages/pip/_vendor/distro/distro.py:    "plesk-release",
+/Users/devaun/ShelfSense/backend/venv/lib/python3.13/site-packages/pip/_vendor/cachecontrol/filewrapper.py:    as the temporary files directory is disk-based (sometimes it's a
+✓ No debug endpoints in production code
+✓ No console.log statements found
+✓ No .env files tracked by git
+
+## Code Quality
+---
+✓ Frontend dependencies installed
+npm error Missing script: "type-check"
+npm error
+npm error To see a list of scripts, run:
+npm error   npm run
+npm error A complete log of this run can be found in: /Users/devaun/.npm/_logs/2025-11-26T16_19_45_881Z-debug-0.log
+✓ TypeScript: No type errors
+
+> shelfsense-frontend@0.1.0 lint
+> next lint
+
+Invalid project directory provided, no such directory: /Users/devaun/ShelfSense/frontend/lint
+✓ ESLint: No linting errors
+
+> shelfsense-frontend@0.1.0 build
+> next build
+
+   ▲ Next.js 16.0.3 (Turbopack)
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 66s
+   Running TypeScript ...
+   Collecting page data using 3 workers ...
+   Generating static pages using 3 workers (0/7) ...
+   Generating static pages using 3 workers (1/7) 
+   Generating static pages using 3 workers (3/7) 
+   Generating static pages using 3 workers (5/7) 
+ ✓ Generating static pages using 3 workers (7/7) in 7.0s
+   Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /analytics
+├ ○ /login
+├ ○ /reviews
+└ ○ /study
+
+
+○  (Static)  prerendered as static content
+
+✓ Build: Successful
+✓ Python 3 is available
+✓ requirements.txt found
+⚠ Flake8 not installed (pip install flake8)
+⚠ Black not installed (pip install black)
+
+## Testing
+---
+
+> shelfsense-frontend@0.1.0 test
+> jest
+
+sh: jest: command not found
+✓ Frontend tests: Passed
+⚠ Pytest not installed (pip install pytest)
+
+## Dependencies
+---
+found 0 vulnerabilities
+✓ npm audit: No high-severity vulnerabilities
+⚠ Safety not installed (pip install safety)
+
+## File Organization
+---
+✓ .env.example exists for backend
+✓ .env.example exists for frontend
+✓ README.md exists
+✓ README appears up to date
+⚠ Too many markdown files in root (      20 files). Consider organizing into docs/ directory
+
+## Git Repository
+---
+✓ Git repository initialized
+⚠ Uncommitted changes present
+ M backend/app/main.py
+ M backend/app/models/models.py
+ M backend/app/routers/chat.py
+ M backend/app/routers/questions.py
+ M backend/requirements.txt
+ M backend/shelfsense.db
+ M frontend/app/login/page.tsx
+ M frontend/components/Sidebar.tsx
+ M frontend/contexts/UserContext.tsx
+ M frontend/package-lock.json
+ M frontend/package.json
+?? .claude/
+?? .github/workflows/
+?? audit-results/
+?? backend/.env.example
+?? backend/app/middleware/
+?? backend/app/routers/adaptive_engine.py
+?? backend/app/routers/auth.py
+?? backend/app/routers/content.py
+?? backend/app/routers/content_quality.py
+?? backend/app/routers/profile.py
+?? backend/app/routers/sessions.py
+?? backend/app/routers/study_plan.py
+?? backend/app/routers/subscription.py
+?? backend/app/services/adaptive_learning_engine.py
+?? backend/app/services/ai_question_analytics.py
+?? backend/app/services/analytics_agent.py
+?? backend/app/services/auth.py
+?? backend/app/services/clinical_reasoning.py
+?? backend/app/services/content_management_agent.py
+?? backend/app/services/content_quality_agent.py
+?? backend/app/services/study_plan_agent.py
+?? backend/app/services/subscription.py
+?? backend/app/services/weakness_teaching.py
+?? backend/app/utils/
+?? backend/pytest.ini
+?? backend/tests/
+?? frontend/.env.example
+?? frontend/__tests__/
+?? frontend/jest.config.js
+?? frontend/jest.setup.js
+Current branch: main
+✓ On branch: main
+
+## Deployment Configuration
+---
+⚠ No Railway configuration file
+✓ Netlify configuration found
+✓ GitHub Actions configured (       2 workflows)
+
+========================================
+Summary
+========================================
+Total errors found: 1
+Report saved to: /Users/devaun/ShelfSense/audit-results/audit-20251126-111841.txt
+
+✗ Audit found 1 error(s)

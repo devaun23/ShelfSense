@@ -6,7 +6,7 @@ import { useUser } from '@/contexts/UserContext';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login, user, isLoading: userLoading } = useUser();
+  const { loginSimple, user, isLoading: userLoading } = useUser();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -42,7 +42,7 @@ export default function LoginPage() {
     }
 
     try {
-      await login(fullName, email);
+      await loginSimple(fullName, email);
       router.replace('/');
     } catch (err) {
       setError('Failed to register. Please try again.');

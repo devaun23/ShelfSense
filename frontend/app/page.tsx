@@ -4,8 +4,6 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
 import { useUser } from '@/contexts/UserContext';
-import { SPECIALTIES, FULL_PREP_MODE, Specialty } from '@/lib/specialties';
-import { SkeletonSpecialtyGrid, SkeletonStats } from '@/components/SkeletonLoader';
 
 export default function Home() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -14,7 +12,6 @@ export default function Home() {
   const [streak, setStreak] = useState(0);
   const [totalAttempts, setTotalAttempts] = useState(0);
   const [dueToday, setDueToday] = useState(0);
-  const [statsLoading, setStatsLoading] = useState(true);
   const router = useRouter();
   const { user, isLoading } = useUser();
 
@@ -32,7 +29,6 @@ export default function Home() {
   const loadUserStats = async () => {
     if (!user) return;
 
-    setStatsLoading(true);
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
@@ -54,17 +50,6 @@ export default function Home() {
       }
     } catch (error) {
       console.error('Error loading stats:', error);
-    } finally {
-      setStatsLoading(false);
-    }
-  };
-
-  const handleSpecialtyClick = (specialty: Specialty) => {
-    if (specialty.apiName) {
-      router.push(`/study?specialty=${encodeURIComponent(specialty.apiName)}`);
-    } else {
-      // Full prep mode - no specialty filter
-      router.push('/study');
     }
   };
 
@@ -96,8 +81,8 @@ export default function Home() {
         sidebarOpen ? 'md:ml-64' : 'ml-0'
       }`}>
         {/* Centered content area */}
-        <div className="flex flex-col items-center justify-start min-h-screen px-6 py-12 pt-16">
-          <div className="max-w-4xl w-full">
+        <div className="flex flex-col items-center justify-center min-h-screen px-6 py-12">
+          <div className="max-w-2xl w-full">
             {/* Greeting */}
             {user && (
               <h1 className="text-4xl md:text-5xl text-center text-white mb-4" style={{ fontFamily: 'var(--font-cormorant)' }}>
@@ -107,52 +92,28 @@ export default function Home() {
 
             {/* Subtitle */}
             <p className="text-center text-gray-500 mb-12">
-              Choose a shelf exam to study
+              Select a shelf exam from the sidebar to start studying
             </p>
 
-            {/* Specialty Grid - 8 shelves */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-              {SPECIALTIES.map((specialty) => (
-                <button
-                  key={specialty.id}
-                  onClick={() => handleSpecialtyClick(specialty)}
-                  className={`group p-6 rounded-2xl border ${specialty.borderColor} ${specialty.bgColor} hover:scale-[1.02] transition-all duration-200 text-left`}
-                >
-                  <div className="text-3xl mb-3">{specialty.icon}</div>
-                  <div className={`font-medium ${specialty.color}`}>
-                    {specialty.name}
+            {/* Main CTA - Start Studying */}
+            <div className="mb-8">
+              <button
+                onClick={() => router.push('/study')}
+                className="w-full text-left px-6 py-5 bg-gray-950 border border-gray-800 rounded-2xl hover:border-gray-700 transition-colors group"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="text-white text-lg">Start studying</span>
+                    <p className="text-gray-600 text-sm mt-1">Mixed questions from all topics</p>
                   </div>
-                  <div className="text-xs text-gray-600 mt-1">
-                    Shelf Exam
-                  </div>
-                </button>
-              ))}
-            </div>
-
-            {/* Step 2 CK Full Prep - Featured Card */}
-            <button
-              onClick={() => handleSpecialtyClick(FULL_PREP_MODE)}
-              className={`w-full p-6 rounded-2xl border-2 ${FULL_PREP_MODE.borderColor} ${FULL_PREP_MODE.bgColor} hover:scale-[1.01] transition-all duration-200 text-left mb-12`}
-            >
-              <div className="flex items-center gap-4">
-                <div className="text-4xl">{FULL_PREP_MODE.icon}</div>
-                <div>
-                  <div className={`text-xl font-medium ${FULL_PREP_MODE.color}`}>
-                    {FULL_PREP_MODE.name}
-                  </div>
-                  <div className="text-sm text-gray-500">
-                    Mixed questions from all specialties • Simulates the real exam
-                  </div>
-                </div>
-                <div className="ml-auto">
                   <div className="w-10 h-10 rounded-full bg-[#4169E1] flex items-center justify-center group-hover:bg-[#5B7FE8] transition-colors">
                     <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                     </svg>
                   </div>
                 </div>
-              </div>
-            </button>
+              </button>
+            </div>
 
             {/* Quick Action Buttons */}
             <div className="flex flex-wrap justify-center gap-2 mb-12">

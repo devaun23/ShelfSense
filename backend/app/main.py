@@ -2,7 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from app.database import engine, Base
-from app.routers import questions, analytics, users, reviews, chat
+from app.routers import questions, analytics, users, reviews, chat, adaptive_engine, auth, profile, sessions, subscription, content_quality, study_plan, content, batch_generation, testing_qa
+from app.middleware.rate_limiter import RateLimitMiddleware
 
 # Load environment variables
 load_dotenv()
@@ -29,12 +30,25 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Rate limiting middleware
+app.add_middleware(RateLimitMiddleware)
+
 # Include routers
-app.include_router(users.router)
+app.include_router(auth.router)  # Authentication
+app.include_router(profile.router)  # User profile & settings
+app.include_router(sessions.router)  # Session management
+app.include_router(users.router)  # Legacy user endpoints
 app.include_router(questions.router)
 app.include_router(analytics.router)
 app.include_router(reviews.router)  # Spaced repetition
 app.include_router(chat.router)  # AI chat
+app.include_router(adaptive_engine.router)  # Adaptive learning engine
+app.include_router(subscription.router)  # Subscription & monetization
+app.include_router(content_quality.router)  # Content quality management
+app.include_router(study_plan.router)  # Personalized study plans
+app.include_router(content.router)  # Content Management Agent
+app.include_router(batch_generation.router)  # Batch question generation
+app.include_router(testing_qa.router)  # Testing/QA Agent
 
 
 @app.get("/")
@@ -49,72 +63,3 @@ def root():
 @app.get("/health")
 def health_check():
     return {"status": "healthy"}
-
-
-@app.get("/debug/db-stats")
-def debug_db_stats():
-    """Debug endpoint to check database status"""
-    from app.database import SessionLocal, DATABASE_URL
-    from app.models.models import Question
-    import os
-
-    db = SessionLocal()
-    try:
-        nbme_count = db.query(Question).filter(
-            ~Question.source.like('%AI Generated%')
-        ).count()
-
-        ai_count = db.query(Question).filter(
-            Question.source.like('%AI Generated%')
-        ).count()
-
-        total = db.query(Question).count()
-
-        return {
-            "database_url": DATABASE_URL,
-            "openai_key_set": bool(os.getenv('OPENAI_API_KEY')),
-            "openai_key_prefix": os.getenv('OPENAI_API_KEY', '')[:15] + "..." if os.getenv('OPENAI_API_KEY') else None,
-            "nbme_questions": nbme_count,
-            "ai_questions": ai_count,
-            "total_questions": total
-        }
-    except Exception as e:
-        return {
-            "error": str(e),
-            "database_url": DATABASE_URL,
-            "openai_key_set": bool(os.getenv('OPENAI_API_KEY'))
-        }
-    finally:
-        db.close()
-
-
-@app.get("/debug/test-openai")
-def test_openai_connection():
-    """Test OpenAI API connection"""
-    import os
-    from openai import OpenAI
-
-    try:
-        client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
-
-        # Try a simple API call
-        response = client.chat.completions.create(
-            model="gpt-4o",
-            messages=[{"role": "user", "content": "Say 'test'"}],
-            max_tokens=10
-        )
-
-        return {
-            "status": "success",
-            "api_key_prefix": os.getenv('OPENAI_API_KEY', '')[:15] + "...",
-            "response": response.choices[0].message.content
-        }
-    except Exception as e:
-        import traceback
-        return {
-            "status": "error",
-            "error": str(e),
-            "traceback": traceback.format_exc(),
-            "api_key_set": bool(os.getenv('OPENAI_API_KEY')),
-            "api_key_prefix": os.getenv('OPENAI_API_KEY', '')[:15] + "..." if os.getenv('OPENAI_API_KEY') else None
-        }
