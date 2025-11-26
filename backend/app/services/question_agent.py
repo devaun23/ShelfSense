@@ -38,6 +38,10 @@ from app.services.adaptive import (
     get_targeting_prompt_context,
     get_user_difficulty_target
 )
+from app.services.ai_question_analytics import (
+    get_user_learning_stage,
+    get_generation_recommendations
+)
 
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
@@ -1165,3 +1169,164 @@ def generate_weakness_targeted_question(db: Session, user_id: str) -> Dict:
     )
 
     return question
+
+
+def generate_learning_stage_question(db: Session, user_id: str,
+                                     topic: Optional[str] = None) -> Dict:
+    """
+    Generate a question optimized for the user's learning stage.
+
+    Learning Stages determine generation parameters:
+    - New: Focus on foundational concepts, obvious distractors, detailed explanations
+    - Learning: Clinical application, moderate distractors, standard explanations
+    - Review: Integration, subtle distractors, concise explanations
+    - Mastered: Edge cases, highly plausible distractors, brief explanations
+
+    This is the recommended entry point for generating personalized questions.
+    It combines weakness targeting with learning stage optimization.
+
+    Args:
+        db: Database session
+        user_id: User ID
+        topic: Optional topic filter
+
+    Returns:
+        Generated question dictionary with learning stage optimization
+    """
+    # Get comprehensive recommendations
+    recommendations = get_generation_recommendations(db, user_id)
+    rec = recommendations["recommendation"]
+
+    # Extract parameters
+    specialty = rec.get("specialty") or get_weighted_specialty()
+    difficulty = rec.get("difficulty", "medium")
+    learning_stage = rec.get("learning_stage", "Learning")
+    generation_params = rec.get("generation_params", {})
+    error_to_target = rec.get("error_pattern_to_target")
+
+    # Use provided topic or get from recommendations/high-yield
+    if not topic:
+        topic = rec.get("topic") or get_high_yield_topic(specialty)
+
+    print(f"[LearningStage] Generating for {user_id}")
+    print(f"[LearningStage] Stage: {learning_stage}, Difficulty: {difficulty}")
+    print(f"[LearningStage] Target: {specialty} - {topic}")
+
+    # Build generation context based on learning stage
+    stage_context = _build_learning_stage_context(learning_stage, generation_params)
+
+    # If user has weakness data, use targeted generation
+    if recommendations["priority"] == "weakness_targeted":
+        # Get full weakness profile for targeted generation
+        weakness_profile = recommendations["context"]["weakness_profile"]
+        targeting_context = get_targeting_prompt_context(weakness_profile)
+
+        agent = QuestionGenerationAgent(db)
+        question = agent.generate_targeted_question(
+            specialty=specialty,
+            topic=topic,
+            weakness_profile=weakness_profile,
+            targeting_context=f"{targeting_context}\n\n{stage_context}"
+        )
+    else:
+        # Standard generation with learning stage adjustments
+        agent = QuestionGenerationAgent(db)
+        question = agent.generate_question(
+            specialty=specialty,
+            topic=topic,
+            difficulty=difficulty
+        )
+
+    # Add learning stage metadata
+    if question.get("metadata"):
+        question["metadata"]["learning_stage"] = learning_stage
+        question["metadata"]["generation_params"] = generation_params
+
+    return question
+
+
+def _build_learning_stage_context(stage: str, params: Dict) -> str:
+    """Build generation context based on learning stage parameters."""
+
+    stage_guidance = {
+        "New": """
+LEARNING STAGE: NEW LEARNER
+- Focus: Foundational concepts that build core knowledge
+- Distractors: Should be distinguishable with basic knowledge
+- Explanation: Provide detailed, educational explanations with clear teaching points
+- Complexity: Keep clinical scenarios straightforward
+- Goal: Build confidence and foundational understanding""",
+
+        "Learning": """
+LEARNING STAGE: ACTIVE LEARNING
+- Focus: Clinical application of concepts
+- Distractors: Represent common clinical considerations
+- Explanation: Standard depth with clinical reasoning pathways
+- Complexity: Moderate clinical complexity with some nuance
+- Goal: Develop clinical reasoning skills""",
+
+        "Review": """
+LEARNING STAGE: REVIEW/REINFORCEMENT
+- Focus: Integration of concepts across topics
+- Distractors: Subtle distinctions requiring careful analysis
+- Explanation: Concise, reinforcing key differentiating features
+- Complexity: Include pertinent negatives and complicating factors
+- Goal: Solidify knowledge and improve discrimination""",
+
+        "Mastered": """
+LEARNING STAGE: MASTERY/CHALLENGE
+- Focus: Edge cases, atypical presentations, advanced management
+- Distractors: Highly plausible alternatives requiring expert reasoning
+- Explanation: Brief, focusing on subtle clinical nuances
+- Complexity: Complex clinical scenarios with multiple factors
+- Goal: Challenge and expand expert-level knowledge"""
+    }
+
+    context = stage_guidance.get(stage, stage_guidance["Learning"])
+
+    # Add specific parameter guidance
+    if params:
+        context += f"\n\nSPECIFIC PARAMETERS:"
+        context += f"\n- Target accuracy: {params.get('target_accuracy', 0.65):.0%}"
+        context += f"\n- Distractor style: {params.get('distractor_style', 'moderate')}"
+        context += f"\n- Explanation depth: {params.get('explanation_depth', 'standard')}"
+
+    return context
+
+
+def generate_optimal_question(db: Session, user_id: Optional[str] = None,
+                              specialty: Optional[str] = None,
+                              topic: Optional[str] = None) -> Dict:
+    """
+    Generate the most appropriate question based on all available context.
+
+    This is the highest-level entry point that automatically selects
+    the best generation strategy:
+    1. If user_id provided: Use learning stage + weakness targeting
+    2. If specialty provided: Generate specialty-specific question
+    3. Otherwise: Generate using weighted specialty distribution
+
+    Args:
+        db: Database session
+        user_id: Optional user ID for personalization
+        specialty: Optional specialty filter
+        topic: Optional topic filter
+
+    Returns:
+        Generated question with optimal parameters
+    """
+    # If we have a user, generate personalized question
+    if user_id:
+        try:
+            return generate_learning_stage_question(db, user_id, topic)
+        except Exception as e:
+            print(f"[Optimal] Learning stage generation failed: {e}, falling back")
+
+    # Fallback to standard generation
+    if not specialty:
+        specialty = get_weighted_specialty()
+    if not topic:
+        topic = get_high_yield_topic(specialty)
+
+    agent = QuestionGenerationAgent(db)
+    return agent.generate_question(specialty=specialty, topic=topic)
