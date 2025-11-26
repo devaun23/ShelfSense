@@ -2,13 +2,16 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Sidebar from '@/components/Sidebar';
+import dynamic from 'next/dynamic';
 import AIChat from '@/components/AIChat';
 import ErrorAnalysis from '@/components/ErrorAnalysis';
 import QuestionRating from '@/components/QuestionRating';
 import { useUser } from '@/contexts/UserContext';
 import { getSpecialtyByApiName, FULL_PREP_MODE, Specialty } from '@/lib/specialties';
 import { SkeletonQuestion, LoadingSpinner } from '@/components/SkeletonLoader';
+
+// Dynamically import Sidebar to avoid useSearchParams SSR issues
+const Sidebar = dynamic(() => import('@/components/Sidebar'), { ssr: false });
 
 interface Question {
   id: string;
@@ -39,7 +42,13 @@ function StudyContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, isLoading: userLoading } = useUser();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  // Start with sidebar closed on mobile
+  const [sidebarOpen, setSidebarOpen] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth >= 768;
+    }
+    return true;
+  });
   const [question, setQuestion] = useState<Question | null>(null);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<Feedback | null>(null);
@@ -227,9 +236,9 @@ function StudyContent() {
         <main className={`min-h-screen bg-black text-white transition-all duration-300 ${
           sidebarOpen ? 'md:ml-64' : 'ml-0'
         }`}>
-          <div className="max-w-3xl mx-auto px-6 py-8 pt-16 pb-32">
+          <div className="max-w-3xl mx-auto px-4 md:px-6 py-6 md:py-8 pt-14 md:pt-16 pb-24 md:pb-32">
             {/* Loading header */}
-            <div className="flex items-center gap-3 mb-8">
+            <div className="flex flex-wrap items-center gap-3 mb-6 md:mb-8">
               <LoadingSpinner size="sm" />
               <span className="text-gray-500">
                 {specialtyParam ? `Generating ${specialtyParam} question...` : 'Loading question...'}
@@ -279,10 +288,10 @@ function StudyContent() {
         sidebarOpen ? 'md:ml-64' : 'ml-0'
       }`}>
         {/* Centered content container - Claude style */}
-        <div className="max-w-3xl mx-auto px-6 py-8 pt-16 pb-32">
+        <div className="max-w-3xl mx-auto px-4 md:px-6 py-6 md:py-8 pt-14 md:pt-16 pb-24 md:pb-32">
           {/* Header with specialty badge and timer */}
-          <div className="flex items-center justify-between mb-8 text-sm text-gray-600">
-            <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-6 md:mb-8 text-sm text-gray-600">
+            <div className="flex items-center gap-3 md:gap-4">
               {/* Back button */}
               <button
                 onClick={handleBackToHome}
@@ -296,14 +305,14 @@ function StudyContent() {
 
               {/* Specialty Badge */}
               {currentSpecialty ? (
-                <div className={`flex items-center gap-2 px-3 py-1 rounded-full ${currentSpecialty.bgColor} ${currentSpecialty.borderColor} border`}>
+                <div className={`flex items-center gap-2 px-2.5 md:px-3 py-1 rounded-full ${currentSpecialty.bgColor} ${currentSpecialty.borderColor} border`}>
                   <span>{currentSpecialty.icon}</span>
                   <span className={`text-xs font-medium ${currentSpecialty.color}`}>
                     {currentSpecialty.shortName}
                   </span>
                 </div>
               ) : (
-                <div className={`flex items-center gap-2 px-3 py-1 rounded-full ${FULL_PREP_MODE.bgColor} ${FULL_PREP_MODE.borderColor} border`}>
+                <div className={`flex items-center gap-2 px-2.5 md:px-3 py-1 rounded-full ${FULL_PREP_MODE.bgColor} ${FULL_PREP_MODE.borderColor} border`}>
                   <span>{FULL_PREP_MODE.icon}</span>
                   <span className={`text-xs font-medium ${FULL_PREP_MODE.color}`}>
                     Step 2 CK
@@ -311,14 +320,15 @@ function StudyContent() {
                 </div>
               )}
 
-              <span className="text-gray-600">Question {questionCount + 1}</span>
+              <span className="text-gray-600 text-xs md:text-sm">Q{questionCount + 1}</span>
               {!feedback && elapsedTime > 0 && (
-                <span className="text-gray-500">
+                <span className="text-gray-500 text-xs md:text-sm">
                   {Math.floor(elapsedTime / 60)}:{(elapsedTime % 60).toString().padStart(2, '0')}
                 </span>
               )}
             </div>
-            <div className="flex gap-3 text-xs text-gray-700">
+            {/* Keyboard hints - hidden on mobile */}
+            <div className="hidden md:flex gap-3 text-xs text-gray-700">
               {!feedback && (
                 <>
                   <span><kbd className="px-1.5 py-0.5 bg-gray-900 rounded text-gray-500">A-E</kbd></span>

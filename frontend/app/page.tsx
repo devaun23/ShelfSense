@@ -2,11 +2,20 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Sidebar from '@/components/Sidebar';
+import dynamic from 'next/dynamic';
 import { useUser } from '@/contexts/UserContext';
 
+// Dynamically import Sidebar to avoid useSearchParams SSR issues
+const Sidebar = dynamic(() => import('@/components/Sidebar'), { ssr: false });
+
 export default function Home() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  // Start with sidebar closed on mobile
+  const [sidebarOpen, setSidebarOpen] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth >= 768;
+    }
+    return true;
+  });
   const [predictedScore, setPredictedScore] = useState<number | null>(null);
   const [scoreConfidence, setScoreConfidence] = useState<number | null>(null);
   const [streak, setStreak] = useState(0);
@@ -77,7 +86,7 @@ export default function Home() {
         sidebarOpen ? 'md:ml-64' : 'ml-0'
       }`}>
         {/* Centered content area */}
-        <div className="flex flex-col items-center justify-center min-h-screen px-6 py-12">
+        <div className="flex flex-col items-center justify-center min-h-screen px-4 md:px-6 py-8 md:py-12">
           <div className="max-w-2xl w-full">
             {/* Greeting */}
             {user && (
@@ -158,7 +167,7 @@ export default function Home() {
             {/* Stats section - minimal, centered */}
             {(predictedScore || totalAttempts > 0 || streak > 0) && (
               <div className="border-t border-gray-900 pt-8">
-                <div className="flex justify-center gap-12 text-center">
+                <div className="flex flex-wrap justify-center gap-8 md:gap-12 text-center">
                   {/* Predicted Score */}
                   {predictedScore && (
                     <div>

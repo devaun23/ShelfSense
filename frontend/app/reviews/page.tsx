@@ -2,9 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Sidebar from '@/components/Sidebar';
+import dynamic from 'next/dynamic';
 import { useUser } from '@/contexts/UserContext';
 import CalendarHeatmap from '@/components/CalendarHeatmap';
+
+// Dynamically import Sidebar to avoid useSearchParams SSR issues
+const Sidebar = dynamic(() => import('@/components/Sidebar'), { ssr: false });
 
 interface ReviewStats {
   total_due_today: number;
@@ -53,7 +56,13 @@ interface HeatmapResponse {
 export default function ReviewsPage() {
   const router = useRouter();
   const { user, isLoading: userLoading } = useUser();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  // Start with sidebar closed on mobile
+  const [sidebarOpen, setSidebarOpen] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth >= 768;
+    }
+    return true;
+  });
   const [stats, setStats] = useState<ReviewStats | null>(null);
   const [upcoming, setUpcoming] = useState<DayReviews[]>([]);
   const [heatmapData, setHeatmapData] = useState<HeatmapResponse | null>(null);
@@ -159,62 +168,62 @@ export default function ReviewsPage() {
       <main className={`min-h-screen bg-black text-white transition-all duration-300 ${
         sidebarOpen ? 'md:ml-64' : 'ml-0'
       }`}>
-        <div className="max-w-6xl mx-auto px-8 py-8 pt-20">
+        <div className="max-w-6xl mx-auto px-4 md:px-8 py-6 md:py-8 pt-14 md:pt-20">
           {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-2" style={{ fontFamily: 'var(--font-cormorant)' }}>
+          <div className="mb-6 md:mb-8">
+            <h1 className="text-3xl md:text-4xl font-bold mb-2" style={{ fontFamily: 'var(--font-cormorant)' }}>
               Review Calendar
             </h1>
-            <p className="text-gray-400">
+            <p className="text-gray-400 text-sm md:text-base">
               Spaced repetition keeps questions fresh in your memory
             </p>
           </div>
 
           {/* Stats Overview */}
           {stats && (
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
               {/* Due Today */}
-              <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
-                <div className="text-3xl font-bold text-emerald-400 mb-2">
+              <div className="bg-gray-900 border border-gray-800 rounded-lg p-4 md:p-6">
+                <div className="text-2xl md:text-3xl font-bold text-emerald-400 mb-1 md:mb-2">
                   {stats.total_due_today}
                 </div>
-                <div className="text-sm text-gray-400">Due Today</div>
+                <div className="text-xs md:text-sm text-gray-400">Due Today</div>
               </div>
 
               {/* Upcoming */}
-              <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
-                <div className="text-3xl font-bold text-blue-400 mb-2">
+              <div className="bg-gray-900 border border-gray-800 rounded-lg p-4 md:p-6">
+                <div className="text-2xl md:text-3xl font-bold text-blue-400 mb-1 md:mb-2">
                   {stats.total_upcoming}
                 </div>
-                <div className="text-sm text-gray-400">Upcoming</div>
+                <div className="text-xs md:text-sm text-gray-400">Upcoming</div>
               </div>
 
               {/* Learning */}
-              <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
-                <div className="text-3xl font-bold text-yellow-400 mb-2">
+              <div className="bg-gray-900 border border-gray-800 rounded-lg p-4 md:p-6">
+                <div className="text-2xl md:text-3xl font-bold text-yellow-400 mb-1 md:mb-2">
                   {stats.by_stage.Learning + stats.by_stage.New}
                 </div>
-                <div className="text-sm text-gray-400">Learning</div>
+                <div className="text-xs md:text-sm text-gray-400">Learning</div>
               </div>
 
               {/* Mastered */}
-              <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
-                <div className="text-3xl font-bold text-purple-400 mb-2">
+              <div className="bg-gray-900 border border-gray-800 rounded-lg p-4 md:p-6">
+                <div className="text-2xl md:text-3xl font-bold text-purple-400 mb-1 md:mb-2">
                   {stats.by_stage.Mastered}
                 </div>
-                <div className="text-sm text-gray-400">Mastered</div>
+                <div className="text-xs md:text-sm text-gray-400">Mastered</div>
               </div>
             </div>
           )}
 
           {/* Start Reviews Button */}
           {stats && stats.total_due_today > 0 && (
-            <div className="mb-8">
+            <div className="mb-6 md:mb-8">
               <button
                 onClick={startReviews}
-                className="px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors duration-200 text-lg font-semibold"
+                className="w-full md:w-auto px-6 md:px-8 py-3 md:py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors duration-200 text-base md:text-lg font-semibold"
               >
-                Start Today's Reviews ({stats.total_due_today})
+                Start Today&apos;s Reviews ({stats.total_due_today})
               </button>
             </div>
           )}
@@ -305,34 +314,34 @@ export default function ReviewsPage() {
           {activeTab === 'upcoming' && (
             <>
               {/* Days Filter */}
-              <div className="mb-6 flex items-center justify-between">
-                <h2 className="text-xl font-bold" style={{ fontFamily: 'var(--font-cormorant)' }}>
+              <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <h2 className="text-lg md:text-xl font-bold" style={{ fontFamily: 'var(--font-cormorant)' }}>
                   Scheduled Reviews
                 </h2>
                 <div className="flex gap-2">
                   <button
                     onClick={() => setDaysToShow(7)}
-                    className={`px-4 py-2 rounded-lg transition-colors ${
+                    className={`px-3 md:px-4 py-1.5 md:py-2 text-sm rounded-lg transition-colors ${
                       daysToShow === 7 ? 'bg-[#1E3A5F] text-white' : 'bg-gray-900 text-gray-400 hover:text-white'
                     }`}
                   >
-                    7 days
+                    7d
                   </button>
                   <button
                     onClick={() => setDaysToShow(14)}
-                    className={`px-4 py-2 rounded-lg transition-colors ${
+                    className={`px-3 md:px-4 py-1.5 md:py-2 text-sm rounded-lg transition-colors ${
                       daysToShow === 14 ? 'bg-[#1E3A5F] text-white' : 'bg-gray-900 text-gray-400 hover:text-white'
                     }`}
                   >
-                    14 days
+                    14d
                   </button>
                   <button
                     onClick={() => setDaysToShow(30)}
-                    className={`px-4 py-2 rounded-lg transition-colors ${
+                    className={`px-3 md:px-4 py-1.5 md:py-2 text-sm rounded-lg transition-colors ${
                       daysToShow === 30 ? 'bg-[#1E3A5F] text-white' : 'bg-gray-900 text-gray-400 hover:text-white'
                     }`}
                   >
-                    30 days
+                    30d
                   </button>
                 </div>
               </div>
@@ -348,16 +357,16 @@ export default function ReviewsPage() {
                 {upcoming.map((day) => (
                   <div
                     key={day.date}
-                    className="bg-gray-900 border border-gray-800 rounded-lg p-6 hover:border-gray-700 transition-colors"
+                    className="bg-gray-900 border border-gray-800 rounded-lg p-4 md:p-6 hover:border-gray-700 transition-colors"
                   >
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center justify-between mb-3 md:mb-4">
                       <div>
-                        <div className="text-lg font-semibold">{formatDate(day.date)}</div>
-                        <div className="text-sm text-gray-400">
-                          {new Date(day.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                        <div className="text-base md:text-lg font-semibold">{formatDate(day.date)}</div>
+                        <div className="text-xs md:text-sm text-gray-400">
+                          {new Date(day.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                         </div>
                       </div>
-                      <div className="text-3xl font-bold text-blue-400">
+                      <div className="text-2xl md:text-3xl font-bold text-blue-400">
                         {day.count}
                       </div>
                     </div>

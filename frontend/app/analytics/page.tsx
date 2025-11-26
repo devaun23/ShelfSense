@@ -1,10 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
-import Sidebar from '@/components/Sidebar';
+import dynamic from 'next/dynamic';
 import { useUser } from '@/contexts/UserContext';
 import { SPECIALTIES } from '@/lib/specialties';
+
+// Dynamically import Sidebar to avoid useSearchParams SSR issues
+const Sidebar = dynamic(() => import('@/components/Sidebar'), { ssr: false });
+const PeerComparison = dynamic(() => import('@/components/PeerComparison'), { ssr: false });
 import {
   LineChart,
   Line,
@@ -106,12 +110,18 @@ const ERROR_TYPE_LABELS: Record<string, string> = {
   time_pressure: 'Time Pressure'
 };
 
-type TabType = 'performance' | 'specialties' | 'insights';
+type TabType = 'performance' | 'specialties' | 'insights' | 'peers';
 
 export default function AnalyticsPage() {
   const router = useRouter();
   const { user, isLoading: userLoading } = useUser();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  // Start with sidebar closed on mobile
+  const [sidebarOpen, setSidebarOpen] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth >= 768;
+    }
+    return true;
+  });
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [specialtyData, setSpecialtyData] = useState<SpecialtyBreakdown | null>(null);
   const [loading, setLoading] = useState(true);
@@ -285,22 +295,22 @@ export default function AnalyticsPage() {
       <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
 
       <main className={`min-h-screen bg-black text-white transition-all duration-300 ${sidebarOpen ? 'md:ml-64' : 'ml-0'}`}>
-        <div className="max-w-4xl mx-auto px-6 py-8 pt-16">
+        <div className="max-w-4xl mx-auto px-4 md:px-6 py-6 md:py-8 pt-14 md:pt-16">
 
           {/* Hero Section - Predicted Score */}
-          <div className="text-center mb-10">
-            <p className="text-gray-500 text-sm mb-2 uppercase tracking-wider">
+          <div className="text-center mb-8 md:mb-10">
+            <p className="text-gray-500 text-xs md:text-sm mb-2 uppercase tracking-wider">
               Predicted Step 2 CK Score
             </p>
-            <div className="flex items-baseline justify-center gap-3 mb-3">
+            <div className="flex items-baseline justify-center gap-2 md:gap-3 mb-3">
               <span
-                className="text-7xl font-semibold text-white"
+                className="text-5xl md:text-7xl font-semibold text-white"
                 style={{ fontFamily: 'var(--font-cormorant)' }}
               >
                 {summary.predicted_score || '---'}
               </span>
               {summary.confidence_interval && (
-                <span className="text-2xl text-gray-600">±{summary.confidence_interval}</span>
+                <span className="text-xl md:text-2xl text-gray-600">±{summary.confidence_interval}</span>
               )}
             </div>
             <div className={`flex items-center justify-center gap-2 text-sm ${getTrendColor(score_details.score_trajectory)}`}>
@@ -310,7 +320,7 @@ export default function AnalyticsPage() {
           </div>
 
           {/* Stats Row */}
-          <div className="flex justify-center gap-10 border-t border-gray-900 pt-8 mb-10">
+          <div className="flex flex-wrap justify-center gap-6 md:gap-10 border-t border-gray-900 pt-6 md:pt-8 mb-8 md:mb-10">
             <div className="text-center">
               <p className="text-2xl font-semibold text-white" style={{ fontFamily: 'var(--font-cormorant)' }}>
                 {summary.total_questions}
@@ -339,7 +349,7 @@ export default function AnalyticsPage() {
 
           {/* Tab Navigation */}
           <div className="flex justify-center gap-2 mb-8">
-            {(['performance', 'specialties', 'insights'] as TabType[]).map((tab) => (
+            {(['performance', 'specialties', 'insights', 'peers'] as TabType[]).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -484,7 +494,7 @@ export default function AnalyticsPage() {
 
           {/* Specialties Tab */}
           {activeTab === 'specialties' && specialtyData && (
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
               {SPECIALTIES.map((specialty) => {
                 const stats = specialtyData.specialties[specialty.apiName];
 
@@ -534,7 +544,7 @@ export default function AnalyticsPage() {
                   Study Patterns
                 </h3>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4 mb-6">
                   <div className="text-center p-4 bg-gray-800/50 rounded-xl">
                     <p className="text-2xl font-semibold text-white">
                       {Math.round(behavioral_insights.time_analysis.avg_time_overall || 0)}s
@@ -603,6 +613,21 @@ export default function AnalyticsPage() {
                   <p className="py-8 text-center text-gray-500">No error analysis data yet</p>
                 )}
               </div>
+            </div>
+          )}
+
+          {/* Peers Tab */}
+          {activeTab === 'peers' && user && (
+            <div>
+              <div className="mb-6">
+                <h3 className="text-lg font-medium text-white mb-2" style={{ fontFamily: 'var(--font-cormorant)' }}>
+                  Peer Comparison
+                </h3>
+                <p className="text-sm text-gray-500">
+                  See how you compare to other ShelfSense users (anonymized data)
+                </p>
+              </div>
+              <PeerComparison userId={user.userId} />
             </div>
           )}
 

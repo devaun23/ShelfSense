@@ -41,6 +41,25 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
   // Get current specialty from URL
   const currentSpecialty = searchParams.get('specialty');
 
+  // Auto-close sidebar on mobile when navigating
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768 && isOpen) {
+        onToggle();
+      }
+    };
+    // Close on route change for mobile
+    if (typeof window !== 'undefined' && window.innerWidth < 768 && isOpen) {
+      // Small delay to allow navigation to start
+      const timer = setTimeout(() => {
+        if (window.innerWidth < 768) {
+          onToggle();
+        }
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [pathname, searchParams]);
+
   // Get user initials for avatar
   const getInitials = (name: string) => {
     return name
@@ -276,11 +295,11 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
         )}
       </aside>
 
-      {/* Toggle Button */}
+      {/* Toggle Button - better mobile positioning */}
       <button
         onClick={onToggle}
-        className={`fixed top-4 z-[60] p-2 text-gray-400 hover:text-white hover:bg-gray-900 rounded-lg transition-all ${
-          isOpen ? 'left-[17rem]' : 'left-4'
+        className={`fixed top-4 z-[60] p-2.5 text-gray-400 hover:text-white hover:bg-gray-900 rounded-lg transition-all ${
+          isOpen ? 'left-[17rem]' : 'left-3 md:left-4'
         }`}
         aria-label={isOpen ? 'Close sidebar' : 'Open sidebar'}
       >
