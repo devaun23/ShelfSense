@@ -100,17 +100,18 @@ class TestRegistration:
 
     def test_register_weak_password_rejected(self, client):
         """Test that weak passwords are rejected"""
+        # Use a password that passes Pydantic min_length=8 but fails business logic
         response = client.post(
             "/api/auth/register",
             json={
                 "full_name": "Weak Pass User",
                 "email": "weak@test.com",
-                "password": "weak"  # Too short, no uppercase, no number
+                "password": "nouppercase1"  # 12 chars but no uppercase
             }
         )
 
         assert response.status_code == 400
-        assert "8 characters" in response.json()["detail"]
+        assert "uppercase" in response.json()["detail"]
 
     def test_register_password_no_uppercase(self, client):
         """Test password without uppercase is rejected"""
@@ -375,6 +376,8 @@ class TestTokenRefresh:
 
     def test_refresh_token_success(self, client, db):
         """Test successful token refresh"""
+        import time
+
         # Register to get tokens
         response = client.post(
             "/api/auth/register",
@@ -386,6 +389,9 @@ class TestTokenRefresh:
         )
         tokens = response.json()["tokens"]
 
+        # Wait 1 second so new tokens have different timestamps
+        time.sleep(1)
+
         # Refresh tokens
         refresh_response = client.post(
             "/api/auth/refresh",
@@ -396,7 +402,7 @@ class TestTokenRefresh:
         new_tokens = refresh_response.json()
         assert new_tokens["access_token"] is not None
         assert new_tokens["refresh_token"] is not None
-        # New tokens should be different
+        # New tokens should be different (different iat timestamp after sleep)
         assert new_tokens["access_token"] != tokens["access_token"]
 
     def test_refresh_invalid_token(self, client):
@@ -527,16 +533,18 @@ class TestPasswordChange:
         )
         tokens = response.json()["tokens"]
 
+        # Use password that passes Pydantic min_length=8 but fails business logic
         change_response = client.put(
             "/api/auth/me/password",
             headers={"Authorization": f"Bearer {tokens['access_token']}"},
             json={
                 "current_password": "StrongPass123",
-                "new_password": "weak"
+                "new_password": "nouppercase1"  # No uppercase letter
             }
         )
 
         assert change_response.status_code == 400
+        assert "uppercase" in change_response.json()["detail"]
 
 
 class TestSimpleRegistration:

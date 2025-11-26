@@ -315,9 +315,10 @@ class ContentQualityAgent:
         return results
 
     def _validate_single_question(self, question: Question) -> Dict:
-        """Validate a single question's explanation quality"""
+        """Validate a single question's explanation quality against full EXPLANATION_FRAMEWORK.md"""
         issues = []
         suggestions = []
+        import re
 
         explanation = question.explanation
         choices = question.choices
@@ -343,27 +344,66 @@ class ContentQualityAgent:
                 "quality_score": 20
             }
 
-        # Validate explanation structure
-        required_fields = ["principle", "clinical_reasoning", "correct_answer_explanation"]
-
-        for field in required_fields:
+        # === CORE REQUIRED FIELDS ===
+        core_required = ["type", "principle", "clinical_reasoning", "correct_answer_explanation", "distractor_explanations"]
+        for field in core_required:
             if field not in explanation or not explanation[field]:
-                issues.append(f"Missing required field: {field}")
+                issues.append(f"Missing core field: {field}")
+
+        # === ENHANCED REQUIRED FIELDS (per EXPLANATION_FRAMEWORK.md) ===
+        enhanced_required = ["quick_answer", "deep_dive", "memory_hooks", "step_by_step"]
+        for field in enhanced_required:
+            if field not in explanation or not explanation[field]:
+                suggestions.append(f"Missing enhanced field: {field}")
 
         # Check for explanation type
         explanation_type = explanation.get("type", "")
         if not explanation_type:
             issues.append("Missing explanation type classification")
-            suggestions.append("Add TYPE_A through TYPE_F classification")
         elif explanation_type not in EXPLANATION_TYPES:
             issues.append(f"Invalid explanation type: {explanation_type}")
 
-        # Check distractor explanations
-        distractor_explanations = explanation.get("distractor_explanations", {})
+        # === QUICK_ANSWER CHECK ===
+        quick_answer = explanation.get("quick_answer", "")
+        if quick_answer:
+            word_count = len(quick_answer.split())
+            if word_count > 30:
+                issues.append(f"quick_answer too long ({word_count} words, max 30)")
+        else:
+            suggestions.append("Add quick_answer (30-word rapid review)")
 
+        # === ARROW NOTATION CHECK ===
+        principle = explanation.get("principle", "")
+        clinical_reasoning = explanation.get("clinical_reasoning", "")
+        combined_text = principle + " " + clinical_reasoning
+
+        if "→" not in combined_text:
+            issues.append("Missing arrow notation (→) in principle/reasoning")
+            suggestions.append("Use → to show decision paths (e.g., 'BP <90 → shock → fluids')")
+
+        # === EXPLICIT THRESHOLDS CHECK ===
+        has_explicit_threshold = (
+            bool(re.search(r'[<>≥≤]\s*\d+', combined_text)) or
+            bool(re.search(r'\d+\s*(mg|mcg|mL|mmHg|bpm|%|hours?|days?)', combined_text))
+        )
+        if not has_explicit_threshold:
+            suggestions.append("Add explicit thresholds (e.g., 'BP 80/50 (systolic <90)')")
+
+        # === VAGUE TERMS CHECK ===
+        vague_terms = ['hypotensive', 'tachycardic', 'bradycardic', 'elevated', 'decreased', 'abnormal']
+        found_vague = []
+        for term in vague_terms:
+            if term in combined_text.lower():
+                # Check if it's followed by a number
+                if not re.search(rf'{term}[^.]*\d', combined_text.lower()):
+                    found_vague.append(term)
+        if found_vague:
+            issues.append(f"Vague terms without numbers: {found_vague[:2]}")
+
+        # === DISTRACTOR EXPLANATIONS CHECK ===
+        distractor_explanations = explanation.get("distractor_explanations", {})
         if not distractor_explanations:
             issues.append("Missing distractor explanations")
-            suggestions.append("Add explanations for each wrong answer")
         else:
             choice_letters = ["A", "B", "C", "D", "E"][:len(choices)]
             for letter in choice_letters:
@@ -372,32 +412,54 @@ class ContentQualityAgent:
                 if letter not in distractor_explanations:
                     issues.append(f"Missing explanation for choice {letter}")
                 elif len(str(distractor_explanations[letter])) < 20:
-                    issues.append(f"Explanation for choice {letter} is too brief")
+                    suggestions.append(f"Distractor {letter} explanation too brief")
 
-        # Check principle quality
-        principle = explanation.get("principle", "")
-        if principle and len(principle) > 300:
-            issues.append("Principle statement is too long")
+        # === PRINCIPLE QUALITY CHECK ===
+        if principle:
+            if len(principle) > 300:
+                issues.append("Principle too long (max 300 chars)")
+            # Check for decision rule language
+            decision_keywords = ['requires', 'indicates', 'confirms', 'when', 'if', '→']
+            has_decision_rule = any(kw in principle.lower() for kw in decision_keywords)
+            if not has_decision_rule:
+                suggestions.append("Principle should state clear decision rule")
 
-        # Check clinical reasoning
-        clinical_reasoning = explanation.get("clinical_reasoning", "")
-        if clinical_reasoning:
-            if "→" not in clinical_reasoning and "->" not in clinical_reasoning:
-                suggestions.append("Clinical reasoning should use arrow notation")
+        # === DEEP_DIVE CHECK ===
+        deep_dive = explanation.get("deep_dive", {})
+        if deep_dive:
+            if not deep_dive.get("pathophysiology"):
+                suggestions.append("deep_dive missing pathophysiology")
+            if not deep_dive.get("clinical_pearls"):
+                suggestions.append("deep_dive missing clinical_pearls")
 
-        # Calculate quality score
-        total_checks = 10
-        passed_checks = total_checks - len(issues)
-        quality_score = max(0, (passed_checks / total_checks) * 100)
+        # === STEP_BY_STEP CHECK ===
+        step_by_step = explanation.get("step_by_step", [])
+        if step_by_step and len(step_by_step) < 2:
+            suggestions.append("step_by_step should have at least 2-3 steps")
+
+        # === CALCULATE QUALITY SCORE ===
+        # Core checks (60 points possible)
+        core_checks = 6  # type, principle, reasoning, correct_expl, distractors, arrow notation
+        core_passed = core_checks - len([i for i in issues if not i.startswith("Vague")])
+
+        # Enhanced checks (40 points possible)
+        enhanced_checks = 4  # quick_answer, deep_dive, memory_hooks, step_by_step
+        enhanced_present = sum(1 for f in enhanced_required if explanation.get(f))
+
+        core_score = (core_passed / core_checks) * 60
+        enhanced_score = (enhanced_present / enhanced_checks) * 40
+        quality_score = max(0, core_score + enhanced_score)
 
         return {
-            "valid": len(issues) == 0,
+            "valid": len(issues) == 0 and len(suggestions) <= 2,
             "quality_score": round(quality_score, 1),
             "issues": issues,
             "suggestions": suggestions,
             "needs_regeneration": quality_score < 40,
             "explanation_type": explanation_type,
-            "has_distractor_explanations": bool(distractor_explanations)
+            "has_distractor_explanations": bool(distractor_explanations),
+            "has_enhanced_elements": enhanced_present >= 3,
+            "has_arrow_notation": "→" in combined_text
         }
 
     def _log_validation_result(self, question_id: str, validation: Dict):
@@ -491,10 +553,10 @@ Return JSON:
         return json.loads(response)
 
     def _generate_framework_explanation(self, question: Question, explanation_type: str) -> Optional[Dict]:
-        """Generate a complete explanation following the framework"""
+        """Generate a complete explanation following the full EXPLANATION_FRAMEWORK.md"""
         type_info = EXPLANATION_TYPES.get(explanation_type, {})
 
-        prompt = f"""Generate a high-quality educational explanation for this USMLE question.
+        prompt = f"""Generate a high-quality educational explanation for this USMLE question following the ShelfSense framework.
 
 VIGNETTE:
 {question.vignette}
@@ -510,29 +572,64 @@ TYPE INFO: {json.dumps(type_info, indent=2)}
 QUALITY RULES:
 {json.dumps(EXPLANATION_QUALITY_RULES, indent=2)}
 
-Generate a complete explanation following this exact JSON structure:
+Generate a COMPLETE explanation with ALL these fields:
 {{
     "type": "{explanation_type}",
-    "principle": "One sentence with the exact decision rule (max 50 words). Use the pattern: {type_info.get('pattern', '')}",
-    "clinical_reasoning": "2-3 sentences using arrow notation (→) to show reasoning flow. Define all numbers explicitly. Example: 'BP 80/50 (systolic <90) → septic shock → source control required'",
-    "correct_answer_explanation": "Why the correct answer ({question.answer_key}) is right. Include pathophysiology and clinical logic. Use → notation.",
+
+    "quick_answer": "30-word MAX rapid review summary. Example: 'Septic shock from cholecystitis needs urgent surgery, not just antibiotics.'",
+
+    "principle": "One sentence with EXACT decision rule using arrow notation (→). Pattern: {type_info.get('pattern', '')}. Example: 'BP <90 with lactate >4 → septic shock → source control required'",
+
+    "clinical_reasoning": "2-5 sentences using → notation. EVERY number must be defined. Example: 'BP 76/50 (systolic <90) and HR 128 (>100) → hemodynamic instability → septic shock. Low CVP (2 mmHg, normal 3-8) after fluids → vasodilation, not hypovolemia.'",
+
+    "correct_answer_explanation": "Why {question.answer_key} is right. Include pathophysiology and clinical logic with → notation.",
+
     "distractor_explanations": {{
-        "A": "Why A is wrong for THIS patient (skip if A is correct)",
-        "B": "Why B is wrong for THIS patient (skip if B is correct)",
-        "C": "Why C is wrong for THIS patient (skip if C is correct)",
-        "D": "Why D is wrong for THIS patient (skip if D is correct)",
-        "E": "Why E is wrong for THIS patient (skip if E is correct)"
+        "A": "Why A is wrong for THIS patient (15-20 words, skip if A is correct)",
+        "B": "Why B is wrong for THIS patient (15-20 words, skip if B is correct)",
+        "C": "Why C is wrong for THIS patient (15-20 words, skip if C is correct)",
+        "D": "Why D is wrong for THIS patient (15-20 words, skip if D is correct)",
+        "E": "Why E is wrong for THIS patient (15-20 words, skip if E is correct)"
     }},
-    "educational_objective": "One sentence: what the student should learn",
-    "concept": "Topic area (e.g., 'Cardiology', 'Acute Care Surgery')"
+
+    "deep_dive": {{
+        "pathophysiology": "Why this happens at biological/mechanistic level (2-3 sentences)",
+        "differential_comparison": "How to distinguish from similar conditions",
+        "clinical_pearls": ["High-yield fact 1", "Board-relevant detail 2", "Clinical tip 3"]
+    }},
+
+    "step_by_step": [
+        {{"step": 1, "action": "First step", "rationale": "Why this step"}},
+        {{"step": 2, "action": "Next step", "rationale": "Why this step"}},
+        {{"step": 3, "action": "Final step", "rationale": "Why this step"}}
+    ],
+
+    "memory_hooks": {{
+        "analogy": "Relatable comparison to remember the concept. Example: 'You can't put out a fire while fuel is still burning'",
+        "mnemonic": "If applicable (e.g., MUDPILES for anion gap acidosis)",
+        "clinical_story": "Brief memorable case pattern"
+    }},
+
+    "common_traps": [
+        {{
+            "trap": "What students commonly get wrong",
+            "why_wrong": "Why this thinking fails",
+            "correct_thinking": "The right approach"
+        }}
+    ],
+
+    "educational_objective": "One sentence: what decision-making pattern this teaches",
+    "concept": "Topic area (e.g., 'Cardiology', 'Acute Care Surgery')",
+    "related_topics": ["Related topic 1", "Related topic 2"]
 }}
 
-IMPORTANT:
-- Principle must be a clear, actionable decision rule
-- All numbers must be defined (what makes them abnormal)
-- Use → to show causation and reasoning flow
-- Each distractor must explain why it's wrong for THIS specific patient
-- Keep total under 200 words"""
+CRITICAL QUALITY REQUIREMENTS:
+1. Use → for ALL causal relationships and decision paths
+2. EVERY number must have context (e.g., "BP 80/50 (systolic <90)" not just "hypotensive")
+3. quick_answer MUST be ≤30 words
+4. Principle must be one clear, actionable decision rule
+5. Core explanation (principle + clinical_reasoning) under 200 words
+6. Each distractor explanation specific to THIS patient, not generic"""
 
         try:
             response = self._call_llm(

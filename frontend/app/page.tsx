@@ -70,7 +70,7 @@ export default function Home() {
     return (
       <main className="min-h-screen bg-black text-white flex items-center justify-center">
         <div className="animate-pulse">
-          <h1 className="text-4xl font-light" style={{ fontFamily: 'var(--font-cormorant)' }}>
+          <h1 className="text-4xl font-light" style={{ fontFamily: 'var(--font-serif)' }}>
             ShelfSense
           </h1>
         </div>
@@ -90,7 +90,7 @@ export default function Home() {
           <div className="max-w-2xl w-full">
             {/* Greeting */}
             {user && (
-              <h1 className="text-4xl md:text-5xl text-center text-white mb-4" style={{ fontFamily: 'var(--font-cormorant)' }}>
+              <h1 className="text-4xl md:text-5xl text-center text-white mb-4" style={{ fontFamily: 'var(--font-serif)' }}>
                 {getGreeting()}, {user.firstName}
               </h1>
             )}
@@ -171,7 +171,7 @@ export default function Home() {
                   {/* Predicted Score */}
                   {predictedScore && (
                     <div>
-                      <div className="text-3xl font-semibold text-white mb-1" style={{ fontFamily: 'var(--font-cormorant)' }}>
+                      <div className="text-3xl font-semibold text-white mb-1" style={{ fontFamily: 'var(--font-serif)' }}>
                         {predictedScore}
                         {scoreConfidence && (
                           <span className="text-lg text-gray-600 ml-1">±{scoreConfidence}</span>
@@ -186,7 +186,7 @@ export default function Home() {
                   {/* Streak */}
                   {streak > 0 && (
                     <div>
-                      <div className="text-3xl font-semibold text-[#4169E1] mb-1" style={{ fontFamily: 'var(--font-cormorant)' }}>
+                      <div className="text-3xl font-semibold text-[#4169E1] mb-1" style={{ fontFamily: 'var(--font-serif)' }}>
                         {streak}
                       </div>
                       <div className="text-xs text-gray-600 uppercase tracking-wider">
@@ -198,7 +198,7 @@ export default function Home() {
                   {/* Questions Completed */}
                   {totalAttempts > 0 && (
                     <div>
-                      <div className="text-3xl font-semibold text-white mb-1" style={{ fontFamily: 'var(--font-cormorant)' }}>
+                      <div className="text-3xl font-semibold text-white mb-1" style={{ fontFamily: 'var(--font-serif)' }}>
                         {totalAttempts}
                       </div>
                       <div className="text-xs text-gray-600 uppercase tracking-wider">

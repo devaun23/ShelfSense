@@ -5,6 +5,7 @@ Handles password hashing, JWT token generation, and session management.
 import os
 import re
 import secrets
+import hashlib
 from datetime import datetime, timedelta
 from typing import Optional, Tuple
 
@@ -56,6 +57,33 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
         True if password matches, False otherwise
     """
     return pwd_context.verify(plain_password, hashed_password)
+
+
+def hash_token(token: str) -> str:
+    """
+    Hash a token using SHA256 (for refresh tokens which exceed bcrypt's 72 byte limit).
+
+    Args:
+        token: Plain text token (e.g., JWT refresh token)
+
+    Returns:
+        SHA256 hash of the token
+    """
+    return hashlib.sha256(token.encode()).hexdigest()
+
+
+def verify_token_hash(plain_token: str, hashed_token: str) -> bool:
+    """
+    Verify a token against its SHA256 hash.
+
+    Args:
+        plain_token: Plain text token
+        hashed_token: SHA256 hash to verify against
+
+    Returns:
+        True if token matches, False otherwise
+    """
+    return hashlib.sha256(plain_token.encode()).hexdigest() == hashed_token
 
 
 def validate_password_strength(password: str) -> Tuple[bool, str]:

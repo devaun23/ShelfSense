@@ -20,6 +20,7 @@ from sqlalchemy.orm import sessionmaker, Session
 # Set test environment before importing app
 os.environ["DATABASE_URL"] = "sqlite:///./test_shelfsense.db"
 os.environ["OPENAI_API_KEY"] = "test-key-not-real"
+os.environ["ENABLE_POOL_WARMING"] = "false"
 
 from app.main import app
 from app.database import Base, get_db
@@ -275,10 +276,10 @@ def mock_openai():
     mock_response.choices = [MagicMock()]
     mock_response.choices[0].message.content = '{"result": "mocked response"}'
 
-    with patch("openai.OpenAI") as mock_client:
-        mock_instance = MagicMock()
-        mock_instance.chat.completions.create.return_value = mock_response
-        mock_client.return_value = mock_instance
+    mock_instance = MagicMock()
+    mock_instance.chat.completions.create.return_value = mock_response
+
+    with patch("app.utils.openai_client.get_openai_client", return_value=mock_instance):
         yield mock_instance
 
 
@@ -290,10 +291,10 @@ def mock_openai_explanation(sample_explanation: Dict):
     mock_response.choices = [MagicMock()]
     mock_response.choices[0].message.content = json.dumps(sample_explanation)
 
-    with patch("openai.OpenAI") as mock_client:
-        mock_instance = MagicMock()
-        mock_instance.chat.completions.create.return_value = mock_response
-        mock_client.return_value = mock_instance
+    mock_instance = MagicMock()
+    mock_instance.chat.completions.create.return_value = mock_response
+
+    with patch("app.utils.openai_client.get_openai_client", return_value=mock_instance):
         yield mock_instance
 
 

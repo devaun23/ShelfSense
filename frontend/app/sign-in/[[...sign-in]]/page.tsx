@@ -6,14 +6,11 @@ export default function SignInPage() {
       {/* ShelfSense branding */}
       <div className="text-center mb-8">
         <h1
-          className="text-5xl tracking-wide font-light text-white mb-3"
-          style={{ fontFamily: 'var(--font-cormorant)' }}
+          className="text-5xl tracking-normal font-semibold text-white"
+          style={{ fontFamily: 'var(--font-serif)' }}
         >
           ShelfSense
         </h1>
-        <p className="text-gray-500 text-sm">
-          Adaptive learning for Step 2 CK
-        </p>
       </div>
 
       <SignIn

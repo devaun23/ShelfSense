@@ -16,6 +16,8 @@ from app.services.auth import (
     TokenError,
     hash_password,
     verify_password,
+    hash_token,
+    verify_token_hash,
     create_access_token,
     create_refresh_token,
     verify_token,
@@ -212,7 +214,7 @@ async def register(
             ip, device = get_client_info(req)
             session = UserSession(
                 user_id=existing_user.id,
-                refresh_token_hash=hash_password(refresh_token),
+                refresh_token_hash=hash_token(refresh_token),
                 device_info=device[:200] if device else None,
                 ip_address=ip,
                 expires_at=datetime.utcnow() + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
@@ -256,7 +258,7 @@ async def register(
     ip, device = get_client_info(req)
     session = UserSession(
         user_id=new_user.id,
-        refresh_token_hash=hash_password(refresh_token),
+        refresh_token_hash=hash_token(refresh_token),
         device_info=device[:200] if device else None,
         ip_address=ip,
         expires_at=datetime.utcnow() + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
@@ -334,7 +336,7 @@ async def login(
     ip, device = get_client_info(req)
     session = UserSession(
         user_id=user.id,
-        refresh_token_hash=hash_password(refresh_token),
+        refresh_token_hash=hash_token(refresh_token),
         device_info=device[:200] if device else None,
         ip_address=ip,
         expires_at=datetime.utcnow() + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
@@ -389,19 +391,19 @@ async def refresh_tokens(
     # Verify refresh token against stored sessions
     valid_session = None
     for session in sessions:
-        if verify_password(request.refresh_token, session.refresh_token_hash):
+        if verify_token_hash(request.refresh_token, session.refresh_token_hash):
             valid_session = session
             break
 
     if valid_session:
-        valid_session.refresh_token_hash = hash_password(new_refresh_token)
+        valid_session.refresh_token_hash = hash_token(new_refresh_token)
         valid_session.last_used = datetime.utcnow()
         valid_session.expires_at = datetime.utcnow() + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
     else:
         # Create new session
         new_session = UserSession(
             user_id=user.id,
-            refresh_token_hash=hash_password(new_refresh_token),
+            refresh_token_hash=hash_token(new_refresh_token),
             device_info=device[:200] if device else None,
             ip_address=ip,
             expires_at=datetime.utcnow() + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
@@ -434,7 +436,7 @@ async def logout(
     ).all()
 
     for session in sessions:
-        if verify_password(request.refresh_token, session.refresh_token_hash):
+        if verify_token_hash(request.refresh_token, session.refresh_token_hash):
             db.delete(session)
             break
 

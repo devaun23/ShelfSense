@@ -305,7 +305,7 @@ export default function AnalyticsPage() {
             <div className="flex items-baseline justify-center gap-2 md:gap-3 mb-3">
               <span
                 className="text-5xl md:text-7xl font-semibold text-white"
-                style={{ fontFamily: 'var(--font-cormorant)' }}
+                style={{ fontFamily: 'var(--font-serif)' }}
               >
                 {summary.predicted_score || '---'}
               </span>
@@ -322,25 +322,25 @@ export default function AnalyticsPage() {
           {/* Stats Row */}
           <div className="flex flex-wrap justify-center gap-6 md:gap-10 border-t border-gray-900 pt-6 md:pt-8 mb-8 md:mb-10">
             <div className="text-center">
-              <p className="text-2xl font-semibold text-white" style={{ fontFamily: 'var(--font-cormorant)' }}>
+              <p className="text-2xl font-semibold text-white" style={{ fontFamily: 'var(--font-serif)' }}>
                 {summary.total_questions}
               </p>
               <p className="text-xs text-gray-600 uppercase tracking-wider">Questions</p>
             </div>
             <div className="text-center">
-              <p className={`text-2xl font-semibold ${getAccuracyColor(summary.overall_accuracy)}`} style={{ fontFamily: 'var(--font-cormorant)' }}>
+              <p className={`text-2xl font-semibold ${getAccuracyColor(summary.overall_accuracy)}`} style={{ fontFamily: 'var(--font-serif)' }}>
                 {summary.overall_accuracy}%
               </p>
               <p className="text-xs text-gray-600 uppercase tracking-wider">Accuracy</p>
             </div>
             <div className="text-center">
-              <p className="text-2xl font-semibold text-[#4169E1]" style={{ fontFamily: 'var(--font-cormorant)' }}>
+              <p className="text-2xl font-semibold text-[#4169E1]" style={{ fontFamily: 'var(--font-serif)' }}>
                 {summary.streak}
               </p>
               <p className="text-xs text-gray-600 uppercase tracking-wider">Day Streak</p>
             </div>
             <div className="text-center">
-              <p className="text-2xl font-semibold text-gray-400" style={{ fontFamily: 'var(--font-cormorant)' }}>
+              <p className="text-2xl font-semibold text-gray-400" style={{ fontFamily: 'var(--font-serif)' }}>
                 {summary.weighted_accuracy}%
               </p>
               <p className="text-xs text-gray-600 uppercase tracking-wider">Weighted</p>
@@ -540,7 +540,7 @@ export default function AnalyticsPage() {
             <div>
               {/* Behavioral Insights */}
               <div className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6 mb-4">
-                <h3 className="text-lg font-medium text-white mb-6" style={{ fontFamily: 'var(--font-cormorant)' }}>
+                <h3 className="text-lg font-medium text-white mb-6" style={{ fontFamily: 'var(--font-serif)' }}>
                   Study Patterns
                 </h3>
 
@@ -590,7 +590,7 @@ export default function AnalyticsPage() {
 
               {/* Error Distribution - Horizontal Bars */}
               <div className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6">
-                <h3 className="text-lg font-medium text-white mb-6" style={{ fontFamily: 'var(--font-cormorant)' }}>
+                <h3 className="text-lg font-medium text-white mb-6" style={{ fontFamily: 'var(--font-serif)' }}>
                   Error Patterns
                 </h3>
 
@@ -620,7 +620,7 @@ export default function AnalyticsPage() {
           {activeTab === 'peers' && user && (
             <div>
               <div className="mb-6">
-                <h3 className="text-lg font-medium text-white mb-2" style={{ fontFamily: 'var(--font-cormorant)' }}>
+                <h3 className="text-lg font-medium text-white mb-2" style={{ fontFamily: 'var(--font-serif)' }}>
                   Peer Comparison
                 </h3>
                 <p className="text-sm text-gray-500">

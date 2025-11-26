@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Cormorant_Garamond } from "next/font/google";
+import { Inter, Source_Serif_4 } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import "./globals.css";
@@ -11,11 +11,11 @@ const inter = Inter({
   variable: '--font-inter',
 });
 
-const cormorant = Cormorant_Garamond({
+const sourceSerif = Source_Serif_4({
   subsets: ["latin"],
-  weight: ['300', '400', '500'],
+  weight: ['400', '500', '600'],
   display: 'swap',
-  variable: '--font-cormorant',
+  variable: '--font-serif',
 });
 
 export const metadata: Metadata = {
@@ -51,7 +51,7 @@ export default function RootLayout({
       }}
     >
       <html lang="en">
-        <body className={`${inter.variable} ${cormorant.variable} ${inter.className} antialiased`}>
+        <body className={`${inter.variable} ${sourceSerif.variable} ${inter.className} antialiased`}>
           <UserProvider>
             {children}
           </UserProvider>

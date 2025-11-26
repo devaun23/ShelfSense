@@ -242,16 +242,8 @@ function StudyContent() {
             <div className="flex flex-wrap items-center gap-3 mb-6 md:mb-8">
               <LoadingSpinner size="sm" />
               <span className="text-gray-500">
-                {specialtyParam ? `Generating ${specialtyParam} question...` : 'Loading question...'}
+                Loading...
               </span>
-              {currentSpecialty && (
-                <div className={`flex items-center gap-2 px-3 py-1 rounded-full ${currentSpecialty.bgColor} ${currentSpecialty.borderColor} border`}>
-                  <span>{currentSpecialty.icon}</span>
-                  <span className={`text-xs font-medium ${currentSpecialty.color}`}>
-                    {currentSpecialty.shortName}
-                  </span>
-                </div>
-              )}
             </div>
             <SkeletonQuestion />
           </div>

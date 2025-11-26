@@ -149,7 +149,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
           <button
             onClick={() => router.push('/')}
             className="text-xl font-semibold text-white hover:text-gray-300 transition-colors block"
-            style={{ fontFamily: 'var(--font-cormorant)' }}
+            style={{ fontFamily: 'var(--font-serif)' }}
           >
             ShelfSense
           </button>
@@ -294,15 +294,19 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
               </span>
 
               {/* Feedback button */}
-              <button
-                onClick={() => window.location.href = 'mailto:devaun0506@gmail.com?subject=ShelfSense Feedback'}
-                className="p-1.5 text-gray-600 hover:text-gray-300 transition-colors"
-                title="Send feedback"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-                </svg>
-              </button>
+              <div className="relative group">
+                <button
+                  onClick={() => window.location.href = 'mailto:devaun0506@gmail.com?subject=ShelfSense Feedback'}
+                  className="p-1.5 text-gray-600 hover:text-gray-300 transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                  </svg>
+                </button>
+                <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                  Send feedback
+                </span>
+              </div>
             </div>
           </div>
         )}

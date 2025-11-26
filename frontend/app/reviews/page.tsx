@@ -171,7 +171,7 @@ export default function ReviewsPage() {
         <div className="max-w-6xl mx-auto px-4 md:px-8 py-6 md:py-8 pt-14 md:pt-20">
           {/* Header */}
           <div className="mb-6 md:mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold mb-2" style={{ fontFamily: 'var(--font-cormorant)' }}>
+            <h1 className="text-3xl md:text-4xl font-bold mb-2" style={{ fontFamily: 'var(--font-serif)' }}>
               Review Calendar
             </h1>
             <p className="text-gray-400 text-sm md:text-base">
@@ -287,7 +287,7 @@ export default function ReviewsPage() {
 
               {/* Calendar Heatmap */}
               <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
-                <h3 className="text-lg font-semibold mb-4" style={{ fontFamily: 'var(--font-cormorant)' }}>
+                <h3 className="text-lg font-semibold mb-4" style={{ fontFamily: 'var(--font-serif)' }}>
                   Study Activity (Past Year)
                 </h3>
                 {heatmapData?.data ? (
@@ -315,7 +315,7 @@ export default function ReviewsPage() {
             <>
               {/* Days Filter */}
               <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                <h2 className="text-lg md:text-xl font-bold" style={{ fontFamily: 'var(--font-cormorant)' }}>
+                <h2 className="text-lg md:text-xl font-bold" style={{ fontFamily: 'var(--font-serif)' }}>
                   Scheduled Reviews
                 </h2>
                 <div className="flex gap-2">
