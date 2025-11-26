@@ -11,6 +11,7 @@ from app.services.adaptive import select_next_question
 from app.services.question_generator import generate_and_save_question, save_generated_question
 from app.services.question_agent import generate_question_with_agent
 from app.services.question_pool import get_instant_question, get_pool_stats, warm_pool_async
+from app.services.adaptive import get_user_difficulty_target
 from app.services.error_categorization import categorize_error
 import threading
 
@@ -301,6 +302,22 @@ def warm_question_pool(
         "status": "warming",
         "message": f"Pool warming started with target {target_per_specialty} per specialty",
         "check_progress": "/api/questions/pool/stats"
+    }
+
+
+@router.get("/difficulty/{user_id}")
+def get_difficulty_target(user_id: str, db: Session = Depends(get_db)):
+    """
+    Get the recommended difficulty level for a user based on their overall performance.
+
+    Returns difficulty level, target accuracy, and complexity settings.
+    This determines what difficulty of questions will be generated for them.
+    """
+    difficulty_info = get_user_difficulty_target(db, user_id)
+    return {
+        "user_id": user_id,
+        "difficulty": difficulty_info,
+        "recommendation": f"Generate {difficulty_info['difficulty_level']} questions targeting {difficulty_info['target_correct_rate']:.0%} correct rate"
     }
 
 

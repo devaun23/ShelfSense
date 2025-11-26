@@ -6,6 +6,7 @@ Selects next question based on:
 2. Recency weighting (newer = more accurate)
 3. Questions not yet answered
 4. AI-generated questions for weak specialties
+5. Difficulty adaptation based on user overall accuracy
 """
 
 import random
@@ -14,6 +15,85 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func, and_, Integer
 from app.models.models import Question, QuestionAttempt
 from app.services.question_generator import generate_and_save_question
+
+
+def get_user_difficulty_target(db: Session, user_id: str) -> Dict:
+    """
+    Calculate difficulty target based on user's OVERALL accuracy.
+
+    This determines what difficulty level of questions to serve.
+
+    Returns:
+        {
+            "difficulty_level": "easy" | "medium" | "hard",
+            "target_correct_rate": float (0.60-0.70),
+            "vignette_complexity": "simple" | "moderate" | "complex",
+            "distractor_plausibility": "obvious" | "moderate" | "subtle",
+            "accuracy": float (user's actual accuracy),
+            "total_questions": int (questions answered)
+        }
+
+    Algorithm:
+    - User accuracy >= 80%: Generate harder questions
+    - User accuracy 60-80%: Generate medium questions
+    - User accuracy < 60%: Generate easier questions
+    - New users (< 10 questions): Default to medium
+    """
+    # Get user's overall accuracy
+    attempts = db.query(
+        func.count(QuestionAttempt.id).label('total'),
+        func.sum(func.cast(QuestionAttempt.is_correct, Integer)).label('correct')
+    ).filter(
+        QuestionAttempt.user_id == user_id
+    ).first()
+
+    total = attempts.total or 0
+    correct = attempts.correct or 0
+
+    # Default for new users
+    if total < 10:
+        return {
+            "difficulty_level": "medium",
+            "target_correct_rate": 0.65,
+            "vignette_complexity": "moderate",
+            "distractor_plausibility": "moderate",
+            "accuracy": correct / total if total > 0 else 0.0,
+            "total_questions": total
+        }
+
+    accuracy = correct / total
+
+    # Determine difficulty based on accuracy
+    if accuracy >= 0.80:
+        # High performer - challenge them
+        return {
+            "difficulty_level": "hard",
+            "target_correct_rate": 0.55,
+            "vignette_complexity": "complex",
+            "distractor_plausibility": "subtle",
+            "accuracy": accuracy,
+            "total_questions": total
+        }
+    elif accuracy >= 0.60:
+        # Average performer - standard difficulty
+        return {
+            "difficulty_level": "medium",
+            "target_correct_rate": 0.65,
+            "vignette_complexity": "moderate",
+            "distractor_plausibility": "moderate",
+            "accuracy": accuracy,
+            "total_questions": total
+        }
+    else:
+        # Struggling - build confidence with easier questions
+        return {
+            "difficulty_level": "easy",
+            "target_correct_rate": 0.75,
+            "vignette_complexity": "simple",
+            "distractor_plausibility": "obvious",
+            "accuracy": accuracy,
+            "total_questions": total
+        }
 
 def get_weak_areas(db: Session, user_id: str, threshold: float = 0.6) -> List[str]:
     """

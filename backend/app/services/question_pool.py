@@ -31,6 +31,7 @@ from app.services.step2ck_content_outline import (
     get_weighted_specialty,
     get_high_yield_topic,
 )
+from app.services.adaptive import get_user_difficulty_target
 
 # Pool configuration
 MIN_POOL_SIZE = 20  # Minimum questions per specialty
@@ -193,25 +194,44 @@ class QuestionPoolManager:
         thread.start()
 
     def _replenish_specialty(self, db: Session, specialty: str, count: int):
-        """Generate questions for a specific specialty."""
-        from app.services.question_agent import QuestionGenerationAgent
+        """Generate questions for a specific specialty using batch generation."""
+        from app.services.question_agent import generate_questions_batch
 
-        agent = QuestionGenerationAgent(db)
+        try:
+            # Use batch generation for efficiency
+            print(f"[Pool] Batch generating {count} {specialty} questions...")
+            questions = generate_questions_batch(
+                db,
+                count=count,
+                specialty=specialty,
+                difficulty="medium"  # Default to medium for pool
+            )
 
-        for i in range(count):
-            try:
-                topic = get_high_yield_topic(specialty)
-                question_data = agent.generate_question(
-                    specialty=specialty,
-                    topic=topic,
-                    max_retries=1  # Faster retries for background generation
-                )
+            for i, question_data in enumerate(questions):
                 self.add_to_pool(db, question_data, specialty)
-                print(f"[Pool] Added {specialty} question {i+1}/{count}")
+                print(f"[Pool] Added {specialty} question {i+1}/{len(questions)}")
 
-            except Exception as e:
-                print(f"[Pool] Failed to generate {specialty} question: {e}")
-                continue
+            print(f"[Pool] Successfully added {len(questions)}/{count} {specialty} questions")
+
+        except Exception as e:
+            print(f"[Pool] Batch generation failed for {specialty}: {e}")
+            # Fallback to sequential generation
+            from app.services.question_agent import QuestionGenerationAgent
+            agent = QuestionGenerationAgent(db)
+
+            for i in range(count):
+                try:
+                    topic = get_high_yield_topic(specialty)
+                    question_data = agent.generate_question(
+                        specialty=specialty,
+                        topic=topic,
+                        max_retries=1
+                    )
+                    self.add_to_pool(db, question_data, specialty)
+                    print(f"[Pool] Added {specialty} question {i+1}/{count} (fallback)")
+                except Exception as e2:
+                    print(f"[Pool] Failed to generate {specialty} question: {e2}")
+                    continue
 
     def warm_pool(self, target_per_specialty: int = MIN_POOL_SIZE):
         """
@@ -268,7 +288,7 @@ def get_instant_question(
     Args:
         db: Database session
         specialty: Optional specialty filter
-        user_id: Optional user ID for personalization
+        user_id: Optional user ID for personalization (affects difficulty)
 
     Returns:
         Question object (instant from pool, or generated on-demand)
@@ -287,8 +307,18 @@ def get_instant_question(
     from app.services.question_agent import generate_question_with_agent
     from app.services.question_generator import save_generated_question
 
+    # Get user's difficulty target if user_id provided
+    difficulty = "medium"
+    if user_id:
+        try:
+            difficulty_info = get_user_difficulty_target(db, user_id)
+            difficulty = difficulty_info.get("difficulty_level", "medium")
+            print(f"[Pool] User difficulty target: {difficulty} (accuracy: {difficulty_info.get('accuracy', 0):.1%})")
+        except Exception as e:
+            print(f"[Pool] Could not get user difficulty: {e}")
+
     try:
-        question_data = generate_question_with_agent(db, specialty=specialty)
+        question_data = generate_question_with_agent(db, specialty=specialty, difficulty=difficulty)
         question = save_generated_question(db, question_data)
         return question
     except Exception as e:

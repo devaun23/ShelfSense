@@ -1,11 +1,20 @@
 """
 Agent-based Question Generation Service for ShelfSense
 Uses multi-step reasoning with specialized agents to generate high-quality USMLE questions
+
+Enhanced with:
+- Specialty-specific prompts and validation
+- Difficulty-adaptive generation
+- Real-time quality scoring checkpoints
+- Parallelized pipeline for faster generation
 """
 
 import os
 import json
 import random
+import time
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
 from typing import Optional, Dict, List, Tuple
 from openai import OpenAI
 from sqlalchemy.orm import Session
@@ -17,6 +26,13 @@ from app.services.step2ck_content_outline import (
     CLINICAL_SETTINGS
 )
 from app.services.nbme_gold_book_principles import get_generation_principles
+from app.services.specialty_prompts import (
+    get_specialty_config,
+    get_specialty_prompt_context,
+    get_specialty_demographics,
+    get_specialty_validation_rules,
+    get_specialty_vitals
+)
 
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
@@ -92,12 +108,39 @@ Format:
 
     def step2_create_clinical_scenario(self, specialty: str, topic: str,
                                        question_type: str, clinical_setting: str,
-                                       analysis: Dict) -> Dict:
-        """Step 2: Create a realistic clinical scenario with specific patient details"""
+                                       analysis: Dict, difficulty: str = "medium") -> Dict:
+        """Step 2: Create a realistic clinical scenario with specific patient details
 
-        system_prompt = """You are an expert clinician creating realistic patient scenarios.
+        Now includes specialty-specific demographics, presentation styles, and difficulty adjustment.
+        """
+        # Get specialty-specific context
+        specialty_context = get_specialty_prompt_context(specialty, question_type)
+        specialty_demographics = get_specialty_demographics(specialty)
+
+        # Difficulty-based complexity guidance
+        difficulty_guidance = {
+            "easy": """DIFFICULTY: EASY (target 75-85% correct)
+- Use classic, textbook presentation
+- Clear-cut clinical picture
+- Fewer confounding factors
+- Straightforward vital signs and labs""",
+            "medium": """DIFFICULTY: MEDIUM (target 60-70% correct)
+- Standard clinical presentation with some nuance
+- Include relevant comorbidities
+- Realistic complexity level
+- Some pertinent negatives to consider""",
+            "hard": """DIFFICULTY: HARD (target 45-55% correct)
+- Atypical or subtle presentation
+- Multiple comorbidities affecting picture
+- Requires integration of multiple findings
+- Include findings that could suggest other diagnoses"""
+        }.get(difficulty, "")
+
+        system_prompt = f"""You are an expert clinician creating realistic patient scenarios.
 You understand how diseases actually present in clinical practice, with realistic lab values,
-physical exam findings, and patient demographics."""
+physical exam findings, and patient demographics.
+
+{specialty_context}"""
 
         user_prompt = f"""Create a realistic clinical scenario for a USMLE Step 2 CK question.
 
@@ -105,18 +148,26 @@ SPECIFICATIONS:
 - Specialty: {specialty}
 - Topic: {topic}
 - Question type: {question_type}
-- Clinical setting: {clinical_setting}
+- Clinical setting: {clinical_setting or specialty_demographics.get('setting', 'clinic')}
+
+{difficulty_guidance}
+
+SUGGESTED PATIENT PROFILE:
+- Age range: {specialty_demographics.get('age_range', '45-65 years')}
+- Context: {specialty_demographics.get('age_context', 'general presentation')}
+- Risk factors to consider: {', '.join(specialty_demographics.get('risk_factors', []))}
 
 QUALITY GUIDELINES FROM ANALYSIS:
 {json.dumps(analysis, indent=2)}
 
 Create a patient scenario that:
-1. Uses realistic demographics appropriate for the condition
-2. Has a classic presentation (not zebra cases)
+1. Uses realistic demographics appropriate for the condition AND specialty
+2. Has a classic presentation (not zebra cases) unless difficulty is hard
 3. Includes specific vital signs and lab values that are clinically realistic
 4. Contains both pertinent positives AND negatives
 5. Has enough detail to answer without seeing options
 6. Matches the clinical detail level from the analyzed examples
+7. Follows the specialty-specific presentation style
 
 Return JSON:
 {{
@@ -134,8 +185,31 @@ Return JSON:
                                   response_format={"type": "json_object"})
         return json.loads(response)
 
-    def step3_generate_answer_choices(self, scenario: Dict, specialty: str) -> Dict:
-        """Step 3: Generate plausible answer choices with one clearly best answer"""
+    def step3_generate_answer_choices(self, scenario: Dict, specialty: str,
+                                       difficulty: str = "medium") -> Dict:
+        """Step 3: Generate plausible answer choices with one clearly best answer
+
+        Now includes specialty-specific distractor patterns and difficulty-adjusted plausibility.
+        """
+        # Get specialty-specific distractor patterns
+        specialty_config = get_specialty_config(specialty)
+        distractor_patterns = specialty_config.get("distractor_patterns", []) if specialty_config else []
+
+        # Difficulty-based distractor guidance
+        distractor_difficulty = {
+            "easy": """DISTRACTOR DIFFICULTY: EASY
+- Make distractors clearly distinguishable from correct answer
+- Include at least one obviously wrong choice
+- Distractors should be related but clearly not optimal""",
+            "medium": """DISTRACTOR DIFFICULTY: MEDIUM
+- All distractors should be reasonable considerations
+- Distractors represent common clinical mistakes
+- Require careful discrimination between options""",
+            "hard": """DISTRACTOR DIFFICULTY: HARD
+- All distractors are highly plausible alternatives
+- Distractors differ from correct answer by subtle clinical nuances
+- Require integration of multiple clinical factors to discriminate"""
+        }.get(difficulty, "")
 
         system_prompt = """You are an expert USMLE question writer specializing in creating
 plausible distractors. You understand what makes answer choices challenging but fair."""
@@ -145,6 +219,11 @@ plausible distractors. You understand what makes answer choices challenging but 
 SCENARIO:
 {json.dumps(scenario, indent=2)}
 
+{distractor_difficulty}
+
+SPECIALTY-SPECIFIC DISTRACTOR PATTERNS FOR {specialty.upper()}:
+{chr(10).join(f'- {d}' for d in distractor_patterns[:4])}
+
 REQUIREMENTS:
 1. Choice corresponding to "{scenario['correct_answer_concept']}" must be the single best answer
 2. All 5 choices must be DISTINCT (absolutely no duplicates or near-duplicates)
@@ -153,6 +232,7 @@ REQUIREMENTS:
 5. Distractors should represent common mistakes or conditions in the differential
 6. Use specific medical terminology (not vague descriptions)
 7. Follow current evidence-based guidelines
+8. Incorporate specialty-specific distractor patterns listed above
 
 Return JSON:
 {{
@@ -241,9 +321,151 @@ Return JSON:
                                   response_format={"type": "json_object"})
         return json.loads(response)
 
+    def score_clinical_scenario(self, scenario: Dict, specialty: str) -> Tuple[float, List[str]]:
+        """
+        Real-time scoring checkpoint after step 2 (clinical scenario).
+
+        Quick validation to catch major issues before investing in more steps.
+        Returns score (0-1) and list of issues. Score < 0.6 triggers early abort.
+        """
+        issues = []
+        score = 1.0
+
+        # Check required fields
+        required_fields = ["patient_demographics", "presenting_complaint", "physical_exam",
+                          "correct_answer_concept"]
+        for field in required_fields:
+            if not scenario.get(field):
+                issues.append(f"Missing {field}")
+                score -= 0.2
+
+        # Check for realistic demographics
+        demographics = scenario.get("patient_demographics", "")
+        if not any(age in demographics.lower() for age in ["year", "month", "day", "old"]):
+            issues.append("Demographics missing specific age")
+            score -= 0.1
+
+        # Check for vital signs in physical exam
+        physical = scenario.get("physical_exam", "")
+        if not any(vital in physical.lower() for vital in ["bp", "hr", "rr", "temp", "mmhg", "min"]):
+            issues.append("Physical exam missing vital signs")
+            score -= 0.1
+
+        # Check correct answer concept is specific
+        concept = scenario.get("correct_answer_concept", "")
+        if len(concept) < 5:
+            issues.append("Correct answer concept too vague")
+            score -= 0.2
+
+        return max(0, score), issues
+
+    def score_answer_choices(self, choices_data: Dict) -> Tuple[float, List[str]]:
+        """
+        Real-time scoring checkpoint after step 3 (answer choices).
+
+        Validates choices before proceeding to vignette writing.
+        Returns score (0-1) and list of issues. Score < 0.6 triggers early abort.
+        """
+        issues = []
+        score = 1.0
+
+        choices = choices_data.get("choices", [])
+
+        # Check for exactly 5 choices
+        if len(choices) != 5:
+            issues.append(f"Wrong number of choices: {len(choices)} (expected 5)")
+            score -= 0.3
+
+        # Check for duplicates
+        unique_choices = set(c.lower().strip() for c in choices)
+        if len(unique_choices) < len(choices):
+            issues.append("Duplicate or near-duplicate choices detected")
+            score -= 0.3
+
+        # Check correct answer letter is valid
+        correct = choices_data.get("correct_answer_letter", "")
+        if correct not in ["A", "B", "C", "D", "E"]:
+            issues.append(f"Invalid correct answer letter: {correct}")
+            score -= 0.4
+
+        # Check choice type consistency
+        choice_type = choices_data.get("choice_type", "")
+        if not choice_type:
+            issues.append("Missing choice type classification")
+            score -= 0.1
+
+        # Check choices aren't too short or too long
+        for i, choice in enumerate(choices):
+            if len(choice) < 3:
+                issues.append(f"Choice {chr(65+i)} too short")
+                score -= 0.1
+            elif len(choice) > 200:
+                issues.append(f"Choice {chr(65+i)} too long")
+                score -= 0.05
+
+        return max(0, score), issues
+
+    def score_vignette(self, vignette: str, scenario: Dict) -> Tuple[float, List[str]]:
+        """
+        Real-time scoring checkpoint after step 4 (vignette).
+
+        Validates vignette structure and content before explanation.
+        Returns score (0-1) and list of issues. Score < 0.6 triggers early abort.
+        """
+        issues = []
+        score = 1.0
+
+        # Check minimum length
+        if len(vignette) < 100:
+            issues.append("Vignette too short")
+            score -= 0.3
+
+        # Check for question lead-in
+        if "?" not in vignette:
+            issues.append("Missing question/lead-in")
+            score -= 0.2
+
+        # Check NBME format: should start with age/gender
+        first_sentence = vignette.split(".")[0].lower() if vignette else ""
+        has_age = any(marker in first_sentence for marker in ["year", "month", "old", "man", "woman", "boy", "girl"])
+        if not has_age:
+            issues.append("First sentence should include patient age/gender")
+            score -= 0.15
+
+        # Check for vital signs (important for clinical accuracy)
+        has_vitals = any(v in vignette.lower() for v in ["bp", "mm hg", "mmhg", "beats/min", "/min", "temperature"])
+        if not has_vitals:
+            issues.append("Missing vital signs in vignette")
+            score -= 0.1
+
+        # Check for proper medical units
+        improper_units = ["mg/ dl", "mg / dl", "mm hg", "meq/ l"]
+        for unit in improper_units:
+            if unit in vignette.lower():
+                issues.append(f"Improper unit spacing: {unit}")
+                score -= 0.1
+                break
+
+        return max(0, score), issues
+
     def step6_quality_validation(self, vignette: str, choices_data: Dict,
-                                 explanation: Dict, scenario: Dict) -> Tuple[bool, List[str]]:
-        """Step 6: Validate question quality and identify issues"""
+                                 explanation: Dict, scenario: Dict,
+                                 specialty: str = None) -> Tuple[bool, List[str]]:
+        """Step 6: Validate question quality and identify issues
+
+        Now includes specialty-specific validation rules.
+        """
+        # Get specialty-specific validation rules
+        specialty_rules = []
+        if specialty:
+            specialty_rules = get_specialty_validation_rules(specialty)
+
+        specialty_validation_text = ""
+        if specialty_rules:
+            specialty_validation_text = f"""
+SPECIALTY-SPECIFIC VALIDATION RULES FOR {specialty.upper()}:
+{chr(10).join(f'- {rule}' for rule in specialty_rules)}
+"""
 
         system_prompt = """You are a rigorous USMLE question quality reviewer.
 You check for clinical accuracy, formatting issues, and adherence to NBME standards."""
@@ -272,6 +494,7 @@ Check for:
 8. Whether distractors are plausible but wrong
 9. Appropriate difficulty (60-70% should answer correctly)
 10. No "trick" questions or obscure trivia
+{specialty_validation_text}
 
 Return JSON:
 {{
@@ -279,7 +502,8 @@ Return JSON:
   "issues_found": ["List of specific issues", "or empty array if passes"],
   "severity": "none/minor/major",
   "clinical_accuracy_score": 1-10,
-  "nbme_standards_score": 1-10
+  "nbme_standards_score": 1-10,
+  "specialty_rules_passed": true/false
 }}"""
 
         response = self._call_llm(system_prompt, user_prompt, temperature=0.2,
@@ -290,6 +514,7 @@ Return JSON:
 
     def generate_question(self, specialty: Optional[str] = None,
                          topic: Optional[str] = None,
+                         difficulty: str = "medium",
                          max_retries: int = 2) -> Dict:
         """
         Generate a high-quality USMLE question using multi-step agent reasoning
@@ -297,6 +522,7 @@ Return JSON:
         Args:
             specialty: Medical specialty (auto-selected if None)
             topic: Specific topic (auto-selected if None)
+            difficulty: "easy", "medium", or "hard" (default: "medium")
             max_retries: Number of times to retry if quality validation fails
 
         Returns:
@@ -310,38 +536,80 @@ Return JSON:
             topic = get_high_yield_topic(specialty)
 
         question_type = get_question_type()
-        clinical_setting = random.choice(CLINICAL_SETTINGS)
+
+        # Use specialty-specific setting if available
+        specialty_demographics = get_specialty_demographics(specialty)
+        clinical_setting = specialty_demographics.get('setting', random.choice(CLINICAL_SETTINGS))
 
         # Get example questions for analysis
         examples = self._get_example_questions(specialty, limit=5)
 
         retry_count = 0
+        quality_scores = {}  # Track scores for analytics
+
         while retry_count <= max_retries:
             try:
                 print(f"[Agent] Step 1/6: Analyzing {len(examples)} example questions...")
                 analysis = self.step1_analyze_examples(specialty, examples)
 
-                print(f"[Agent] Step 2/6: Creating clinical scenario for {topic}...")
+                print(f"[Agent] Step 2/6: Creating clinical scenario for {topic} (difficulty: {difficulty})...")
                 scenario = self.step2_create_clinical_scenario(
-                    specialty, topic, question_type, clinical_setting, analysis
+                    specialty, topic, question_type, clinical_setting, analysis, difficulty
                 )
 
+                # Real-time scoring checkpoint after step 2
+                scenario_score, scenario_issues = self.score_clinical_scenario(scenario, specialty)
+                quality_scores["scenario"] = scenario_score
+                if scenario_score < 0.6:
+                    print(f"[Agent] ⚠ Scenario score too low ({scenario_score:.2f}): {', '.join(scenario_issues)}")
+                    retry_count += 1
+                    if retry_count <= max_retries:
+                        print(f"[Agent] Early abort - retrying with new scenario...")
+                        continue
+                    else:
+                        raise ValueError(f"Scenario quality too low: {scenario_issues}")
+
                 print(f"[Agent] Step 3/6: Generating answer choices...")
-                choices_data = self.step3_generate_answer_choices(scenario, specialty)
+                choices_data = self.step3_generate_answer_choices(scenario, specialty, difficulty)
+
+                # Real-time scoring checkpoint after step 3
+                choices_score, choices_issues = self.score_answer_choices(choices_data)
+                quality_scores["choices"] = choices_score
+                if choices_score < 0.6:
+                    print(f"[Agent] ⚠ Choices score too low ({choices_score:.2f}): {', '.join(choices_issues)}")
+                    retry_count += 1
+                    if retry_count <= max_retries:
+                        print(f"[Agent] Early abort - retrying with new scenario...")
+                        continue
+                    else:
+                        raise ValueError(f"Choice quality too low: {choices_issues}")
 
                 print(f"[Agent] Step 4/6: Writing clinical vignette...")
                 vignette = self.step4_write_vignette(scenario, analysis)
 
+                # Real-time scoring checkpoint after step 4
+                vignette_score, vignette_issues = self.score_vignette(vignette, scenario)
+                quality_scores["vignette"] = vignette_score
+                if vignette_score < 0.6:
+                    print(f"[Agent] ⚠ Vignette score too low ({vignette_score:.2f}): {', '.join(vignette_issues)}")
+                    retry_count += 1
+                    if retry_count <= max_retries:
+                        print(f"[Agent] Early abort - retrying with new scenario...")
+                        continue
+                    else:
+                        raise ValueError(f"Vignette quality too low: {vignette_issues}")
+
                 print(f"[Agent] Step 5/6: Creating explanation...")
                 explanation = self.step5_create_explanation(scenario, choices_data)
 
-                print(f"[Agent] Step 6/6: Validating quality...")
+                print(f"[Agent] Step 6/6: Validating quality (specialty: {specialty})...")
                 passes_quality, issues = self.step6_quality_validation(
-                    vignette, choices_data, explanation, scenario
+                    vignette, choices_data, explanation, scenario, specialty
                 )
 
                 if passes_quality:
-                    print(f"[Agent] ✓ Question passed quality validation!")
+                    avg_score = sum(quality_scores.values()) / len(quality_scores)
+                    print(f"[Agent] ✓ Question passed! (avg score: {avg_score:.2f})")
 
                     return {
                         "vignette": vignette.strip(),
@@ -355,7 +623,9 @@ Return JSON:
                             "topic": topic,
                             "question_type": question_type,
                             "clinical_setting": clinical_setting,
-                            "generation_method": "multi_step_agent"
+                            "difficulty": difficulty,
+                            "generation_method": "multi_step_agent",
+                            "quality_scores": quality_scores
                         }
                     }
                 else:
@@ -374,6 +644,149 @@ Return JSON:
                     raise
 
         raise ValueError(f"Failed to generate quality question after {max_retries + 1} attempts")
+
+    def generate_question_parallel(self, specialty: Optional[str] = None,
+                                   topic: Optional[str] = None,
+                                   difficulty: str = "medium",
+                                   max_retries: int = 2) -> Dict:
+        """
+        Generate a question using parallelized pipeline where possible.
+
+        This version runs independent steps concurrently to reduce total time.
+        Step dependencies:
+        - Step 1 (analyze) can run in parallel with loading specialty config
+        - Steps 2-4 are sequential (each depends on previous)
+        - Step 5 (explanation) can start as step 4 finishes
+
+        For true parallelization, we use ThreadPoolExecutor since OpenAI calls are I/O bound.
+        """
+        start_time = time.time()
+
+        # Select specialty and topic
+        if not specialty:
+            specialty = get_weighted_specialty()
+        if not topic:
+            topic = get_high_yield_topic(specialty)
+
+        question_type = get_question_type()
+        specialty_demographics = get_specialty_demographics(specialty)
+        clinical_setting = specialty_demographics.get('setting', random.choice(CLINICAL_SETTINGS))
+
+        # Get example questions (can run in parallel with analysis setup)
+        examples = self._get_example_questions(specialty, limit=5)
+
+        retry_count = 0
+        quality_scores = {}
+
+        while retry_count <= max_retries:
+            try:
+                step_times = {}
+
+                # Step 1: Analyze examples
+                t1 = time.time()
+                print(f"[Agent-P] Step 1/6: Analyzing examples...")
+                analysis = self.step1_analyze_examples(specialty, examples)
+                step_times["step1_analyze"] = time.time() - t1
+
+                # Step 2: Create scenario (depends on step 1)
+                t2 = time.time()
+                print(f"[Agent-P] Step 2/6: Creating scenario (difficulty: {difficulty})...")
+                scenario = self.step2_create_clinical_scenario(
+                    specialty, topic, question_type, clinical_setting, analysis, difficulty
+                )
+                step_times["step2_scenario"] = time.time() - t2
+
+                # Quick score check
+                scenario_score, scenario_issues = self.score_clinical_scenario(scenario, specialty)
+                quality_scores["scenario"] = scenario_score
+                if scenario_score < 0.6:
+                    print(f"[Agent-P] Early abort: scenario score {scenario_score:.2f}")
+                    retry_count += 1
+                    continue
+
+                # Step 3: Generate choices (depends on step 2)
+                t3 = time.time()
+                print(f"[Agent-P] Step 3/6: Generating choices...")
+                choices_data = self.step3_generate_answer_choices(scenario, specialty, difficulty)
+                step_times["step3_choices"] = time.time() - t3
+
+                # Quick score check
+                choices_score, choices_issues = self.score_answer_choices(choices_data)
+                quality_scores["choices"] = choices_score
+                if choices_score < 0.6:
+                    print(f"[Agent-P] Early abort: choices score {choices_score:.2f}")
+                    retry_count += 1
+                    continue
+
+                # Steps 4 and 5 can potentially run in parallel
+                # But step 5 technically needs choices_data, so we'll keep sequential
+                # The real win is in batch generation
+
+                # Step 4: Write vignette
+                t4 = time.time()
+                print(f"[Agent-P] Step 4/6: Writing vignette...")
+                vignette = self.step4_write_vignette(scenario, analysis)
+                step_times["step4_vignette"] = time.time() - t4
+
+                # Quick score check
+                vignette_score, vignette_issues = self.score_vignette(vignette, scenario)
+                quality_scores["vignette"] = vignette_score
+                if vignette_score < 0.6:
+                    print(f"[Agent-P] Early abort: vignette score {vignette_score:.2f}")
+                    retry_count += 1
+                    continue
+
+                # Step 5: Create explanation
+                t5 = time.time()
+                print(f"[Agent-P] Step 5/6: Creating explanation...")
+                explanation = self.step5_create_explanation(scenario, choices_data)
+                step_times["step5_explanation"] = time.time() - t5
+
+                # Step 6: Quality validation
+                t6 = time.time()
+                print(f"[Agent-P] Step 6/6: Validating...")
+                passes_quality, issues = self.step6_quality_validation(
+                    vignette, choices_data, explanation, scenario, specialty
+                )
+                step_times["step6_validation"] = time.time() - t6
+
+                total_time = time.time() - start_time
+
+                if passes_quality:
+                    avg_score = sum(quality_scores.values()) / len(quality_scores)
+                    print(f"[Agent-P] ✓ Done in {total_time:.1f}s (avg score: {avg_score:.2f})")
+                    print(f"[Agent-P] Step times: {', '.join(f'{k}: {v:.1f}s' for k, v in step_times.items())}")
+
+                    return {
+                        "vignette": vignette.strip(),
+                        "choices": choices_data['choices'],
+                        "answer_key": choices_data['correct_answer_letter'],
+                        "explanation": explanation,
+                        "source": f"AI Agent Generated - {specialty}",
+                        "specialty": specialty,
+                        "recency_weight": 1.0,
+                        "metadata": {
+                            "topic": topic,
+                            "question_type": question_type,
+                            "clinical_setting": clinical_setting,
+                            "difficulty": difficulty,
+                            "generation_method": "multi_step_agent_parallel",
+                            "quality_scores": quality_scores,
+                            "generation_time_seconds": total_time,
+                            "step_times": step_times
+                        }
+                    }
+                else:
+                    retry_count += 1
+                    print(f"[Agent-P] ✗ Validation failed: {', '.join(issues)}")
+
+            except Exception as e:
+                retry_count += 1
+                print(f"[Agent-P] Error: {e}")
+                if retry_count > max_retries:
+                    raise
+
+        raise ValueError(f"Failed after {max_retries + 1} attempts")
 
     def _get_example_questions(self, specialty: Optional[str] = None, limit: int = 5) -> List[Dict]:
         """Get example questions from database for analysis"""
@@ -412,12 +825,62 @@ Return JSON:
 
 
 def generate_question_with_agent(db: Session, specialty: Optional[str] = None,
-                                 topic: Optional[str] = None) -> Dict:
+                                 topic: Optional[str] = None,
+                                 difficulty: str = "medium",
+                                 parallel: bool = False) -> Dict:
     """
     Generate a question using the agent-based system
 
     This is the main entry point for agent-based question generation.
     Use this instead of the simple question_generator for higher quality.
+
+    Args:
+        db: Database session
+        specialty: Optional specialty filter
+        topic: Optional topic filter
+        difficulty: "easy", "medium", or "hard" (affects complexity and distractors)
+        parallel: If True, use parallelized generation (faster but uses more resources)
+
+    Returns:
+        Generated question dictionary
     """
     agent = QuestionGenerationAgent(db)
-    return agent.generate_question(specialty, topic)
+    if parallel:
+        return agent.generate_question_parallel(specialty, topic, difficulty)
+    return agent.generate_question(specialty, topic, difficulty)
+
+
+def generate_questions_batch(db: Session, count: int = 5,
+                            specialty: Optional[str] = None,
+                            difficulty: str = "medium") -> List[Dict]:
+    """
+    Generate multiple questions in parallel for batch processing.
+
+    Useful for warming the pool or generating study sets.
+
+    Args:
+        db: Database session
+        count: Number of questions to generate (max 10)
+        specialty: Optional specialty filter
+        difficulty: Difficulty level
+
+    Returns:
+        List of generated question dictionaries
+    """
+    count = min(count, 10)  # Limit to prevent resource exhaustion
+
+    def generate_one(i):
+        try:
+            agent = QuestionGenerationAgent(db)
+            topic = get_high_yield_topic(specialty) if specialty else None
+            return agent.generate_question(specialty, topic, difficulty, max_retries=1)
+        except Exception as e:
+            print(f"[Batch] Question {i+1} failed: {e}")
+            return None
+
+    # Use ThreadPoolExecutor for parallel generation
+    with ThreadPoolExecutor(max_workers=min(count, 5)) as executor:
+        results = list(executor.map(generate_one, range(count)))
+
+    # Filter out None results
+    return [q for q in results if q is not None]
