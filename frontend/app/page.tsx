@@ -1,127 +1,27 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
 import { useUser } from '@/contexts/UserContext';
-import { generateGreeting } from '@/utils/greetings';
 
 export default function Home() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [showWhyUs, setShowWhyUs] = useState(false);
-  const [greeting, setGreeting] = useState('');
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [isHovering, setIsHovering] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [predictedScore, setPredictedScore] = useState<number | null>(null);
+  const [scoreConfidence, setScoreConfidence] = useState<number | null>(null);
   const [streak, setStreak] = useState(0);
+  const [totalAttempts, setTotalAttempts] = useState(0);
+  const [dueToday, setDueToday] = useState(0);
   const router = useRouter();
   const { user, isLoading } = useUser();
 
-  // Calculate streak color gradient
-  const getStreakColor = (days: number) => {
-    const cycle = days % 101; // Reset after 100
-    if (cycle === 0 && days > 0) {
-      // Day 100, 200, etc - rainbow gradient
-      return 'bg-gradient-to-r from-red-500 via-yellow-500 via-green-500 via-blue-500 to-purple-500 bg-clip-text text-transparent';
-    }
-
-    // Gradient from deep red-orange to bright flame
-    const hue = 0; // Red base
-    const saturation = 100;
-    const lightness = 35 + (cycle * 0.3); // 35% to 65% lightness
-    return `text-[hsl(${hue},${saturation}%,${Math.min(lightness, 65)}%)]`;
-  };
-
-  const handleStarHover = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-
-    setMousePos({
-      x: e.clientX - centerX,
-      y: e.clientY - centerY
-    });
-    setIsHovering(true);
-  };
-
-  const handleStarLeave = () => {
-    setIsHovering(false);
-  };
-
-  // Generate star spokes that follow the cursor - memoized for performance
-  const spokes = useMemo(() => {
-    const numSpokes = 16;
-    const spokesArray = [];
-    const centerX = 60;
-    const centerY = 60;
-    const baseLength = 50;
-
-    for (let i = 0; i < numSpokes; i++) {
-      const angle = (i * 360 / numSpokes) * (Math.PI / 180);
-      const baseEndX = centerX + Math.cos(angle) * baseLength;
-      const baseEndY = centerY + Math.sin(angle) * baseLength;
-
-      let endX = baseEndX;
-      let endY = baseEndY;
-
-      if (isHovering) {
-        // Calculate pull effect based on mouse position
-        const dx = mousePos.x;
-        const dy = mousePos.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        const maxDistance = 100;
-        const pullStrength = Math.max(0, 1 - distance / maxDistance) * 15;
-
-        const angleToMouse = Math.atan2(dy, dx);
-        const angleDiff = Math.abs(angle - angleToMouse);
-        const angleFactor = Math.cos(angleDiff);
-
-        endX += Math.cos(angleToMouse) * pullStrength * angleFactor;
-        endY += Math.sin(angleToMouse) * pullStrength * angleFactor;
-      }
-
-      spokesArray.push(
-        <line
-          key={i}
-          x1={centerX}
-          y1={centerY}
-          x2={endX}
-          y2={endY}
-          stroke="#4169E1"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          style={{
-            transition: isHovering ? 'none' : 'all 0.3s ease-out'
-          }}
-        />
-      );
-    }
-
-    return spokesArray;
-  }, [mousePos.x, mousePos.y, isHovering]);
-
   useEffect(() => {
-    // Redirect to login if not authenticated
     if (!isLoading && !user) {
       router.push('/login');
       return;
     }
 
-    // Generate personalized greeting and load stats
     if (user) {
-      // Track visits today using localStorage
-      const today = new Date().toDateString();
-      const visitKey = `visits_${user.userId}_${today}`;
-      const visitsToday = parseInt(localStorage.getItem(visitKey) || '0') + 1;
-      localStorage.setItem(visitKey, visitsToday.toString());
-
-      const personalizedGreeting = generateGreeting({
-        firstName: user.firstName,
-        hour: new Date().getHours(),
-        visitsToday: visitsToday
-      });
-      setGreeting(personalizedGreeting);
-
-      // Load user stats
       loadUserStats();
     }
   }, [user, isLoading, router]);
@@ -131,112 +31,197 @@ export default function Home() {
 
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-      const response = await fetch(`${apiUrl}/api/analytics/stats?user_id=${user.userId}`);
-      if (response.ok) {
-        const data = await response.json();
+
+      // Load analytics stats
+      const statsResponse = await fetch(`${apiUrl}/api/analytics/stats?user_id=${user.userId}`);
+      if (statsResponse.ok) {
+        const data = await statsResponse.json();
         setStreak(data.streak || 0);
+        setPredictedScore(data.predicted_score || null);
+        setScoreConfidence(data.score_confidence || null);
+        setTotalAttempts(data.total_attempts || 0);
+      }
+
+      // Load review stats
+      const reviewsResponse = await fetch(`${apiUrl}/api/reviews/stats?user_id=${user.userId}`);
+      if (reviewsResponse.ok) {
+        const reviewData = await reviewsResponse.json();
+        setDueToday(reviewData.total_due_today || 0);
       }
     } catch (error) {
       console.error('Error loading stats:', error);
     }
   };
 
-  const handleBegin = () => {
+  const handleStartStudying = () => {
     router.push('/study');
   };
 
+  // Get time-based greeting
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 17) return 'Good afternoon';
+    return 'Good evening';
+  };
+
+  if (isLoading) {
+    return (
+      <main className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="animate-pulse">
+          <h1 className="text-4xl font-light" style={{ fontFamily: 'var(--font-cormorant)' }}>
+            ShelfSense
+          </h1>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <>
-      <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} isHomePage={true} />
+      <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
 
       <main className={`min-h-screen bg-black text-white transition-all duration-300 ${
         sidebarOpen ? 'md:ml-64' : 'ml-0'
       }`}>
-        <div className="flex flex-col items-center justify-center min-h-screen px-6">
-          <div className="max-w-2xl w-full space-y-12 text-center">
-            {/* Personalized greeting */}
-            {greeting && (
-              <div className="flex flex-col items-center justify-center">
-                <p className="text-4xl text-white font-bold tracking-wide" style={{ fontFamily: 'var(--font-cormorant)' }}>
-                  {greeting}
-                </p>
-              </div>
+        {/* Centered content area - Claude style */}
+        <div className="flex flex-col items-center justify-center min-h-screen px-6 py-12">
+          <div className="max-w-2xl w-full">
+            {/* Greeting */}
+            {user && (
+              <h1 className="text-4xl md:text-5xl text-center text-white mb-12" style={{ fontFamily: 'var(--font-cormorant)' }}>
+                {getGreeting()}, {user.firstName}
+              </h1>
             )}
 
-            {/* Start button */}
-            <div className="pt-4 flex flex-col items-center gap-4">
+            {/* Main input/action area - Claude style */}
+            <div className="relative mb-6">
               <button
-                onClick={handleBegin}
-                className="px-8 py-4 bg-[#1E3A5F] hover:bg-[#2C5282] text-white rounded-lg transition-colors duration-200 text-xl"
-                style={{ fontFamily: 'var(--font-cormorant)' }}
+                onClick={handleStartStudying}
+                className="w-full text-left px-6 py-5 bg-gray-950 border border-gray-800 rounded-2xl hover:border-gray-700 transition-colors group"
               >
-                Start
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-500 text-lg">Start studying...</span>
+                  <div className="w-10 h-10 rounded-full bg-[#4169E1] flex items-center justify-center group-hover:bg-[#5B7FE8] transition-colors">
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </div>
+                </div>
+              </button>
+            </div>
+
+            {/* Claude-style action buttons - horizontal row with icon + text */}
+            <div className="flex flex-wrap justify-center gap-2 mb-16">
+              {/* Study Questions */}
+              <button
+                onClick={() => router.push('/study')}
+                className="flex items-center gap-2 px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-full text-sm text-gray-400 hover:text-white hover:border-gray-700 hover:bg-gray-900 transition-all"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+                <span>Questions</span>
               </button>
 
-              {/* Three Icons Row */}
-              <div className="flex items-center justify-center gap-12 pt-8">
-                {/* Streak Counter with Label */}
-                <div
-                  className="cursor-pointer hover:scale-110 transition-transform group flex flex-col items-center"
-                  title="Your current study streak"
-                >
-                  <span
-                    className={`text-4xl font-bold ${getStreakColor(streak)}`}
-                    style={{
-                      fontFamily: 'var(--font-cormorant)',
-                      ...(streak % 101 === 0 && streak > 0 ? {
-                        backgroundImage: 'linear-gradient(to right, #ef4444, #f59e0b, #10b981, #3b82f6, #8b5cf6)',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        backgroundClip: 'text'
-                      } : {})
-                    }}
-                  >
-                    {streak}
+              {/* Reviews Calendar */}
+              <button
+                onClick={() => router.push('/reviews')}
+                className="flex items-center gap-2 px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-full text-sm text-gray-400 hover:text-white hover:border-gray-700 hover:bg-gray-900 transition-all"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                </svg>
+                <span>Calendar</span>
+                {dueToday > 0 && (
+                  <span className="ml-1 px-1.5 py-0.5 bg-emerald-500/20 text-emerald-400 text-xs rounded-full">
+                    {dueToday}
                   </span>
-                  <span className="text-xs text-gray-500 mt-1 uppercase tracking-wide">Day Streak</span>
-                </div>
+                )}
+              </button>
 
-                {/* Analytics - Caduceus Medical Symbol */}
-                <div
-                  onClick={() => router.push('/study')}
-                  className="cursor-pointer hover:scale-110 transition-transform group relative"
-                  title="Start Studying"
-                >
-                  <svg className="w-10 h-10 text-gray-500 hover:text-gray-400 transition-colors" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                    {/* Central staff */}
-                    <line x1="12" y1="4" x2="12" y2="20" strokeLinecap="round" />
-                    {/* Wings at top */}
-                    <path d="M12 6 Q9 4 7 5.5 Q9 6.5 12 6" strokeLinecap="round" strokeLinejoin="round" />
-                    <path d="M12 6 Q15 4 17 5.5 Q15 6.5 12 6" strokeLinecap="round" strokeLinejoin="round" />
-                    {/* Intertwined snakes - left snake starts on left */}
-                    <path d="M9 8 Q12 9 15 10 Q12 11 9 12 Q12 13 15 14 Q12 15 9 16" strokeLinecap="round" />
-                    {/* Right snake starts on right */}
-                    <path d="M15 8 Q12 9 9 10 Q12 11 15 12 Q12 13 9 14 Q12 15 15 16" strokeLinecap="round" />
-                    {/* Snake heads */}
-                    <circle cx="9" cy="8" r="0.8" fill="currentColor" />
-                    <circle cx="15" cy="8" r="0.8" fill="currentColor" />
-                    {/* Snake tails */}
-                    <circle cx="9" cy="16" r="0.6" fill="currentColor" />
-                    <circle cx="15" cy="16" r="0.6" fill="currentColor" />
-                  </svg>
-                </div>
+              {/* Analytics */}
+              <button
+                onClick={() => router.push('/analytics')}
+                className="flex items-center gap-2 px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-full text-sm text-gray-400 hover:text-white hover:border-gray-700 hover:bg-gray-900 transition-all"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                <span>Analytics</span>
+              </button>
 
-                {/* Calendar - Heatmap Icon */}
-                <div
-                  onClick={() => router.push('/reviews')}
-                  className="cursor-pointer hover:scale-110 transition-transform group relative"
-                  title="Review Calendar"
-                >
-                  <svg className="w-10 h-10 text-gray-500 hover:text-gray-400 transition-colors" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" strokeLinecap="round" strokeLinejoin="round" />
-                    <line x1="3" y1="10" x2="21" y2="10" strokeLinecap="round" />
-                    <line x1="8" y1="2" x2="8" y2="6" strokeLinecap="round" />
-                    <line x1="16" y1="2" x2="16" y2="6" strokeLinecap="round" />
-                  </svg>
+              {/* Weak Areas */}
+              <button
+                onClick={() => router.push('/study?mode=weak')}
+                className="flex items-center gap-2 px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-full text-sm text-gray-400 hover:text-white hover:border-gray-700 hover:bg-gray-900 transition-all"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                <span>Weak Areas</span>
+              </button>
+
+              {/* Random Practice */}
+              <button
+                onClick={() => router.push('/study?mode=random')}
+                className="flex items-center gap-2 px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-full text-sm text-gray-400 hover:text-white hover:border-gray-700 hover:bg-gray-900 transition-all"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                <span>Random</span>
+              </button>
+            </div>
+
+            {/* Stats section - minimal, centered */}
+            {(predictedScore || totalAttempts > 0 || streak > 0) && (
+              <div className="border-t border-gray-900 pt-8">
+                <div className="flex justify-center gap-12 text-center">
+                  {/* Predicted Score */}
+                  {predictedScore && (
+                    <div>
+                      <div className="text-3xl font-semibold text-white mb-1" style={{ fontFamily: 'var(--font-cormorant)' }}>
+                        {predictedScore}
+                        {scoreConfidence && (
+                          <span className="text-lg text-gray-600 ml-1">±{scoreConfidence}</span>
+                        )}
+                      </div>
+                      <div className="text-xs text-gray-600 uppercase tracking-wider">
+                        Predicted Score
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Streak */}
+                  {streak > 0 && (
+                    <div>
+                      <div className="text-3xl font-semibold text-[#4169E1] mb-1" style={{ fontFamily: 'var(--font-cormorant)' }}>
+                        {streak}
+                      </div>
+                      <div className="text-xs text-gray-600 uppercase tracking-wider">
+                        Day Streak
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Questions Completed */}
+                  {totalAttempts > 0 && (
+                    <div>
+                      <div className="text-3xl font-semibold text-white mb-1" style={{ fontFamily: 'var(--font-cormorant)' }}>
+                        {totalAttempts}
+                      </div>
+                      <div className="text-xs text-gray-600 uppercase tracking-wider">
+                        Questions Done
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </main>

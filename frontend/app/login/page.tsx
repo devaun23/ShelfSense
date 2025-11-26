@@ -12,15 +12,14 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Redirect to home if already logged in
+  // Redirect to home if already logged in (returning user)
   useEffect(() => {
     if (!userLoading && user) {
-      router.push('/');
+      router.replace('/');
     }
   }, [user, userLoading, router]);
 
   const validateEmail = (email: string): boolean => {
-    // Basic email validation regex
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
@@ -44,27 +43,66 @@ export default function LoginPage() {
 
     try {
       await login(fullName, email);
-      router.push('/');
+      router.replace('/');
     } catch (err) {
       setError('Failed to register. Please try again.');
       setIsLoading(false);
     }
   };
 
+  // Show loading state while checking authentication
+  if (userLoading) {
+    return (
+      <main className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="animate-pulse">
+          <h1 className="text-4xl font-light" style={{ fontFamily: 'var(--font-cormorant)' }}>
+            ShelfSense
+          </h1>
+        </div>
+      </main>
+    );
+  }
+
+  // If user exists, show loading while redirecting
+  if (user) {
+    return (
+      <main className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="animate-pulse">
+          <h1 className="text-4xl font-light" style={{ fontFamily: 'var(--font-cormorant)' }}>
+            ShelfSense
+          </h1>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-black text-white flex items-center justify-center px-6">
       <div className="max-w-md w-full space-y-8">
         {/* ShelfSense branding */}
         <div className="text-center">
-          <h1 className="text-6xl tracking-wide font-light mb-4" style={{ fontFamily: 'var(--font-cormorant)' }}>
+          <h1 className="text-5xl tracking-wide font-light mb-3" style={{ fontFamily: 'var(--font-cormorant)' }}>
             ShelfSense
           </h1>
+          <p className="text-gray-500 text-sm">
+            Adaptive learning for Step 2 CK
+          </p>
+        </div>
+
+        {/* Welcome message */}
+        <div className="text-center py-4">
+          <h2 className="text-xl text-gray-300 mb-2" style={{ fontFamily: 'var(--font-cormorant)' }}>
+            Welcome
+          </h2>
+          <p className="text-sm text-gray-600">
+            Enter your details to get started
+          </p>
         </div>
 
         {/* Login form */}
-        <form onSubmit={handleSubmit} className="space-y-6 bg-gray-900/50 p-8 rounded-lg border border-gray-800">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label htmlFor="fullName" className="block text-sm font-medium text-gray-300 mb-2">
+            <label htmlFor="fullName" className="block text-sm text-gray-400 mb-2">
               Full Name
             </label>
             <input
@@ -72,14 +110,15 @@ export default function LoginPage() {
               type="text"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              placeholder=""
-              className="w-full px-4 py-3 bg-black border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#4169E1] transition-colors"
+              className="w-full px-4 py-3 bg-gray-950 border border-gray-800 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-[#4169E1] transition-colors"
+              placeholder="Your name"
               disabled={isLoading}
+              autoFocus
             />
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+            <label htmlFor="email" className="block text-sm text-gray-400 mb-2">
               Email
             </label>
             <input
@@ -87,8 +126,8 @@ export default function LoginPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder=""
-              className="w-full px-4 py-3 bg-black border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#4169E1] transition-colors"
+              className="w-full px-4 py-3 bg-gray-950 border border-gray-800 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-[#4169E1] transition-colors"
+              placeholder="you@example.com"
               disabled={isLoading}
             />
           </div>
@@ -100,15 +139,14 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full px-6 py-3 bg-[#1E3A5F] hover:bg-[#2C5282] disabled:bg-gray-800 disabled:cursor-not-allowed text-white rounded-lg transition-colors duration-200 text-lg font-semibold"
-            style={{ fontFamily: 'var(--font-cormorant)' }}
+            className="w-full px-6 py-3 bg-[#4169E1] hover:bg-[#5B7FE8] disabled:bg-gray-800 disabled:cursor-not-allowed text-white rounded-lg transition-colors duration-200 text-base font-medium"
           >
-            {isLoading ? 'Getting Started...' : 'Get Started'}
+            {isLoading ? 'Getting started...' : 'Continue'}
           </button>
         </form>
 
-        <p className="text-center text-sm text-gray-500">
-          Your information is saved locally and used to personalize your experience
+        <p className="text-center text-xs text-gray-600 pt-4">
+          Your information is saved locally to personalize your experience
         </p>
       </div>
     </main>

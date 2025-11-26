@@ -31,7 +31,7 @@ interface DayReviews {
 export default function ReviewsPage() {
   const router = useRouter();
   const { user, isLoading: userLoading } = useUser();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [stats, setStats] = useState<ReviewStats | null>(null);
   const [upcoming, setUpcoming] = useState<DayReviews[]>([]);
   const [loading, setLoading] = useState(true);

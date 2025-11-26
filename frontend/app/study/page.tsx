@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import ProgressBar from '@/components/ProgressBar';
 import Sidebar from '@/components/Sidebar';
 import AIChat from '@/components/AIChat';
+import ErrorAnalysis from '@/components/ErrorAnalysis';
 import QuestionRating from '@/components/QuestionRating';
 import { useUser } from '@/contexts/UserContext';
 
@@ -36,23 +36,19 @@ interface Feedback {
 export default function StudyPage() {
   const router = useRouter();
   const { user, isLoading: userLoading } = useUser();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [question, setQuestion] = useState<Question | null>(null);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<Feedback | null>(null);
   const [loading, setLoading] = useState(true);
   const [questionCount, setQuestionCount] = useState(0);
-  const [correctCount, setCorrectCount] = useState(0);
-  const [queueStats, setQueueStats] = useState({ completed: 0, queueSize: 10 });
   const [expandedChoices, setExpandedChoices] = useState<Set<string>>(new Set());
   const [startTime, setStartTime] = useState<number>(0);
   const [elapsedTime, setElapsedTime] = useState<number>(0);
   const [nextQuestion, setNextQuestion] = useState<Question | null>(null);
-  const [totalQuestions, setTotalQuestions] = useState<number>(1994); // Default fallback
   const [error, setError] = useState<string | null>(null);
 
   const preloadNextQuestion = async () => {
-    // Silently pre-load the next question in the background
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
       const response = await fetch(`${apiUrl}/api/questions/random`);
@@ -71,15 +67,12 @@ export default function StudyPage() {
     setExpandedChoices(new Set());
     setStartTime(Date.now());
 
-    // If we have a pre-loaded question, use it instantly
     if (nextQuestion) {
       setQuestion(nextQuestion);
       setNextQuestion(null);
       setLoading(false);
-      // Start pre-loading the NEXT question
       preloadNextQuestion();
     } else {
-      // Fallback: load synchronously
       setLoading(true);
       setError(null);
       try {
@@ -89,16 +82,15 @@ export default function StudyPage() {
           const data = await response.json();
           setQuestion(data);
           setError(null);
-          // Start pre-loading for next time
           preloadNextQuestion();
         } else if (response.status === 404) {
           setError('No questions available. Please try again later.');
         } else {
-          setError('Failed to load question. Please check your connection and try again.');
+          setError('Failed to load question. Please check your connection.');
         }
       } catch (error) {
         console.error('Error loading question:', error);
-        setError('Network error. Please check your internet connection and try again.');
+        setError('Network error. Please check your internet connection.');
       } finally {
         setLoading(false);
       }
@@ -106,27 +98,22 @@ export default function StudyPage() {
   };
 
   useEffect(() => {
-    // Redirect to login if not authenticated
     if (!userLoading && !user) {
       router.push('/login');
       return;
     }
 
-    // Load first question and queue stats only if user is authenticated
     if (user && !question) {
       loadNextQuestion();
-      loadQueueStats();
-      loadTotalQuestions();
     }
   }, [user, userLoading, router]);
 
-  // Timer update - runs every second when question is active
+  // Timer update
   useEffect(() => {
     if (!feedback && startTime > 0) {
       const interval = setInterval(() => {
         setElapsedTime(Math.floor((Date.now() - startTime) / 1000));
       }, 1000);
-
       return () => clearInterval(interval);
     } else {
       setElapsedTime(0);
@@ -136,12 +123,10 @@ export default function StudyPage() {
   // Keyboard navigation
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
-      // Ignore if user is typing in an input field
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
         return;
       }
 
-      // A-E keys for answer selection (only before feedback)
       if (!feedback && question) {
         const key = e.key.toUpperCase();
         const validKeys = ['A', 'B', 'C', 'D', 'E'];
@@ -153,13 +138,11 @@ export default function StudyPage() {
         }
       }
 
-      // Enter to submit (only if answer is selected and no feedback yet)
       if (e.key === 'Enter' && selectedAnswer && !feedback) {
         handleSubmit();
         e.preventDefault();
       }
 
-      // N for next question (only after feedback)
       if (e.key.toLowerCase() === 'n' && feedback) {
         handleNext();
         e.preventDefault();
@@ -170,48 +153,6 @@ export default function StudyPage() {
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [question, selectedAnswer, feedback]);
 
-  const loadTotalQuestions = async () => {
-    try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-      const response = await fetch(`${apiUrl}/api/questions/count`);
-      if (response.ok) {
-        const data = await response.json();
-        setTotalQuestions(data.total);
-      }
-    } catch (error) {
-      console.error('Error loading total questions:', error);
-      // Keep default fallback value
-    }
-  };
-
-  const loadQueueStats = async () => {
-    if (!user) return;
-
-    try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-      const response = await fetch(`${apiUrl}/api/analytics/stats?user_id=${user.userId}`);
-      if (response.ok) {
-        const data = await response.json();
-
-        // Adaptive queue logic
-        const completed = data.total_attempts || 0;
-        const incorrectCount = data.incorrect_count || 0;
-
-        let queueSize = 10;
-        if (incorrectCount > 0) {
-          queueSize = Math.min(10 + (incorrectCount * 2), 50);
-        }
-
-        setQueueStats({
-          completed: completed,
-          queueSize: queueSize
-        });
-      }
-    } catch (error) {
-      console.error('Error loading queue stats:', error);
-    }
-  };
-
   const handleSubmit = async () => {
     if (!selectedAnswer || !question || !user) return;
 
@@ -221,9 +162,7 @@ export default function StudyPage() {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
       const response = await fetch(`${apiUrl}/api/questions/submit`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           question_id: question.id,
           user_id: user.userId,
@@ -236,13 +175,7 @@ export default function StudyPage() {
         const data: Feedback = await response.json();
         setFeedback(data);
         setQuestionCount(prev => prev + 1);
-        if (data.is_correct) {
-          setCorrectCount(prev => prev + 1);
-        }
-        // Update queue stats after answering
-        loadQueueStats();
 
-        // Auto-expand correct answer and user's wrong answer (Amboss-style)
         const newExpanded = new Set<string>();
         if (data.correct_answer) {
           newExpanded.add(data.correct_answer);
@@ -252,22 +185,19 @@ export default function StudyPage() {
         }
         setExpandedChoices(newExpanded);
 
-        // Pre-load next question in background for instant loading
         preloadNextQuestion();
       } else {
         setError('Failed to submit answer. Please try again.');
       }
     } catch (error) {
       console.error('Error submitting answer:', error);
-      setError('Network error while submitting. Your answer may not have been saved. Please try again.');
+      setError('Network error while submitting.');
     }
   };
 
   const handleNext = () => {
     loadNextQuestion();
   };
-
-  const progress = questionCount > 0 ? (questionCount / totalQuestions) * 100 : 0;
 
   if (loading) {
     return (
@@ -277,16 +207,7 @@ export default function StudyPage() {
           sidebarOpen ? 'md:ml-64' : 'ml-0'
         }`}>
           <div className="flex items-center justify-center min-h-screen">
-            {/* Solid white gear icon */}
-            <svg
-              className="animate-spin h-16 w-16 text-white"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              role="status"
-              aria-label="Loading question"
-            >
-              <path d="M12 2C11.172 2 10.5 2.672 10.5 3.5V5.145C9.419 5.408 8.414 5.877 7.536 6.514L6.379 5.357C5.793 4.771 4.843 4.771 4.257 5.357C3.671 5.943 3.671 6.893 4.257 7.479L5.414 8.636C4.777 9.514 4.308 10.519 4.045 11.6H2.5C1.672 11.6 1 12.272 1 13.1C1 13.928 1.672 14.6 2.5 14.6H4.145C4.408 15.681 4.877 16.686 5.514 17.564L4.357 18.721C3.771 19.307 3.771 20.257 4.357 20.843C4.943 21.429 5.893 21.429 6.479 20.843L7.636 19.686C8.514 20.323 9.519 20.792 10.6 21.055V22.5C10.6 23.328 11.272 24 12.1 24C12.928 24 13.6 23.328 13.6 22.5V20.855C14.681 20.592 15.686 20.123 16.564 19.486L17.721 20.643C18.307 21.229 19.257 21.229 19.843 20.643C20.429 20.057 20.429 19.107 19.843 18.521L18.686 17.364C19.323 16.486 19.792 15.481 20.055 14.4H21.5C22.328 14.4 23 13.728 23 12.9C23 12.072 22.328 11.4 21.5 11.4H19.855C19.592 10.319 19.123 9.314 18.486 8.436L19.643 7.279C20.229 6.693 20.229 5.743 19.643 5.157C19.057 4.571 18.107 4.571 17.521 5.157L16.364 6.314C15.486 5.677 14.481 5.208 13.4 4.945V3.5C13.4 2.672 12.728 2 11.9 2H12ZM12 8C14.209 8 16 9.791 16 12C16 14.209 14.209 16 12 16C9.791 16 8 14.209 8 12C8 9.791 9.791 8 12 8Z" />
-            </svg>
+            <div className="animate-pulse text-gray-500">Loading question...</div>
           </div>
         </main>
       </>
@@ -312,223 +233,163 @@ export default function StudyPage() {
     <>
       <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
 
-      {/* Progress bar only appears during questions */}
-      <ProgressBar progress={progress} questionCount={questionCount} totalQuestions={totalQuestions} />
-
       <main className={`min-h-screen bg-black text-white transition-all duration-300 ${
         sidebarOpen ? 'md:ml-64' : 'ml-0'
       }`}>
-        <div className="flex flex-col mx-auto px-8 py-6 pt-16 pb-32" style={{ maxWidth: sidebarOpen ? '1200px' : '1400px' }}>
+        {/* Centered content container - Claude style */}
+        <div className="max-w-3xl mx-auto px-6 py-8 pt-16 pb-32">
+          {/* Minimal header with timer */}
+          <div className="flex items-center justify-between mb-8 text-sm text-gray-600">
+            <div className="flex items-center gap-4">
+              <span>Question {questionCount + 1}</span>
+              {!feedback && elapsedTime > 0 && (
+                <span className="text-gray-500">
+                  {Math.floor(elapsedTime / 60)}:{(elapsedTime % 60).toString().padStart(2, '0')}
+                </span>
+              )}
+            </div>
+            <div className="flex gap-3 text-xs text-gray-700">
+              {!feedback && (
+                <>
+                  <span><kbd className="px-1.5 py-0.5 bg-gray-900 rounded text-gray-500">A-E</kbd></span>
+                  <span><kbd className="px-1.5 py-0.5 bg-gray-900 rounded text-gray-500">Enter</kbd></span>
+                </>
+              )}
+              {feedback && (
+                <span><kbd className="px-1.5 py-0.5 bg-gray-900 rounded text-gray-500">N</kbd> next</span>
+              )}
+            </div>
+          </div>
+
           {/* Error Banner */}
           {error && (
-            <div className="mb-4 p-4 bg-red-900/20 border border-red-500/50 rounded-lg flex items-start justify-between">
-              <div className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <div>
-                  <p className="text-red-400 font-semibold">{error}</p>
-                  <button
-                    onClick={() => {
-                      setError(null);
-                      loadNextQuestion();
-                    }}
-                    className="mt-2 text-sm text-red-300 hover:text-red-200 underline"
-                  >
-                    Try Again
-                  </button>
-                </div>
-              </div>
+            <div className="mb-6 p-4 bg-red-900/20 border border-red-900/50 rounded-lg text-red-400 text-sm">
+              {error}
               <button
-                onClick={() => setError(null)}
-                className="text-red-400 hover:text-red-300"
-                aria-label="Dismiss error"
+                onClick={() => { setError(null); loadNextQuestion(); }}
+                className="ml-3 underline hover:no-underline"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                Try again
               </button>
             </div>
           )}
 
-          {/* Stats bar */}
-          <div className="flex justify-between items-center text-base mb-4 flex-shrink-0">
-            {/* Timer */}
-            <div>
-              {!feedback && elapsedTime > 0 && (
-                <span className="text-gray-400 font-semibold">
-                  ⏱️ {Math.floor(elapsedTime / 60)}:{(elapsedTime % 60).toString().padStart(2, '0')}
-                </span>
-              )}
-            </div>
-
-            {/* Queue and Completed Stats */}
-            <div className="flex gap-6">
-              <div className="group relative">
-                <span className="text-gray-400 font-semibold">Queue: </span>
-                <span className="text-white font-bold">{queueStats.queueSize}</span>
-                <div className="absolute hidden group-hover:block bottom-full mb-2 right-0 w-64 p-2 bg-gray-900 border border-gray-700 rounded text-xs text-gray-300 shadow-lg z-10">
-                  Questions you'll review soon based on spaced repetition
-                </div>
-              </div>
-              <div className="group relative">
-                <span className="text-gray-400 font-semibold">Completed: </span>
-                <span className="text-white font-bold">{queueStats.completed}</span>
-                <div className="absolute hidden group-hover:block bottom-full mb-2 right-0 w-64 p-2 bg-gray-900 border border-gray-700 rounded text-xs text-gray-300 shadow-lg z-10">
-                  Total questions you've answered in all study sessions
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Keyboard Hints */}
-          <div className="mb-4 text-xs text-gray-600 flex gap-4">
-            {!feedback && (
-              <>
-                <span><kbd className="px-2 py-1 bg-gray-900 rounded border border-gray-700">A-E</kbd> Select answer</span>
-                <span><kbd className="px-2 py-1 bg-gray-900 rounded border border-gray-700">Enter</kbd> Submit</span>
-              </>
-            )}
-            {feedback && (
-              <span><kbd className="px-2 py-1 bg-gray-900 rounded border border-gray-700">N</kbd> Next question</span>
-            )}
-          </div>
-
-          {/* Question Vignette - Slightly smaller for balance */}
-          <div className="mb-6 flex-shrink border-b border-gray-800 pb-6">
-            <p className="text-xl leading-relaxed whitespace-pre-wrap font-semibold">
+          {/* Question Vignette - conversational style */}
+          <div className="mb-8">
+            <div className="text-lg leading-relaxed text-gray-100 whitespace-pre-wrap">
               {question.vignette}
-            </p>
+            </div>
           </div>
 
-          {/* Answer Choices - dropdown style with separators */}
-          <div className="mb-6 flex-shrink-0 border border-gray-700 rounded-lg divide-y divide-gray-700">
+          {/* Answer Choices - clean, minimal */}
+          <div className="mb-8 space-y-2">
             {question.choices.map((choice, index) => {
               const letter = String.fromCharCode(65 + index);
               const isSelected = selectedAnswer === choice;
               const isExpanded = expandedChoices.has(choice);
               const isCorrectAnswer = feedback && choice === feedback.correct_answer;
               const isUserWrongChoice = feedback && isSelected && !feedback.is_correct;
-              const isWrongChoice = feedback && !isCorrectAnswer;
 
-              let bgColor = 'bg-transparent';
-              let borderColor = '';
-
+              let containerClass = 'border border-gray-800 rounded-xl transition-all';
               if (feedback) {
-                // After feedback - show results
                 if (isCorrectAnswer) {
-                  bgColor = 'bg-emerald-500/20';
-                  borderColor = 'border-l-4 border-l-emerald-500';
+                  containerClass = 'border-2 border-emerald-500/50 bg-emerald-500/5 rounded-xl';
                 } else if (isUserWrongChoice) {
-                  bgColor = 'bg-red-500/20';
-                  borderColor = 'border-l-4 border-l-red-500';
-                } else if (isWrongChoice) {
-                  bgColor = 'bg-gray-800/10';
+                  containerClass = 'border-2 border-red-500/50 bg-red-500/5 rounded-xl';
+                } else {
+                  containerClass = 'border border-gray-800/50 rounded-xl opacity-60';
                 }
               } else if (isSelected) {
-                // Before feedback - highlight selected answer
-                bgColor = 'bg-blue-500/30';
-                borderColor = 'border-l-4 border-l-blue-500';
+                containerClass = 'border-2 border-[#4169E1] bg-[#4169E1]/5 rounded-xl';
               }
 
-              const toggleExpand = () => {
-                const newExpanded = new Set(expandedChoices);
-                if (isExpanded) {
-                  newExpanded.delete(choice);
-                } else {
-                  newExpanded.add(choice);
-                }
-                setExpandedChoices(newExpanded);
-              };
-
               return (
-                <div key={index} className={`transition-all duration-200 ${bgColor} ${borderColor}`}>
-                  {/* Choice Row */}
-                  <div className="w-full p-3 flex items-center justify-between">
-                    <button
-                      onClick={() => {
-                        if (!feedback) {
-                          setSelectedAnswer(choice);
-                        }
-                      }}
-                      disabled={!!feedback}
-                      className="flex items-center gap-2 flex-1 text-left hover:bg-gray-700/60 rounded-lg p-2 -m-2 transition-all duration-100 ease-out"
-                    >
-                      <span className="text-gray-400 text-sm font-semibold min-w-[1.5rem]">{letter}.</span>
-                      <span className="text-base font-normal text-white leading-snug">{choice}</span>
-                    </button>
-
-                    {/* Status indicators */}
-                    <div className="flex items-center gap-2">
-                      {isSelected && !feedback && (
-                        <div className="w-2 h-2 rounded-full bg-blue-500" />
-                      )}
-                      {feedback && (
-                        <button
-                          onClick={toggleExpand}
-                          className="p-1 hover:bg-gray-800 rounded transition-colors duration-100"
-                          aria-label={isExpanded ? 'Collapse explanation' : 'Expand explanation'}
+                <div key={index} className={containerClass}>
+                  <button
+                    onClick={() => !feedback && setSelectedAnswer(choice)}
+                    disabled={!!feedback}
+                    className="w-full p-4 flex items-start gap-4 text-left"
+                  >
+                    <span className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-sm font-medium ${
+                      feedback
+                        ? isCorrectAnswer
+                          ? 'bg-emerald-500 text-white'
+                          : isUserWrongChoice
+                            ? 'bg-red-500 text-white'
+                            : 'bg-gray-800 text-gray-500'
+                        : isSelected
+                          ? 'bg-[#4169E1] text-white'
+                          : 'bg-gray-900 text-gray-400'
+                    }`}>
+                      {letter}
+                    </span>
+                    <span className={`flex-1 ${
+                      feedback && !isCorrectAnswer && !isUserWrongChoice ? 'text-gray-500' : 'text-gray-200'
+                    }`}>
+                      {choice}
+                    </span>
+                    {feedback && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const newExpanded = new Set(expandedChoices);
+                          if (isExpanded) {
+                            newExpanded.delete(choice);
+                          } else {
+                            newExpanded.add(choice);
+                          }
+                          setExpandedChoices(newExpanded);
+                        }}
+                        className="flex-shrink-0 p-1"
+                      >
+                        <svg
+                          className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''} ${
+                            isCorrectAnswer ? 'text-emerald-400' : isUserWrongChoice ? 'text-red-400' : 'text-gray-600'
+                          }`}
+                          fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"
                         >
-                          <svg
-                            className={`w-5 h-5 transition-transform duration-150 ${
-                              isExpanded ? 'rotate-180' : ''
-                            } ${isCorrectAnswer ? 'text-emerald-500' : isUserWrongChoice ? 'text-red-500' : 'text-gray-400'}`}
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                          </svg>
-                        </button>
-                      )}
-                    </div>
-                  </div>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </button>
+                    )}
+                  </button>
 
-                  {/* Explanation Dropdown */}
+                  {/* Explanation */}
                   {feedback && isExpanded && (
-                    <div className="px-5 pb-5 pt-3 border-t border-gray-700/50">
-                      <div className={`text-base ${isCorrectAnswer ? 'text-emerald-400' : isUserWrongChoice ? 'text-red-400' : 'text-gray-400'} font-semibold mb-3`}>
-                        {isCorrectAnswer ? '✓ Correct Answer' : isUserWrongChoice ? '✗ Your Answer (Incorrect)' : 'Why this is wrong'}
+                    <div className="px-4 pb-4 pt-2 border-t border-gray-800/50 ml-11">
+                      <div className={`text-xs font-medium mb-2 ${
+                        isCorrectAnswer ? 'text-emerald-400' : isUserWrongChoice ? 'text-red-400' : 'text-gray-500'
+                      }`}>
+                        {isCorrectAnswer ? 'Correct' : isUserWrongChoice ? 'Your answer' : 'Why not this'}
                       </div>
-                      <div className="text-base text-gray-300 leading-relaxed space-y-3">
+                      <div className="text-sm text-gray-400 leading-relaxed">
                         {(() => {
                           if (!feedback.explanation) {
                             return isCorrectAnswer
-                              ? 'This is the correct answer for this patient.'
-                              : 'Explanation for why this choice is incorrect will appear here.';
+                              ? 'This is the correct answer.'
+                              : 'This choice is incorrect.';
                           }
 
                           if (isCorrectAnswer) {
-                            // Show principle + clinical reasoning + correct answer explanation with structure
                             return (
-                              <>
+                              <div className="space-y-2">
                                 {feedback.explanation.principle && (
-                                  <div className="text-white font-medium">
-                                    {feedback.explanation.principle}
-                                  </div>
+                                  <p className="text-gray-200 font-medium">{feedback.explanation.principle}</p>
                                 )}
                                 {feedback.explanation.clinical_reasoning && (
-                                  <div className="text-gray-300">
-                                    {feedback.explanation.clinical_reasoning}
-                                  </div>
+                                  <p>{feedback.explanation.clinical_reasoning}</p>
                                 )}
                                 {feedback.explanation.correct_answer_explanation && (
-                                  <div className="text-gray-300">
-                                    {feedback.explanation.correct_answer_explanation}
-                                  </div>
+                                  <p>{feedback.explanation.correct_answer_explanation}</p>
                                 )}
-                                {!feedback.explanation.principle && !feedback.explanation.clinical_reasoning && !feedback.explanation.correct_answer_explanation && (
-                                  <div>This is the correct answer for this patient.</div>
-                                )}
-                              </>
+                              </div>
                             );
                           } else {
-                            // Show distractor explanation for this specific choice
                             const distractorExplanations = feedback.explanation.distractor_explanations;
                             if (distractorExplanations && distractorExplanations[letter]) {
-                              return <div>{distractorExplanations[letter]}</div>;
+                              return distractorExplanations[letter];
                             }
-                            return 'Explanation for why this choice is incorrect will appear here.';
+                            return 'This choice is incorrect for this patient.';
                           }
                         })()}
                       </div>
@@ -539,9 +400,18 @@ export default function StudyPage() {
             })}
           </div>
 
-          {/* AI Chat below answer choices - compact version */}
+          {/* Error Analysis */}
           {feedback && question && user && (
-            <div className="mb-4 flex-shrink-0">
+            <ErrorAnalysis
+              questionId={question.id}
+              userId={user.userId}
+              isCorrect={feedback.is_correct}
+            />
+          )}
+
+          {/* AI Chat */}
+          {feedback && question && user && (
+            <div className="mb-6">
               <AIChat
                 questionId={question.id}
                 userId={user.userId}
@@ -551,31 +421,29 @@ export default function StudyPage() {
             </div>
           )}
 
-          {/* Action Buttons - Submit Answer or Next Question */}
-          {!feedback && selectedAnswer && (
-            <div className="flex gap-4 flex-shrink-0">
+          {/* Action Button */}
+          <div className="flex justify-center">
+            {!feedback && selectedAnswer && (
               <button
                 onClick={handleSubmit}
-                className="px-10 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 text-lg font-semibold"
+                className="px-8 py-3 bg-[#4169E1] hover:bg-[#5B7FE8] text-white rounded-full transition-colors text-base font-medium"
               >
-                Submit Answer
+                Submit
               </button>
-            </div>
-          )}
+            )}
 
-          {feedback && (
-            <div className="flex gap-4 flex-shrink-0">
+            {feedback && (
               <button
                 onClick={handleNext}
-                className="px-10 py-4 bg-[#1E3A5F] hover:bg-[#2C5282] text-white rounded-lg transition-colors duration-200 text-lg font-semibold"
+                className="px-8 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-full transition-colors text-base font-medium border border-gray-800"
               >
-                Next Question
+                Continue
               </button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
-        {/* Question Rating - Bottom Right Corner (only after feedback) */}
+        {/* Question Rating */}
         {feedback && question && user && (
           <QuestionRating
             questionId={question.id}
