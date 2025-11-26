@@ -1,24 +1,21 @@
 import type { NextConfig } from "next";
-import { withSentryConfig } from "@sentry/nextjs";
 
 const nextConfig: NextConfig = {
   /* config options here */
 };
 
-// Sentry configuration for source maps and release management
-const sentryWebpackPluginOptions = {
-  // For all available options, see:
-  // https://github.com/getsentry/sentry-webpack-plugin#options
+// Wrap with Sentry if installed
+let config = nextConfig;
 
-  // Only upload source maps in production
-  silent: true,
+try {
+  const { withSentryConfig } = require("@sentry/nextjs");
+  config = withSentryConfig(nextConfig, {
+    silent: true,
+    hideSourceMaps: true,
+    disableLogger: true,
+  });
+} catch {
+  // Sentry not installed, use base config
+}
 
-  // Hides source maps from generated client bundles
-  hideSourceMaps: true,
-
-  // Automatically tree-shake Sentry logger statements to reduce bundle size
-  disableLogger: true,
-};
-
-// Make sure to export the Sentry-wrapped config
-export default withSentryConfig(nextConfig, sentryWebpackPluginOptions);
+export default config;
