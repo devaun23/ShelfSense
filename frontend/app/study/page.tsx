@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
 import AIChat from '@/components/AIChat';
 import ErrorAnalysis from '@/components/ErrorAnalysis';
 import QuestionRating from '@/components/QuestionRating';
 import { useUser } from '@/contexts/UserContext';
+import { getSpecialtyByApiName, FULL_PREP_MODE, Specialty } from '@/lib/specialties';
 
 interface Question {
   id: string;
@@ -33,8 +34,9 @@ interface Feedback {
   source: string;
 }
 
-export default function StudyPage() {
+function StudyContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user, isLoading: userLoading } = useUser();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [question, setQuestion] = useState<Question | null>(null);
@@ -48,10 +50,24 @@ export default function StudyPage() {
   const [nextQuestion, setNextQuestion] = useState<Question | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  // Get specialty from URL params
+  const specialtyParam = searchParams.get('specialty');
+  const currentSpecialty: Specialty | null = specialtyParam
+    ? getSpecialtyByApiName(specialtyParam)
+    : null;
+
+  const getApiUrl = () => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    let url = `${apiUrl}/api/questions/random`;
+    if (specialtyParam) {
+      url += `?specialty=${encodeURIComponent(specialtyParam)}`;
+    }
+    return url;
+  };
+
   const preloadNextQuestion = async () => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-      const response = await fetch(`${apiUrl}/api/questions/random`);
+      const response = await fetch(getApiUrl());
       if (response.ok) {
         const data = await response.json();
         setNextQuestion(data);
@@ -76,8 +92,7 @@ export default function StudyPage() {
       setLoading(true);
       setError(null);
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-        const response = await fetch(`${apiUrl}/api/questions/random`);
+        const response = await fetch(getApiUrl());
         if (response.ok) {
           const data = await response.json();
           setQuestion(data);
@@ -86,7 +101,8 @@ export default function StudyPage() {
         } else if (response.status === 404) {
           setError('No questions available. Please try again later.');
         } else {
-          setError('Failed to load question. Please check your connection.');
+          const errorData = await response.json().catch(() => ({}));
+          setError(errorData.detail || 'Failed to load question. Please check your connection.');
         }
       } catch (error) {
         console.error('Error loading question:', error);
@@ -199,6 +215,10 @@ export default function StudyPage() {
     loadNextQuestion();
   };
 
+  const handleBackToHome = () => {
+    router.push('/');
+  };
+
   if (loading) {
     return (
       <>
@@ -206,8 +226,15 @@ export default function StudyPage() {
         <main className={`min-h-screen bg-black text-white transition-all duration-300 ${
           sidebarOpen ? 'md:ml-64' : 'ml-0'
         }`}>
-          <div className="flex items-center justify-center min-h-screen">
-            <div className="animate-pulse text-gray-500">Loading question...</div>
+          <div className="flex flex-col items-center justify-center min-h-screen gap-4">
+            <div className="animate-pulse text-gray-500">
+              {specialtyParam ? `Loading ${specialtyParam} question...` : 'Loading question...'}
+            </div>
+            {currentSpecialty && (
+              <div className={`text-sm ${currentSpecialty.color}`}>
+                {currentSpecialty.icon} {currentSpecialty.name}
+              </div>
+            )}
           </div>
         </main>
       </>
@@ -221,8 +248,14 @@ export default function StudyPage() {
         <main className={`min-h-screen bg-black text-white transition-all duration-300 ${
           sidebarOpen ? 'md:ml-64' : 'ml-0'
         }`}>
-          <div className="flex items-center justify-center min-h-screen">
+          <div className="flex flex-col items-center justify-center min-h-screen gap-4">
             <p className="text-gray-400">No questions available</p>
+            <button
+              onClick={handleBackToHome}
+              className="px-4 py-2 text-sm text-gray-400 hover:text-white border border-gray-800 rounded-lg hover:border-gray-700 transition-colors"
+            >
+              ← Back to Home
+            </button>
           </div>
         </main>
       </>
@@ -238,10 +271,38 @@ export default function StudyPage() {
       }`}>
         {/* Centered content container - Claude style */}
         <div className="max-w-3xl mx-auto px-6 py-8 pt-16 pb-32">
-          {/* Minimal header with timer */}
+          {/* Header with specialty badge and timer */}
           <div className="flex items-center justify-between mb-8 text-sm text-gray-600">
             <div className="flex items-center gap-4">
-              <span>Question {questionCount + 1}</span>
+              {/* Back button */}
+              <button
+                onClick={handleBackToHome}
+                className="p-1.5 hover:bg-gray-900 rounded-lg transition-colors"
+                title="Back to Home"
+              >
+                <svg className="w-4 h-4 text-gray-500 hover:text-gray-300" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+              </button>
+
+              {/* Specialty Badge */}
+              {currentSpecialty ? (
+                <div className={`flex items-center gap-2 px-3 py-1 rounded-full ${currentSpecialty.bgColor} ${currentSpecialty.borderColor} border`}>
+                  <span>{currentSpecialty.icon}</span>
+                  <span className={`text-xs font-medium ${currentSpecialty.color}`}>
+                    {currentSpecialty.shortName}
+                  </span>
+                </div>
+              ) : (
+                <div className={`flex items-center gap-2 px-3 py-1 rounded-full ${FULL_PREP_MODE.bgColor} ${FULL_PREP_MODE.borderColor} border`}>
+                  <span>{FULL_PREP_MODE.icon}</span>
+                  <span className={`text-xs font-medium ${FULL_PREP_MODE.color}`}>
+                    Step 2 CK
+                  </span>
+                </div>
+              )}
+
+              <span className="text-gray-600">Question {questionCount + 1}</span>
               {!feedback && elapsedTime > 0 && (
                 <span className="text-gray-500">
                   {Math.floor(elapsedTime / 60)}:{(elapsedTime % 60).toString().padStart(2, '0')}
@@ -453,5 +514,18 @@ export default function StudyPage() {
         )}
       </main>
     </>
+  );
+}
+
+// Wrap in Suspense for useSearchParams
+export default function StudyPage() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="animate-pulse text-gray-500">Loading...</div>
+      </main>
+    }>
+      <StudyContent />
+    </Suspense>
   );
 }

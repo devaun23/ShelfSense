@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
 from typing import List, Optional, Dict, Any
 from pydantic import BaseModel
@@ -10,6 +10,7 @@ from app.models.models import Question, QuestionAttempt, QuestionRating, ErrorAn
 from app.services.adaptive import select_next_question
 from app.services.question_generator import generate_and_save_question, save_generated_question
 from app.services.question_agent import generate_question_with_agent
+from app.services.question_pool import get_instant_question, get_pool_stats, warm_pool_async
 from app.services.error_categorization import categorize_error
 import threading
 
@@ -192,27 +193,46 @@ def submit_answer(request: SubmitAnswerRequest, db: Session = Depends(get_db)):
 
 
 @router.get("/random", response_model=QuestionResponse)
-def get_random_question(db: Session = Depends(get_db), specialty: Optional[str] = None, use_ai: bool = True, use_agent: bool = True):
+def get_random_question(
+    db: Session = Depends(get_db),
+    specialty: Optional[str] = None,
+    user_id: Optional[str] = None,
+    use_ai: bool = True,
+    instant: bool = True
+):
     """
-    Generate a new AI question on-demand (default behavior)
-    Pure AI generation - no NBME questions shown to user
-    Uses agent-based generation by default for higher quality
+    Get an AI-generated question - INSTANT from pre-generated pool.
+
+    Args:
+        specialty: Optional specialty filter (Medicine, Surgery, etc.)
+        user_id: Optional user ID to exclude already-answered questions
+        use_ai: If True, use AI generation (default)
+        instant: If True, serve from pre-generated pool (default, <100ms)
+                 If False, generate on-demand (slower, 10-30s)
+
+    Returns:
+        QuestionResponse with vignette, choices, and metadata
     """
-    # Always generate AI questions on-demand
     if use_ai:
         try:
-            if use_agent:
-                # Use agent-based generation (higher quality, multi-step reasoning)
-                print(f"[API] Using agent-based generation for {specialty or 'random specialty'}...")
+            if instant:
+                # INSTANT: Get from pre-generated pool (<100ms)
+                print(f"[API] Getting instant question for {specialty or 'any specialty'}...")
+                question = get_instant_question(db, specialty=specialty, user_id=user_id)
+
+                if not question:
+                    # Pool empty - fall back to on-demand generation
+                    print(f"[API] Pool empty, generating on-demand...")
+                    question_data = generate_question_with_agent(db, specialty=specialty)
+                    question = save_generated_question(db, question_data)
+            else:
+                # ON-DEMAND: Generate fresh question (10-30s)
+                print(f"[API] Generating on-demand for {specialty or 'random specialty'}...")
                 question_data = generate_question_with_agent(db, specialty=specialty)
                 question = save_generated_question(db, question_data)
-            else:
-                # Use simple generation (faster, less sophisticated)
-                print(f"[API] Using simple generation for {specialty or 'random specialty'}...")
-                question = generate_and_save_question(db, specialty=specialty)
 
             # Validate AI-generated question
-            if not question.choices or len(question.choices) != 5:
+            if not question or not question.choices or len(question.choices) != 5:
                 raise ValueError("AI generated invalid question format")
 
             return QuestionResponse(
@@ -246,6 +266,42 @@ def get_random_question(db: Session = Depends(get_db), specialty: Optional[str] 
         source=question.source or "Database",
         recency_weight=question.recency_weight or 0.5
     )
+
+
+@router.get("/pool/stats")
+def get_question_pool_stats(db: Session = Depends(get_db)):
+    """
+    Get statistics about the pre-generated question pool.
+
+    Returns count of available questions per specialty.
+    """
+    stats = get_pool_stats(db)
+    return {
+        "pool_stats": stats,
+        "status": "healthy" if stats.get("total", 0) >= 20 else "low"
+    }
+
+
+@router.post("/pool/warm")
+def warm_question_pool(
+    target_per_specialty: int = 20,
+    background_tasks: BackgroundTasks = None
+):
+    """
+    Warm up the question pool with pre-generated questions.
+
+    This runs in background and returns immediately.
+    Use /pool/stats to monitor progress.
+
+    Args:
+        target_per_specialty: Number of questions per specialty to generate (default: 20)
+    """
+    warm_pool_async(target_per_specialty)
+    return {
+        "status": "warming",
+        "message": f"Pool warming started with target {target_per_specialty} per specialty",
+        "check_progress": "/api/questions/pool/stats"
+    }
 
 
 class RateQuestionRequest(BaseModel):

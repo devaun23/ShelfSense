@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
 import { useUser } from '@/contexts/UserContext';
+import { SPECIALTIES, FULL_PREP_MODE, Specialty } from '@/lib/specialties';
 
 export default function Home() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -53,8 +54,13 @@ export default function Home() {
     }
   };
 
-  const handleStartStudying = () => {
-    router.push('/study');
+  const handleSpecialtyClick = (specialty: Specialty) => {
+    if (specialty.apiName) {
+      router.push(`/study?specialty=${encodeURIComponent(specialty.apiName)}`);
+    } else {
+      // Full prep mode - no specialty filter
+      router.push('/study');
+    }
   };
 
   // Get time-based greeting
@@ -84,46 +90,67 @@ export default function Home() {
       <main className={`min-h-screen bg-black text-white transition-all duration-300 ${
         sidebarOpen ? 'md:ml-64' : 'ml-0'
       }`}>
-        {/* Centered content area - Claude style */}
-        <div className="flex flex-col items-center justify-center min-h-screen px-6 py-12">
-          <div className="max-w-2xl w-full">
+        {/* Centered content area */}
+        <div className="flex flex-col items-center justify-start min-h-screen px-6 py-12 pt-16">
+          <div className="max-w-4xl w-full">
             {/* Greeting */}
             {user && (
-              <h1 className="text-4xl md:text-5xl text-center text-white mb-12" style={{ fontFamily: 'var(--font-cormorant)' }}>
+              <h1 className="text-4xl md:text-5xl text-center text-white mb-4" style={{ fontFamily: 'var(--font-cormorant)' }}>
                 {getGreeting()}, {user.firstName}
               </h1>
             )}
 
-            {/* Main input/action area - Claude style */}
-            <div className="relative mb-6">
-              <button
-                onClick={handleStartStudying}
-                className="w-full text-left px-6 py-5 bg-gray-950 border border-gray-800 rounded-2xl hover:border-gray-700 transition-colors group"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-500 text-lg">Start studying...</span>
+            {/* Subtitle */}
+            <p className="text-center text-gray-500 mb-12">
+              Choose a shelf exam to study
+            </p>
+
+            {/* Specialty Grid - 8 shelves */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+              {SPECIALTIES.map((specialty) => (
+                <button
+                  key={specialty.id}
+                  onClick={() => handleSpecialtyClick(specialty)}
+                  className={`group p-6 rounded-2xl border ${specialty.borderColor} ${specialty.bgColor} hover:scale-[1.02] transition-all duration-200 text-left`}
+                >
+                  <div className="text-3xl mb-3">{specialty.icon}</div>
+                  <div className={`font-medium ${specialty.color}`}>
+                    {specialty.name}
+                  </div>
+                  <div className="text-xs text-gray-600 mt-1">
+                    Shelf Exam
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            {/* Step 2 CK Full Prep - Featured Card */}
+            <button
+              onClick={() => handleSpecialtyClick(FULL_PREP_MODE)}
+              className={`w-full p-6 rounded-2xl border-2 ${FULL_PREP_MODE.borderColor} ${FULL_PREP_MODE.bgColor} hover:scale-[1.01] transition-all duration-200 text-left mb-12`}
+            >
+              <div className="flex items-center gap-4">
+                <div className="text-4xl">{FULL_PREP_MODE.icon}</div>
+                <div>
+                  <div className={`text-xl font-medium ${FULL_PREP_MODE.color}`}>
+                    {FULL_PREP_MODE.name}
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    Mixed questions from all specialties • Simulates the real exam
+                  </div>
+                </div>
+                <div className="ml-auto">
                   <div className="w-10 h-10 rounded-full bg-[#4169E1] flex items-center justify-center group-hover:bg-[#5B7FE8] transition-colors">
                     <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                     </svg>
                   </div>
                 </div>
-              </button>
-            </div>
+              </div>
+            </button>
 
-            {/* Claude-style action buttons - horizontal row with icon + text */}
-            <div className="flex flex-wrap justify-center gap-2 mb-16">
-              {/* Study Questions */}
-              <button
-                onClick={() => router.push('/study')}
-                className="flex items-center gap-2 px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-full text-sm text-gray-400 hover:text-white hover:border-gray-700 hover:bg-gray-900 transition-all"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                </svg>
-                <span>Questions</span>
-              </button>
-
+            {/* Quick Action Buttons */}
+            <div className="flex flex-wrap justify-center gap-2 mb-12">
               {/* Reviews Calendar */}
               <button
                 onClick={() => router.push('/reviews')}
@@ -135,7 +162,7 @@ export default function Home() {
                   <line x1="8" y1="2" x2="8" y2="6" />
                   <line x1="16" y1="2" x2="16" y2="6" />
                 </svg>
-                <span>Calendar</span>
+                <span>Reviews</span>
                 {dueToday > 0 && (
                   <span className="ml-1 px-1.5 py-0.5 bg-emerald-500/20 text-emerald-400 text-xs rounded-full">
                     {dueToday}
@@ -163,17 +190,6 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
                 <span>Weak Areas</span>
-              </button>
-
-              {/* Random Practice */}
-              <button
-                onClick={() => router.push('/study?mode=random')}
-                className="flex items-center gap-2 px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-full text-sm text-gray-400 hover:text-white hover:border-gray-700 hover:bg-gray-900 transition-all"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
-                <span>Random</span>
               </button>
             </div>
 
