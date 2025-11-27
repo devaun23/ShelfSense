@@ -372,6 +372,10 @@ def replenish_pool_batch(
         try:
             topic = get_high_yield_topic(specialty)
 
+            if topic is None:
+                print(f"[MassivePool] WARNING: No topic found for specialty '{specialty}', skipping question {i+1}/{count}")
+                continue
+
             question_data = agent.generate_question(
                 specialty=specialty,
                 topic=topic,

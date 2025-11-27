@@ -255,16 +255,27 @@ def get_high_yield_topic(specialty):
     """Select high-yield topic from specialty (maps to First Aid topics)"""
     import random
     # Map USMLE disciplines to our high-yield topics
+    # Must match specialty names from massive_pool.py SPECIALTIES list
     specialty_map = {
-        "Medicine": "Internal Medicine",
+        # Direct matches
+        "Internal Medicine": "Internal Medicine",
         "Surgery": "Surgery",
         "Pediatrics": "Pediatrics",
-        "Obstetrics & Gynecology": "Obstetrics & Gynecology",
         "Psychiatry": "Psychiatry",
+        "Emergency Medicine": "Emergency Medicine",
+        # Handle "and" vs "&" mismatch
+        "Obstetrics and Gynecology": "Obstetrics & Gynecology",
+        "Obstetrics & Gynecology": "Obstetrics & Gynecology",
+        # Legacy mappings
+        "Medicine": "Internal Medicine",
+        # Fallback specialties to Internal Medicine (common primary care topics)
+        "Family Medicine": "Internal Medicine",
+        "Preventive Medicine": "Internal Medicine",
     }
 
     mapped_specialty = specialty_map.get(specialty, "Internal Medicine")
     if mapped_specialty not in HIGH_YIELD_TOPICS:
+        print(f"[ContentOutline] WARNING: No topics for mapped specialty '{mapped_specialty}' (from '{specialty}')")
         return None
 
     category = random.choice(list(HIGH_YIELD_TOPICS[mapped_specialty].keys()))
