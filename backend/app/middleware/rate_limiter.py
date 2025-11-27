@@ -1,404 +1,329 @@
 """
 Rate Limiting Middleware for ShelfSense
 
-Enforces daily usage limits based on subscription tier:
-- Free: 10 AI questions/day, 50 chat messages/day, 100 questions/day
-- Student: 50 AI questions/day, 200 chat messages/day, unlimited questions
-- Premium: Unlimited everything
+Prevents API abuse by limiting:
+1. AI question generation requests per user
+2. Overall API request rate
 
-Uses DailyUsage model to track and enforce limits.
+Configuration:
+- Max 10 AI questions per user per hour
+- Max 100 general API requests per user per minute
 """
 
-from datetime import datetime, date
-from typing import Optional, Dict, Callable
-from functools import wraps
-
-from fastapi import Request, HTTPException, Depends
+import time
+from typing import Dict, Tuple
+from collections import defaultdict
+from fastapi import HTTPException, Request
 from fastapi.responses import JSONResponse
-from starlette.middleware.base import BaseHTTPMiddleware
-from sqlalchemy.orm import Session
 
-from app.database import get_db, SessionLocal
-from app.models.models import DailyUsage, Subscription, User
 
+class RateLimiter:
+    """Simple in-memory rate limiter with sliding window"""
 
-# ============================================================================
-# RATE LIMITS BY TIER
-# ============================================================================
+    def __init__(self):
+        # Store: {user_id: [(timestamp, endpoint), ...]}
+        self._requests: Dict[str, list] = defaultdict(list)
 
-RATE_LIMITS = {
-    "free": {
-        "ai_questions_generated": 10,
-        "ai_chat_messages": 50,
-        "questions_answered": 100,
-    },
-    "student": {
-        "ai_questions_generated": 50,
-        "ai_chat_messages": 200,
-        "questions_answered": None,  # Unlimited
-    },
-    "premium": {
-        "ai_questions_generated": None,  # Unlimited
-        "ai_chat_messages": None,
-        "questions_answered": None,
-    },
-}
-
-# Endpoint to usage type mapping
-ENDPOINT_USAGE_MAP = {
-    "/api/questions/generate": "ai_questions_generated",
-    "/api/batch/generate": "ai_questions_generated",
-    "/api/chat": "ai_chat_messages",
-    "/api/chat/message": "ai_chat_messages",
-    "/api/questions/submit": "questions_answered",
-    "/api/questions/answer": "questions_answered",
-}
-
-
-# ============================================================================
-# HELPER FUNCTIONS
-# ============================================================================
-
-def get_user_tier(db: Session, user_id: str) -> str:
-    """Get user's subscription tier, defaulting to 'free'."""
-    subscription = db.query(Subscription).filter(
-        Subscription.user_id == user_id
-    ).first()
-
-    if not subscription:
-        return "free"
-
-    # Check if subscription is expired
-    if subscription.expires_at and subscription.expires_at < datetime.utcnow():
-        return "free"
-
-    # Check if cancelled
-    if subscription.cancelled_at:
-        return "free"
-
-    return subscription.tier
-
-
-def get_or_create_daily_usage(db: Session, user_id: str) -> DailyUsage:
-    """Get or create today's usage record for user."""
-    today = date.today()
-    today_start = datetime.combine(today, datetime.min.time())
-
-    usage = db.query(DailyUsage).filter(
-        DailyUsage.user_id == user_id,
-        DailyUsage.date >= today_start
-    ).first()
-
-    if not usage:
-        from app.models.models import generate_uuid
-        usage = DailyUsage(
-            id=generate_uuid(),
-            user_id=user_id,
-            date=today_start,
-            questions_answered=0,
-            ai_chat_messages=0,
-            ai_questions_generated=0
-        )
-        db.add(usage)
-        db.commit()
-        db.refresh(usage)
-
-    return usage
-
-
-def check_rate_limit(
-    db: Session,
-    user_id: str,
-    usage_type: str
-) -> Dict[str, any]:
-    """
-    Check if user has exceeded their rate limit.
-
-    Returns:
-        {
-            "allowed": bool,
-            "current": int,
-            "limit": int or None,
-            "remaining": int or None,
-            "reset_at": datetime
-        }
-    """
-    tier = get_user_tier(db, user_id)
-    limit = RATE_LIMITS.get(tier, RATE_LIMITS["free"]).get(usage_type)
-
-    usage = get_or_create_daily_usage(db, user_id)
-    current = getattr(usage, usage_type, 0)
-
-    # Calculate reset time (midnight UTC)
-    tomorrow = date.today()
-    from datetime import timedelta
-    reset_at = datetime.combine(tomorrow + timedelta(days=1), datetime.min.time())
-
-    if limit is None:
-        # Unlimited
-        return {
-            "allowed": True,
-            "current": current,
-            "limit": None,
-            "remaining": None,
-            "reset_at": reset_at
-        }
-
-    remaining = max(0, limit - current)
-    allowed = current < limit
-
-    return {
-        "allowed": allowed,
-        "current": current,
-        "limit": limit,
-        "remaining": remaining,
-        "reset_at": reset_at
-    }
-
-
-def increment_usage(db: Session, user_id: str, usage_type: str, amount: int = 1):
-    """Increment the usage counter for a user."""
-    usage = get_or_create_daily_usage(db, user_id)
-    current = getattr(usage, usage_type, 0)
-    setattr(usage, usage_type, current + amount)
-    usage.updated_at = datetime.utcnow()
-    db.commit()
-
-
-# ============================================================================
-# MIDDLEWARE
-# ============================================================================
-
-class RateLimitMiddleware(BaseHTTPMiddleware):
-    """
-    FastAPI middleware to enforce rate limits on specific endpoints.
-    """
-
-    async def dispatch(self, request: Request, call_next):
-        # Get the path
-        path = request.url.path
-
-        # Check if this endpoint has rate limiting
-        usage_type = None
-        for endpoint_prefix, u_type in ENDPOINT_USAGE_MAP.items():
-            if path.startswith(endpoint_prefix):
-                usage_type = u_type
-                break
-
-        if not usage_type:
-            # No rate limiting for this endpoint
-            return await call_next(request)
-
-        # Get user ID from request (try multiple sources)
-        user_id = self._extract_user_id(request)
-
-        if not user_id:
-            # No user ID, allow request (auth will handle it)
-            return await call_next(request)
-
-        # Check rate limit
-        db = SessionLocal()
-        try:
-            result = check_rate_limit(db, user_id, usage_type)
-
-            if not result["allowed"]:
-                # Calculate seconds until reset
-                seconds_until_reset = int(
-                    (result["reset_at"] - datetime.utcnow()).total_seconds()
-                )
-
-                return JSONResponse(
-                    status_code=429,
-                    content={
-                        "error": "Rate limit exceeded",
-                        "message": f"You have exceeded your daily limit for this action",
-                        "limit": result["limit"],
-                        "current": result["current"],
-                        "reset_at": result["reset_at"].isoformat(),
-                        "retry_after": seconds_until_reset
-                    },
-                    headers={
-                        "Retry-After": str(seconds_until_reset),
-                        "X-RateLimit-Limit": str(result["limit"]),
-                        "X-RateLimit-Remaining": "0",
-                        "X-RateLimit-Reset": str(int(result["reset_at"].timestamp()))
-                    }
-                )
-
-            # Add rate limit headers to response
-            response = await call_next(request)
-
-            if result["limit"]:
-                response.headers["X-RateLimit-Limit"] = str(result["limit"])
-                response.headers["X-RateLimit-Remaining"] = str(result["remaining"])
-                response.headers["X-RateLimit-Reset"] = str(int(result["reset_at"].timestamp()))
-
-            return response
-
-        finally:
-            db.close()
-
-    def _extract_user_id(self, request: Request) -> Optional[str]:
-        """Extract user ID from request headers, query params, or path."""
-        # Try Authorization header (JWT would be decoded here in production)
-        auth_header = request.headers.get("Authorization")
-        if auth_header and auth_header.startswith("Bearer "):
-            # In production, decode JWT and extract user_id
-            # For now, check if there's a user_id in query params
-            pass
-
-        # Try query parameter
-        user_id = request.query_params.get("user_id")
-        if user_id:
-            return user_id
-
-        # Try path parameter (e.g., /api/users/{user_id}/...)
-        path_parts = request.url.path.split("/")
-        for i, part in enumerate(path_parts):
-            if part == "users" and i + 1 < len(path_parts):
-                return path_parts[i + 1]
-
-        # Try X-User-ID header (for internal services)
-        return request.headers.get("X-User-ID")
-
-
-# ============================================================================
-# DECORATOR FOR ROUTE-LEVEL RATE LIMITING
-# ============================================================================
-
-def rate_limit(usage_type: str):
-    """
-    Decorator for applying rate limits to specific routes.
-
-    Usage:
-        @router.post("/generate")
-        @rate_limit("ai_questions_generated")
-        async def generate_question(user_id: str, db: Session = Depends(get_db)):
-            ...
-    """
-    def decorator(func: Callable):
-        @wraps(func)
-        async def wrapper(*args, **kwargs):
-            # Extract db and user_id from kwargs
-            db = kwargs.get("db")
-            user_id = kwargs.get("user_id")
-
-            if not db or not user_id:
-                # Can't check rate limit without these
-                return await func(*args, **kwargs)
-
-            result = check_rate_limit(db, user_id, usage_type)
-
-            if not result["allowed"]:
-                seconds_until_reset = int(
-                    (result["reset_at"] - datetime.utcnow()).total_seconds()
-                )
-                raise HTTPException(
-                    status_code=429,
-                    detail={
-                        "error": "Rate limit exceeded",
-                        "limit": result["limit"],
-                        "current": result["current"],
-                        "reset_at": result["reset_at"].isoformat(),
-                        "retry_after": seconds_until_reset
-                    },
-                    headers={"Retry-After": str(seconds_until_reset)}
-                )
-
-            # Execute the function
-            response = await func(*args, **kwargs)
-
-            # Increment usage after successful execution
-            increment_usage(db, user_id, usage_type)
-
-            return response
-
-        return wrapper
-    return decorator
-
-
-# ============================================================================
-# DEPENDENCY FOR MANUAL RATE LIMIT CHECKS
-# ============================================================================
-
-class RateLimitChecker:
-    """
-    Dependency class for checking rate limits in routes.
-
-    Usage:
-        @router.post("/generate")
-        async def generate(
-            user_id: str,
-            rate_check: dict = Depends(RateLimitChecker("ai_questions_generated")),
-            db: Session = Depends(get_db)
-        ):
-            if not rate_check["allowed"]:
-                raise HTTPException(429, detail="Rate limited")
-    """
-
-    def __init__(self, usage_type: str):
-        self.usage_type = usage_type
-
-    async def __call__(
-        self,
-        user_id: str = None,
-        db: Session = Depends(get_db)
-    ) -> Dict:
-        if not user_id:
-            return {"allowed": True, "limit": None, "remaining": None}
-
-        return check_rate_limit(db, user_id, self.usage_type)
-
-
-# ============================================================================
-# UTILITY FUNCTIONS FOR ROUTES
-# ============================================================================
-
-async def get_user_usage_summary(
-    user_id: str,
-    db: Session = Depends(get_db)
-) -> Dict:
-    """
-    Get complete usage summary for a user.
-
-    Returns all usage types with their limits and current values.
-    """
-    tier = get_user_tier(db, user_id)
-    usage = get_or_create_daily_usage(db, user_id)
-    limits = RATE_LIMITS.get(tier, RATE_LIMITS["free"])
-
-    tomorrow = date.today()
-    from datetime import timedelta
-    reset_at = datetime.combine(tomorrow + timedelta(days=1), datetime.min.time())
-
-    return {
-        "user_id": user_id,
-        "tier": tier,
-        "reset_at": reset_at.isoformat(),
-        "usage": {
-            "ai_questions_generated": {
-                "current": usage.ai_questions_generated,
-                "limit": limits["ai_questions_generated"],
-                "remaining": (
-                    limits["ai_questions_generated"] - usage.ai_questions_generated
-                    if limits["ai_questions_generated"] else None
-                )
+        # Rate limit configurations
+        self._limits = {
+            "ai_generation": {
+                "max_requests": 10,
+                "window_seconds": 3600,  # 1 hour
+                "endpoints": ["/api/questions/random"]
             },
-            "ai_chat_messages": {
-                "current": usage.ai_chat_messages,
-                "limit": limits["ai_chat_messages"],
-                "remaining": (
-                    limits["ai_chat_messages"] - usage.ai_chat_messages
-                    if limits["ai_chat_messages"] else None
-                )
-            },
-            "questions_answered": {
-                "current": usage.questions_answered,
-                "limit": limits["questions_answered"],
-                "remaining": (
-                    limits["questions_answered"] - usage.questions_answered
-                    if limits["questions_answered"] else None
-                )
+            "general_api": {
+                "max_requests": 100,
+                "window_seconds": 60,  # 1 minute
+                "endpoints": ["*"]  # All endpoints
             }
         }
+
+    def _clean_old_requests(self, user_id: str, window_seconds: int):
+        """Remove requests outside the time window"""
+        current_time = time.time()
+        cutoff_time = current_time - window_seconds
+
+        if user_id in self._requests:
+            self._requests[user_id] = [
+                (ts, endpoint) for ts, endpoint in self._requests[user_id]
+                if ts > cutoff_time
+            ]
+
+    def check_rate_limit(
+        self,
+        user_id: str,
+        endpoint: str,
+        limit_type: str = "general_api"
+    ) -> Tuple[bool, Dict]:
+        """
+        Check if request is within rate limits
+
+        Args:
+            user_id: User identifier
+            endpoint: API endpoint being accessed
+            limit_type: Type of rate limit to apply
+
+        Returns:
+            Tuple of (is_allowed, info_dict)
+            - is_allowed: True if request is within limits
+            - info_dict: Contains current usage and limit information
+        """
+        if limit_type not in self._limits:
+            return True, {}
+
+        limit_config = self._limits[limit_type]
+        max_requests = limit_config["max_requests"]
+        window_seconds = limit_config["window_seconds"]
+
+        # Clean old requests
+        self._clean_old_requests(user_id, window_seconds)
+
+        # Count relevant requests in window
+        current_time = time.time()
+        relevant_requests = [
+            ts for ts, ep in self._requests[user_id]
+            if ep == endpoint or "*" in limit_config["endpoints"]
+        ]
+
+        current_count = len(relevant_requests)
+
+        # Check if limit exceeded
+        is_allowed = current_count < max_requests
+
+        # Calculate reset time
+        if relevant_requests:
+            oldest_request = min(relevant_requests)
+            reset_time = oldest_request + window_seconds
+        else:
+            reset_time = current_time + window_seconds
+
+        info = {
+            "limit": max_requests,
+            "remaining": max(0, max_requests - current_count),
+            "reset": int(reset_time),
+            "window_seconds": window_seconds
+        }
+
+        if is_allowed:
+            # Record this request
+            self._requests[user_id].append((current_time, endpoint))
+
+        return is_allowed, info
+
+    def get_stats(self) -> Dict:
+        """Get rate limiter statistics"""
+        total_users = len(self._requests)
+        total_requests = sum(len(reqs) for reqs in self._requests.values())
+
+        return {
+            "total_users_tracked": total_users,
+            "total_active_requests": total_requests,
+            "rate_limits": {
+                name: {
+                    "max_requests": config["max_requests"],
+                    "window_seconds": config["window_seconds"]
+                }
+                for name, config in self._limits.items()
+            }
+        }
+
+    def reset_user(self, user_id: str):
+        """Reset rate limit for a specific user"""
+        if user_id in self._requests:
+            del self._requests[user_id]
+
+
+# Global rate limiter instance
+_limiter = RateLimiter()
+
+
+def check_ai_generation_rate_limit(user_id: str) -> Dict:
+    """
+    Check rate limit for AI question generation
+
+    Args:
+        user_id: User ID to check
+
+    Returns:
+        Rate limit info dict
+
+    Raises:
+        HTTPException: If rate limit exceeded
+    """
+    is_allowed, info = _limiter.check_rate_limit(
+        user_id=user_id,
+        endpoint="/api/questions/random",
+        limit_type="ai_generation"
+    )
+
+    if not is_allowed:
+        raise HTTPException(
+            status_code=429,
+            detail={
+                "error": "Rate limit exceeded",
+                "message": f"Maximum {info['limit']} AI questions per hour. Please try again later.",
+                "limit": info["limit"],
+                "reset": info["reset"],
+                "retry_after": info["reset"] - int(time.time())
+            }
+        )
+
+    return info
+
+
+def check_general_rate_limit(user_id: str, endpoint: str) -> Dict:
+    """
+    Check general API rate limit
+
+    Args:
+        user_id: User ID to check
+        endpoint: Endpoint being accessed
+
+    Returns:
+        Rate limit info dict
+
+    Raises:
+        HTTPException: If rate limit exceeded
+    """
+    is_allowed, info = _limiter.check_rate_limit(
+        user_id=user_id,
+        endpoint=endpoint,
+        limit_type="general_api"
+    )
+
+    if not is_allowed:
+        raise HTTPException(
+            status_code=429,
+            detail={
+                "error": "Rate limit exceeded",
+                "message": "Too many requests. Please slow down.",
+                "limit": info["limit"],
+                "reset": info["reset"],
+                "retry_after": info["reset"] - int(time.time())
+            }
+        )
+
+    return info
+
+
+def get_rate_limiter_stats() -> Dict:
+    """Get rate limiter statistics"""
+    return _limiter.get_stats()
+
+
+def reset_user_rate_limit(user_id: str):
+    """Reset rate limit for a user (admin function)"""
+    _limiter.reset_user(user_id)
+
+
+class OpenAIBurstLimiter:
+    """
+    Per-minute burst limiter for OpenAI API calls.
+
+    Prevents users from hammering the API within short time windows.
+    Limits are tier-based to match subscription levels.
+    """
+
+    # Requests per minute by tier
+    REQUESTS_PER_MINUTE = {
+        "free": 5,
+        "student": 15,
+        "premium": 30
     }
+
+    def __init__(self):
+        # Store: {user_id: [timestamp, ...]}
+        self._requests: Dict[str, list] = defaultdict(list)
+        self._window_seconds = 60  # 1 minute window
+
+    def _clean_old_requests(self, user_id: str):
+        """Remove requests outside the 1-minute window"""
+        cutoff = time.time() - self._window_seconds
+        if user_id in self._requests:
+            self._requests[user_id] = [
+                ts for ts in self._requests[user_id] if ts > cutoff
+            ]
+
+    def can_make_request(self, user_id: str, tier: str = "free") -> Tuple[bool, int]:
+        """
+        Check if user can make an OpenAI request.
+
+        Args:
+            user_id: User identifier
+            tier: User's subscription tier (free, student, premium)
+
+        Returns:
+            Tuple of (allowed, seconds_to_wait)
+            - allowed: True if request is permitted
+            - seconds_to_wait: Seconds until next request allowed (0 if allowed)
+        """
+        self._clean_old_requests(user_id)
+
+        limit = self.REQUESTS_PER_MINUTE.get(tier, self.REQUESTS_PER_MINUTE["free"])
+        current_count = len(self._requests[user_id])
+
+        if current_count < limit:
+            # Record this request
+            self._requests[user_id].append(time.time())
+            return True, 0
+
+        # Calculate wait time
+        oldest_request = min(self._requests[user_id])
+        wait_seconds = int(oldest_request + self._window_seconds - time.time()) + 1
+
+        return False, max(0, wait_seconds)
+
+    def get_usage(self, user_id: str, tier: str = "free") -> Dict:
+        """Get current usage info for a user"""
+        self._clean_old_requests(user_id)
+        limit = self.REQUESTS_PER_MINUTE.get(tier, self.REQUESTS_PER_MINUTE["free"])
+        current = len(self._requests[user_id])
+
+        return {
+            "current": current,
+            "limit": limit,
+            "remaining": max(0, limit - current),
+            "window_seconds": self._window_seconds
+        }
+
+
+# Global burst limiter instance
+openai_burst_limiter = OpenAIBurstLimiter()
+
+
+async def rate_limit_middleware(request: Request, call_next):
+    """
+    Middleware to apply rate limiting to all requests
+
+    Note: This is a basic implementation. For production, consider:
+    - Redis-based rate limiting for multi-server deployments
+    - More sophisticated rate limiting strategies
+    - IP-based limiting for anonymous users
+    """
+    # Skip rate limiting for health checks and docs
+    if request.url.path in ["/health", "/", "/docs", "/openapi.json"]:
+        return await call_next(request)
+
+    # Extract user_id from query params or default
+    user_id = request.query_params.get("user_id", "anonymous")
+
+    try:
+        # Apply general rate limit
+        info = check_general_rate_limit(user_id, request.url.path)
+
+        # Process request
+        response = await call_next(request)
+
+        # Add rate limit headers
+        response.headers["X-RateLimit-Limit"] = str(info["limit"])
+        response.headers["X-RateLimit-Remaining"] = str(info["remaining"])
+        response.headers["X-RateLimit-Reset"] = str(info["reset"])
+
+        return response
+
+    except HTTPException as e:
+        # Return rate limit error
+        return JSONResponse(
+            status_code=e.status_code,
+            content=e.detail
+        )

@@ -1,70 +1,24 @@
-import os
-import asyncio
-import sentry_sdk
-from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from app.database import engine, Base
-from app.routers import questions, analytics, users, reviews, chat, adaptive_engine, auth, profile, sessions, subscription, content_quality, study_plan, content, batch_generation, testing_qa, study_modes, flagged, admin, admin_analytics, payments, webhooks, email, learning_engine
-from app.middleware.rate_limiter import RateLimitMiddleware
+from app.routers import questions, analytics, users, reviews, chat, clerk_webhook, study_modes
+from app.middleware.performance_monitor import PerformanceMonitorMiddleware, get_performance_stats, get_slow_requests
 
 # Load environment variables
 load_dotenv()
 
-# Initialize Sentry for error monitoring
-sentry_dsn = os.getenv("SENTRY_DSN")
-if sentry_dsn:
-    sentry_sdk.init(
-        dsn=sentry_dsn,
-        traces_sample_rate=0.1,  # 10% of transactions for performance monitoring
-        profiles_sample_rate=0.1,  # 10% of sampled transactions for profiling
-        environment=os.getenv("ENVIRONMENT", "development"),
-        enable_tracing=True,
-    )
-
 # Create database tables
 Base.metadata.create_all(bind=engine)
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """Application lifespan handler - runs on startup and shutdown."""
-    # STARTUP: Initialize the massive question pool
-    if os.getenv("ENABLE_POOL_WARMING", "true").lower() == "true":
-        try:
-            from app.services.massive_pool import initialize_massive_pool
-            print("[Startup] Initializing massive question pool...")
-            initialize_massive_pool()
-            print("[Startup] Massive pool initialized successfully")
-        except Exception as e:
-            print(f"[Startup] Warning: Pool initialization failed: {e}")
-            # Don't crash on pool init failure - app can still work
-    else:
-        print("[Startup] Pool warming disabled via ENABLE_POOL_WARMING=false")
-
-    # Start email reminder scheduler if Resend API key is configured
-    if os.getenv("RESEND_API_KEY"):
-        try:
-            from app.services.email import run_hourly_reminder_check
-            asyncio.create_task(run_hourly_reminder_check())
-            print("[Startup] Email reminder scheduler started")
-        except Exception as e:
-            print(f"[Startup] Warning: Email scheduler failed to start: {e}")
-    else:
-        print("[Startup] Email reminders disabled (no RESEND_API_KEY)")
-
-    yield  # Application runs here
-
-    # SHUTDOWN: Cleanup if needed
-    print("[Shutdown] Cleaning up...")
 
 app = FastAPI(
     title="ShelfSense API",
     description="Adaptive learning platform for USMLE Step 2 CK",
-    version="1.0.0",
-    lifespan=lifespan
+    version="1.0.0"
 )
+
+# Performance monitoring middleware (must be first)
+app.add_middleware(PerformanceMonitorMiddleware)
 
 # CORS middleware for Next.js frontend
 app.add_middleware(
@@ -79,33 +33,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Rate limiting middleware
-app.add_middleware(RateLimitMiddleware)
-
 # Include routers
-app.include_router(auth.router)  # Authentication
-app.include_router(profile.router)  # User profile & settings
-app.include_router(sessions.router)  # Session management
-app.include_router(users.router)  # Legacy user endpoints
+app.include_router(users.router)
 app.include_router(questions.router)
 app.include_router(analytics.router)
 app.include_router(reviews.router)  # Spaced repetition
 app.include_router(chat.router)  # AI chat
-app.include_router(adaptive_engine.router)  # Adaptive learning engine
-app.include_router(subscription.router)  # Subscription & monetization
-app.include_router(content_quality.router)  # Content quality management
-app.include_router(study_plan.router)  # Personalized study plans
-app.include_router(content.router)  # Content Management Agent
-app.include_router(batch_generation.router)  # Batch question generation
-app.include_router(testing_qa.router)  # Testing/QA Agent
-app.include_router(study_modes.router)  # Study Modes (Timed, Tutor, Challenge)
-app.include_router(flagged.router)  # Question flagging/marking system
-app.include_router(admin.router)  # Admin dashboard
-app.include_router(admin_analytics.router)  # Admin usage analytics
-app.include_router(payments.router)  # Stripe payments
-app.include_router(webhooks.router)  # Stripe webhooks
-app.include_router(email.router)  # Email notifications
-app.include_router(learning_engine.router)  # Advanced learning engine (Gaps 1-5)
+app.include_router(clerk_webhook.router)  # Clerk webhooks
+app.include_router(study_modes.router)  # Study modes
 
 
 @app.get("/")
@@ -122,8 +57,99 @@ def health_check():
     return {"status": "healthy"}
 
 
-@app.get("/sentry-debug")
-async def trigger_error():
-    """Test endpoint to verify Sentry is capturing errors."""
-    division_by_zero = 1 / 0
-    return {"error": "This should not be reached"}
+@app.get("/debug/db-stats")
+def debug_db_stats():
+    """Debug endpoint to check database status"""
+    from app.database import SessionLocal, DATABASE_URL
+    from app.models.models import Question
+    import os
+
+    db = SessionLocal()
+    try:
+        nbme_count = db.query(Question).filter(
+            ~Question.source.like('%AI Generated%')
+        ).count()
+
+        ai_count = db.query(Question).filter(
+            Question.source.like('%AI Generated%')
+        ).count()
+
+        total = db.query(Question).count()
+
+        return {
+            "database_url": DATABASE_URL,
+            "openai_key_set": bool(os.getenv('OPENAI_API_KEY')),
+            "openai_key_prefix": os.getenv('OPENAI_API_KEY', '')[:15] + "..." if os.getenv('OPENAI_API_KEY') else None,
+            "nbme_questions": nbme_count,
+            "ai_questions": ai_count,
+            "total_questions": total
+        }
+    except Exception as e:
+        return {
+            "error": str(e),
+            "database_url": DATABASE_URL,
+            "openai_key_set": bool(os.getenv('OPENAI_API_KEY'))
+        }
+    finally:
+        db.close()
+
+
+@app.get("/debug/test-openai")
+def test_openai_connection():
+    """Test OpenAI API connection"""
+    import os
+    from openai import OpenAI
+
+    try:
+        client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+
+        # Try a simple API call
+        response = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[{"role": "user", "content": "Say 'test'"}],
+            max_tokens=10
+        )
+
+        return {
+            "status": "success",
+            "api_key_prefix": os.getenv('OPENAI_API_KEY', '')[:15] + "...",
+            "response": response.choices[0].message.content
+        }
+    except Exception as e:
+        import traceback
+        return {
+            "status": "error",
+            "error": str(e),
+            "traceback": traceback.format_exc(),
+            "api_key_set": bool(os.getenv('OPENAI_API_KEY')),
+            "api_key_prefix": os.getenv('OPENAI_API_KEY', '')[:15] + "..." if os.getenv('OPENAI_API_KEY') else None
+        }
+
+
+@app.get("/debug/performance-stats")
+def debug_performance_stats(endpoint: str = None):
+    """
+    Get performance statistics for API endpoints
+
+    Tracks:
+    - Request count
+    - Average, min, max latency
+    - 95th percentile latency
+    - Slow requests (> 3s)
+    """
+    return get_performance_stats(endpoint)
+
+
+@app.get("/debug/slow-requests")
+def debug_slow_requests(threshold_seconds: float = 3.0):
+    """
+    Get list of slow requests above threshold
+
+    Default threshold: 3 seconds (AI generation target)
+    """
+    slow_requests = get_slow_requests(threshold_seconds)
+    return {
+        "threshold_seconds": threshold_seconds,
+        "count": len(slow_requests),
+        "requests": slow_requests
+    }

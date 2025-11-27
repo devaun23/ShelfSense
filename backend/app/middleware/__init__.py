@@ -6,21 +6,17 @@ Contains:
 """
 
 from app.middleware.rate_limiter import (
-    RateLimitMiddleware,
-    rate_limit,
-    RateLimitChecker,
-    check_rate_limit,
-    increment_usage,
-    get_user_usage_summary,
-    RATE_LIMITS
+    RateLimiter,
+    check_ai_generation_rate_limit,
+    check_general_rate_limit,
+    get_rate_limiter_stats,
+    reset_user_rate_limit
 )
 
 __all__ = [
-    "RateLimitMiddleware",
-    "rate_limit",
-    "RateLimitChecker",
-    "check_rate_limit",
-    "increment_usage",
-    "get_user_usage_summary",
-    "RATE_LIMITS"
+    "RateLimiter",
+    "check_ai_generation_rate_limit",
+    "check_general_rate_limit",
+    "get_rate_limiter_stats",
+    "reset_user_rate_limit"
 ]

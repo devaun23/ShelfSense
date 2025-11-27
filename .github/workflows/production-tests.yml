@@ -1,0 +1,141 @@
+name: Production Tests
+
+# Run production tests against Railway deployment
+# These tests verify that the deployed application is working correctly
+
+on:
+  # Run on schedule - every 6 hours
+  schedule:
+    - cron: '0 */6 * * *'
+
+  # Manual trigger
+  workflow_dispatch:
+    inputs:
+      railway_url:
+        description: 'Railway URL to test against'
+        required: false
+        default: ''
+
+  # Run on pushes to main (after deployment)
+  push:
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+      - '.github/workflows/production-tests.yml'
+
+jobs:
+  production-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: 'pip'
+          cache-dependency-path: backend/requirements.txt
+
+      - name: Install dependencies
+        run: |
+          cd backend
+          pip install -r requirements.txt
+          pip install pytest-html pytest-timeout
+
+      - name: Run production tests
+        env:
+          RAILWAY_URL: ${{ github.event.inputs.railway_url || secrets.RAILWAY_URL }}
+          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+          TEST_USER_ID: ${{ secrets.TEST_USER_ID }}
+        run: |
+          cd backend
+          pytest tests/production/ -v \
+            --timeout=60 \
+            --html=production-test-report.html \
+            --self-contained-html \
+            -x  # Stop on first failure for faster feedback
+
+      - name: Upload test report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: production-test-report
+          path: backend/production-test-report.html
+          retention-days: 30
+
+      - name: Notify on failure
+        if: failure()
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          payload: |
+            {
+              "text": "Production tests failed!",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "ShelfSense Production Tests Failed"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Workflow:* ${{ github.workflow }}\n*Branch:* ${{ github.ref_name }}\n*Commit:* ${{ github.sha }}"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Details>"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        continue-on-error: true  # Don't fail the job if Slack notification fails
+
+  # Health check job - runs more frequently and is lighter
+  health-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    # Only run on schedule, not on push
+    if: github.event_name == 'schedule'
+
+    steps:
+      - name: Health check
+        env:
+          RAILWAY_URL: ${{ secrets.RAILWAY_URL }}
+        run: |
+          # Basic health check
+          response=$(curl -s -o /dev/null -w "%{http_code}" "$RAILWAY_URL/health")
+          if [ "$response" != "200" ]; then
+            echo "Health check failed with status $response"
+            exit 1
+          fi
+          echo "Health check passed"
+
+          # Check OpenAI status (if admin endpoint is accessible)
+          openai_response=$(curl -s "$RAILWAY_URL/health" | jq -r '.status')
+          echo "API Status: $openai_response"
+
+      - name: Notify on health check failure
+        if: failure()
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          payload: |
+            {
+              "text": "ShelfSense Health Check Failed - API may be down!"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        continue-on-error: true

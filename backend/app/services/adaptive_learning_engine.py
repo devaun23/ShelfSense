@@ -1444,7 +1444,8 @@ Return JSON:
             })
 
         # Priority 3: Confidence calibration
-        if confidence_analysis.get("calibration_score", 100) < 70:
+        calibration_score = confidence_analysis.get("calibration_score")
+        if calibration_score is not None and calibration_score < 70:
             recommendations.append({
                 "priority": 3,
                 "type": "metacognition",
@@ -1453,7 +1454,8 @@ Return JSON:
             })
 
         # Priority 4: Learning velocity
-        if velocity.get("velocity_per_week", 0) < 0:
+        velocity_per_week = velocity.get("velocity_per_week")
+        if velocity_per_week is not None and velocity_per_week < 0:
             recommendations.append({
                 "priority": 4,
                 "type": "strategy",

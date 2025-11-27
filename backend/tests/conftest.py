@@ -272,6 +272,11 @@ def test_scheduled_review(db: Session, test_user: User, test_question: Question)
 @pytest.fixture
 def mock_openai():
     """Mock OpenAI API calls for testing without API costs"""
+    import app.utils.openai_client as openai_module
+
+    # Reset the cached client
+    openai_module._client = None
+
     mock_response = MagicMock()
     mock_response.choices = [MagicMock()]
     mock_response.choices[0].message.content = '{"result": "mocked response"}'
@@ -279,14 +284,24 @@ def mock_openai():
     mock_instance = MagicMock()
     mock_instance.chat.completions.create.return_value = mock_response
 
-    with patch("app.utils.openai_client.get_openai_client", return_value=mock_instance):
-        yield mock_instance
+    # Patch the _client directly to bypass the get_openai_client function
+    with patch.object(openai_module, '_client', mock_instance):
+        with patch.object(openai_module, 'get_openai_client', return_value=mock_instance):
+            yield mock_instance
+
+    # Reset after test to avoid affecting other tests
+    openai_module._client = None
 
 
 @pytest.fixture
 def mock_openai_explanation(sample_explanation: Dict):
     """Mock OpenAI to return a proper explanation"""
     import json
+    import app.utils.openai_client as openai_module
+
+    # Reset the cached client
+    openai_module._client = None
+
     mock_response = MagicMock()
     mock_response.choices = [MagicMock()]
     mock_response.choices[0].message.content = json.dumps(sample_explanation)
@@ -294,8 +309,13 @@ def mock_openai_explanation(sample_explanation: Dict):
     mock_instance = MagicMock()
     mock_instance.chat.completions.create.return_value = mock_response
 
-    with patch("app.utils.openai_client.get_openai_client", return_value=mock_instance):
-        yield mock_instance
+    # Patch the _client directly to bypass the get_openai_client function
+    with patch.object(openai_module, '_client', mock_instance):
+        with patch.object(openai_module, 'get_openai_client', return_value=mock_instance):
+            yield mock_instance
+
+    # Reset after test
+    openai_module._client = None
 
 
 # =========================================================================
