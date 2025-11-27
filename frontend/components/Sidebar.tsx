@@ -171,7 +171,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
         <div className="flex-1" />
 
         {/* Quick Links - at bottom */}
-        <nav className="flex-shrink-0 px-3 pb-3" aria-label="Quick links">
+        <nav className={`flex-shrink-0 px-3 ${user ? 'pb-3' : 'pb-[max(0.75rem,env(safe-area-inset-bottom))]'}`} aria-label="Quick links">
           <div className="border-t border-gray-900 pt-4">
             <button
               onClick={() => router.push('/analytics')}
@@ -276,7 +276,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
 
         {/* Bottom Section - User Profile */}
         {user && (
-          <div className="flex-shrink-0 border-t border-gray-900 p-3">
+          <div className="flex-shrink-0 border-t border-gray-900 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
             <div className="flex items-center gap-3 px-2 py-2">
               {/* Clerk UserButton */}
               <UserButton
