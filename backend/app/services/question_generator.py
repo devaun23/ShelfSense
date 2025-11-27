@@ -307,12 +307,13 @@ Return ONLY valid JSON (no additional text):
     "clinical_reasoning": "Use structured format with arrows (→) to show diagnostic/therapeutic pathway. Example: 'History + exam → provisional diagnosis → confirm with test → treatment'. Keep it clear and flowing with logical progression.",
     "correct_answer_explanation": "Explain why this is correct using clear clinical logic. Use arrow notation (→) to show cause-effect or step-progression when relevant.",
     "distractor_explanations": {{
-      "A": "Concise reason why wrong",
-      "B": "Concise reason why wrong (skip if this is the correct answer)",
-      "C": "Concise reason why wrong",
-      "D": "Concise reason why wrong",
-      "E": "Concise reason why wrong"
+      "A": "Why this is INCORRECT for this patient. Include: (1) the flaw in choosing this, (2) when this WOULD be correct in a different scenario",
+      "B": "Why this is INCORRECT for this patient. Include: (1) the flaw in choosing this, (2) when this WOULD be correct in a different scenario",
+      "C": "Why this is INCORRECT for this patient. Include: (1) the flaw in choosing this, (2) when this WOULD be correct in a different scenario",
+      "D": "Why this is INCORRECT for this patient. Include: (1) the flaw in choosing this, (2) when this WOULD be correct in a different scenario",
+      "E": "Why this is INCORRECT for this patient. Include: (1) the flaw in choosing this, (2) when this WOULD be correct in a different scenario"
     }},
+    "IMPORTANT_NOTE_ON_DISTRACTORS": "You MUST provide explanations for ALL 5 choices (A-E). For the CORRECT answer, explain why it IS correct (same as correct_answer_explanation). For the 4 WRONG answers, explain why each is wrong AND when it would be appropriate.",
     "concept": "The main medical concept being tested (e.g., 'Acute Coronary Syndrome Management', 'Diabetic Ketoacidosis')",
     "educational_objective": "What the student should learn from this question - a clear learning takeaway",
     "deep_dive": {{
@@ -426,8 +427,7 @@ def validate_explanation_quality(explanation: Dict, answer_key: str) -> Dict:
     Validate explanation quality and return validation results.
 
     Checks:
-    - All 5 distractor_explanations are present (A-E)
-    - Correct answer is excluded from distractor_explanations
+    - All 5 choice explanations are present (A-E) in distractor_explanations
     - Arrow notation (→) is used in clinical_reasoning and principle
     - Threshold patterns with units are present where applicable
 
@@ -436,26 +436,19 @@ def validate_explanation_quality(explanation: Dict, answer_key: str) -> Dict:
     """
     warnings = []
     all_choices = ["A", "B", "C", "D", "E"]
-    expected_distractors = [c for c in all_choices if c != answer_key]
 
-    # Check distractor_explanations
+    # Check distractor_explanations - now we expect ALL 5 choices explained
     distractor_explanations = explanation.get("distractor_explanations", {})
 
     if not distractor_explanations:
         warnings.append("Missing distractor_explanations entirely")
     else:
-        # Check all 4 wrong answers have explanations
-        for choice in expected_distractors:
+        # Check ALL 5 choices have explanations
+        for choice in all_choices:
             if choice not in distractor_explanations:
-                warnings.append(f"Missing distractor explanation for choice {choice}")
+                warnings.append(f"Missing explanation for choice {choice}")
             elif not distractor_explanations[choice] or distractor_explanations[choice].strip() == "":
-                warnings.append(f"Empty distractor explanation for choice {choice}")
-
-        # Check correct answer is not in distractors (or has meaningful "correct" indicator)
-        if answer_key in distractor_explanations:
-            distractor_text = distractor_explanations[answer_key].lower()
-            if "correct" not in distractor_text and "right answer" not in distractor_text:
-                warnings.append(f"Correct answer {answer_key} should not have a 'why wrong' distractor explanation")
+                warnings.append(f"Empty explanation for choice {choice}")
 
     # Check arrow notation in clinical_reasoning
     clinical_reasoning = explanation.get("clinical_reasoning", "")
@@ -492,7 +485,7 @@ def validate_explanation_quality(explanation: Dict, answer_key: str) -> Dict:
     return {
         "valid": len(warnings) == 0,
         "warnings": warnings,
-        "distractor_count": len([c for c in expected_distractors if c in distractor_explanations]),
+        "explanation_count": len([c for c in all_choices if c in distractor_explanations]),
         "has_arrow_notation": "→" in clinical_reasoning,
         "has_deep_dive": bool(deep_dive and deep_dive.get("pathophysiology"))
     }

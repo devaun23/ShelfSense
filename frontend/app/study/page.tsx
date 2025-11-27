@@ -12,7 +12,7 @@ import { useUser } from '@/contexts/UserContext';
 import { getSpecialtyByApiName, FULL_PREP_MODE, Specialty } from '@/lib/specialties';
 import { SkeletonQuestion, LoadingSpinner } from '@/components/SkeletonLoader';
 import { Button } from '@/components/ui';
-import EnhancedExplanation from '@/components/EnhancedExplanation';
+import TabbedExplanation from '@/components/TabbedExplanation';
 import StudyModeSelector from '@/components/StudyModeSelector';
 
 // Dynamically import Sidebar to avoid useSearchParams SSR issues
@@ -125,7 +125,7 @@ function StudyContent() {
   const [feedback, setFeedback] = useState<Feedback | null>(null);
   const [loading, setLoading] = useState(true);
   const [questionCount, setQuestionCount] = useState(0);
-  const [expandedChoices, setExpandedChoices] = useState<Set<string>>(new Set());
+  // Removed expandedChoices - UWorld-style shows explanations always after submit
   const [startTime, setStartTime] = useState<number>(0);
   const [elapsedTime, setElapsedTime] = useState<number>(0);
   const [nextQuestion, setNextQuestion] = useState<Question | null>(null);
@@ -236,7 +236,6 @@ function StudyContent() {
   const loadNextQuestion = async () => {
     setSelectedAnswer(null);
     setFeedback(null);
-    setExpandedChoices(new Set());
     setStartTime(Date.now());
     setConfidenceLevel(null);
 
@@ -428,14 +427,6 @@ function StudyContent() {
           });
           setQuestionCount(prev => prev + 1);
 
-          const newExpanded = new Set<string>();
-          if (data.correct_answer) {
-            newExpanded.add(data.correct_answer);
-          }
-          if (!data.is_correct && selectedAnswer) {
-            newExpanded.add(selectedAnswer);
-          }
-          setExpandedChoices(newExpanded);
         } else {
           setError('Failed to submit answer. Please try again.');
         }
@@ -457,15 +448,6 @@ function StudyContent() {
           const data: Feedback = await response.json();
           setFeedback(data);
           setQuestionCount(prev => prev + 1);
-
-          const newExpanded = new Set<string>();
-          if (data.correct_answer) {
-            newExpanded.add(data.correct_answer);
-          }
-          if (!data.is_correct && selectedAnswer) {
-            newExpanded.add(selectedAnswer);
-          }
-          setExpandedChoices(newExpanded);
 
           preloadNextQuestion();
         } else {
@@ -696,19 +678,18 @@ function StudyContent() {
             </div>
           )}
 
-          {/* Question Vignette - conversational style */}
+          {/* Question Vignette - UWorld-style serif typography */}
           <div className="mb-8">
-            <div className="text-lg leading-relaxed text-gray-100 whitespace-pre-wrap">
+            <div className="vignette whitespace-pre-wrap">
               {question.vignette}
             </div>
           </div>
 
-          {/* Answer Choices - clean, minimal */}
-          <div className="mb-8 space-y-2">
+          {/* Answer Choices - UWorld-style with proper spacing */}
+          <div className="mb-8 space-y-4">
             {question.choices.map((choice, index) => {
               const letter = String.fromCharCode(65 + index);
               const isSelected = selectedAnswer === choice;
-              const isExpanded = expandedChoices.has(choice);
               const isCorrectAnswer = feedback && choice === feedback.correct_answer;
               const isUserWrongChoice = feedback && isSelected && !feedback.is_correct;
 
@@ -730,7 +711,7 @@ function StudyContent() {
                   <button
                     onClick={() => !feedback && setSelectedAnswer(choice)}
                     disabled={!!feedback}
-                    className="w-full p-4 flex items-start gap-4 text-left"
+                    className="w-full px-5 py-4 flex items-start gap-4 text-left hover:bg-gray-900/30 transition-colors"
                   >
                     <span className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-sm font-medium ${
                       feedback
@@ -750,42 +731,43 @@ function StudyContent() {
                     }`}>
                       {choice}
                     </span>
+                    {/* Status indicator for feedback */}
                     {feedback && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          const newExpanded = new Set(expandedChoices);
-                          if (isExpanded) {
-                            newExpanded.delete(choice);
-                          } else {
-                            newExpanded.add(choice);
-                          }
-                          setExpandedChoices(newExpanded);
-                        }}
-                        className="flex-shrink-0 p-1"
-                      >
-                        <svg
-                          className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''} ${
-                            isCorrectAnswer ? 'text-emerald-400' : isUserWrongChoice ? 'text-red-400' : 'text-gray-600'
-                          }`}
-                          fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </button>
+                      <span className="flex-shrink-0">
+                        {isCorrectAnswer ? (
+                          <svg className="w-5 h-5 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                          </svg>
+                        ) : isUserWrongChoice ? (
+                          <svg className="w-5 h-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                          </svg>
+                        ) : null}
+                      </span>
                     )}
                   </button>
 
-                  {/* Inline Choice Explanation - simplified since EnhancedExplanation shows full details */}
-                  {feedback && isExpanded && !isCorrectAnswer && (
+                  {/* UWorld-style Inline Explanation - visible immediately after submit */}
+                  {feedback && !isCorrectAnswer && feedback.explanation?.distractor_explanations?.[letter] && (
                     <div className="px-4 pb-4 pt-2 border-t border-gray-800/50 ml-11">
-                      <div className={`text-xs font-medium mb-2 ${
+                      <div className={`text-xs font-medium mb-1 ${
                         isUserWrongChoice ? 'text-red-400' : 'text-gray-500'
                       }`}>
-                        {isUserWrongChoice ? 'Your answer' : 'Why not this'}
+                        {isUserWrongChoice ? 'Why your answer is incorrect' : 'Why not this option'}
                       </div>
                       <div className="text-sm text-gray-400 leading-relaxed">
-                        {feedback.explanation?.distractor_explanations?.[letter] || 'This choice is incorrect for this patient.'}
+                        {feedback.explanation.distractor_explanations[letter]}
+                      </div>
+                    </div>
+                  )}
+                  {/* Show correct answer explanation inline */}
+                  {feedback && isCorrectAnswer && feedback.explanation?.correct_answer_explanation && (
+                    <div className="px-4 pb-4 pt-2 border-t border-emerald-800/30 ml-11">
+                      <div className="text-xs font-medium mb-1 text-emerald-400">
+                        Why this is correct
+                      </div>
+                      <div className="text-sm text-gray-300 leading-relaxed">
+                        {feedback.explanation.correct_answer_explanation}
                       </div>
                     </div>
                   )}
@@ -794,15 +776,15 @@ function StudyContent() {
             })}
           </div>
 
-          {/* Enhanced Explanation */}
+          {/* Tabbed Explanation */}
           {feedback && feedback.explanation && (
             <div className="mb-6">
-              <EnhancedExplanation
-                explanation={feedback.explanation as Parameters<typeof EnhancedExplanation>[0]['explanation']}
+              <TabbedExplanation
+                explanation={feedback.explanation}
                 correctAnswer={feedback.correct_answer}
                 userAnswer={selectedAnswer ? String.fromCharCode(65 + question.choices.indexOf(selectedAnswer)) : ''}
                 isCorrect={feedback.is_correct}
-                mode="full"
+                choices={question.choices}
               />
             </div>
           )}

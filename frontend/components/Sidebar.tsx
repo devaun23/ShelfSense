@@ -104,9 +104,10 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
       {/* Sidebar */}
       <aside
         ref={sidebarRef}
-        className={`fixed left-0 top-0 h-full w-64 bg-gray-950 border-r border-gray-900 motion-safe:transition-transform motion-safe:duration-300 ease-out z-50 flex flex-col ${
+        className={`fixed left-0 top-0 h-dvh w-64 bg-gray-950 border-r border-gray-900 motion-safe:transition-transform motion-safe:duration-300 ease-out z-50 flex flex-col ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
+        style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
         role="navigation"
         aria-label="Main navigation"
         aria-hidden={!isOpen}
@@ -276,8 +277,8 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
 
         {/* Bottom Section - User Profile */}
         {user && (
-          <div className="flex-shrink-0 border-t border-gray-900 p-2">
-            <div className="flex items-center gap-3 px-2 py-1">
+          <div className="flex-shrink-0 border-t border-gray-900 p-3 pb-6">
+            <div className="flex items-center gap-3 px-2 py-2">
               {/* Clerk UserButton */}
               <UserButton
                 appearance={{

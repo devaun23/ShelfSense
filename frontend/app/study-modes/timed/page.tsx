@@ -2,8 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Sidebar from '@/components/Sidebar';
+import dynamic from 'next/dynamic';
 import { useUser } from '@/contexts/UserContext';
+
+// Dynamically import Sidebar to avoid useSearchParams SSR issues
+const Sidebar = dynamic(() => import('@/components/Sidebar'), { ssr: false });
 
 interface Question {
   id: string;

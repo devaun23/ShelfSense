@@ -29,11 +29,11 @@ def calculate_streak(db: Session, user_id: str) -> int:
     """
     # Get all unique dates user has answered questions
     attempts = db.query(
-        func.date(QuestionAttempt.created_at).label('date')
+        func.date(QuestionAttempt.attempted_at).label('date')
     ).filter(
         QuestionAttempt.user_id == user_id
     ).distinct().order_by(
-        func.date(QuestionAttempt.created_at).desc()
+        func.date(QuestionAttempt.attempted_at).desc()
     ).all()
 
     if not attempts:
@@ -279,17 +279,17 @@ def get_activity_heatmap(
 
     # Get daily activity data
     daily_data = db.query(
-        func.date(QuestionAttempt.created_at).label('date'),
+        func.date(QuestionAttempt.attempted_at).label('date'),
         func.count(QuestionAttempt.id).label('count'),
         func.sum(func.cast(QuestionAttempt.is_correct, Integer)).label('correct')
     ).filter(
         QuestionAttempt.user_id == user_id,
-        func.date(QuestionAttempt.created_at) >= start_date,
-        func.date(QuestionAttempt.created_at) <= end_date
+        func.date(QuestionAttempt.attempted_at) >= start_date,
+        func.date(QuestionAttempt.attempted_at) <= end_date
     ).group_by(
-        func.date(QuestionAttempt.created_at)
+        func.date(QuestionAttempt.attempted_at)
     ).order_by(
-        func.date(QuestionAttempt.created_at)
+        func.date(QuestionAttempt.attempted_at)
     ).all()
 
     # Format response
@@ -720,11 +720,11 @@ def get_quality_metrics_dashboard(db: Session = Depends(get_db)):
     # Recent activity (last 7 days)
     week_ago = datetime.now() - timedelta(days=7)
     recent_attempts = db.query(func.count(QuestionAttempt.id)).filter(
-        QuestionAttempt.created_at >= week_ago
+        QuestionAttempt.attempted_at >= week_ago
     ).scalar() or 0
 
     recent_users = db.query(func.count(distinct(QuestionAttempt.user_id))).filter(
-        QuestionAttempt.created_at >= week_ago
+        QuestionAttempt.attempted_at >= week_ago
     ).scalar() or 0
 
     return {

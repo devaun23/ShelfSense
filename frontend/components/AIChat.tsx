@@ -104,10 +104,10 @@ export default function AIChat({ questionId, userId, isCorrect, userAnswer }: AI
     setError(null);
     setSlowResponse(false);
 
-    // Show "Still thinking..." after 10 seconds
+    // Show "Still thinking..." after 5 seconds (streaming should start within 500ms)
     slowResponseTimeoutRef.current = setTimeout(() => {
       setSlowResponse(true);
-    }, 10000);
+    }, 5000);
 
     // Add placeholder for streaming response
     const streamingMessage: Message = { role: 'assistant', content: '', isStreaming: true };

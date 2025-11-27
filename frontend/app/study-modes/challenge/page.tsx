@@ -2,8 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Sidebar from '@/components/Sidebar';
+import dynamic from 'next/dynamic';
 import AIChat from '@/components/AIChat';
+
+// Dynamically import Sidebar to avoid useSearchParams SSR issues
+const Sidebar = dynamic(() => import('@/components/Sidebar'), { ssr: false });
 import QuestionRating from '@/components/QuestionRating';
 import { useUser } from '@/contexts/UserContext';
 
