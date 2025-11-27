@@ -127,11 +127,12 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
         <div className="px-4 pb-2 flex-shrink-0">
           <button
             onClick={() => handleSpecialtyClick(null)}
-            className={`w-full text-left px-3 py-2 text-base rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
+            className={`w-full text-left px-3 py-2 text-lg rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
               pathname === '/study' && !currentSpecialty
                 ? 'text-white bg-gray-800'
-                : 'text-gray-400 hover:text-white hover:bg-gray-900'
+                : 'text-gray-200 hover:text-white hover:bg-gray-900'
             }`}
+            style={{ fontFamily: 'var(--font-serif)' }}
             tabIndex={isOpen ? 0 : -1}
             aria-current={pathname === '/study' && !currentSpecialty ? 'page' : undefined}
           >
@@ -149,11 +150,12 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
               <button
                 key={shelf.id}
                 onClick={() => handleSpecialtyClick(shelf.apiName)}
-                className={`w-full text-left px-3 py-2 text-base rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
+                className={`w-full text-left px-3 py-2 text-lg rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
                   currentSpecialty === shelf.apiName
                     ? 'text-white bg-gray-800'
-                    : 'text-gray-400 hover:text-white hover:bg-gray-900'
+                    : 'text-gray-200 hover:text-white hover:bg-gray-900'
                 }`}
+                style={{ fontFamily: 'var(--font-serif)' }}
                 tabIndex={isOpen ? 0 : -1}
                 aria-current={currentSpecialty === shelf.apiName ? 'page' : undefined}
               >

@@ -41,7 +41,52 @@ export default function FlagButton({
   const [customNote, setCustomNote] = useState('');
   const [priority, setPriority] = useState(1);
 
+  const menuRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const firstFocusableRef = useRef<HTMLButtonElement>(null);
+
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
+  // Handle keyboard navigation for dropdown
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (!showMenu) return;
+
+    if (e.key === 'Escape') {
+      setShowMenu(false);
+      triggerRef.current?.focus();
+    }
+
+    // Focus trap within menu
+    if (e.key === 'Tab' && menuRef.current) {
+      const focusableElements = menuRef.current.querySelectorAll(
+        'button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusableElements.length === 0) return;
+
+      const firstElement = focusableElements[0] as HTMLElement;
+      const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+      if (e.shiftKey && document.activeElement === firstElement) {
+        e.preventDefault();
+        lastElement.focus();
+      } else if (!e.shiftKey && document.activeElement === lastElement) {
+        e.preventDefault();
+        firstElement.focus();
+      }
+    }
+  }, [showMenu]);
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [handleKeyDown]);
+
+  // Focus first element when menu opens
+  useEffect(() => {
+    if (showMenu && firstFocusableRef.current) {
+      firstFocusableRef.current.focus();
+    }
+  }, [showMenu]);
 
   // Check if question is already flagged
   useEffect(() => {
@@ -134,17 +179,20 @@ export default function FlagButton({
   return (
     <div className="relative">
       <button
+        ref={triggerRef}
         onClick={toggleMenu}
         disabled={loading}
-        className={`p-2 rounded-lg transition-all ${
+        className={`p-2 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-amber-500 ${
           isFlagged
             ? 'bg-amber-500/10 text-amber-400 hover:bg-amber-500/20'
             : 'hover:bg-gray-800 text-gray-500 hover:text-gray-300'
         }`}
-        title={isFlagged ? 'Unflag question' : 'Flag for review'}
+        aria-label={isFlagged ? 'Unflag question' : 'Flag for review'}
+        aria-expanded={showMenu}
+        aria-haspopup="dialog"
       >
         {loading ? (
-          <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 motion-safe:animate-spin" fill="none" viewBox="0 0 24 24" aria-hidden="true">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
           </svg>
@@ -155,6 +203,7 @@ export default function FlagButton({
             stroke="currentColor"
             strokeWidth="2"
             viewBox="0 0 24 24"
+            aria-hidden="true"
           >
             <path
               strokeLinecap="round"
@@ -167,25 +216,32 @@ export default function FlagButton({
 
       {/* Flag Menu Dropdown */}
       {showMenu && !isFlagged && (
-        <div className="absolute right-0 top-full mt-2 w-72 bg-gray-900 border border-gray-800 rounded-xl shadow-xl z-50">
+        <div
+          ref={menuRef}
+          className="absolute right-0 top-full mt-2 w-72 bg-gray-900 border border-gray-800 rounded-xl shadow-xl z-50"
+          role="dialog"
+          aria-label="Flag question options"
+        >
           <div className="p-4">
-            <h3 className="text-sm font-medium text-white mb-3">Flag for Review</h3>
+            <h3 id="flag-menu-title" className="text-sm font-medium text-white mb-3">Flag for Review</h3>
 
             {/* Reason Selection */}
             <div className="space-y-2 mb-4">
-              <label className="text-xs text-gray-500">Reason (optional)</label>
-              <div className="flex flex-wrap gap-2">
-                {FLAG_REASONS.map((reason) => (
+              <span id="reason-label" className="text-xs text-gray-500 block">Reason (optional)</span>
+              <div className="flex flex-wrap gap-2" role="group" aria-labelledby="reason-label">
+                {FLAG_REASONS.map((reason, index) => (
                   <button
                     key={reason.value}
+                    ref={index === 0 ? firstFocusableRef : undefined}
                     onClick={() => setSelectedReason(
                       selectedReason === reason.value ? null : reason.value
                     )}
-                    className={`px-2.5 py-1 text-xs rounded-full border transition-colors ${
+                    className={`px-2.5 py-1 text-xs rounded-full border transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 ${
                       selectedReason === reason.value
                         ? 'bg-amber-500/20 border-amber-500/50 text-amber-400'
                         : 'border-gray-700 text-gray-400 hover:border-gray-600'
                     }`}
+                    aria-pressed={selectedReason === reason.value}
                   >
                     {reason.label}
                   </button>
@@ -195,13 +251,13 @@ export default function FlagButton({
 
             {/* Priority Selection */}
             <div className="mb-4">
-              <label className="text-xs text-gray-500 block mb-2">Priority</label>
-              <div className="flex gap-2">
+              <span id="priority-label" className="text-xs text-gray-500 block mb-2">Priority</span>
+              <div className="flex gap-2" role="group" aria-labelledby="priority-label">
                 {[1, 2, 3].map((p) => (
                   <button
                     key={p}
                     onClick={() => setPriority(p)}
-                    className={`flex-1 py-1.5 text-xs rounded-lg border transition-colors ${
+                    className={`flex-1 py-1.5 text-xs rounded-lg border transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 ${
                       priority === p
                         ? p === 3
                           ? 'bg-red-500/20 border-red-500/50 text-red-400'
@@ -210,6 +266,7 @@ export default function FlagButton({
                           : 'bg-blue-500/20 border-blue-500/50 text-blue-400'
                         : 'border-gray-700 text-gray-400 hover:border-gray-600'
                     }`}
+                    aria-pressed={priority === p}
                   >
                     {p === 1 ? 'Low' : p === 2 ? 'Medium' : 'High'}
                   </button>
@@ -220,12 +277,13 @@ export default function FlagButton({
             {/* Custom Note */}
             {selectedReason === 'custom' && (
               <div className="mb-4">
-                <label className="text-xs text-gray-500 block mb-2">Note</label>
+                <label htmlFor="flag-note" className="text-xs text-gray-500 block mb-2">Note</label>
                 <textarea
+                  id="flag-note"
                   value={customNote}
                   onChange={(e) => setCustomNote(e.target.value)}
                   placeholder="Why are you flagging this?"
-                  className="w-full px-3 py-2 text-sm bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gray-600 resize-none"
+                  className="w-full px-3 py-2 text-sm bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none"
                   rows={2}
                 />
               </div>
@@ -234,15 +292,18 @@ export default function FlagButton({
             {/* Actions */}
             <div className="flex gap-2">
               <button
-                onClick={() => setShowMenu(false)}
-                className="flex-1 px-3 py-2 text-sm text-gray-400 hover:text-white border border-gray-700 rounded-lg transition-colors"
+                onClick={() => {
+                  setShowMenu(false);
+                  triggerRef.current?.focus();
+                }}
+                className="flex-1 px-3 py-2 text-sm text-gray-400 hover:text-white border border-gray-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500"
               >
                 Cancel
               </button>
               <button
                 onClick={handleFlag}
                 disabled={loading}
-                className="flex-1 px-3 py-2 text-sm bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 rounded-lg transition-colors"
+                className="flex-1 px-3 py-2 text-sm bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 disabled:opacity-50"
               >
                 {loading ? 'Saving...' : 'Flag'}
               </button>
@@ -255,7 +316,11 @@ export default function FlagButton({
       {showMenu && (
         <div
           className="fixed inset-0 z-40"
-          onClick={() => setShowMenu(false)}
+          onClick={() => {
+            setShowMenu(false);
+            triggerRef.current?.focus();
+          }}
+          aria-hidden="true"
         />
       )}
     </div>

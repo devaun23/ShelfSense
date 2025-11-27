@@ -509,3 +509,171 @@ Processing 1135 questions...
   Missing: quick_answer, deep_dive, memory_hooks, step_by_step, arrow_notation
   ✓ Enhanced with: quick_answer, deep_dive, memory_hooks, step_by_step, common_traps
   Quick: Atrial fibrillation with heart failure symptoms → rate contr...
+  ✓ Saved to database
+
+[71/1135] Question: 3cf4a4c4-9868-48d4-8f07-b8eed7...
+  Specialty: internal_medicine
+  Missing: quick_answer, deep_dive, memory_hooks, step_by_step, arrow_notation
+  ✓ Enhanced with: quick_answer, deep_dive, memory_hooks, step_by_step, common_traps
+  Quick: Active abduction limit with full passive range → torn glenoi...
+  ✓ Saved to database
+
+[72/1135] Question: 9c98c0cd-eeb6-4c23-b8ff-c9f636...
+  Specialty: general
+  Missing: quick_answer, deep_dive, memory_hooks, step_by_step, arrow_notation
+  ✓ Enhanced with: quick_answer, deep_dive, memory_hooks, step_by_step, common_traps
+  Quick: 9-month-old premature infant in late autumn → consider menin...
+  ✓ Saved to database
+
+[73/1135] Question: 5ef02369-f22b-422f-af90-ae7d75...
+  Specialty: general
+  Missing: quick_answer, deep_dive, memory_hooks, step_by_step, arrow_notation
+  ✓ Enhanced with: quick_answer, deep_dive, memory_hooks, step_by_step, common_traps
+  Quick: NNH indicates risk of harm from treatment. Calculate using A...
+  ✓ Saved to database
+
+[74/1135] Question: 22d73c52-6718-4d5b-a85b-2cdbff...
+  Specialty: general
+  Missing: quick_answer, deep_dive, memory_hooks, step_by_step, arrow_notation
+  ✓ Enhanced with: quick_answer, deep_dive, memory_hooks, step_by_step, common_traps
+  Quick: Hypoglycemia with adrenergic symptoms → measure serum thyrox...
+  ✓ Saved to database
+
+[75/1135] Question: e973f7bc-3506-4415-998a-137c01...
+  Specialty: general
+  Missing: quick_answer, deep_dive, memory_hooks, step_by_step, arrow_notation
+  ✓ Enhanced with: quick_answer, deep_dive, memory_hooks, step_by_step, common_traps
+  Quick: Beta-thalassemia major: microcytic anemia with high Hemoglob...
+  ✓ Saved to database
+
+[76/1135] Question: 45a6c1e7-fdc4-496d-82a8-777ee1...
+  Specialty: surgery
+  Missing: quick_answer, deep_dive, memory_hooks, step_by_step, arrow_notation
+  ✓ Enhanced with: quick_answer, deep_dive, memory_hooks, step_by_step, common_traps
+  Quick: Post-op hypotension, fever, and tachycardia → septic shock f...
+  ✓ Saved to database
+
+[77/1135] Question: 388c997f-7f81-4f5e-8480-1d7d9d...
+  Specialty: internal_medicine
+  Missing: quick_answer, deep_dive, memory_hooks, step_by_step, arrow_notation
+  ✓ Enhanced with: quick_answer, deep_dive, memory_hooks, step_by_step, common_traps
+  Quick: Control of hypertension prevents left ventricular hypertroph...
+  ✓ Saved to database
+
+[78/1135] Question: 4e1a5f16-44f6-4187-9fb4-31aa1b...
+  Specialty: surgery
+  Missing: quick_answer, deep_dive, memory_hooks, step_by_step, arrow_notation
+  ✓ Enhanced with: quick_answer, deep_dive, memory_hooks, step_by_step, common_traps
+  Quick: Diphenhydramine's anticholinergic effects → urinary retentio...
+  ✓ Saved to database
+
+[79/1135] Question: 79e51d2d-0732-4242-b61d-648cc5...
+  Specialty: surgery
+  Missing: quick_answer, deep_dive, memory_hooks, step_by_step, arrow_notation
+  ✓ Enhanced with: quick_answer, deep_dive, memory_hooks, step_by_step, common_traps
+  Quick: Post-transfusion dyspnea and crackles suggest TACO. No furth...
+  ✓ Saved to database
+
+[80/1135] Question: ec0a60ae-890e-4163-a2c8-354248...
+  Specialty: general
+  Missing: quick_answer, deep_dive, memory_hooks, step_by_step, arrow_notation
+  ✓ Enhanced with: quick_answer, deep_dive, memory_hooks, step_by_step, common_traps
+  Quick: HIV with CD4+ <200 → initiate three-drug ART and P. jiroveci...
+  ✓ Saved to database
+
+[81/1135] Question: f29de1b2-0c39-4710-8428-6d28fe...
+  Specialty: neurology
+  Missing: quick_answer, deep_dive, memory_hooks, step_by_step, arrow_notation
+  ✓ Enhanced with: quick_answer, deep_dive, memory_hooks, step_by_step, common_traps
+  Quick: Sciatica with no red flags → treat with NSAIDs like ibuprofe...
+  ✓ Saved to database
+
+[82/1135] Question: 8e7a6971-cea1-4432-aa23-8e57ec...
+  Specialty: surgery
+  Missing: quick_answer, deep_dive, memory_hooks, step_by_step, arrow_notation
+  ✓ Enhanced with: quick_answer, deep_dive, memory_hooks, step_by_step, common_traps
+  Quick: Post-liver transplant fever and loculated pleural effusion →...
+  ✓ Saved to database
+
+[83/1135] Question: 500d54c6-4c38-4cca-a334-671a4a...
+  Specialty: general
+  Missing: quick_answer, deep_dive, memory_hooks, step_by_step, arrow_notation
+  ✓ Enhanced with: quick_answer, deep_dive, memory_hooks, step_by_step, common_traps
+  Quick: Galactorrhea with suspected pituitary cause → measure serum ...
+  ✓ Saved to database
+
+[84/1135] Question: 5619a035-c788-49a6-af3e-d500a3...
+  Specialty: internal_medicine
+  Missing: quick_answer, deep_dive, memory_hooks, step_by_step, arrow_notation
+  ✓ Enhanced with: quick_answer, deep_dive, memory_hooks, step_by_step, common_traps
+  Quick: Post-traumatic oliguria with stable vitals and low urine out...
+  ✓ Saved to database
+
+[85/1135] Question: ef560962-7b5f-4441-98b4-817e47...
+  Specialty: general
+  Missing: quick_answer, deep_dive, memory_hooks, step_by_step, arrow_notation
+  ✓ Enhanced with: quick_answer, deep_dive, memory_hooks, step_by_step, common_traps
+  Quick: Men who have sex with men → increased meningococcal risk → v...
+  ✓ Saved to database
+
+[86/1135] Question: 9be9acfa-1291-40d7-9ca1-78ff01...
+  Specialty: general
+  Missing: quick_answer, deep_dive, memory_hooks, step_by_step, arrow_notation
+  ✓ Enhanced with: quick_answer, deep_dive, memory_hooks, step_by_step, common_traps
+  Quick: Rheumatoid arthritis patients need odontoid x-ray pre-op to ...
+  ✓ Saved to database
+
+[87/1135] Question: 70e69584-d9c9-44eb-82c1-b53ab9...
+  Specialty: surgery
+  Missing: quick_answer, deep_dive, memory_hooks, step_by_step, arrow_notation
+  ✓ Enhanced with: quick_answer, deep_dive, memory_hooks, step_by_step, common_traps
+  Quick: Perforated ulcer with peritoneal signs and free air on x-ray...
+  ✓ Saved to database
+
+[88/1135] Question: fa90d430-50ce-4cef-839e-66d189...
+  Specialty: neurology
+  Missing: quick_answer, deep_dive, memory_hooks, step_by_step, arrow_notation
+  ✓ Enhanced with: quick_answer, deep_dive, memory_hooks, step_by_step, common_traps
+  Quick: Bulging fontanel and lumbar hyperpigmentation with hair in a...
+  ✓ Saved to database
+
+[89/1135] Question: 0ffd886c-51db-4190-89f2-93876d...
+  Specialty: internal_medicine
+  Missing: quick_answer, deep_dive, memory_hooks, step_by_step, arrow_notation
+  ✓ Enhanced with: quick_answer, deep_dive, memory_hooks, step_by_step, common_traps
+  Quick: Chondrocalcinosis with knee inflammation → CPPD crystal depo...
+  ✓ Saved to database
+
+[90/1135] Question: 7f3bdefd-8217-4400-88f0-667af3...
+  Specialty: general
+  Missing: quick_answer, deep_dive, memory_hooks, step_by_step, arrow_notation
+  ✓ Enhanced with: quick_answer, deep_dive, memory_hooks, step_by_step, common_traps
+  Quick: Intermittent dysphagia to solids and liquids with chest pain...
+  ✓ Saved to database
+
+[91/1135] Question: bdf825d6-e3b0-4dae-8768-fd631e...
+  Specialty: surgery
+  Missing: quick_answer, deep_dive, memory_hooks, step_by_step, arrow_notation
+  ✓ Enhanced with: quick_answer, deep_dive, memory_hooks, step_by_step, common_traps
+  Quick: Clear fluid from the ear post-trauma → temporal bone fractur...
+  ✓ Saved to database
+
+[92/1135] Question: 48b55242-d002-4469-afd0-400af6...
+  Specialty: pediatrics
+  Missing: quick_answer, deep_dive, memory_hooks, step_by_step, arrow_notation
+  ✓ Enhanced with: quick_answer, deep_dive, memory_hooks, step_by_step, common_traps
+  Quick: Down syndrome with no meconium passage → suspect Hirschsprun...
+  ✓ Saved to database
+
+[93/1135] Question: 12ed8da4-34c4-4551-874e-4dfc3d...
+  Specialty: general
+  Missing: quick_answer, deep_dive, memory_hooks, step_by_step, arrow_notation
+  ✓ Enhanced with: quick_answer, deep_dive, memory_hooks, step_by_step, common_traps
+  Quick: Direct supervision when drinking liquids reduces aspiration ...
+  ✓ Saved to database
+
+[94/1135] Question: 0ade4bd4-ca15-44f5-b1a7-44723f...
+  Specialty: general
+  Missing: quick_answer, deep_dive, memory_hooks, step_by_step, arrow_notation
+  ✓ Enhanced with: quick_answer, deep_dive, memory_hooks, step_by_step, common_traps
+  Quick: Post-op elderly patient on opioids with colonic dilation and...
