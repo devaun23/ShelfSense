@@ -1,16 +1,23 @@
 'use client';
 
 // Skeleton components for loading states
+// Uses motion-safe for users who prefer reduced motion
 
 export function SkeletonText({ className = '' }: { className?: string }) {
   return (
-    <div className={`animate-pulse bg-gray-800 rounded ${className}`} />
+    <div
+      className={`motion-safe:animate-pulse bg-gray-800 rounded ${className}`}
+      aria-hidden="true"
+    />
   );
 }
 
 export function SkeletonCard({ className = '' }: { className?: string }) {
   return (
-    <div className={`animate-pulse bg-gray-900 border border-gray-800 rounded-2xl ${className}`}>
+    <div
+      className={`motion-safe:animate-pulse bg-gray-900 border border-gray-800 rounded-2xl ${className}`}
+      aria-hidden="true"
+    >
       <div className="p-6">
         <SkeletonText className="h-8 w-12 mb-3" />
         <SkeletonText className="h-5 w-32 mb-1" />
@@ -22,7 +29,13 @@ export function SkeletonCard({ className = '' }: { className?: string }) {
 
 export function SkeletonQuestion() {
   return (
-    <div className="animate-pulse">
+    <div
+      className="motion-safe:animate-pulse"
+      role="status"
+      aria-label="Loading question"
+      aria-busy="true"
+    >
+      <span className="sr-only">Loading question content...</span>
       {/* Header skeleton */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-4">
@@ -56,9 +69,15 @@ export function SkeletonQuestion() {
 
 export function SkeletonSpecialtyGrid() {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 animate-pulse">
+    <div
+      className="grid grid-cols-2 md:grid-cols-4 gap-4 motion-safe:animate-pulse"
+      role="status"
+      aria-label="Loading specialties"
+      aria-busy="true"
+    >
+      <span className="sr-only">Loading specialty options...</span>
       {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-        <div key={i} className="p-6 bg-gray-900 border border-gray-800 rounded-2xl">
+        <div key={i} className="p-6 bg-gray-900 border border-gray-800 rounded-2xl" aria-hidden="true">
           <SkeletonText className="h-8 w-8 mb-3 rounded" />
           <SkeletonText className="h-5 w-28 mb-1" />
           <SkeletonText className="h-3 w-16" />
@@ -70,9 +89,15 @@ export function SkeletonSpecialtyGrid() {
 
 export function SkeletonStats() {
   return (
-    <div className="flex justify-center gap-12 animate-pulse">
+    <div
+      className="flex justify-center gap-12 motion-safe:animate-pulse"
+      role="status"
+      aria-label="Loading statistics"
+      aria-busy="true"
+    >
+      <span className="sr-only">Loading your statistics...</span>
       {[1, 2, 3].map((i) => (
-        <div key={i} className="text-center">
+        <div key={i} className="text-center" aria-hidden="true">
           <SkeletonText className="h-9 w-16 mx-auto mb-1" />
           <SkeletonText className="h-3 w-24 mx-auto" />
         </div>
@@ -81,7 +106,7 @@ export function SkeletonStats() {
   );
 }
 
-export function LoadingSpinner({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
+export function LoadingSpinner({ size = 'md', label = 'Loading' }: { size?: 'sm' | 'md' | 'lg'; label?: string }) {
   const sizeClasses = {
     sm: 'h-4 w-4',
     md: 'h-6 w-6',
@@ -90,10 +115,12 @@ export function LoadingSpinner({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
 
   return (
     <svg
-      className={`animate-spin text-[#4169E1] ${sizeClasses[size]}`}
+      className={`motion-safe:animate-spin text-[#4169E1] ${sizeClasses[size]}`}
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"
+      role="status"
+      aria-label={label}
     >
       <circle
         className="opacity-25"

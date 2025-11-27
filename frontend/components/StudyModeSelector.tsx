@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 
 interface StudyMode {
@@ -94,7 +94,59 @@ export default function StudyModeSelector({ userId, onSessionStart, onClose }: S
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const modalRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const previousActiveElement = useRef<HTMLElement | null>(null);
+
   const selectedModeData = STUDY_MODES.find(m => m.id === selectedMode);
+
+  // Store previously focused element and focus close button on mount
+  useEffect(() => {
+    previousActiveElement.current = document.activeElement as HTMLElement;
+    closeButtonRef.current?.focus();
+
+    return () => {
+      // Restore focus when modal closes
+      previousActiveElement.current?.focus();
+    };
+  }, []);
+
+  // Handle ESC key to close modal
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.key === 'Escape' && onClose) {
+      onClose();
+    }
+
+    // Focus trap
+    if (e.key === 'Tab' && modalRef.current) {
+      const focusableElements = modalRef.current.querySelectorAll(
+        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusableElements.length === 0) return;
+
+      const firstElement = focusableElements[0] as HTMLElement;
+      const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+      if (e.shiftKey && document.activeElement === firstElement) {
+        e.preventDefault();
+        lastElement.focus();
+      } else if (!e.shiftKey && document.activeElement === lastElement) {
+        e.preventDefault();
+        firstElement.focus();
+      }
+    }
+  }, [onClose]);
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+    // Prevent body scroll when modal is open
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [handleKeyDown]);
 
   const handleStartSession = async () => {
     if (!selectedMode) return;
@@ -149,20 +201,32 @@ export default function StudyModeSelector({ userId, onSessionStart, onClose }: S
   };
 
   return (
-    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-      <div className="bg-zinc-900 rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-zinc-800">
+    <div
+      className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="study-mode-title"
+      aria-describedby="study-mode-description"
+      onClick={(e) => e.target === e.currentTarget && onClose?.()}
+    >
+      <div
+        ref={modalRef}
+        className="bg-zinc-900 rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-zinc-800"
+      >
         {/* Header */}
         <div className="p-6 border-b border-zinc-800 flex justify-between items-center">
           <div>
-            <h2 className="text-2xl font-bold text-white">Select Study Mode</h2>
-            <p className="text-zinc-400 mt-1">Choose how you want to study today</p>
+            <h2 id="study-mode-title" className="text-2xl font-bold text-white">Select Study Mode</h2>
+            <p id="study-mode-description" className="text-zinc-400 mt-1">Choose how you want to study today</p>
           </div>
           {onClose && (
             <button
+              ref={closeButtonRef}
               onClick={onClose}
-              className="text-zinc-400 hover:text-white p-2"
+              className="text-zinc-400 hover:text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              aria-label="Close modal"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
@@ -171,23 +235,29 @@ export default function StudyModeSelector({ userId, onSessionStart, onClose }: S
 
         {/* Mode Selection Grid */}
         <div className="p-6">
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {STUDY_MODES.map((mode) => (
-              <button
-                key={mode.id}
-                onClick={() => setSelectedMode(mode.id)}
-                className={`p-4 rounded-xl border-2 transition-all text-left ${
-                  selectedMode === mode.id
-                    ? 'border-blue-500 bg-blue-500/10'
-                    : 'border-zinc-700 hover:border-zinc-500 bg-zinc-800/50'
-                }`}
-              >
-                <div className="text-3xl mb-2">{mode.icon}</div>
-                <h3 className="text-white font-semibold">{mode.name}</h3>
-                <p className="text-zinc-400 text-sm mt-1">{mode.description}</p>
-              </button>
-            ))}
-          </div>
+          <fieldset>
+            <legend className="sr-only">Select a study mode</legend>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4" role="radiogroup" aria-label="Study modes">
+              {STUDY_MODES.map((mode) => (
+                <button
+                  key={mode.id}
+                  onClick={() => setSelectedMode(mode.id)}
+                  className={`p-4 rounded-xl border-2 transition-all text-left focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-zinc-900 ${
+                    selectedMode === mode.id
+                      ? 'border-blue-500 bg-blue-500/10'
+                      : 'border-zinc-700 hover:border-zinc-500 bg-zinc-800/50'
+                  }`}
+                  role="radio"
+                  aria-checked={selectedMode === mode.id}
+                  aria-describedby={`mode-desc-${mode.id}`}
+                >
+                  <div className="text-3xl mb-2" aria-hidden="true">{mode.icon}</div>
+                  <h3 className="text-white font-semibold">{mode.name}</h3>
+                  <p id={`mode-desc-${mode.id}`} className="text-zinc-400 text-sm mt-1">{mode.description}</p>
+                </button>
+              ))}
+            </div>
+          </fieldset>
         </div>
 
         {/* Configuration Panel */}
@@ -198,11 +268,12 @@ export default function StudyModeSelector({ userId, onSessionStart, onClose }: S
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Specialty Selection */}
               <div>
-                <label className="block text-sm text-zinc-400 mb-2">Specialty</label>
+                <label htmlFor="specialty-select" className="block text-sm text-zinc-400 mb-2">Specialty</label>
                 <select
+                  id="specialty-select"
                   value={specialty}
                   onChange={(e) => setSpecialty(e.target.value)}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white"
+                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   {SPECIALTIES.map((spec) => (
                     <option key={spec} value={spec}>{spec}</option>
@@ -213,11 +284,12 @@ export default function StudyModeSelector({ userId, onSessionStart, onClose }: S
               {/* Question Count (not for review mode) */}
               {selectedMode !== 'review' && (
                 <div>
-                  <label className="block text-sm text-zinc-400 mb-2">Questions</label>
+                  <label htmlFor="question-count-select" className="block text-sm text-zinc-400 mb-2">Questions</label>
                   <select
+                    id="question-count-select"
                     value={questionCount}
                     onChange={(e) => setQuestionCount(Number(e.target.value))}
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white"
+                    className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value={10}>10 questions</option>
                     <option value={20}>20 questions</option>
@@ -231,11 +303,12 @@ export default function StudyModeSelector({ userId, onSessionStart, onClose }: S
               {/* Time Limit (only for timed mode) */}
               {selectedMode === 'timed' && (
                 <div>
-                  <label className="block text-sm text-zinc-400 mb-2">Time Limit</label>
+                  <label htmlFor="time-limit-select" className="block text-sm text-zinc-400 mb-2">Time Limit</label>
                   <select
+                    id="time-limit-select"
                     value={timeLimit}
                     onChange={(e) => setTimeLimit(Number(e.target.value))}
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white"
+                    className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value={30}>30 minutes</option>
                     <option value={45}>45 minutes</option>
@@ -262,7 +335,7 @@ export default function StudyModeSelector({ userId, onSessionStart, onClose }: S
 
             {/* Error Message */}
             {error && (
-              <div className="mt-4 p-3 bg-red-500/20 border border-red-500 rounded-lg text-red-400">
+              <div className="mt-4 p-3 bg-red-500/20 border border-red-500 rounded-lg text-red-400" role="alert">
                 {error}
               </div>
             )}
@@ -274,7 +347,7 @@ export default function StudyModeSelector({ userId, onSessionStart, onClose }: S
           {onClose && (
             <button
               onClick={onClose}
-              className="px-6 py-2 text-zinc-400 hover:text-white transition-colors"
+              className="px-6 py-2 text-zinc-400 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-zinc-500 rounded-lg"
             >
               Cancel
             </button>
@@ -282,19 +355,20 @@ export default function StudyModeSelector({ userId, onSessionStart, onClose }: S
           <button
             onClick={handleStartSession}
             disabled={!selectedMode || loading}
-            className={`px-8 py-3 rounded-lg font-semibold transition-all ${
+            className={`px-8 py-3 rounded-lg font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-zinc-900 ${
               selectedMode && !loading
                 ? 'bg-blue-600 hover:bg-blue-700 text-white'
                 : 'bg-zinc-700 text-zinc-400 cursor-not-allowed'
             }`}
+            aria-disabled={!selectedMode || loading}
           >
             {loading ? (
               <span className="flex items-center gap-2">
-                <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                <svg className="motion-safe:animate-spin h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
-                Starting...
+                <span>Starting...</span>
               </span>
             ) : (
               'Start Session'

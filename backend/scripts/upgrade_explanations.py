@@ -151,6 +151,10 @@ def get_questions_needing_upgrade(db_path: str, limit: int = 100) -> List[Dict]:
         try:
             expl = json.loads(expl_json)
 
+            # Skip if explanation is not a dict (some are stored as strings)
+            if not isinstance(expl, dict):
+                continue
+
             # Check if needs upgrade (missing any enhanced element)
             missing = []
             if not expl.get("quick_answer"):

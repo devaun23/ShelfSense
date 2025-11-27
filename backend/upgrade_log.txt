@@ -1,0 +1,28 @@
+======================================================================
+ShelfSense Explanation Quality Upgrade
+======================================================================
+
+Analyzing current explanation quality...
+
+Current State:
+  Total Questions: 1287
+  With Explanation: 1287
+  Has quick_answer: 150 (11.7%)
+  Has deep_dive: 150 (11.7%)
+  Has memory_hooks: 150 (11.7%)
+  Has step_by_step: 150 (11.7%)
+  Has arrow notation: 150 (11.7%)
+  Fully Compliant: 150 (11.7%)
+  Needs Upgrade: 1137
+
+Fetching 1137 questions needing upgrade...
+Traceback (most recent call last):
+  File "/Users/devaun/ShelfSense/backend/scripts/upgrade_explanations.py", line 430, in <module>
+    main()
+    ~~~~^^
+  File "/Users/devaun/ShelfSense/backend/scripts/upgrade_explanations.py", line 350, in main
+    questions = get_questions_needing_upgrade(db_path, limit=limit)
+  File "/Users/devaun/ShelfSense/backend/scripts/upgrade_explanations.py", line 156, in get_questions_needing_upgrade
+    if not expl.get("quick_answer"):
+           ^^^^^^^^
+AttributeError: 'str' object has no attribute 'get'
