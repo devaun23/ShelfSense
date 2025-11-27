@@ -1,31 +1,6 @@
-# ShelfSense Backend - Railway Configuration
-# Deployment configuration for Railway.app
-
-[build]
-# Use Nixpacks for automatic build detection
-builder = "nixpacks"
-
-# Python version
-nixpacksConfigPath = "nixpacks.toml"
-
 [deploy]
-# Start command
-startCommand = "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
-
-# Health check configuration
+startCommand = "sh -c 'uvicorn app.main:app --host 0.0.0.0 --port ${PORT}'"
 healthcheckPath = "/health"
 healthcheckTimeout = 300
-
-# Number of instances (scale as needed)
-numReplicas = 1
-
-# Restart policy
 restartPolicyType = "ON_FAILURE"
-restartPolicyMaxRetries = 10
-
-[build.environment]
-# Build-time environment variables
-PYTHON_VERSION = "3.11"
-
-# Ensure pip doesn't cache
-PIP_NO_CACHE_DIR = "1"
+restartPolicyMaxRetries = 3
