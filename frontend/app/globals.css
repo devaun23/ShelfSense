@@ -9,6 +9,19 @@
   --error: #ef4444;
   --transition: 200ms;
   --font-serif: 'Source Serif 4', Georgia, serif;
+  /* Safe area insets for iOS - with fallback */
+  --sai-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Safe area utility classes for iOS notch/home indicator */
+.pb-safe {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
+}
+
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .pb-safe-area {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
 }
 
 body {

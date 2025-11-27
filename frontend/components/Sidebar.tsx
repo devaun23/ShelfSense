@@ -104,7 +104,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
       {/* Sidebar */}
       <aside
         ref={sidebarRef}
-        className={`fixed left-0 top-0 h-full bg-gray-950 border-r border-gray-900 transition-all duration-300 z-50 flex flex-col ${
+        className={`fixed inset-y-0 left-0 bg-gray-950 border-r border-gray-900 transition-all duration-300 z-50 flex flex-col ${
           isOpen ? 'w-64' : 'w-0'
         } overflow-hidden`}
         role="navigation"
@@ -171,7 +171,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
         <div className="flex-1" />
 
         {/* Quick Links - at bottom */}
-        <nav className={`flex-shrink-0 px-3 ${user ? 'pb-3' : 'pb-[max(0.75rem,env(safe-area-inset-bottom))]'}`} aria-label="Quick links">
+        <nav className={`flex-shrink-0 px-3 ${user ? 'pb-3' : 'pb-safe'}`} aria-label="Quick links">
           <div className="border-t border-gray-900 pt-4">
             <button
               onClick={() => router.push('/analytics')}
@@ -276,7 +276,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
 
         {/* Bottom Section - User Profile */}
         {user && (
-          <div className="flex-shrink-0 border-t border-gray-900 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+          <div className="flex-shrink-0 border-t border-gray-900 p-3 pb-safe">
             <div className="flex items-center gap-3 px-2 py-2">
               {/* Clerk UserButton */}
               <UserButton
