@@ -60,6 +60,7 @@ function StudyContent() {
   const [elapsedTime, setElapsedTime] = useState<number>(0);
   const [nextQuestion, setNextQuestion] = useState<Question | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [authTimeout, setAuthTimeout] = useState(false);
 
   // Get specialty from URL params
   const specialtyParam = searchParams.get('specialty');
@@ -124,15 +125,27 @@ function StudyContent() {
     }
   };
 
+  // Auth timeout - if still loading after 10 seconds, show error
+  useEffect(() => {
+    if (userLoading) {
+      const timeout = setTimeout(() => {
+        setAuthTimeout(true);
+        setLoading(false);
+      }, 10000);
+      return () => clearTimeout(timeout);
+    }
+  }, [userLoading]);
+
   useEffect(() => {
     if (!userLoading && !user) {
       router.push('/login');
       return;
     }
 
-    if (user && !question) {
+    if (user && !question && !error) {
       loadNextQuestion();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, userLoading, router]);
 
   // Timer update
@@ -230,6 +243,29 @@ function StudyContent() {
     router.push('/');
   };
 
+  // Auth timeout - show connection error
+  if (authTimeout) {
+    return (
+      <>
+        <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
+        <main className={`min-h-screen bg-black text-white transition-all duration-300 ${
+          sidebarOpen ? 'md:ml-64' : 'ml-0'
+        }`}>
+          <div className="flex flex-col items-center justify-center min-h-screen gap-4 px-4">
+            <p className="text-red-400 text-center">Connection issue - unable to verify your session</p>
+            <p className="text-gray-500 text-sm text-center">Please check your internet connection and try again.</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 text-sm bg-gray-900 text-white border border-gray-800 rounded-lg hover:border-gray-700 transition-colors"
+            >
+              Retry
+            </button>
+          </div>
+        </main>
+      </>
+    );
+  }
+
   if (loading) {
     return (
       <>
@@ -242,7 +278,7 @@ function StudyContent() {
             <div className="flex flex-wrap items-center gap-3 mb-6 md:mb-8">
               <LoadingSpinner size="sm" />
               <span className="text-gray-500">
-                Loading...
+                {userLoading ? 'Verifying session...' : 'Loading question...'}
               </span>
             </div>
             <SkeletonQuestion />
@@ -259,14 +295,22 @@ function StudyContent() {
         <main className={`min-h-screen bg-black text-white transition-all duration-300 ${
           sidebarOpen ? 'md:ml-64' : 'ml-0'
         }`}>
-          <div className="flex flex-col items-center justify-center min-h-screen gap-4">
-            <p className="text-gray-400">No questions available</p>
-            <button
-              onClick={handleBackToHome}
-              className="px-4 py-2 text-sm text-gray-400 hover:text-white border border-gray-800 rounded-lg hover:border-gray-700 transition-colors"
-            >
-              ← Back to Home
-            </button>
+          <div className="flex flex-col items-center justify-center min-h-screen gap-4 px-4">
+            <p className="text-gray-400 text-center">{error || 'No questions available'}</p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => { setError(null); loadNextQuestion(); }}
+                className="px-4 py-2 text-sm bg-gray-900 text-white border border-gray-800 rounded-lg hover:border-gray-700 transition-colors"
+              >
+                Try Again
+              </button>
+              <button
+                onClick={handleBackToHome}
+                className="px-4 py-2 text-sm text-gray-400 hover:text-white border border-gray-800 rounded-lg hover:border-gray-700 transition-colors"
+              >
+                ← Back to Home
+              </button>
+            </div>
           </div>
         </main>
       </>
