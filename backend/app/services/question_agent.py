@@ -42,6 +42,94 @@ from app.services.ai_question_analytics import (
 )
 from app.utils.openai_client import get_openai_client
 
+# Fine-tuned model ID for fast generation
+FINE_TUNED_MODEL = "ft:gpt-3.5-turbo-0125:personal:shelfsense-usmle-v1:CgNY0xCx"
+
+# System prompt for fine-tuned model (must match training)
+FINE_TUNED_SYSTEM_PROMPT = """You are an expert USMLE Step 2 CK question writer following ShelfSense standards. Generate questions that are clinically authentic, educationally valuable, and match NBME format exactly.
+
+## NBME GOLD BOOK PRINCIPLES (Must Follow All 10)
+
+1. START WITH IMPORTANT CONCEPT - Begin with a clinically significant concept students must know
+2. VIGNETTE TEMPLATE - Format: Age/Gender → Site → Chief Complaint → Duration → History → Physical Exam → Labs → Question
+3. SINGLE BEST ANSWER - One clearly correct answer among plausible alternatives
+4. COVER THE OPTIONS - Question answerable without seeing answer choices
+5. ALL RELEVANT FACTS IN STEM - No hidden information, everything needed is provided
+6. PATIENTS DON'T LIE - Clinical findings presented are accurate and reliable
+7. CLASSIC PRESENTATIONS - Use typical cases, not zebras or rare presentations
+8. NO TRIVIA - Test clinically relevant knowledge, not obscure facts
+9. NO TEST-TAKING TRICKS - Avoid "always/never" or pattern-based answering
+10. HOMOGENEOUS OPTIONS - All choices same category (all diagnoses, all treatments, etc.)
+
+## EXPLANATION STRUCTURE (Required Format)
+
+Every explanation must include:
+
+1. **type**: One of TYPE_A_STABILITY, TYPE_B_TIME_SENSITIVE, TYPE_C_DIAGNOSTIC_SEQUENCE, TYPE_D_RISK_STRATIFICATION, TYPE_E_TREATMENT_HIERARCHY, TYPE_F_DIFFERENTIAL
+
+2. **quick_answer**: 30-word MAX summary for rapid review
+   Example: "Septic shock from cholecystitis needs urgent surgery, not just antibiotics."
+
+3. **principle**: One sentence with EXACT decision rule using arrow notation (→)
+   Example: "BP <90 with lactate >4 → septic shock → immediate source control required"
+
+4. **clinical_reasoning**: 2-5 sentences with explicit thresholds
+   Example: "BP 76/50 (systolic <90) and HR 128 (>100) → hemodynamic instability → septic shock. Low CVP (2 mmHg, normal 3-8) after fluids → vasodilation, not hypovolemia."
+
+5. **correct_answer_explanation**: Why the correct answer is right with pathophysiology
+
+6. **distractor_explanations**: Object with keys A-E (excluding correct answer)
+   Each: 15-20 words explaining why wrong for THIS specific patient
+
+7. **deep_dive**: Object with:
+   - pathophysiology: Why this happens biologically (2-3 sentences)
+   - differential_comparison: How to distinguish from similar conditions
+   - clinical_pearls: Array of 2-3 high-yield facts
+
+8. **step_by_step**: Array of decision steps
+   Each: {step: 1, action: "What to do", rationale: "Why"}
+
+9. **memory_hooks**: Object with:
+   - analogy: Relatable comparison ("You can't put out fire while fuel burns")
+   - mnemonic: If applicable (e.g., "MUDPILES for anion gap")
+   - clinical_story: Brief memorable pattern
+
+10. **common_traps**: Array of common mistakes
+    Each: {trap: "What wrong", why_wrong: "Why fails", correct_thinking: "Right approach"}
+
+## QUALITY RULES
+
+- Use → for ALL causal relationships
+- EVERY number must have context: "BP 80/50 (systolic <90)" not "hypotensive"
+- quick_answer MUST be ≤30 words
+- Principle must be clear, actionable decision rule
+- Core explanation under 200 words
+- Distractor explanations specific to THIS patient
+
+## OUTPUT FORMAT
+
+Return valid JSON with this exact structure:
+{
+    "vignette": "Full clinical vignette with demographics, presentation, exam, labs",
+    "choices": ["A. Option text", "B. Option text", "C. Option text", "D. Option text", "E. Option text"],
+    "answer_key": "B",
+    "explanation": {
+        "type": "TYPE_X_...",
+        "quick_answer": "...",
+        "principle": "...",
+        "clinical_reasoning": "...",
+        "correct_answer_explanation": "...",
+        "distractor_explanations": {"A": "...", "C": "...", "D": "...", "E": "..."},
+        "deep_dive": {...},
+        "step_by_step": [...],
+        "memory_hooks": {...},
+        "common_traps": [...]
+    },
+    "specialty": "Internal Medicine|Surgery|Pediatrics|etc.",
+    "topic": "High-yield topic name",
+    "difficulty": 3
+}"""
+
 
 class QuestionGenerationAgent:
     """Multi-step agent for generating USMLE Step 2 CK questions with expert-level reasoning"""
@@ -1076,6 +1164,147 @@ def generate_question_with_agent(db: Session, specialty: Optional[str] = None,
     if parallel:
         return agent.generate_question_parallel(specialty, topic, difficulty)
     return agent.generate_question(specialty, topic, difficulty)
+
+
+def generate_question_fast(db: Session, specialty: Optional[str] = None,
+                           topic: Optional[str] = None,
+                           max_retries: int = 2) -> Dict:
+    """
+    Generate a question using the fine-tuned model for fast, single-shot generation.
+
+    This is 5-10x faster than the multi-step agent approach since it generates
+    the complete question in a single API call using a model fine-tuned on
+    ShelfSense quality standards.
+
+    Best for:
+    - Pool warming and batch generation
+    - Quick question generation during user sessions
+    - High-volume scenarios where speed matters
+
+    For highest quality (complex scenarios, targeting), use generate_question_with_agent.
+
+    Args:
+        db: Database session (not used directly but kept for API compatibility)
+        specialty: Optional specialty filter (uses weighted random if None)
+        topic: Optional topic filter (uses high-yield topic if None)
+        max_retries: Number of retry attempts on parse failure
+
+    Returns:
+        Generated question dictionary matching ShelfSense standards
+    """
+    start_time = time.time()
+
+    # Select specialty and topic using USMLE distribution
+    if not specialty:
+        specialty = get_weighted_specialty()
+    if not topic:
+        topic = get_high_yield_topic(specialty)
+
+    prompt = f"Generate a USMLE Step 2 CK question about {topic} for {specialty}."
+
+    retry_count = 0
+    while retry_count <= max_retries:
+        try:
+            print(f"[FastGen] Generating {specialty} question about {topic}...")
+
+            response = get_openai_client().chat.completions.create(
+                model=FINE_TUNED_MODEL,
+                messages=[
+                    {"role": "system", "content": FINE_TUNED_SYSTEM_PROMPT},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.7,
+                max_tokens=3500
+            )
+
+            content = response.choices[0].message.content.strip()
+
+            # Handle potential markdown code blocks
+            if content.startswith("```"):
+                content = content.split("```")[1]
+                if content.startswith("json"):
+                    content = content[4:]
+
+            question_data = json.loads(content)
+
+            # Validate basic structure
+            if not question_data.get("vignette"):
+                raise ValueError("Missing vignette")
+            if len(question_data.get("choices", [])) < 4:
+                raise ValueError(f"Only {len(question_data.get('choices', []))} choices")
+            if question_data.get("answer_key") not in ["A", "B", "C", "D", "E"]:
+                raise ValueError(f"Invalid answer_key: {question_data.get('answer_key')}")
+
+            generation_time = time.time() - start_time
+            print(f"[FastGen] Generated in {generation_time:.2f}s")
+
+            # Format output to match standard question structure
+            return {
+                "vignette": question_data["vignette"].strip(),
+                "choices": question_data["choices"],
+                "answer_key": question_data["answer_key"],
+                "explanation": question_data.get("explanation", {}),
+                "source": f"AI Fast Generated - {specialty}",
+                "specialty": specialty,
+                "recency_weight": 1.0,
+                "metadata": {
+                    "topic": topic,
+                    "difficulty": question_data.get("difficulty", 3),
+                    "generation_method": "fine_tuned_fast",
+                    "generation_time_seconds": generation_time,
+                    "model": FINE_TUNED_MODEL
+                }
+            }
+
+        except json.JSONDecodeError as e:
+            retry_count += 1
+            print(f"[FastGen] JSON parse error (attempt {retry_count}/{max_retries + 1}): {e}")
+            if retry_count > max_retries:
+                raise ValueError(f"Failed to parse response after {max_retries + 1} attempts")
+
+        except Exception as e:
+            retry_count += 1
+            print(f"[FastGen] Error (attempt {retry_count}/{max_retries + 1}): {e}")
+            if retry_count > max_retries:
+                raise
+
+    raise ValueError(f"Fast generation failed after {max_retries + 1} attempts")
+
+
+def generate_questions_fast_batch(db: Session, count: int = 5,
+                                  specialty: Optional[str] = None) -> List[Dict]:
+    """
+    Generate multiple questions using the fine-tuned model in parallel.
+
+    This is the fastest way to generate multiple questions at once.
+    Uses ThreadPoolExecutor to make concurrent API calls.
+
+    Args:
+        db: Database session
+        count: Number of questions to generate (max 20)
+        specialty: Optional specialty filter
+
+    Returns:
+        List of generated question dictionaries
+    """
+    count = min(count, 20)  # Limit to prevent rate limiting
+
+    def generate_one(i):
+        try:
+            topic = get_high_yield_topic(specialty) if specialty else None
+            return generate_question_fast(db, specialty, topic, max_retries=1)
+        except Exception as e:
+            print(f"[FastBatch] Question {i+1} failed: {e}")
+            return None
+
+    # Use ThreadPoolExecutor for parallel generation
+    with ThreadPoolExecutor(max_workers=min(count, 10)) as executor:
+        results = list(executor.map(generate_one, range(count)))
+
+    # Filter out None results
+    successful = [q for q in results if q is not None]
+    print(f"[FastBatch] Generated {len(successful)}/{count} questions successfully")
+    return successful
 
 
 def generate_questions_batch(db: Session, count: int = 5,

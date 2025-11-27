@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, Suspense, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { useUser } from '@/contexts/UserContext';
 import { SPECIALTIES } from '@/lib/specialties';
-import { Button, Badge } from '@/components/ui';
+import { Button, Badge, CollapsibleSection } from '@/components/ui';
 
 // Dynamically import Sidebar to avoid useSearchParams SSR issues
 const Sidebar = dynamic(() => import('@/components/Sidebar'), { ssr: false });
@@ -202,44 +202,6 @@ export default function AnalyticsPage() {
     return hour > 12 ? `${hour - 12} PM` : `${hour} AM`;
   };
 
-  // Collapsible section component
-  const CollapsibleSection = ({
-    title,
-    isOpen,
-    onToggle,
-    children,
-    badge
-  }: {
-    title: string;
-    isOpen: boolean;
-    onToggle: () => void;
-    children: React.ReactNode;
-    badge?: React.ReactNode;
-  }) => (
-    <div className="border border-gray-800 rounded-2xl overflow-hidden mb-4">
-      <button
-        onClick={onToggle}
-        className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-950 transition-colors"
-      >
-        <div className="flex items-center gap-3">
-          <h3 className="text-base font-medium text-white">{title}</h3>
-          {badge}
-        </div>
-        <svg
-          className={`w-5 h-5 text-gray-500 transition-transform ${isOpen ? 'rotate-180' : ''}`}
-          fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-        </svg>
-      </button>
-      {isOpen && (
-        <div className="px-6 pb-6 border-t border-gray-800">
-          {children}
-        </div>
-      )}
-    </div>
-  );
-
   if (loading) {
     return (
       <>
@@ -271,22 +233,31 @@ export default function AnalyticsPage() {
 
   const { summary, score_details, weak_areas, strong_areas, trends, behavioral_insights, error_distribution } = dashboardData;
 
-  // Prepare chart data
-  const trendChartData = trends.daily_data.map(d => ({
-    ...d,
-    date: new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-  }));
+  // Prepare chart data (memoized to prevent recomputation on every render)
+  const trendChartData = useMemo(() =>
+    trends.daily_data.map(d => ({
+      ...d,
+      date: new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    })),
+    [trends.daily_data]
+  );
 
-  // Error distribution as array for horizontal bars
-  const errorBarData = Object.entries(error_distribution.error_counts)
-    .map(([type, count]) => ({
-      type,
-      label: ERROR_TYPE_LABELS[type] || type,
-      count
-    }))
-    .sort((a, b) => b.count - a.count);
+  // Error distribution as array for horizontal bars (memoized)
+  const errorBarData = useMemo(() =>
+    Object.entries(error_distribution.error_counts)
+      .map(([type, count]) => ({
+        type,
+        label: ERROR_TYPE_LABELS[type] || type,
+        count
+      }))
+      .sort((a, b) => b.count - a.count),
+    [error_distribution.error_counts]
+  );
 
-  const totalErrors = errorBarData.reduce((sum, e) => sum + e.count, 0);
+  const totalErrors = useMemo(() =>
+    errorBarData.reduce((sum, e) => sum + e.count, 0),
+    [errorBarData]
+  );
 
   return (
     <>

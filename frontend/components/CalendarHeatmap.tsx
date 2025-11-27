@@ -82,15 +82,15 @@ export default function CalendarHeatmap({
     return Math.max(...data.map((d) => d.count), 1);
   }, [data]);
 
-  // Get color class based on count
-  const getColorClass = (count: number): string => {
+  // Get color class based on count (memoized to prevent recreation)
+  const getColorClass = useCallback((count: number): string => {
     if (count === 0) return colors.empty;
     const intensity = count / maxCount;
     if (intensity <= 0.25) return colors.level1;
     if (intensity <= 0.5) return colors.level2;
     if (intensity <= 0.75) return colors.level3;
     return colors.level4;
-  };
+  }, [colors, maxCount]);
 
   // Generate calendar grid
   const { weeks, monthLabels } = useMemo(() => {
@@ -140,8 +140,8 @@ export default function CalendarHeatmap({
     return { weeks, monthLabels };
   }, [start, end, dataMap]);
 
-  // Format tooltip content
-  const formatTooltip = (date: Date, data: DayData | null): string => {
+  // Format tooltip content (memoized to prevent recreation)
+  const formatTooltip = useCallback((date: Date, data: DayData | null): string => {
     const dateStr = date.toLocaleDateString('en-US', {
       weekday: 'short',
       month: 'short',
@@ -158,10 +158,10 @@ export default function CalendarHeatmap({
       tooltip += `\n${Math.round(data.accuracy)}% accuracy`;
     }
     return tooltip;
-  };
+  }, []);
 
-  // Get accessible label for a day cell
-  const getAccessibleLabel = (date: Date, dayData: DayData | null): string => {
+  // Get accessible label for a day cell (memoized to prevent recreation)
+  const getAccessibleLabel = useCallback((date: Date, dayData: DayData | null): string => {
     const dateStr = date.toLocaleDateString('en-US', {
       weekday: 'long',
       month: 'long',
@@ -178,7 +178,7 @@ export default function CalendarHeatmap({
       label += `, ${Math.round(dayData.accuracy)}% accuracy`;
     }
     return label;
-  };
+  }, []);
 
   // Handle keyboard navigation
   const handleKeyDown = useCallback((e: React.KeyboardEvent, weekIndex: number, dayIndex: number, dateStr: string) => {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 interface ErrorAnalysisData {
   error_type: string;
@@ -21,10 +21,32 @@ interface ErrorAnalysisProps {
   isCorrect: boolean;
 }
 
+// Static color maps extracted to module level (prevents recreation on each render)
+const COLOR_MAP = {
+  blue: 'border-blue-500/50 bg-blue-900/10',
+  yellow: 'border-yellow-500/50 bg-yellow-900/10',
+  orange: 'border-orange-500/50 bg-orange-900/10',
+  purple: 'border-purple-500/50 bg-purple-900/10',
+  red: 'border-red-500/50 bg-red-900/10',
+  gray: 'border-gray-500/50 bg-gray-900/10'
+} as const;
+
+const TEXT_COLOR_MAP = {
+  blue: 'text-blue-400',
+  yellow: 'text-yellow-400',
+  orange: 'text-orange-400',
+  purple: 'text-purple-400',
+  red: 'text-red-400',
+  gray: 'text-gray-400'
+} as const;
+
 export default function ErrorAnalysis({ questionId, userId, isCorrect }: ErrorAnalysisProps) {
   const [errorData, setErrorData] = useState<ErrorAnalysisData | null>(null);
   const [loading, setLoading] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
+
+  // Use ref to track if we've successfully fetched data (avoids infinite polling)
+  const hasDataRef = useRef(false);
 
   useEffect(() => {
     // Only load error analysis if question was answered incorrectly
@@ -33,7 +55,13 @@ export default function ErrorAnalysis({ questionId, userId, isCorrect }: ErrorAn
       return;
     }
 
+    // Reset ref when question changes
+    hasDataRef.current = false;
+
     const loadErrorAnalysis = async () => {
+      // Skip if we already have data for this question
+      if (hasDataRef.current) return;
+
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
         const response = await fetch(`${apiUrl}/api/questions/error-analysis/${questionId}?user_id=${userId}`);
@@ -41,6 +69,7 @@ export default function ErrorAnalysis({ questionId, userId, isCorrect }: ErrorAn
         if (response.ok) {
           const data = await response.json();
           if (data) {
+            hasDataRef.current = true;
             setErrorData(data);
             setIsExpanded(true); // Auto-expand on load
           }
@@ -54,7 +83,7 @@ export default function ErrorAnalysis({ questionId, userId, isCorrect }: ErrorAn
 
     // Poll for error analysis (it's generated asynchronously)
     const pollInterval = setInterval(() => {
-      if (!errorData) {
+      if (!hasDataRef.current) {
         loadErrorAnalysis();
       } else {
         clearInterval(pollInterval);
@@ -66,7 +95,7 @@ export default function ErrorAnalysis({ questionId, userId, isCorrect }: ErrorAn
 
     // Cleanup
     return () => clearInterval(pollInterval);
-  }, [questionId, userId, isCorrect, errorData]);
+  }, [questionId, userId, isCorrect]);
 
   const acknowledgeError = async () => {
     try {
@@ -105,26 +134,8 @@ export default function ErrorAnalysis({ questionId, userId, isCorrect }: ErrorAn
     return null;
   }
 
-  const colorMap: Record<string, string> = {
-    blue: 'border-blue-500/50 bg-blue-900/10',
-    yellow: 'border-yellow-500/50 bg-yellow-900/10',
-    orange: 'border-orange-500/50 bg-orange-900/10',
-    purple: 'border-purple-500/50 bg-purple-900/10',
-    red: 'border-red-500/50 bg-red-900/10',
-    gray: 'border-gray-500/50 bg-gray-900/10'
-  };
-
-  const textColorMap: Record<string, string> = {
-    blue: 'text-blue-400',
-    yellow: 'text-yellow-400',
-    orange: 'text-orange-400',
-    purple: 'text-purple-400',
-    red: 'text-red-400',
-    gray: 'text-gray-400'
-  };
-
-  const colorClass = colorMap[errorData.error_color] || colorMap.gray;
-  const textClass = textColorMap[errorData.error_color] || textColorMap.gray;
+  const colorClass = COLOR_MAP[errorData.error_color as keyof typeof COLOR_MAP] || COLOR_MAP.gray;
+  const textClass = TEXT_COLOR_MAP[errorData.error_color as keyof typeof TEXT_COLOR_MAP] || TEXT_COLOR_MAP.gray;
 
   return (
     <div className={`border rounded-lg overflow-hidden mb-4 ${colorClass}`}>

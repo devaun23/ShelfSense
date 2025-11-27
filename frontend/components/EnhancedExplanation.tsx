@@ -64,13 +64,13 @@ interface EnhancedExplanationProps {
   mode?: 'full' | 'review' | 'compact';
 }
 
-const TYPE_LABELS: Record<string, { label: string; color: string; icon: string }> = {
-  TYPE_A_STABILITY: { label: 'Stability Assessment', color: 'text-red-400', icon: '🚨' },
-  TYPE_B_TIME: { label: 'Time-Sensitive', color: 'text-orange-400', icon: '⏱️' },
-  TYPE_C_DIAGNOSTIC: { label: 'Diagnostic Sequence', color: 'text-blue-400', icon: '🔬' },
-  TYPE_D_RISK: { label: 'Risk Stratification', color: 'text-purple-400', icon: '📊' },
-  TYPE_E_TREATMENT: { label: 'Treatment Hierarchy', color: 'text-green-400', icon: '💊' },
-  TYPE_F_DIFFERENTIAL: { label: 'Differential Diagnosis', color: 'text-yellow-400', icon: '🔍' },
+const TYPE_LABELS: Record<string, { label: string; color: string }> = {
+  TYPE_A_STABILITY: { label: 'Stability Assessment', color: 'text-red-400' },
+  TYPE_B_TIME: { label: 'Time-Sensitive', color: 'text-orange-400' },
+  TYPE_C_DIAGNOSTIC: { label: 'Diagnostic Sequence', color: 'text-blue-400' },
+  TYPE_D_RISK: { label: 'Risk Stratification', color: 'text-purple-400' },
+  TYPE_E_TREATMENT: { label: 'Treatment Hierarchy', color: 'text-green-400' },
+  TYPE_F_DIFFERENTIAL: { label: 'Differential Diagnosis', color: 'text-yellow-400' },
 };
 
 const DIFFICULTY_COLORS: Record<string, string> = {
@@ -92,8 +92,7 @@ export default function EnhancedExplanation({
 
   const typeInfo = TYPE_LABELS[explanation.type] || {
     label: explanation.type,
-    color: 'text-gray-400',
-    icon: '📚'
+    color: 'text-gray-400'
   };
 
   // Review mode - just show quick answer
@@ -126,16 +125,13 @@ export default function EnhancedExplanation({
     <div className="space-y-4">
       {/* Header with type badge */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <span className="text-2xl">{typeInfo.icon}</span>
-          <div>
-            <span className={`text-sm font-medium ${typeInfo.color}`}>
-              {typeInfo.label}
-            </span>
-            <span className="text-gray-600 text-xs ml-2">
-              {explanation.concept}
-            </span>
-          </div>
+        <div className="flex items-center gap-2">
+          <span className={`text-sm font-medium ${typeInfo.color}`}>
+            {typeInfo.label}
+          </span>
+          <span className="text-gray-600 text-xs">
+            {explanation.concept}
+          </span>
         </div>
         {explanation.difficulty_factors && (
           <span className={`text-xs px-2 py-1 rounded-full ${DIFFICULTY_COLORS[explanation.difficulty_factors.content_difficulty]}`}>
@@ -337,7 +333,7 @@ export default function EnhancedExplanation({
                 {explanation.common_traps.map((trap, i) => (
                   <div key={i} className="bg-orange-500/10 border border-orange-500/30 rounded-lg p-3">
                     <p className="text-orange-400 font-medium text-sm mb-2">
-                      ⚠️ {trap.trap}
+                      {trap.trap}
                     </p>
                     <p className="text-gray-400 text-sm mb-2">
                       <span className="text-gray-500">Why it fails: </span>

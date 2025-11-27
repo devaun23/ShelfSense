@@ -4,6 +4,7 @@ import { useEffect, useRef, useCallback } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useUser } from '@/contexts/UserContext';
 import { UserButton } from '@clerk/nextjs';
+import ShelfSenseLogo from '@/components/icons/ShelfSenseLogo';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -115,11 +116,12 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
           <button
             ref={firstFocusableRef}
             onClick={() => router.push('/')}
-            className="text-xl font-semibold text-white hover:text-gray-300 transition-colors block focus:outline-none focus:ring-2 focus:ring-[#4169E1] focus:ring-offset-2 focus:ring-offset-gray-950 rounded"
+            className="flex items-center gap-2 text-xl font-semibold text-white hover:text-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] focus:ring-offset-2 focus:ring-offset-gray-950 rounded"
             style={{ fontFamily: 'var(--font-serif)' }}
             tabIndex={isOpen ? 0 : -1}
           >
-            ShelfSense
+            <ShelfSenseLogo size={28} animate={true} />
+            <span>ShelfSense</span>
           </button>
         </div>
 
@@ -218,6 +220,21 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
               <span>Weak Areas</span>
+            </button>
+            <button
+              onClick={() => router.push('/pricing')}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
+                pathname === '/pricing'
+                  ? 'text-white bg-gray-900'
+                  : 'text-gray-400 hover:text-white hover:bg-gray-900'
+              }`}
+              tabIndex={isOpen ? 0 : -1}
+              aria-current={pathname === '/pricing' ? 'page' : undefined}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>Pricing</span>
             </button>
             <button
               ref={user?.isAdmin ? undefined : lastFocusableRef}

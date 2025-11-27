@@ -71,6 +71,23 @@ button:disabled {
   opacity: 0.4;
 }
 
+/* ShelfSense Logo Breathing Animation */
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+.logo-breathe {
+  animation: breathe 3s ease-in-out infinite;
+  transform-origin: center;
+}
+
 /* Accessibility - Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
   *,

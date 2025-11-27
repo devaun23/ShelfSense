@@ -3,3 +3,5 @@ export type { ButtonProps } from './Button';
 
 export { Badge } from './Badge';
 export type { BadgeProps } from './Badge';
+
+export { default as CollapsibleSection } from './CollapsibleSection';

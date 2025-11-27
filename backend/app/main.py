@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from app.database import engine, Base
-from app.routers import questions, analytics, users, reviews, chat, adaptive_engine, auth, profile, sessions, subscription, content_quality, study_plan, content, batch_generation, testing_qa, study_modes, flagged, admin, payments, webhooks, email
+from app.routers import questions, analytics, users, reviews, chat, adaptive_engine, auth, profile, sessions, subscription, content_quality, study_plan, content, batch_generation, testing_qa, study_modes, flagged, admin, admin_analytics, payments, webhooks, email, learning_engine
 from app.middleware.rate_limiter import RateLimitMiddleware
 
 # Load environment variables
@@ -101,9 +101,11 @@ app.include_router(testing_qa.router)  # Testing/QA Agent
 app.include_router(study_modes.router)  # Study Modes (Timed, Tutor, Challenge)
 app.include_router(flagged.router)  # Question flagging/marking system
 app.include_router(admin.router)  # Admin dashboard
+app.include_router(admin_analytics.router)  # Admin usage analytics
 app.include_router(payments.router)  # Stripe payments
 app.include_router(webhooks.router)  # Stripe webhooks
 app.include_router(email.router)  # Email notifications
+app.include_router(learning_engine.router)  # Advanced learning engine (Gaps 1-5)
 
 
 @app.get("/")

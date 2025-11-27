@@ -4,6 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import "./globals.css";
 import { UserProvider } from "@/contexts/UserContext";
+import PaymentStatusBanner from "@/components/PaymentStatusBanner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -53,6 +54,7 @@ export default function RootLayout({
       <html lang="en">
         <body className={`${inter.variable} ${sourceSerif.variable} ${inter.className} antialiased`}>
           <UserProvider>
+            <PaymentStatusBanner />
             {children}
           </UserProvider>
         </body>

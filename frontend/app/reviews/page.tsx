@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { useUser } from '@/contexts/UserContext';
@@ -147,6 +147,13 @@ export default function ReviewsPage() {
     }
   };
 
+  // Stable heatmap click handler (prevents CalendarHeatmap re-renders)
+  const handleHeatmapClick = useCallback((date: string, data: { count: number; accuracy?: number } | null) => {
+    if (data && data.count > 0) {
+      console.log(`Clicked ${date}: ${data.count} questions, ${data.accuracy}% accuracy`);
+    }
+  }, []);
+
   if (loading) {
     return (
       <>
@@ -291,11 +298,7 @@ export default function ReviewsPage() {
                   <CalendarHeatmap
                     data={heatmapData.data}
                     colorScheme="green"
-                    onClick={(date, data) => {
-                      if (data && data.count > 0) {
-                        console.log(`Clicked ${date}: ${data.count} questions, ${data.accuracy}% accuracy`);
-                      }
-                    }}
+                    onClick={handleHeatmapClick}
                   />
                 ) : (
                   <div className="text-center py-12 text-gray-500">

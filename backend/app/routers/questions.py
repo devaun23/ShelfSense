@@ -27,6 +27,11 @@ from app.services.ai_question_analytics import (
     get_generation_recommendations,
     update_content_freshness
 )
+from app.services.learning_engine import (
+    update_specialty_difficulty,
+    schedule_personalized_review,
+    update_concept_retention
+)
 import threading
 
 router = APIRouter(prefix="/api/questions", tags=["questions"])
@@ -50,6 +55,7 @@ class SubmitAnswerRequest(BaseModel):
     time_spent_seconds: int
     hover_events: Optional[dict] = None
     scroll_events: Optional[dict] = None
+    confidence_level: Optional[int] = None  # 1-5 scale for confidence-weighted learning
 
 
 class WeaknessIntervention(BaseModel):
@@ -130,6 +136,7 @@ def submit_answer(request: SubmitAnswerRequest, db: Session = Depends(get_db)):
         time_spent_seconds=request.time_spent_seconds,
         hover_events=request.hover_events,
         scroll_events=request.scroll_events,
+        confidence_level=request.confidence_level,
         attempted_at=datetime.utcnow()
     )
 
@@ -137,15 +144,53 @@ def submit_answer(request: SubmitAnswerRequest, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(attempt)  # Get the attempt ID
 
-    # Schedule spaced repetition review
-    from app.services.spaced_repetition import schedule_review
-    schedule_review(
-        db=db,
-        user_id=request.user_id,
-        question_id=request.question_id,
-        is_correct=is_correct,
-        source=question.source
-    )
+    # === ADVANCED LEARNING ENGINE INTEGRATION ===
+    # Gap 1: Update per-specialty difficulty
+    if question.specialty:
+        try:
+            update_specialty_difficulty(db, request.user_id, question.specialty, is_correct)
+        except Exception as e:
+            print(f"⚠️ Specialty difficulty update failed: {e}")
+
+    # Gap 2: Schedule personalized review (replaces basic spaced repetition)
+    try:
+        schedule_personalized_review(
+            db=db,
+            user_id=request.user_id,
+            question_id=request.question_id,
+            is_correct=is_correct,
+            source=question.source,
+            specialty=question.specialty,
+            confidence_level=request.confidence_level
+        )
+    except Exception as e:
+        print(f"⚠️ Personalized review scheduling failed: {e}")
+        # Fallback to basic spaced repetition
+        from app.services.spaced_repetition import schedule_review
+        schedule_review(
+            db=db,
+            user_id=request.user_id,
+            question_id=request.question_id,
+            is_correct=is_correct,
+            source=question.source
+        )
+
+    # Gap 4: Update concept retention (if question has concepts/topics)
+    if question.extra_data and isinstance(question.extra_data, dict):
+        concepts = question.extra_data.get("concepts") or question.extra_data.get("topics")
+        if concepts and isinstance(concepts, list):
+            try:
+                for concept in concepts[:5]:  # Limit to 5 concepts
+                    update_concept_retention(
+                        db=db,
+                        user_id=request.user_id,
+                        concept=concept,
+                        is_correct=is_correct,
+                        specialty=question.specialty,
+                        question_id=question.id
+                    )
+            except Exception as e:
+                print(f"⚠️ Concept retention update failed: {e}")
 
     # Trigger error analysis asynchronously if incorrect
     weakness_intervention = None

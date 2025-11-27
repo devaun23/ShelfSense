@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   BarChart,
   Bar,
@@ -109,22 +109,28 @@ export default function PeerComparison({ userId }: PeerComparisonProps) {
     );
   }
 
-  // Prepare distribution chart data
-  const distributionData = data.distribution ? Object.entries(data.distribution.accuracy_buckets).map(([bucket, count]) => ({
-    bucket,
-    count,
-    isUser: bucket === data.distribution?.user_bucket
-  })) : [];
+  // Prepare distribution chart data (memoized to prevent recomputation)
+  const distributionData = useMemo(() =>
+    data.distribution ? Object.entries(data.distribution.accuracy_buckets).map(([bucket, count]) => ({
+      bucket,
+      count,
+      isUser: bucket === data.distribution?.user_bucket
+    })) : [],
+    [data.distribution]
+  );
 
-  // Prepare specialty comparison data
-  const specialtyData = data.specialty_comparison ? Object.entries(data.specialty_comparison)
-    .filter(([_, stats]) => stats.user_accuracy !== null && stats.platform_accuracy !== null)
-    .map(([specialty, stats]) => ({
-      name: specialty.replace(' and ', ' & ').split(' ').slice(0, 2).join(' '),
-      user: stats.user_accuracy,
-      platform: stats.platform_accuracy,
-      difference: stats.difference
-    })) : [];
+  // Prepare specialty comparison data (memoized)
+  const specialtyData = useMemo(() =>
+    data.specialty_comparison ? Object.entries(data.specialty_comparison)
+      .filter(([_, stats]) => stats.user_accuracy !== null && stats.platform_accuracy !== null)
+      .map(([specialty, stats]) => ({
+        name: specialty.replace(' and ', ' & ').split(' ').slice(0, 2).join(' '),
+        user: stats.user_accuracy,
+        platform: stats.platform_accuracy,
+        difference: stats.difference
+      })) : [],
+    [data.specialty_comparison]
+  );
 
   const getPercentileColor = (percentile: number) => {
     if (percentile >= 75) return 'text-emerald-400';

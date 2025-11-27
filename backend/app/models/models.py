@@ -884,3 +884,285 @@ class UnsubscribeToken(Base):
 
     # Relationships
     user = relationship("User")
+
+
+# ============================================================================
+# ADVANCED LEARNING ENGINE MODELS
+# ============================================================================
+
+class UserSpecialtyDifficulty(Base):
+    """
+    Tracks per-specialty difficulty levels for each user.
+    Enables adaptive difficulty that varies by topic rather than global accuracy.
+
+    Gap 1 Implementation: Per-specialty difficulty tracking
+    """
+    __tablename__ = "user_specialty_difficulties"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False, index=True)
+    specialty = Column(String, nullable=False, index=True)  # "internal_medicine", "surgery", etc.
+
+    # Performance metrics for this specialty
+    total_attempts = Column(Integer, default=0)
+    correct_attempts = Column(Integer, default=0)
+    accuracy = Column(Float, default=0.0)  # Cached accuracy for quick lookup
+
+    # Difficulty targeting for this specialty
+    difficulty_level = Column(String, default="medium")  # "easy", "medium", "hard"
+    target_correct_rate = Column(Float, default=0.65)  # Target accuracy for question selection
+
+    # Trend tracking
+    recent_accuracy = Column(Float, nullable=True)  # Last 10 questions accuracy
+    trend = Column(String, default="stable")  # "improving", "declining", "stable"
+
+    # Timestamps
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    user = relationship("User")
+
+    # Unique constraint: one record per user per specialty
+    __table_args__ = (
+        {"sqlite_autoincrement": True},
+    )
+
+
+class UserRetentionMetrics(Base):
+    """
+    Tracks retention metrics for personalized spaced repetition intervals.
+    Stores performance data to calculate optimal review intervals per user.
+
+    Gap 2 Implementation: Personalized SM-2 intervals
+    """
+    __tablename__ = "user_retention_metrics"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False, index=True)
+    specialty = Column(String, nullable=True, index=True)  # Optional: per-specialty retention
+
+    # SM-2 difficulty factor (starts at 2.5, adjusts based on performance)
+    easiness_factor = Column(Float, default=2.5)
+
+    # Retention rate at different intervals (0-1 scale)
+    retention_1d = Column(Float, nullable=True)  # % recalled after 1 day
+    retention_3d = Column(Float, nullable=True)  # % recalled after 3 days
+    retention_7d = Column(Float, nullable=True)  # % recalled after 7 days
+    retention_14d = Column(Float, nullable=True)  # % recalled after 14 days
+    retention_30d = Column(Float, nullable=True)  # % recalled after 30 days
+
+    # Review counts at each interval (for calculating retention rates)
+    reviews_1d = Column(Integer, default=0)
+    reviews_3d = Column(Integer, default=0)
+    reviews_7d = Column(Integer, default=0)
+    reviews_14d = Column(Integer, default=0)
+    reviews_30d = Column(Integer, default=0)
+
+    # Successful recalls at each interval
+    success_1d = Column(Integer, default=0)
+    success_3d = Column(Integer, default=0)
+    success_7d = Column(Integer, default=0)
+    success_14d = Column(Integer, default=0)
+    success_30d = Column(Integer, default=0)
+
+    # Optimal interval recommendation (calculated from retention data)
+    optimal_first_interval_days = Column(Float, default=1.0)
+    optimal_interval_multiplier = Column(Float, default=2.5)
+
+    # Timestamps
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    user = relationship("User")
+
+
+class LearningSessionMix(Base):
+    """
+    Tracks the optimal mix of question types for interleaved learning.
+    Stores ratios for new vs review, different specialties, difficulty levels.
+
+    Gap 3 Implementation: Interleaving strategy
+    """
+    __tablename__ = "learning_session_mixes"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False, unique=True, index=True)
+
+    # Optimal ratios (0-1 scale, should sum to 1.0 within categories)
+    new_question_ratio = Column(Float, default=0.6)  # New vs review
+    review_question_ratio = Column(Float, default=0.4)
+
+    # Specialty interleaving (JSON: {"internal_medicine": 0.3, "surgery": 0.2, ...})
+    specialty_ratios = Column(JSON, nullable=True)
+
+    # Difficulty interleaving
+    easy_ratio = Column(Float, default=0.2)
+    medium_ratio = Column(Float, default=0.5)
+    hard_ratio = Column(Float, default=0.3)
+
+    # Performance metrics that inform the mix
+    avg_session_accuracy = Column(Float, nullable=True)
+    avg_session_completion = Column(Float, nullable=True)  # % of target questions completed
+
+    # Adaptive settings
+    interleaving_enabled = Column(Boolean, default=True)
+    specialty_cycling_enabled = Column(Boolean, default=True)  # Rotate through specialties
+
+    # Timestamps
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    user = relationship("User")
+
+
+class ConceptRetention(Base):
+    """
+    Tracks retention for individual concepts using Ebbinghaus forgetting curve.
+    Enables concept-level mastery tracking and targeted review.
+
+    Gap 4 Implementation: Forgetting curve model
+    """
+    __tablename__ = "concept_retentions"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False, index=True)
+    concept = Column(String, nullable=False, index=True)  # Concept identifier (e.g., "heart_failure_treatment")
+    specialty = Column(String, nullable=True, index=True)
+
+    # Memory strength (0-1 scale, decays over time)
+    memory_strength = Column(Float, default=1.0)
+
+    # Stability factor (how resistant to forgetting - increases with successful reviews)
+    stability = Column(Float, default=1.0)  # Days until memory drops to 90%
+
+    # Last interaction
+    last_reviewed = Column(DateTime, nullable=True)
+    last_correct = Column(DateTime, nullable=True)
+    last_incorrect = Column(DateTime, nullable=True)
+
+    # Review history
+    total_exposures = Column(Integer, default=0)  # Times concept was tested
+    successful_recalls = Column(Integer, default=0)
+    consecutive_correct = Column(Integer, default=0)  # Current streak
+
+    # Predicted retention (calculated from forgetting curve)
+    predicted_retention = Column(Float, default=1.0)  # Expected recall probability now
+    next_optimal_review = Column(DateTime, nullable=True)  # When to review for 90% retention
+
+    # Source questions (JSON list of question IDs that test this concept)
+    question_ids = Column(JSON, nullable=True)
+
+    # Timestamps
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    user = relationship("User")
+
+
+# ============================================================================
+# USAGE ANALYTICS MODELS (Admin Dashboard)
+# ============================================================================
+
+class DailyPlatformMetrics(Base):
+    """
+    Pre-aggregated daily platform-wide metrics.
+    Updated by daily batch job for fast admin dashboard queries.
+    """
+    __tablename__ = "daily_platform_metrics"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    date = Column(DateTime, nullable=False, unique=True, index=True)
+
+    # Activity metrics
+    dau = Column(Integer, default=0)  # Daily Active Users
+    wau = Column(Integer, default=0)  # Weekly Active Users (rolling 7-day)
+    mau = Column(Integer, default=0)  # Monthly Active Users (rolling 30-day)
+    total_sessions = Column(Integer, default=0)
+    avg_session_duration_seconds = Column(Float, default=0)
+    total_questions_answered = Column(Integer, default=0)
+    total_ai_chats = Column(Integer, default=0)
+
+    # Feature usage breakdown
+    feature_usage = Column(JSON, nullable=True)  # {"practice": 50, "timed": 30, ...}
+
+    # Retention metrics
+    day1_retention = Column(Float, nullable=True)
+    day7_retention = Column(Float, nullable=True)
+    day30_retention = Column(Float, nullable=True)
+
+    # User funnel
+    new_signups = Column(Integer, default=0)
+    new_to_active = Column(Integer, default=0)  # Users who answered 1+ question on signup day
+
+    # Timestamps
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+class UserEngagementScore(Base):
+    """
+    Per-user engagement health scoring.
+    Updated daily by batch job for user health classification.
+    """
+    __tablename__ = "user_engagement_scores"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False, unique=True, index=True)
+
+    # Engagement classification
+    engagement_status = Column(String, nullable=False, default="new", index=True)  # "active", "at_risk", "churned", "new"
+    engagement_score = Column(Float, nullable=True)  # 0-100 composite score
+
+    # Activity metrics (rolling windows)
+    questions_last_7_days = Column(Integer, default=0)
+    questions_last_30_days = Column(Integer, default=0)
+    sessions_last_7_days = Column(Integer, default=0)
+    sessions_last_30_days = Column(Integer, default=0)
+    avg_session_duration = Column(Float, nullable=True)
+
+    # Retention signals
+    days_since_last_activity = Column(Integer, nullable=True)
+    return_frequency = Column(String, nullable=True)  # "daily", "weekly", "monthly", "sporadic"
+    streak_current = Column(Integer, default=0)
+    streak_best = Column(Integer, default=0)
+
+    # Churn prediction
+    churn_risk_score = Column(Float, nullable=True)  # 0-1 probability
+    churn_risk_factors = Column(JSON, nullable=True)  # ["no_activity_5_days", "declining_sessions"]
+
+    # Timestamps
+    first_activity_at = Column(DateTime, nullable=True)
+    last_activity_at = Column(DateTime, nullable=True)
+    calculated_at = Column(DateTime, default=datetime.utcnow)
+
+    # Relationships
+    user = relationship("User")
+
+
+class CohortRetention(Base):
+    """
+    Cohort-based retention tracking.
+    Stores retention data for users grouped by signup week.
+    """
+    __tablename__ = "cohort_retention"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    cohort_week = Column(DateTime, nullable=False, index=True)  # Start of signup week
+    week_number = Column(Integer, nullable=False)  # 0 = signup week, 1 = week 1, etc.
+
+    # Cohort size and retention
+    cohort_size = Column(Integer, nullable=False)
+    retained_users = Column(Integer, nullable=False)
+    retention_rate = Column(Float, nullable=False)  # retained_users / cohort_size
+
+    # Additional metrics per cohort-week
+    avg_questions = Column(Float, nullable=True)
+    avg_sessions = Column(Float, nullable=True)
+
+    # Timestamps
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

@@ -25,6 +25,10 @@ export default function AIChat({ questionId, userId, isCorrect, userAnswer }: AI
   const inputRef = useRef<HTMLInputElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
+  // Ref for stable sendMessage callback (prevents recreation on every keystroke)
+  const inputValueRef = useRef(input);
+  inputValueRef.current = input;
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -63,9 +67,10 @@ export default function AIChat({ questionId, userId, isCorrect, userAnswer }: AI
   }, [questionId, userId]);
 
   const sendMessage = useCallback(async () => {
-    if (!input.trim() || loading) return;
+    const currentInput = inputValueRef.current;
+    if (!currentInput.trim() || loading) return;
 
-    const userMessage: Message = { role: 'user', content: input };
+    const userMessage: Message = { role: 'user', content: currentInput };
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setLoading(true);
@@ -81,7 +86,7 @@ export default function AIChat({ questionId, userId, isCorrect, userAnswer }: AI
         body: JSON.stringify({
           user_id: userId,
           question_id: questionId,
-          message: input,
+          message: currentInput,
           user_answer: userAnswer,
           is_correct: isCorrect,
         }),
@@ -99,7 +104,7 @@ export default function AIChat({ questionId, userId, isCorrect, userAnswer }: AI
     } finally {
       setLoading(false);
     }
-  }, [input, loading, userId, questionId, userAnswer, isCorrect]);
+  }, [loading, userId, questionId, userAnswer, isCorrect]); // Removed 'input' - uses ref instead
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
