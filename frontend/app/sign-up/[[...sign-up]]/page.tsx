@@ -1,4 +1,5 @@
 import { SignUp } from '@clerk/nextjs';
+import Link from 'next/link';
 
 export default function SignUpPage() {
   return (
@@ -21,6 +22,17 @@ export default function SignUpPage() {
           },
         }}
       />
+
+      <p className="mt-6 text-sm text-gray-500 text-center max-w-sm">
+        By signing up, you agree to our{' '}
+        <Link href="/terms" className="text-[#4169E1] hover:text-[#5B7FE8] transition-colors">
+          Terms of Service
+        </Link>{' '}
+        and{' '}
+        <Link href="/privacy" className="text-[#4169E1] hover:text-[#5B7FE8] transition-colors">
+          Privacy Policy
+        </Link>
+      </p>
     </main>
   );
 }
