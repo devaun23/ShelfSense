@@ -13,6 +13,7 @@ import { getSpecialtyByApiName, FULL_PREP_MODE, Specialty } from '@/lib/specialt
 import { SkeletonQuestion, LoadingSpinner } from '@/components/SkeletonLoader';
 import { Button } from '@/components/ui';
 import EnhancedExplanation from '@/components/EnhancedExplanation';
+import StudyModeSelector from '@/components/StudyModeSelector';
 
 // Dynamically import Sidebar to avoid useSearchParams SSR issues
 const Sidebar = dynamic(() => import('@/components/Sidebar'), { ssr: false });
@@ -79,10 +80,33 @@ interface Feedback {
   source: string;
 }
 
+interface StudySession {
+  id: string;
+  mode: string;
+  specialty: string | null;
+  target_count: number | null;
+  time_limit_seconds: number | null;
+  questions_answered: number;
+  questions_correct: number;
+  status: string;
+  started_at: string;
+}
+
+// Mode display info
+const MODE_INFO: Record<string, { name: string; icon: string; color: string }> = {
+  practice: { name: 'Practice', icon: '📚', color: 'text-blue-400' },
+  timed: { name: 'Timed Test', icon: '⏱️', color: 'text-red-400' },
+  tutor: { name: 'Tutor', icon: '🎓', color: 'text-green-400' },
+  challenge: { name: 'Challenge', icon: '🔥', color: 'text-orange-400' },
+  review: { name: 'Review', icon: '🔄', color: 'text-purple-400' },
+  weak_focus: { name: 'Weak Areas', icon: '🎯', color: 'text-yellow-400' },
+};
+
 function StudyContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, isLoading: userLoading } = useUser();
+
   // Start with sidebar closed on mobile
   const [sidebarOpen, setSidebarOpen] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -90,6 +114,12 @@ function StudyContent() {
     }
     return true;
   });
+
+  // Mode selector state
+  const [showModeSelector, setShowModeSelector] = useState(false);
+  const [session, setSession] = useState<StudySession | null>(null);
+
+  // Question state
   const [question, setQuestion] = useState<Question | null>(null);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<Feedback | null>(null);
@@ -103,22 +133,33 @@ function StudyContent() {
   const [authTimeout, setAuthTimeout] = useState(false);
   const [confidenceLevel, setConfidenceLevel] = useState<number | null>(null);
 
+  // Timed mode state
+  const [sessionTimeRemaining, setSessionTimeRemaining] = useState<number | null>(null);
+
   // Refs for keyboard handler (prevents handler recreation on state changes)
   const questionRef = useRef<Question | null>(null);
   const selectedAnswerRef = useRef<string | null>(null);
   const feedbackRef = useRef<Feedback | null>(null);
+  const showModeSelectorRef = useRef(false);
 
   // Keep refs in sync with state
   questionRef.current = question;
   selectedAnswerRef.current = selectedAnswer;
   feedbackRef.current = feedback;
+  showModeSelectorRef.current = showModeSelector;
 
-  // Get specialty from URL params
+  // Get params from URL
   const specialtyParam = searchParams.get('specialty');
+  const modeParam = searchParams.get('mode');
+  const sessionParam = searchParams.get('session');
+
   const currentSpecialty: Specialty | null = specialtyParam
     ? getSpecialtyByApiName(specialtyParam)
     : null;
 
+  const currentModeInfo = modeParam ? MODE_INFO[modeParam] : null;
+
+  // Legacy API URL for backwards compatibility
   const getApiUrl = () => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
     let url = `${apiUrl}/api/questions/random`;
@@ -128,7 +169,59 @@ function StudyContent() {
     return url;
   };
 
+  // Session-based question loading
+  const loadSessionQuestion = async (sessionId: string) => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    try {
+      const response = await fetch(`${apiUrl}/api/study-modes/sessions/${sessionId}/next`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.completed) {
+          // Session complete - show summary
+          router.push(`/study/summary?session=${sessionId}`);
+          return null;
+        }
+        return data.question;
+      }
+      return null;
+    } catch (err) {
+      console.error('Error loading session question:', err);
+      return null;
+    }
+  };
+
+  // Load session details
+  const loadSession = async (sessionId: string) => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    try {
+      const response = await fetch(`${apiUrl}/api/study-modes/sessions/${sessionId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setSession(data);
+        setQuestionCount(data.questions_answered || 0);
+
+        // Set up timer for timed mode
+        if (data.mode === 'timed' && data.time_limit_seconds && data.started_at) {
+          const startedAt = new Date(data.started_at).getTime();
+          const elapsed = Math.floor((Date.now() - startedAt) / 1000);
+          const remaining = Math.max(0, data.time_limit_seconds - elapsed);
+          setSessionTimeRemaining(remaining);
+        }
+
+        return data;
+      }
+      return null;
+    } catch (err) {
+      console.error('Error loading session:', err);
+      return null;
+    }
+  };
+
   const preloadNextQuestion = async () => {
+    if (sessionParam) {
+      // Don't preload for session-based - let the API handle order
+      return;
+    }
     try {
       const response = await fetch(getApiUrl());
       if (response.ok) {
@@ -147,6 +240,19 @@ function StudyContent() {
     setStartTime(Date.now());
     setConfidenceLevel(null);
 
+    if (sessionParam) {
+      // Session-based loading
+      setLoading(true);
+      const q = await loadSessionQuestion(sessionParam);
+      if (q) {
+        setQuestion(q);
+        setError(null);
+      }
+      setLoading(false);
+      return;
+    }
+
+    // Legacy loading
     if (nextQuestion) {
       setQuestion(nextQuestion);
       setNextQuestion(null);
@@ -188,19 +294,39 @@ function StudyContent() {
     }
   }, [userLoading]);
 
+  // Initialize study session
   useEffect(() => {
     if (!userLoading && !user) {
       router.push('/login');
       return;
     }
 
-    if (user && !question && !error) {
-      loadNextQuestion();
+    if (user) {
+      // If we have a session param, load that session
+      if (sessionParam) {
+        loadSession(sessionParam).then((sess) => {
+          if (sess) {
+            loadNextQuestion();
+          } else {
+            setError('Session not found');
+            setLoading(false);
+          }
+        });
+      }
+      // If no session and no mode, show mode selector
+      else if (!modeParam && !question && !error) {
+        setShowModeSelector(true);
+        setLoading(false);
+      }
+      // Legacy mode - just load questions
+      else if (!question && !error) {
+        loadNextQuestion();
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, userLoading, router]);
+  }, [user, userLoading, router, sessionParam, modeParam]);
 
-  // Timer update
+  // Timer update for current question
   useEffect(() => {
     if (!feedback && startTime > 0) {
       const interval = setInterval(() => {
@@ -212,8 +338,30 @@ function StudyContent() {
     }
   }, [startTime, feedback]);
 
+  // Session timer for timed mode
+  useEffect(() => {
+    if (session?.mode === 'timed' && sessionTimeRemaining !== null && sessionTimeRemaining > 0) {
+      const interval = setInterval(() => {
+        setSessionTimeRemaining(prev => {
+          if (prev === null || prev <= 1) {
+            // Time's up - end session
+            if (sessionParam) {
+              router.push(`/study/summary?session=${sessionParam}`);
+            }
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [session?.mode, sessionTimeRemaining, sessionParam, router]);
+
   // Stable keyboard handler using refs (prevents listener churn)
   const handleKeyPress = useCallback((e: KeyboardEvent) => {
+    // Don't handle keys when modal is open
+    if (showModeSelectorRef.current) return;
+
     if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
       return;
     }
@@ -254,38 +402,75 @@ function StudyContent() {
     if (!selectedAnswer || !question || !user) return;
 
     const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-      const response = await fetch(`${apiUrl}/api/questions/submit`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          question_id: question.id,
-          user_id: user.userId,
-          user_answer: selectedAnswer,
-          time_spent_seconds: timeSpent,
-          confidence_level: confidenceLevel,
-        }),
-      });
+      // Use session-based submit if we have a session
+      if (sessionParam) {
+        const response = await fetch(`${apiUrl}/api/study-modes/sessions/${sessionParam}/submit`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            question_id: question.id,
+            answer: selectedAnswer,
+            time_spent_seconds: timeSpent,
+            confidence_level: confidenceLevel,
+          }),
+        });
 
-      if (response.ok) {
-        const data: Feedback = await response.json();
-        setFeedback(data);
-        setQuestionCount(prev => prev + 1);
+        if (response.ok) {
+          const data = await response.json();
+          setFeedback({
+            is_correct: data.is_correct,
+            correct_answer: data.correct_answer,
+            explanation: data.explanation,
+            source: question.source,
+          });
+          setQuestionCount(prev => prev + 1);
 
-        const newExpanded = new Set<string>();
-        if (data.correct_answer) {
-          newExpanded.add(data.correct_answer);
+          const newExpanded = new Set<string>();
+          if (data.correct_answer) {
+            newExpanded.add(data.correct_answer);
+          }
+          if (!data.is_correct && selectedAnswer) {
+            newExpanded.add(selectedAnswer);
+          }
+          setExpandedChoices(newExpanded);
+        } else {
+          setError('Failed to submit answer. Please try again.');
         }
-        if (!data.is_correct && selectedAnswer) {
-          newExpanded.add(selectedAnswer);
-        }
-        setExpandedChoices(newExpanded);
-
-        preloadNextQuestion();
       } else {
-        setError('Failed to submit answer. Please try again.');
+        // Legacy submit
+        const response = await fetch(`${apiUrl}/api/questions/submit`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            question_id: question.id,
+            user_id: user.userId,
+            user_answer: selectedAnswer,
+            time_spent_seconds: timeSpent,
+            confidence_level: confidenceLevel,
+          }),
+        });
+
+        if (response.ok) {
+          const data: Feedback = await response.json();
+          setFeedback(data);
+          setQuestionCount(prev => prev + 1);
+
+          const newExpanded = new Set<string>();
+          if (data.correct_answer) {
+            newExpanded.add(data.correct_answer);
+          }
+          if (!data.is_correct && selectedAnswer) {
+            newExpanded.add(selectedAnswer);
+          }
+          setExpandedChoices(newExpanded);
+
+          preloadNextQuestion();
+        } else {
+          setError('Failed to submit answer. Please try again.');
+        }
       }
     } catch (error) {
       console.error('Error submitting answer:', error);
@@ -300,6 +485,41 @@ function StudyContent() {
   const handleBackToHome = () => {
     router.push('/');
   };
+
+  const handleSessionStart = (sessionId: string) => {
+    setShowModeSelector(false);
+    // Router will navigate via the component
+  };
+
+  const handleCloseModeSelector = () => {
+    // If user closes without selecting, go back home
+    router.push('/');
+  };
+
+  // Format time for display
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  // Show mode selector
+  if (showModeSelector && user) {
+    return (
+      <>
+        <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
+        <main className={`min-h-screen bg-black text-white transition-all duration-300 ${
+          sidebarOpen ? 'md:ml-64' : 'ml-0'
+        }`}>
+          <StudyModeSelector
+            userId={user.userId}
+            onSessionStart={handleSessionStart}
+            onClose={handleCloseModeSelector}
+          />
+        </main>
+      </>
+    );
+  }
 
   // Auth timeout - show connection error
   if (authTimeout) {
@@ -375,7 +595,7 @@ function StudyContent() {
       }`}>
         {/* Centered content container - Claude style */}
         <div className="max-w-3xl mx-auto px-4 md:px-6 py-6 md:py-8 pt-14 md:pt-16 pb-24 md:pb-32">
-          {/* Header with specialty badge and timer */}
+          {/* Header with mode badge, specialty badge, and timer */}
           <div className="flex flex-wrap items-center justify-between gap-3 mb-6 md:mb-8 text-sm text-gray-600">
             <div className="flex items-center gap-3 md:gap-4">
               {/* Back button */}
@@ -389,32 +609,56 @@ function StudyContent() {
                 </svg>
               </button>
 
-              {/* Specialty Badge */}
-              {currentSpecialty ? (
-                <div className={`flex items-center gap-2 px-2.5 md:px-3 py-1 rounded-full ${currentSpecialty.bgColor} ${currentSpecialty.borderColor} border`}>
-                  <span>{currentSpecialty.icon}</span>
-                  <span className={`text-xs font-medium ${currentSpecialty.color}`}>
-                    {currentSpecialty.shortName}
-                  </span>
-                </div>
-              ) : (
-                <div className={`flex items-center gap-2 px-2.5 md:px-3 py-1 rounded-full ${FULL_PREP_MODE.bgColor} ${FULL_PREP_MODE.borderColor} border`}>
-                  <span>{FULL_PREP_MODE.icon}</span>
-                  <span className={`text-xs font-medium ${FULL_PREP_MODE.color}`}>
-                    Step 2 CK
+              {/* Mode Badge (if session-based) */}
+              {currentModeInfo && (
+                <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gray-900/80 border border-gray-800`}>
+                  <span className="text-sm">{currentModeInfo.icon}</span>
+                  <span className={`text-xs font-medium ${currentModeInfo.color}`}>
+                    {currentModeInfo.name}
                   </span>
                 </div>
               )}
 
-              <span className="text-gray-600 text-xs md:text-sm">Q{questionCount + 1}</span>
+              {/* Specialty Badge */}
+              <div className="px-2.5 md:px-3 py-1 rounded-full bg-gray-900 border border-gray-800">
+                <span className="text-xs font-medium text-gray-300">
+                  {currentSpecialty ? currentSpecialty.name : 'Step 2 CK'}
+                </span>
+              </div>
+
+              {/* Question counter with progress */}
+              <span className="text-gray-600 text-xs md:text-sm">
+                Q{questionCount + 1}
+                {session?.target_count && (
+                  <span className="text-gray-700">/{session.target_count}</span>
+                )}
+              </span>
+
+              {/* Question timer */}
               {!feedback && elapsedTime > 0 && (
                 <span className="text-gray-500 text-xs md:text-sm">
-                  {Math.floor(elapsedTime / 60)}:{(elapsedTime % 60).toString().padStart(2, '0')}
+                  {formatTime(elapsedTime)}
                 </span>
               )}
             </div>
-            {/* Flag button and keyboard hints */}
+
+            {/* Right side - session timer, flag, keyboard hints */}
             <div className="flex items-center gap-3">
+              {/* Session timer for timed mode */}
+              {session?.mode === 'timed' && sessionTimeRemaining !== null && (
+                <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full ${
+                  sessionTimeRemaining < 300 ? 'bg-red-900/50 border-red-800' : 'bg-gray-900 border-gray-800'
+                } border`}>
+                  <svg className={`w-3.5 h-3.5 ${sessionTimeRemaining < 300 ? 'text-red-400' : 'text-gray-500'}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 6v6l4 2" />
+                  </svg>
+                  <span className={`text-xs font-mono ${sessionTimeRemaining < 300 ? 'text-red-400' : 'text-gray-400'}`}>
+                    {formatTime(sessionTimeRemaining)}
+                  </span>
+                </div>
+              )}
+
               {/* Flag Button - visible when question is answered */}
               {feedback && question && user && (
                 <FlagButton
@@ -556,7 +800,7 @@ function StudyContent() {
               <EnhancedExplanation
                 explanation={feedback.explanation as Parameters<typeof EnhancedExplanation>[0]['explanation']}
                 correctAnswer={feedback.correct_answer}
-                userAnswer={selectedAnswer || ''}
+                userAnswer={selectedAnswer ? String.fromCharCode(65 + question.choices.indexOf(selectedAnswer)) : ''}
                 isCorrect={feedback.is_correct}
                 mode="full"
               />

@@ -18,6 +18,7 @@ Guidelines followed:
 """
 
 import os
+import logging
 import threading
 import time
 from datetime import datetime, timedelta
@@ -26,6 +27,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func, and_
 from app.models.models import Question, generate_uuid
 from app.database import SessionLocal
+
+logger = logging.getLogger(__name__)
 from app.services.step2ck_content_outline import (
     DISCIPLINE_DISTRIBUTION,
     get_weighted_specialty,
@@ -180,11 +183,11 @@ class QuestionPoolManager:
                 # Check each specialty
                 for spec in SPECIALTIES:
                     if stats.get(spec, 0) < REPLENISH_THRESHOLD:
-                        print(f"[Pool] {spec} pool low ({stats.get(spec, 0)}), replenishing...")
+                        logger.info("Pool %s low (%d), replenishing...", spec, stats.get(spec, 0))
                         self._replenish_specialty(db, spec, REPLENISH_BATCH_SIZE)
 
             except Exception as e:
-                print(f"[Pool] Replenishment error: {e}")
+                logger.error("Pool replenishment error: %s", e, exc_info=True)
             finally:
                 db.close()
                 self._is_replenishing = False
@@ -199,7 +202,7 @@ class QuestionPoolManager:
 
         try:
             # Use batch generation for efficiency
-            print(f"[Pool] Batch generating {count} {specialty} questions...")
+            logger.info("Batch generating %d %s questions...", count, specialty)
             questions = generate_questions_batch(
                 db,
                 count=count,
@@ -209,12 +212,12 @@ class QuestionPoolManager:
 
             for i, question_data in enumerate(questions):
                 self.add_to_pool(db, question_data, specialty)
-                print(f"[Pool] Added {specialty} question {i+1}/{len(questions)}")
+                logger.debug("Added %s question %d/%d", specialty, i+1, len(questions))
 
-            print(f"[Pool] Successfully added {len(questions)}/{count} {specialty} questions")
+            logger.info("Successfully added %d/%d %s questions", len(questions), count, specialty)
 
         except Exception as e:
-            print(f"[Pool] Batch generation failed for {specialty}: {e}")
+            logger.error("Batch generation failed for %s: %s", specialty, e, exc_info=True)
             # Fallback to sequential generation
             from app.services.question_agent import QuestionGenerationAgent
             agent = QuestionGenerationAgent(db)
@@ -228,9 +231,9 @@ class QuestionPoolManager:
                         max_retries=1
                     )
                     self.add_to_pool(db, question_data, specialty)
-                    print(f"[Pool] Added {specialty} question {i+1}/{count} (fallback)")
+                    logger.debug("Added %s question %d/%d (fallback)", specialty, i+1, count)
                 except Exception as e2:
-                    print(f"[Pool] Failed to generate {specialty} question: {e2}")
+                    logger.warning("Failed to generate %s question: %s", specialty, e2)
                     continue
 
     def warm_pool(self, target_per_specialty: int = MIN_POOL_SIZE):
@@ -241,7 +244,7 @@ class QuestionPoolManager:
         Args:
             target_per_specialty: Number of questions per specialty to generate
         """
-        print(f"[Pool] Warming pool with {target_per_specialty} questions per specialty...")
+        logger.info("Warming pool with %d questions per specialty...", target_per_specialty)
 
         db = SessionLocal()
         try:
@@ -252,11 +255,11 @@ class QuestionPoolManager:
                 needed = max(0, target_per_specialty - current)
 
                 if needed > 0:
-                    print(f"[Pool] Generating {needed} questions for {specialty}...")
+                    logger.info("Generating %d questions for %s...", needed, specialty)
                     self._replenish_specialty(db, specialty, needed)
 
             final_stats = self.get_pool_stats(db)
-            print(f"[Pool] Pool warmed. Final stats: {final_stats}")
+            logger.info("Pool warmed. Final stats: %s", final_stats)
 
         finally:
             db.close()
@@ -299,11 +302,11 @@ def get_instant_question(
     question = manager.get_instant_question(db, specialty, user_id)
 
     if question:
-        print(f"[Pool] Served question instantly from pool")
+        logger.debug("Served question instantly from pool")
         return question
 
     # Pool empty - generate on-demand (slower, but rare)
-    print(f"[Pool] Pool empty, generating on-demand...")
+    logger.info("Pool empty, generating on-demand...")
     from app.services.question_agent import generate_question_with_agent
     from app.services.question_generator import save_generated_question
 
@@ -313,16 +316,16 @@ def get_instant_question(
         try:
             difficulty_info = get_user_difficulty_target(db, user_id)
             difficulty = difficulty_info.get("difficulty_level", "medium")
-            print(f"[Pool] User difficulty target: {difficulty} (accuracy: {difficulty_info.get('accuracy', 0):.1%})")
+            logger.debug("User difficulty target: %s (accuracy: %.1f%%)", difficulty, difficulty_info.get('accuracy', 0) * 100)
         except Exception as e:
-            print(f"[Pool] Could not get user difficulty: {e}")
+            logger.warning("Could not get user difficulty: %s", e)
 
     try:
         question_data = generate_question_with_agent(db, specialty=specialty, difficulty=difficulty)
         question = save_generated_question(db, question_data)
         return question
     except Exception as e:
-        print(f"[Pool] On-demand generation failed: {e}")
+        logger.error("On-demand generation failed: %s", e, exc_info=True)
         return None
 
 
@@ -337,7 +340,7 @@ def warm_pool_async(target_per_specialty: int = MIN_POOL_SIZE):
 
     thread = threading.Thread(target=warm, daemon=True)
     thread.start()
-    print("[Pool] Pool warming started in background")
+    logger.info("Pool warming started in background")
 
 
 def get_pool_stats(db: Session) -> Dict[str, int]:

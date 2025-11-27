@@ -14,9 +14,12 @@ Events handled:
 """
 
 import os
+import logging
 import stripe
 from fastapi import APIRouter, Request, HTTPException, Depends
 from sqlalchemy.orm import Session
+
+logger = logging.getLogger(__name__)
 
 from app.database import get_db
 from app.services.stripe_service import (
@@ -49,7 +52,7 @@ async def stripe_webhook(request: Request, db: Session = Depends(get_db)):
 
     if not STRIPE_WEBHOOK_SECRET:
         # In development, you might not have webhook secret configured
-        print("WARNING: STRIPE_WEBHOOK_SECRET not configured. Skipping signature verification.")
+        logger.warning("STRIPE_WEBHOOK_SECRET not configured. Skipping signature verification.")
         try:
             event = stripe.Event.construct_from(
                 stripe.util.convert_to_dict(stripe.util.json.loads(payload)),
@@ -70,48 +73,48 @@ async def stripe_webhook(request: Request, db: Session = Depends(get_db)):
     event_type = event["type"]
     data_object = event["data"]["object"]
 
-    print(f"Processing Stripe webhook: {event_type}")
+    logger.info("Processing Stripe webhook: event_type=%s", event_type)
 
     try:
         if event_type == "checkout.session.completed":
             # New subscription via checkout
             handle_checkout_completed(db, data_object)
-            print(f"Checkout completed for session: {data_object.get('id')}")
+            logger.info("Checkout completed for session_id=%s", data_object.get('id'))
 
         elif event_type == "customer.subscription.created":
             # New subscription created
             sync_subscription_from_stripe(db, data_object)
-            print(f"Subscription created: {data_object.get('id')}")
+            logger.info("Subscription created: subscription_id=%s", data_object.get('id'))
 
         elif event_type == "customer.subscription.updated":
             # Subscription updated (upgrade, downgrade, renewal, cancellation scheduled)
             sync_subscription_from_stripe(db, data_object)
-            print(f"Subscription updated: {data_object.get('id')}")
+            logger.info("Subscription updated: subscription_id=%s", data_object.get('id'))
 
         elif event_type == "customer.subscription.deleted":
             # Subscription canceled or expired
             handle_subscription_deleted(db, data_object)
-            print(f"Subscription deleted: {data_object.get('id')}")
+            logger.info("Subscription deleted: subscription_id=%s", data_object.get('id'))
 
         elif event_type == "invoice.payment_succeeded":
             # Payment successful - extend subscription
             handle_invoice_payment_succeeded(db, data_object)
-            print(f"Payment succeeded for invoice: {data_object.get('id')}")
+            logger.info("Payment succeeded for invoice_id=%s", data_object.get('id'))
 
         elif event_type == "invoice.payment_failed":
             # Payment failed - start grace period
             handle_invoice_payment_failed(db, data_object)
-            print(f"Payment failed for invoice: {data_object.get('id')}")
+            logger.warning("Payment failed for invoice_id=%s", data_object.get('id'))
 
         else:
             # Log unhandled events for monitoring
-            print(f"Unhandled Stripe event type: {event_type}")
+            logger.debug("Unhandled Stripe event type: %s", event_type)
 
     except Exception as e:
         # Log error but return 200 to prevent Stripe retries for handled events
         # Stripe will retry on 5xx errors, so we only raise for critical failures
-        print(f"Webhook processing error for {event_type}: {str(e)}")
+        logger.error("Webhook processing error for event_type=%s: %s", event_type, str(e), exc_info=True)
         # Don't raise - let Stripe think it succeeded to prevent infinite retries
-        # In production, you'd want to log this to an error tracking service
+        # Error is captured by Sentry via exc_info=True
 
     return {"status": "success", "event_type": event_type}

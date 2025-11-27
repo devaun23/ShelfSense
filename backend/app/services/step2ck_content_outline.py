@@ -5,6 +5,10 @@ Based on official NBME blueprint and high-yield topics from First Aid
 This defines the exact distribution and topics tested on Step 2 CK
 """
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Official USMLE Step 2 CK Discipline Distribution (from USMLE.org)
 DISCIPLINE_DISTRIBUTION = {
     "Medicine": 60,  # 55-65% (using midpoint)
@@ -275,7 +279,7 @@ def get_high_yield_topic(specialty):
 
     mapped_specialty = specialty_map.get(specialty, "Internal Medicine")
     if mapped_specialty not in HIGH_YIELD_TOPICS:
-        print(f"[ContentOutline] WARNING: No topics for mapped specialty '{mapped_specialty}' (from '{specialty}')")
+        logger.warning("No topics for mapped specialty '%s' (from '%s')", mapped_specialty, specialty)
         return None
 
     category = random.choice(list(HIGH_YIELD_TOPICS[mapped_specialty].keys()))

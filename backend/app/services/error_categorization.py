@@ -8,9 +8,11 @@ Based on medical education research on diagnostic reasoning errors.
 """
 
 from typing import Dict, Optional, List
-from openai import OpenAI
-import os
 import json
+import logging
+from app.services.openai_service import openai_service, CircuitBreakerOpenError
+
+logger = logging.getLogger(__name__)
 
 # Error taxonomy based on medical education research
 ERROR_TYPES = {
@@ -75,8 +77,6 @@ def categorize_error(
     Returns:
         Dict with error_type, explanation, reasoning_coach_prompt
     """
-    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
     # Build the analysis prompt
     prompt = f"""You are a medical education expert analyzing why a student got a Step 2 CK question wrong.
 
@@ -112,12 +112,12 @@ Provide your analysis in JSON format:
 Be specific and educational. Your explanation should help the student understand their thinking pattern."""
 
     try:
-        response = client.chat.completions.create(
-            model="gpt-4o",
+        response = openai_service.chat_completion(
             messages=[
                 {"role": "system", "content": "You are a medical education expert who analyzes student errors to provide targeted learning interventions."},
                 {"role": "user", "content": prompt}
             ],
+            model="gpt-4o",
             temperature=0.3,
             response_format={"type": "json_object"}
         )
@@ -131,7 +131,7 @@ Be specific and educational. Your explanation should help the student understand
         return result
 
     except Exception as e:
-        print(f"Error in error categorization: {str(e)}")
+        logger.error("Error in error categorization: %s", str(e), exc_info=True)
         # Fallback to knowledge gap if API fails
         return {
             "error_type": "knowledge_gap",
@@ -167,8 +167,6 @@ def generate_coaching_session(
     Returns:
         AI coach's response string
     """
-    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
     error_type = error_analysis.get("error_type", "knowledge_gap")
     coaching_question = error_analysis.get("coaching_question", "")
 
@@ -209,20 +207,24 @@ The student was asked: "{coaching_question}"
         system_prompt += "\n\nThis is the opening message. Start by asking the coaching question to understand their thinking."
 
     try:
-        response = client.chat.completions.create(
-            model="gpt-4o",
+        response = openai_service.chat_completion(
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": "Coach me through this question."}
             ],
+            model="gpt-4o",
             temperature=0.7,
             max_tokens=500
         )
 
         return response.choices[0].message.content
 
+    except CircuitBreakerOpenError:
+        # Return a helpful fallback when circuit breaker is open
+        return f"I'm temporarily unable to provide detailed coaching. Let's start with a question: {coaching_question}"
+
     except Exception as e:
-        print(f"Error in coaching session: {str(e)}")
+        logger.error("Error in coaching session: %s", str(e), exc_info=True)
         return f"Let's think through this together. {coaching_question}"
 
 

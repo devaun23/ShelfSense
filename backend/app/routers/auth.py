@@ -13,7 +13,7 @@ from datetime import datetime, timedelta
 from typing import Optional
 
 from app.database import get_db
-from app.models.models import User, UserSession, UserSettings
+from app.models.models import User, UserSession, UserSettings, PasswordResetToken
 from app.services.auth import (
     AuthService,
     TokenError,
@@ -26,6 +26,9 @@ from app.services.auth import (
     verify_token,
     get_user_id_from_token,
     validate_password_strength,
+    generate_password_reset_token,
+    hash_reset_token,
+    verify_reset_token,
     REFRESH_TOKEN_EXPIRE_DAYS
 )
 
@@ -60,6 +63,15 @@ class RefreshRequest(BaseModel):
 
 class PasswordChangeRequest(BaseModel):
     current_password: str
+    new_password: str = Field(..., min_length=8)
+
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+
+class ResetPasswordRequest(BaseModel):
+    token: str
     new_password: str = Field(..., min_length=8)
 
 
@@ -516,6 +528,142 @@ async def change_password(
     return MessageResponse(message="Password changed successfully")
 
 
+# ==================== Password Reset ====================
+
+# Rate limiting for password reset
+PASSWORD_RESET_EXPIRE_HOURS = 1
+MAX_RESET_REQUESTS_PER_HOUR = 3
+
+
+@router.post("/forgot-password", response_model=MessageResponse)
+async def forgot_password(
+    request: ForgotPasswordRequest,
+    db: Session = Depends(get_db)
+):
+    """
+    Request a password reset email.
+    Always returns success to prevent email enumeration.
+    """
+    user = db.query(User).filter(User.email == request.email).first()
+
+    # Always return success to prevent email enumeration attacks
+    success_message = "If an account with that email exists, we've sent password reset instructions."
+
+    if not user:
+        logger.info(f"Password reset requested for non-existent email: {request.email}")
+        return MessageResponse(message=success_message)
+
+    # Check if user has a password (not Clerk-only user)
+    # Clerk users should reset password through Clerk
+    if user.password_hash is None and user.id.startswith("user_"):
+        logger.info(f"Password reset requested for Clerk-only user: {user.id}")
+        return MessageResponse(message=success_message)
+
+    # Rate limit: check recent reset requests
+    one_hour_ago = datetime.utcnow() - timedelta(hours=1)
+    recent_requests = db.query(PasswordResetToken).filter(
+        PasswordResetToken.user_id == user.id,
+        PasswordResetToken.created_at > one_hour_ago
+    ).count()
+
+    if recent_requests >= MAX_RESET_REQUESTS_PER_HOUR:
+        logger.warning(f"Rate limit exceeded for password reset: {user.id}")
+        return MessageResponse(message=success_message)
+
+    # Invalidate any existing unused tokens
+    db.query(PasswordResetToken).filter(
+        PasswordResetToken.user_id == user.id,
+        PasswordResetToken.used == False
+    ).update({"used": True})
+    db.commit()
+
+    # Generate new token
+    raw_token = generate_password_reset_token()
+    hashed_token = hash_reset_token(raw_token)
+
+    reset_token = PasswordResetToken(
+        user_id=user.id,
+        token_hash=hashed_token,
+        expires_at=datetime.utcnow() + timedelta(hours=PASSWORD_RESET_EXPIRE_HOURS)
+    )
+    db.add(reset_token)
+    db.commit()
+
+    # Send email (non-blocking)
+    try:
+        from app.services.email.email_service import get_email_service
+        email_service = get_email_service()
+        asyncio.create_task(
+            email_service.send_password_reset_email(
+                db, user, raw_token, PASSWORD_RESET_EXPIRE_HOURS
+            )
+        )
+    except Exception as e:
+        logger.error(f"Failed to queue password reset email: {e}")
+
+    logger.info(f"Password reset email queued for user: {user.id}")
+    return MessageResponse(message=success_message)
+
+
+@router.post("/reset-password", response_model=MessageResponse)
+async def reset_password(
+    request: ResetPasswordRequest,
+    db: Session = Depends(get_db)
+):
+    """
+    Reset password using a valid reset token.
+    """
+    # Find all unused tokens (we'll check each one)
+    tokens = db.query(PasswordResetToken).filter(
+        PasswordResetToken.used == False,
+        PasswordResetToken.expires_at > datetime.utcnow()
+    ).all()
+
+    # Find matching token
+    valid_token = None
+    for token in tokens:
+        if verify_reset_token(request.token, token.token_hash):
+            valid_token = token
+            break
+
+    if not valid_token:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired reset token"
+        )
+
+    # Get the user
+    user = db.query(User).filter(User.id == valid_token.user_id).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired reset token"
+        )
+
+    # Validate new password
+    is_valid, error_msg = validate_password_strength(request.new_password)
+    if not is_valid:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=error_msg
+        )
+
+    # Update password
+    user.password_hash = hash_password(request.new_password)
+
+    # Mark token as used
+    valid_token.used = True
+
+    # Clear any account lockout
+    user.failed_login_attempts = 0
+    user.locked_until = None
+
+    db.commit()
+
+    logger.info(f"Password reset successful for user: {user.id}")
+    return MessageResponse(message="Password reset successfully. You can now log in with your new password.")
+
+
 # ==================== Simple Auth (Backwards Compatible) ====================
 
 class SimpleRegisterRequest(BaseModel):
@@ -602,6 +750,7 @@ class ClerkSyncResponse(BaseModel):
     full_name: str
     first_name: str
     email: Optional[str] = None
+    is_admin: bool = False
     synced: bool
 
     class Config:
@@ -645,6 +794,7 @@ async def clerk_sync(
             full_name=existing_user.full_name,
             first_name=existing_user.first_name,
             email=existing_user.email,
+            is_admin=existing_user.is_admin or False,
             synced=True
         )
 
@@ -673,6 +823,7 @@ async def clerk_sync(
                 full_name=email_user.full_name,
                 first_name=email_user.first_name,
                 email=email_user.email,
+                is_admin=email_user.is_admin or False,
                 synced=True
             )
 
@@ -712,5 +863,6 @@ async def clerk_sync(
         full_name=new_user.full_name,
         first_name=new_user.first_name,
         email=new_user.email,
+        is_admin=new_user.is_admin or False,
         synced=True
     )

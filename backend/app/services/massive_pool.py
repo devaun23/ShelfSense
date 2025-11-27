@@ -29,6 +29,7 @@ Architecture:
 """
 
 import os
+import logging
 import threading
 import time
 import random
@@ -38,6 +39,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func, and_, or_
 from app.models.models import Question, QuestionAttempt, generate_uuid
 from app.database import SessionLocal
+
+logger = logging.getLogger(__name__)
 
 # =============================================================================
 # POOL CONFIGURATION - SCALED UP FOR INSTANT DELIVERY
@@ -293,7 +296,7 @@ def _get_from_pool(
         question.source = f"AI Generated - {specialty} - {difficulty}"
         db.commit()
 
-        print(f"[MassivePool] Served {specialty}/{difficulty} question to user {user_id[:8]}")
+        logger.debug("Served %s/%s question to user %s", specialty, difficulty, user_id[:8])
 
         # Trigger background replenishment check
         _trigger_replenish_check(specialty, difficulty)
@@ -321,7 +324,7 @@ def _get_any_from_pool(db: Session, user_id: str) -> Optional[Question]:
             difficulty = parts[2]
             question.source = f"AI Generated - {specialty} - {difficulty}"
             db.commit()
-            print(f"[MassivePool] Served fallback question to user {user_id[:8]}")
+            logger.debug("Served fallback question to user %s", user_id[:8])
 
     return question
 
@@ -373,7 +376,7 @@ def replenish_pool_batch(
             topic = get_high_yield_topic(specialty)
 
             if topic is None:
-                print(f"[MassivePool] WARNING: No topic found for specialty '{specialty}', skipping question {i+1}/{count}")
+                logger.warning("No topic found for specialty '%s', skipping question %d/%d", specialty, i+1, count)
                 continue
 
             question_data = agent.generate_question(
@@ -408,10 +411,10 @@ def replenish_pool_batch(
                 db.commit()
                 generated += 1
 
-                print(f"[MassivePool] Generated {specialty}/{difficulty} question {generated}/{count}")
+                logger.debug("Generated %s/%s question %d/%d", specialty, difficulty, generated, count)
 
         except Exception as e:
-            print(f"[MassivePool] Failed to generate question: {e}")
+            logger.warning("Failed to generate question: %s", e)
             continue
 
     return generated
@@ -426,7 +429,7 @@ def run_continuous_replenishment():
     """
     global _is_replenishing
 
-    print("[MassivePool] Starting continuous replenishment...")
+    logger.info("Starting continuous replenishment...")
 
     while True:
         try:
@@ -442,7 +445,7 @@ def run_continuous_replenishment():
                 gaps = get_pool_gaps(db)
 
                 if not gaps:
-                    print("[MassivePool] Pool is fully stocked!")
+                    logger.info("Pool is fully stocked!")
                     time.sleep(300)  # Check again in 5 minutes
                     continue
 
@@ -450,11 +453,11 @@ def run_continuous_replenishment():
                 for specialty, difficulty, needed in gaps[:3]:
                     batch_size = min(needed, REPLENISH_BATCH[difficulty])
 
-                    print(f"[MassivePool] Replenishing {specialty}/{difficulty} "
-                          f"(need {needed}, generating {batch_size})")
+                    logger.info("Replenishing %s/%s (need %d, generating %d)",
+                               specialty, difficulty, needed, batch_size)
 
                     generated = replenish_pool_batch(db, specialty, difficulty, batch_size)
-                    print(f"[MassivePool] Generated {generated}/{batch_size} questions")
+                    logger.info("Generated %d/%d questions", generated, batch_size)
 
                     # Small delay between batches to avoid rate limits
                     time.sleep(5)
@@ -467,7 +470,7 @@ def run_continuous_replenishment():
             time.sleep(300)  # 5 minutes
 
         except Exception as e:
-            print(f"[MassivePool] Replenishment error: {e}")
+            logger.error("Replenishment error: %s", e, exc_info=True)
             _is_replenishing = False
             time.sleep(60)
 
@@ -476,7 +479,7 @@ def start_background_replenishment():
     """Start the background replenishment thread."""
     thread = threading.Thread(target=run_continuous_replenishment, daemon=True)
     thread.start()
-    print("[MassivePool] Background replenishment thread started")
+    logger.info("Background replenishment thread started")
 
 
 # =============================================================================
@@ -496,7 +499,7 @@ def warm_pool_initial(target_total: int = 1000) -> Dict:
     Returns:
         Summary of generation results
     """
-    print(f"[MassivePool] Warming pool with {target_total} questions...")
+    logger.info("Warming pool with %d questions...", target_total)
 
     db = SessionLocal()
     results = {"generated": 0, "failed": 0, "by_specialty": {}}
@@ -519,16 +522,16 @@ def warm_pool_initial(target_total: int = 1000) -> Dict:
                 needed = max(0, bucket_target - current)
 
                 if needed > 0:
-                    print(f"[MassivePool] Warming {specialty}/{difficulty}: "
-                          f"need {needed} (current: {current}, target: {bucket_target})")
+                    logger.info("Warming %s/%s: need %d (current: %d, target: %d)",
+                               specialty, difficulty, needed, current, bucket_target)
 
                     generated = replenish_pool_batch(db, specialty, difficulty, needed)
                     results["generated"] += generated
                     results["failed"] += (needed - generated)
                     results["by_specialty"][specialty][difficulty] = generated
 
-        print(f"[MassivePool] Pool warming complete: "
-              f"{results['generated']} generated, {results['failed']} failed")
+        logger.info("Pool warming complete: %d generated, %d failed",
+                   results['generated'], results['failed'])
 
     finally:
         db.close()
@@ -543,7 +546,7 @@ def warm_pool_async(target_total: int = 1000):
 
     thread = threading.Thread(target=warm, daemon=True)
     thread.start()
-    print(f"[MassivePool] Pool warming started in background (target: {target_total})")
+    logger.info("Pool warming started in background (target: %d)", target_total)
 
 
 # =============================================================================
@@ -562,13 +565,13 @@ def initialize_massive_pool():
     db = SessionLocal()
     try:
         stats = get_detailed_pool_stats(db)
-        print(f"[MassivePool] Current pool status: {stats['total']} questions, health: {stats['health']}")
+        logger.info("Current pool status: %d questions, health: %s", stats['total'], stats['health'])
 
         if stats["health"] == "critical":
-            print("[MassivePool] Pool critically low! Starting emergency warm-up...")
+            logger.warning("Pool critically low! Starting emergency warm-up...")
             warm_pool_async(500)  # Generate 500 questions in background
         elif stats["health"] == "warning":
-            print("[MassivePool] Pool below target, starting background warm-up...")
+            logger.info("Pool below target, starting background warm-up...")
             warm_pool_async(200)  # Generate 200 questions in background
 
         # Start continuous replenishment

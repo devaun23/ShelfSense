@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useUser } from '@/contexts/UserContext';
 
 interface UserItem {
@@ -160,12 +161,14 @@ export default function AdminUsersPage() {
               </tr>
             ) : (
               users.map((user) => (
-                <tr key={user.user_id} className="hover:bg-gray-800/50">
+                <tr key={user.user_id} className="hover:bg-gray-800/50 cursor-pointer group">
                   <td className="px-4 py-3">
-                    <div>
-                      <p className="text-sm font-medium text-white">{user.full_name}</p>
+                    <Link href={`/admin/users/${user.user_id}`} className="block">
+                      <p className="text-sm font-medium text-white group-hover:text-[#4169E1] transition-colors">
+                        {user.full_name}
+                      </p>
                       <p className="text-xs text-gray-500">{user.email}</p>
-                    </div>
+                    </Link>
                   </td>
                   <td className="px-4 py-3">
                     {user.is_admin ? (
@@ -187,25 +190,36 @@ export default function AdminUsersPage() {
                       : 'Never'}
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <button
-                      onClick={() => toggleAdmin(user.user_id, user.is_admin)}
-                      disabled={actionLoading === user.user_id || user.user_id === currentUser?.userId}
-                      className={`text-xs px-3 py-1.5 rounded transition-colors ${
-                        user.user_id === currentUser?.userId
-                          ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
+                    <div className="flex items-center justify-end gap-2">
+                      <Link
+                        href={`/admin/users/${user.user_id}`}
+                        className="text-xs px-3 py-1.5 rounded bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors"
+                      >
+                        View
+                      </Link>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleAdmin(user.user_id, user.is_admin);
+                        }}
+                        disabled={actionLoading === user.user_id || user.user_id === currentUser?.userId}
+                        className={`text-xs px-3 py-1.5 rounded transition-colors ${
+                          user.user_id === currentUser?.userId
+                            ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
+                            : user.is_admin
+                            ? 'bg-red-900/30 text-red-400 hover:bg-red-900/50'
+                            : 'bg-[#4169E1]/20 text-[#4169E1] hover:bg-[#4169E1]/30'
+                        }`}
+                      >
+                        {actionLoading === user.user_id
+                          ? 'Updating...'
+                          : user.user_id === currentUser?.userId
+                          ? 'Current User'
                           : user.is_admin
-                          ? 'bg-red-900/30 text-red-400 hover:bg-red-900/50'
-                          : 'bg-[#4169E1]/20 text-[#4169E1] hover:bg-[#4169E1]/30'
-                      }`}
-                    >
-                      {actionLoading === user.user_id
-                        ? 'Updating...'
-                        : user.user_id === currentUser?.userId
-                        ? 'Current User'
-                        : user.is_admin
-                        ? 'Revoke Admin'
-                        : 'Make Admin'}
-                    </button>
+                          ? 'Revoke Admin'
+                          : 'Make Admin'}
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))

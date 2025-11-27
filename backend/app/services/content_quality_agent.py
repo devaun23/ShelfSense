@@ -15,6 +15,9 @@ The agent ensures every practice question meets ShelfSense standards:
 - Compliance with NBME Gold Book principles
 """
 
+import logging
+
+logger = logging.getLogger(__name__)
 
 import json
 from typing import Dict, List, Optional, Tuple
@@ -640,7 +643,7 @@ CRITICAL QUALITY REQUIREMENTS:
             )
             return json.loads(response)
         except Exception as e:
-            print(f"Error generating explanation: {e}")
+            logger.error("Error generating explanation: %s", e, exc_info=True)
             return None
 
     def _validate_single_question_with_explanation(self, question: Question, explanation: Dict) -> Dict:

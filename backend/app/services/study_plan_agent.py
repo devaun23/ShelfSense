@@ -13,6 +13,10 @@ The agent creates actionable, time-bound study plans that maximize
 learning efficiency while preventing burnout.
 """
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 import json
 from typing import Dict, List, Optional, Tuple
@@ -832,7 +836,7 @@ Return JSON array:
                 return []
 
         except Exception as e:
-            print(f"Error generating AI recommendations: {e}")
+            logger.error("Error generating AI recommendations: %s", e, exc_info=True)
             return self._get_default_recommendations(context)
 
     def _get_default_recommendations(self, context: Dict) -> List[Dict]:

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useUser } from '@/contexts/UserContext';
 
 interface QuestionItem {
@@ -37,6 +37,45 @@ interface QuestionDetail {
   accuracy: number | null;
 }
 
+interface EditFormData {
+  vignette: string;
+  answer_key: string;
+  choices: Record<string, string>;
+  explanation: string;
+  specialty: string;
+  difficulty_level: string;
+  content_status: string;
+}
+
+const SPECIALTIES = [
+  'Cardiology',
+  'Pulmonology',
+  'Gastroenterology',
+  'Nephrology',
+  'Neurology',
+  'Hematology/Oncology',
+  'Endocrinology',
+  'Rheumatology',
+  'Infectious Disease',
+  'General Internal Medicine',
+  'Psychiatry',
+  'Dermatology',
+  'Emergency Medicine',
+  'Pediatrics',
+  'OB/GYN',
+  'Surgery',
+  'Orthopedics',
+  'Urology',
+  'Ophthalmology',
+  'ENT',
+  'Preventive Medicine',
+  'Biostatistics/Epidemiology',
+  'Ethics',
+  'Pharmacology',
+];
+
+const DIFFICULTY_LEVELS = ['easy', 'medium', 'hard'];
+
 export default function AdminContentPage() {
   const { getAccessToken } = useUser();
   const [questions, setQuestions] = useState<QuestionItem[]>([]);
@@ -49,6 +88,11 @@ export default function AdminContentPage() {
   const [selectedQuestion, setSelectedQuestion] = useState<QuestionDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
+
+  // Edit modal state
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editForm, setEditForm] = useState<EditFormData | null>(null);
+  const [editSaving, setEditSaving] = useState(false);
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
   const perPage = 20;
@@ -153,6 +197,94 @@ export default function AdminContentPage() {
     } finally {
       setActionLoading(false);
     }
+  };
+
+  // Open edit modal
+  const openEditModal = useCallback(() => {
+    if (!selectedQuestion) return;
+
+    // Parse explanation - it might be a string or object
+    let explanationText = '';
+    if (selectedQuestion.explanation) {
+      if (typeof selectedQuestion.explanation === 'string') {
+        explanationText = selectedQuestion.explanation;
+      } else if (typeof selectedQuestion.explanation === 'object') {
+        explanationText = selectedQuestion.explanation.text ||
+                         selectedQuestion.explanation.main ||
+                         JSON.stringify(selectedQuestion.explanation, null, 2);
+      }
+    }
+
+    setEditForm({
+      vignette: selectedQuestion.vignette || '',
+      answer_key: selectedQuestion.answer_key || 'A',
+      choices: selectedQuestion.choices || { A: '', B: '', C: '', D: '', E: '' },
+      explanation: explanationText,
+      specialty: selectedQuestion.specialty || '',
+      difficulty_level: selectedQuestion.difficulty_level || 'medium',
+      content_status: selectedQuestion.content_status || 'draft',
+    });
+    setIsEditModalOpen(true);
+  }, [selectedQuestion]);
+
+  // Save edited question
+  const saveQuestion = async () => {
+    if (!selectedQuestion || !editForm) return;
+
+    try {
+      setEditSaving(true);
+      const token = await getAccessToken();
+
+      // Prepare explanation as object if it was originally an object
+      let explanationPayload: any = editForm.explanation;
+      if (selectedQuestion.explanation && typeof selectedQuestion.explanation === 'object') {
+        explanationPayload = {
+          ...selectedQuestion.explanation,
+          text: editForm.explanation,
+          main: editForm.explanation,
+        };
+      }
+
+      const response = await fetch(`${apiUrl}/api/admin/questions/${selectedQuestion.id}`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          vignette: editForm.vignette,
+          answer_key: editForm.answer_key,
+          choices: editForm.choices,
+          explanation: explanationPayload,
+          specialty: editForm.specialty || null,
+          difficulty_level: editForm.difficulty_level || null,
+          content_status: editForm.content_status,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || 'Failed to save question');
+      }
+
+      // Refresh the question detail and list
+      await viewQuestion(selectedQuestion.id);
+      await fetchQuestions();
+      setIsEditModalOpen(false);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setEditSaving(false);
+    }
+  };
+
+  // Update choice
+  const updateChoice = (key: string, value: string) => {
+    if (!editForm) return;
+    setEditForm({
+      ...editForm,
+      choices: { ...editForm.choices, [key]: value },
+    });
   };
 
   const totalPages = Math.ceil(total / perPage);
@@ -311,6 +443,13 @@ export default function AdminContentPage() {
                     <option value="archived">Archived</option>
                   </select>
                   <button
+                    onClick={openEditModal}
+                    disabled={actionLoading}
+                    className="text-xs px-2 py-1 bg-[#4169E1]/30 text-[#4169E1] rounded hover:bg-[#4169E1]/50"
+                  >
+                    Edit
+                  </button>
+                  <button
                     onClick={() => deleteQuestion(selectedQuestion.id)}
                     disabled={actionLoading}
                     className="text-xs px-2 py-1 bg-red-900/30 text-red-400 rounded hover:bg-red-900/50"
@@ -399,6 +538,150 @@ export default function AdminContentPage() {
           </div>
         </div>
       </div>
+
+      {/* Edit Modal */}
+      {isEditModalOpen && editForm && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-900 rounded-lg border border-gray-800 w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+            {/* Modal Header */}
+            <div className="p-4 border-b border-gray-800 flex items-center justify-between">
+              <h2 className="text-lg font-medium text-white">Edit Question</h2>
+              <button
+                onClick={() => setIsEditModalOpen(false)}
+                className="text-gray-400 hover:text-white"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              {/* Vignette */}
+              <div>
+                <label className="block text-sm text-gray-400 mb-1">Vignette / Question Stem</label>
+                <textarea
+                  value={editForm.vignette}
+                  onChange={(e) => setEditForm({ ...editForm, vignette: e.target.value })}
+                  rows={6}
+                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:border-[#4169E1] resize-y"
+                  placeholder="Enter the clinical vignette..."
+                />
+              </div>
+
+              {/* Choices */}
+              <div>
+                <label className="block text-sm text-gray-400 mb-2">Answer Choices</label>
+                <div className="space-y-2">
+                  {['A', 'B', 'C', 'D', 'E'].map((key) => (
+                    <div key={key} className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setEditForm({ ...editForm, answer_key: key })}
+                        className={`w-8 h-8 rounded flex items-center justify-center text-sm font-medium transition-colors ${
+                          editForm.answer_key === key
+                            ? 'bg-green-600 text-white'
+                            : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+                        }`}
+                        title={editForm.answer_key === key ? 'Correct answer' : 'Click to set as correct'}
+                      >
+                        {key}
+                      </button>
+                      <input
+                        type="text"
+                        value={editForm.choices[key] || ''}
+                        onChange={(e) => updateChoice(key, e.target.value)}
+                        className="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:border-[#4169E1]"
+                        placeholder={`Choice ${key}...`}
+                      />
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs text-gray-500 mt-1">Click a letter to set it as the correct answer (green = correct)</p>
+              </div>
+
+              {/* Explanation */}
+              <div>
+                <label className="block text-sm text-gray-400 mb-1">Explanation</label>
+                <textarea
+                  value={editForm.explanation}
+                  onChange={(e) => setEditForm({ ...editForm, explanation: e.target.value })}
+                  rows={4}
+                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:border-[#4169E1] resize-y"
+                  placeholder="Enter the explanation for the correct answer..."
+                />
+              </div>
+
+              {/* Metadata Row */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* Specialty */}
+                <div>
+                  <label className="block text-sm text-gray-400 mb-1">Specialty</label>
+                  <select
+                    value={editForm.specialty}
+                    onChange={(e) => setEditForm({ ...editForm, specialty: e.target.value })}
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:border-[#4169E1]"
+                  >
+                    <option value="">Select specialty...</option>
+                    {SPECIALTIES.map((s) => (
+                      <option key={s} value={s}>{s}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Difficulty */}
+                <div>
+                  <label className="block text-sm text-gray-400 mb-1">Difficulty</label>
+                  <select
+                    value={editForm.difficulty_level}
+                    onChange={(e) => setEditForm({ ...editForm, difficulty_level: e.target.value })}
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:border-[#4169E1]"
+                  >
+                    {DIFFICULTY_LEVELS.map((d) => (
+                      <option key={d} value={d}>{d.charAt(0).toUpperCase() + d.slice(1)}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Status */}
+                <div>
+                  <label className="block text-sm text-gray-400 mb-1">Status</label>
+                  <select
+                    value={editForm.content_status}
+                    onChange={(e) => setEditForm({ ...editForm, content_status: e.target.value })}
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:border-[#4169E1]"
+                  >
+                    <option value="draft">Draft</option>
+                    <option value="active">Active</option>
+                    <option value="archived">Archived</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-4 border-t border-gray-800 flex items-center justify-end gap-3">
+              <button
+                onClick={() => setIsEditModalOpen(false)}
+                className="px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={saveQuestion}
+                disabled={editSaving}
+                className="px-4 py-2 text-sm bg-[#4169E1] text-white rounded-lg hover:bg-[#4169E1]/80 disabled:opacity-50 flex items-center gap-2"
+              >
+                {editSaving && (
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                )}
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

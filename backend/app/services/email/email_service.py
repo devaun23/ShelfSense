@@ -107,6 +107,101 @@ class EmailService:
             html_content=html_content
         )
 
+    async def send_password_reset_email(
+        self,
+        db: Session,
+        user: User,
+        reset_token: str,
+        expire_hours: int = 1
+    ) -> bool:
+        """
+        Send password reset email with reset link.
+        Returns True if sent successfully.
+        """
+        if not user.email:
+            logger.warning(f"User {user.id} has no email address")
+            return False
+
+        # Generate unsubscribe token
+        unsub_token = self._generate_unsubscribe_token(db, user.id, None)
+        unsubscribe_url = self._get_unsubscribe_url(unsub_token)
+
+        # Build reset URL
+        reset_url = f"{self.frontend_url}/reset-password?token={reset_token}"
+
+        # Render template
+        context = {
+            "first_name": user.first_name or "there",
+            "reset_url": reset_url,
+            "expire_hours": expire_hours,
+            "unsubscribe_url": unsubscribe_url
+        }
+        html_content = render_template("password_reset.html", context)
+
+        subject = "Reset your ShelfSense password"
+
+        return await self._send_and_log(
+            db=db,
+            user_id=user.id,
+            email_type="password_reset",
+            to_email=user.email,
+            subject=subject,
+            html_content=html_content
+        )
+
+    async def send_subscription_confirmation(
+        self,
+        db: Session,
+        user: User,
+        tier: str,
+        billing_cycle: str,
+        next_billing_date: Optional[str] = None
+    ) -> bool:
+        """
+        Send subscription confirmation email after successful payment.
+        Returns True if sent successfully.
+        """
+        if not user.email:
+            logger.warning(f"User {user.id} has no email address")
+            return False
+
+        # Generate unsubscribe token
+        unsub_token = self._generate_unsubscribe_token(db, user.id, None)
+        unsubscribe_url = self._get_unsubscribe_url(unsub_token)
+
+        # Format tier name for display
+        tier_names = {
+            "student": "Student Plan",
+            "premium": "Premium Plan",
+        }
+        tier_name = tier_names.get(tier, tier.title())
+
+        # Format billing cycle
+        billing_display = "Monthly" if billing_cycle == "monthly" else "Yearly"
+
+        # Render template
+        context = {
+            "first_name": user.first_name or "there",
+            "tier_name": tier_name,
+            "billing_cycle": billing_display,
+            "next_billing_date": next_billing_date,
+            "dashboard_url": f"{self.frontend_url}/dashboard",
+            "settings_url": f"{self.frontend_url}/settings",
+            "unsubscribe_url": unsubscribe_url
+        }
+        html_content = render_template("subscription_confirmation.html", context)
+
+        subject = f"Welcome to ShelfSense {tier_name}!"
+
+        return await self._send_and_log(
+            db=db,
+            user_id=user.id,
+            email_type="subscription",
+            to_email=user.email,
+            subject=subject,
+            html_content=html_content
+        )
+
     async def send_review_reminder(
         self,
         db: Session,

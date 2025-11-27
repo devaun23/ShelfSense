@@ -288,7 +288,7 @@ export default function AIChat({ questionId, userId, isCorrect, userAnswer }: AI
           </span>
         </div>
         <svg
-          className={`w-4 h-4 text-gray-600 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+          className={`w-4 h-4 text-gray-600 motion-safe:transition-transform motion-safe:duration-200 ${isExpanded ? 'rotate-180' : ''}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -299,8 +299,12 @@ export default function AIChat({ questionId, userId, isCorrect, userAnswer }: AI
       </button>
 
       {/* Chat Interface */}
-      {isExpanded && (
-        <div id="ai-chat-panel" className="border-t border-gray-800" ref={chatContainerRef}>
+      <div
+        id="ai-chat-panel"
+        className={`motion-safe:transition-all motion-safe:duration-200 ease-out overflow-hidden ${isExpanded ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'}`}
+        ref={chatContainerRef}
+      >
+        <div className="border-t border-gray-800">
           {/* Messages */}
           <div
             className="max-h-96 overflow-y-auto p-4 space-y-3"
@@ -315,7 +319,7 @@ export default function AIChat({ questionId, userId, isCorrect, userAnswer }: AI
             )}
             {messages.map((msg, idx) => (
               <div
-                key={`${msg.role}-${idx}`}
+                key={`${msg.role}-${idx}-${msg.content.slice(0, 20)}`}
                 className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
@@ -421,7 +425,7 @@ export default function AIChat({ questionId, userId, isCorrect, userAnswer }: AI
             </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }

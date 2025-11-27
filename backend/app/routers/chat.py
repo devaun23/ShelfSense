@@ -2,29 +2,37 @@
 AI Chat Router
 
 Provides endpoints for chatting with AI about specific questions.
-Includes streaming support for real-time responses.
+Uses clinical reasoning frameworks for Socratic-method tutoring.
 """
 
-import os
-import json
-import logging
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel
 from datetime import datetime
-from openai import OpenAI
-
-from app.database import get_db
-from app.models.models import Question, ChatMessage, QuestionAttempt
+import logging
+import json
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/api/chat", tags=["chat"])
+from app.database import get_db
+from app.models.models import Question, ChatMessage, ErrorAnalysis, QuestionAttempt
+from app.services.clinical_reasoning import (
+    build_reasoning_coach_prompt,
+    get_framework_for_error,
+    generate_socratic_prompt,
+    ReasoningFramework
+)
+from app.services.multi_turn_reasoning import (
+    build_multi_turn_prompt,
+    get_reasoning_state_summary,
+    detect_reasoning_stage,
+    assess_progress
+)
+from app.services.openai_service import openai_service, CircuitBreakerOpenError
 
-# Initialize OpenAI client
-client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+router = APIRouter(prefix="/api/chat", tags=["chat"])
 
 
 class ChatRequest(BaseModel):
@@ -35,56 +43,22 @@ class ChatRequest(BaseModel):
     is_correct: bool | None = None
 
 
+class ReasoningState(BaseModel):
+    stage: str
+    progress: str
+    turn: int
+    stages_completed: int
+    total_stages: int
+
+
 class ChatResponse(BaseModel):
     response: str
     created_at: datetime
+    reasoning_state: Optional[ReasoningState] = None
 
 
 class ChatHistoryResponse(BaseModel):
     messages: List[dict]
-
-
-def build_chat_context(question, user_answer: str, is_correct: bool):
-    """Build the system prompt with full question context."""
-    # Format explanation
-    explanation_text = ""
-    if isinstance(question.explanation, dict):
-        exp = question.explanation
-        explanation_text = f"""
-Principle: {exp.get('principle', 'N/A')}
-
-Clinical Reasoning: {exp.get('clinical_reasoning', 'N/A')}
-
-Correct Answer Explanation: {exp.get('correct_answer_explanation', 'N/A')}
-"""
-    elif isinstance(question.explanation, str):
-        explanation_text = question.explanation
-
-    return f"""You are a concise USMLE Step 2 CK tutor helping a student understand this question.
-
-Question: {question.vignette}
-
-Answer Choices:
-{chr(10).join([f"{chr(65+i)}. {choice}" for i, choice in enumerate(question.choices)])}
-
-Correct Answer: {question.answer_key}
-Student's Answer: {user_answer} ({'correct' if is_correct else 'incorrect'})
-
-Explanation:
-{explanation_text}
-
-CRITICAL INSTRUCTIONS:
-- Be EXTREMELY concise - max 2-3 sentences per answer
-- Use bullet points for lists
-- Get straight to the point - no fluff
-- Use medical shorthand when appropriate (e.g., "pt" for patient, "dx" for diagnosis)
-- If they ask a simple question, give a simple answer (1 sentence is often enough)
-- Only elaborate if they explicitly ask for more detail
-- Use arrows (→) to show clinical reasoning flow
-- Examples:
-  * "Why not C?" → "C treats X, but pt has Y → needs Z instead"
-  * "What's the mechanism?" → "Drug blocks receptor → decreases BP → improves outcome"
-"""
 
 
 @router.post("/question", response_model=ChatResponse)
@@ -92,12 +66,16 @@ def chat_about_question(request: ChatRequest, db: Session = Depends(get_db)):
     """
     Chat with AI about a specific question.
 
+    Uses clinical reasoning frameworks for Socratic-method tutoring when
+    the student answered incorrectly and error analysis exists.
+
     Context includes:
     - Question vignette
     - All answer choices
     - Correct answer
     - User's answer (if available)
     - Framework explanation
+    - Clinical reasoning framework (if error analysis exists)
     """
     # Get question
     question = db.query(Question).filter(Question.id == request.question_id).first()
@@ -120,8 +98,78 @@ def chat_about_question(request: ChatRequest, db: Session = Depends(get_db)):
     user_answer = last_attempt.user_answer if last_attempt else "Not yet answered"
     is_correct = last_attempt.is_correct if last_attempt else False
 
-    # Build system prompt with full context
-    system_prompt = build_chat_context(question, user_answer, is_correct)
+    # Check for error analysis (only exists for incorrect answers)
+    error_analysis = None
+    error_type = None
+    if last_attempt and not is_correct:
+        error_analysis = db.query(ErrorAnalysis).filter_by(
+            attempt_id=last_attempt.id
+        ).first()
+        if error_analysis:
+            error_type = error_analysis.error_type
+
+    # Count conversation exchanges for progressive coaching
+    conversation_depth = len([m for m in history if m.role == "user"])
+
+    # Format explanation
+    explanation_text = ""
+    if isinstance(question.explanation, dict):
+        exp = question.explanation
+        explanation_text = f"""
+Principle: {exp.get('principle', 'N/A')}
+
+Clinical Reasoning: {exp.get('clinical_reasoning', 'N/A')}
+
+Correct Answer Explanation: {exp.get('correct_answer_explanation', 'N/A')}
+"""
+    elif isinstance(question.explanation, str):
+        explanation_text = question.explanation
+
+    # Build conversation history for multi-turn reasoning
+    history_dicts = [
+        {"role": msg.role, "message": msg.message}
+        for msg in history
+    ]
+
+    # Build system prompt - use multi-turn reasoning for deeper conversations
+    if error_type and not is_correct and conversation_depth >= 1:
+        # Use multi-turn reasoning for ongoing conversations
+        system_prompt = build_multi_turn_prompt(
+            question_text=question.vignette,
+            user_answer=user_answer,
+            correct_answer=question.answer_key,
+            error_type=error_type,
+            history=history_dicts,
+            current_message=request.message
+        )
+    elif error_type and not is_correct:
+        # Use framework-enhanced Socratic coaching for first incorrect answer
+        system_prompt = build_reasoning_coach_prompt(
+            error_type=error_type,
+            question_text=question.vignette,
+            user_answer=user_answer,
+            correct_answer=question.answer_key,
+            explanation=question.explanation if isinstance(question.explanation, dict) else None
+        )
+    else:
+        # Standard tutoring prompt for correct answers or no error analysis
+        system_prompt = f"""You are a USMLE Step 2 CK tutor. Be EXTREMELY CONCISE.
+
+Question: {question.vignette}
+
+Choices: {', '.join([f"{chr(65+i)}. {choice}" for i, choice in enumerate(question.choices)])}
+
+Correct: {question.answer_key}
+Student chose: {user_answer} ({'✓' if is_correct else '✗'})
+
+{explanation_text}
+
+RULES:
+- 50-80 words max, NEVER exceed 100 words
+- ONE key point per response
+- End with ONE Socratic question
+- No fluff, no praise, just clarity
+"""
 
     # Build messages array with history
     messages = [{"role": "system", "content": system_prompt}]
@@ -140,11 +188,11 @@ def chat_about_question(request: ChatRequest, db: Session = Depends(get_db)):
     })
 
     try:
-        # Call OpenAI with increased token limit for fuller responses
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
+        # Call OpenAI with circuit breaker protection
+        response = openai_service.chat_completion(
             messages=messages,
-            max_tokens=500,  # Increased for fuller responses
+            model="gpt-4o-mini",
+            max_tokens=500,  # Allows fuller responses (~350 words max)
             temperature=0.7
         )
 
@@ -172,14 +220,55 @@ def chat_about_question(request: ChatRequest, db: Session = Depends(get_db)):
 
         db.commit()
 
+        # Get reasoning state if in multi-turn mode
+        reasoning_state = None
+        if error_type and not is_correct:
+            state_summary = get_reasoning_state_summary(
+                history=history_dicts,
+                current_message=request.message,
+                error_type=error_type
+            )
+            reasoning_state = ReasoningState(**state_summary)
+
         return ChatResponse(
             response=ai_message,
-            created_at=ai_msg.created_at
+            created_at=ai_msg.created_at,
+            reasoning_state=reasoning_state
+        )
+
+    except CircuitBreakerOpenError:
+        # Circuit breaker is open - return a helpful fallback message
+        ai_message = "I'm temporarily unable to respond due to high demand. Please try again in a moment, or review the explanation above."
+
+        # Still save the conversation
+        user_msg = ChatMessage(
+            user_id=request.user_id,
+            question_id=request.question_id,
+            message=request.message,
+            role="user",
+            created_at=datetime.utcnow()
+        )
+        db.add(user_msg)
+
+        ai_msg = ChatMessage(
+            user_id=request.user_id,
+            question_id=request.question_id,
+            message=ai_message,
+            role="assistant",
+            created_at=datetime.utcnow()
+        )
+        db.add(ai_msg)
+        db.commit()
+
+        return ChatResponse(
+            response=ai_message,
+            created_at=ai_msg.created_at,
+            reasoning_state=None
         )
 
     except Exception as e:
         logger.error("Chat error: %s", e, exc_info=True)
-        raise HTTPException(status_code=500, detail="Failed to generate response")
+        raise HTTPException(status_code=503, detail="AI service temporarily unavailable")
 
 
 @router.post("/question/stream")
@@ -211,8 +300,75 @@ async def chat_about_question_stream(request: ChatRequest, db: Session = Depends
     user_answer = last_attempt.user_answer if last_attempt else "Not yet answered"
     is_correct = last_attempt.is_correct if last_attempt else False
 
-    # Build system prompt with full context
-    system_prompt = build_chat_context(question, user_answer, is_correct)
+    # Check for error analysis (only exists for incorrect answers)
+    error_analysis = None
+    error_type = None
+    if last_attempt and not is_correct:
+        error_analysis = db.query(ErrorAnalysis).filter_by(
+            attempt_id=last_attempt.id
+        ).first()
+        if error_analysis:
+            error_type = error_analysis.error_type
+
+    # Count conversation exchanges for progressive coaching
+    conversation_depth = len([m for m in history if m.role == "user"])
+
+    # Format explanation
+    explanation_text = ""
+    if isinstance(question.explanation, dict):
+        exp = question.explanation
+        explanation_text = f"""
+Principle: {exp.get('principle', 'N/A')}
+
+Clinical Reasoning: {exp.get('clinical_reasoning', 'N/A')}
+
+Correct Answer Explanation: {exp.get('correct_answer_explanation', 'N/A')}
+"""
+    elif isinstance(question.explanation, str):
+        explanation_text = question.explanation
+
+    # Build conversation history for multi-turn reasoning
+    history_dicts = [
+        {"role": msg.role, "message": msg.message}
+        for msg in history
+    ]
+
+    # Build system prompt - use multi-turn reasoning for deeper conversations
+    if error_type and not is_correct and conversation_depth >= 1:
+        system_prompt = build_multi_turn_prompt(
+            question_text=question.vignette,
+            user_answer=user_answer,
+            correct_answer=question.answer_key,
+            error_type=error_type,
+            history=history_dicts,
+            current_message=request.message
+        )
+    elif error_type and not is_correct:
+        system_prompt = build_reasoning_coach_prompt(
+            error_type=error_type,
+            question_text=question.vignette,
+            user_answer=user_answer,
+            correct_answer=question.answer_key,
+            explanation=question.explanation if isinstance(question.explanation, dict) else None
+        )
+    else:
+        system_prompt = f"""You are a USMLE Step 2 CK tutor. Be EXTREMELY CONCISE.
+
+Question: {question.vignette}
+
+Choices: {', '.join([f"{chr(65+i)}. {choice}" for i, choice in enumerate(question.choices)])}
+
+Correct: {question.answer_key}
+Student chose: {user_answer} ({'correct' if is_correct else 'incorrect'})
+
+{explanation_text}
+
+RULES:
+- 50-80 words max, NEVER exceed 100 words
+- ONE key point per response
+- End with ONE Socratic question
+- No fluff, no praise, just clarity
+"""
 
     # Build messages array with history
     messages = [{"role": "system", "content": system_prompt}]
@@ -244,21 +400,15 @@ async def chat_about_question_stream(request: ChatRequest, db: Session = Depends
         full_response = []
 
         try:
-            # Create streaming request
-            stream = client.chat.completions.create(
-                model="gpt-4o-mini",
+            async for chunk in openai_service.chat_completion_stream(
                 messages=messages,
+                model="gpt-4o-mini",
                 max_tokens=500,
-                temperature=0.7,
-                stream=True
-            )
-
-            for chunk in stream:
-                if chunk.choices and chunk.choices[0].delta.content:
-                    content = chunk.choices[0].delta.content
-                    full_response.append(content)
-                    # SSE format: data: {json}\n\n
-                    yield f"data: {json.dumps({'content': content})}\n\n"
+                temperature=0.7
+            ):
+                full_response.append(chunk)
+                # SSE format: data: {json}\n\n
+                yield f"data: {json.dumps({'content': chunk})}\n\n"
 
             # Send done signal
             yield f"data: {json.dumps({'done': True})}\n\n"
@@ -269,6 +419,22 @@ async def chat_about_question_stream(request: ChatRequest, db: Session = Depends
                 user_id=request.user_id,
                 question_id=request.question_id,
                 message=ai_message,
+                role="assistant",
+                created_at=datetime.utcnow()
+            )
+            db.add(ai_msg)
+            db.commit()
+
+        except CircuitBreakerOpenError:
+            # Send error in SSE format
+            error_msg = "I'm temporarily unable to respond due to high demand. Please try again in a moment."
+            yield f"data: {json.dumps({'error': error_msg})}\n\n"
+
+            # Save fallback message
+            ai_msg = ChatMessage(
+                user_id=request.user_id,
+                question_id=request.question_id,
+                message=error_msg,
                 role="assistant",
                 created_at=datetime.utcnow()
             )

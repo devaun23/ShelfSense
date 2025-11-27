@@ -6,10 +6,10 @@ Generates novel USMLE Step 2 CK questions using OpenAI
 import os
 import json
 import random
-import time
+import logging
 from typing import Optional, Dict, List
-from openai import OpenAI
-from openai import APIError, RateLimitError, APIConnectionError
+
+logger = logging.getLogger(__name__)
 from sqlalchemy.orm import Session
 from app.models.models import Question
 from app.models.models import generate_uuid
@@ -21,14 +21,9 @@ from app.services.step2ck_content_outline import (
     COMMON_DISTRACTORS
 )
 from app.services.nbme_gold_book_principles import get_generation_principles
-
-# Initialize OpenAI client
-client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
-
-# Retry configuration
-MAX_RETRIES = 3
-INITIAL_RETRY_DELAY = 1.0  # seconds
-MAX_RETRY_DELAY = 10.0  # seconds
+from app.services.openai_service import openai_service, CircuitBreakerOpenError
+from app.services.cache_service import question_cache
+from sqlalchemy import func
 
 SPECIALTIES = [
     "Internal Medicine",
@@ -40,62 +35,6 @@ SPECIALTIES = [
     "Emergency Medicine",
     "Preventive Medicine"
 ]
-
-
-def retry_with_exponential_backoff(
-    func,
-    max_retries: int = MAX_RETRIES,
-    initial_delay: float = INITIAL_RETRY_DELAY,
-    max_delay: float = MAX_RETRY_DELAY
-):
-    """
-    Retry a function with exponential backoff
-
-    Args:
-        func: Function to retry
-        max_retries: Maximum number of retry attempts
-        initial_delay: Initial delay in seconds
-        max_delay: Maximum delay between retries
-
-    Returns:
-        Function result if successful
-
-    Raises:
-        Exception: Last exception if all retries fail
-    """
-    def wrapper(*args, **kwargs):
-        delay = initial_delay
-        last_exception = None
-
-        for attempt in range(max_retries + 1):
-            try:
-                return func(*args, **kwargs)
-            except (RateLimitError, APIConnectionError, APIError) as e:
-                last_exception = e
-
-                if attempt == max_retries:
-                    # Last attempt failed, raise the exception
-                    print(f"All {max_retries} retry attempts failed")
-                    raise
-
-                # Calculate delay with exponential backoff
-                delay = min(delay * 2, max_delay)
-
-                print(f"API call failed (attempt {attempt + 1}/{max_retries + 1}): {str(e)}")
-                print(f"Retrying in {delay:.1f} seconds...")
-
-                time.sleep(delay)
-
-            except Exception as e:
-                # Non-retryable exception (e.g., validation error)
-                print(f"Non-retryable error: {str(e)}")
-                raise
-
-        # Should never reach here, but just in case
-        if last_exception:
-            raise last_exception
-
-    return wrapper
 
 
 def get_training_statistics(db: Session, specialty: Optional[str] = None) -> Dict:
@@ -169,7 +108,60 @@ def get_example_questions(db: Session, specialty: Optional[str] = None, limit: i
     } for q in examples[:limit]]
 
 
-def generate_question(db: Session, specialty: Optional[str] = None, topic: Optional[str] = None) -> Dict:
+def get_fallback_question(db: Session, specialty: Optional[str] = None) -> Optional[Dict]:
+    """
+    Get a random question from the database when OpenAI is unavailable.
+    Used for graceful degradation when circuit breaker is open.
+
+    Args:
+        db: Database session
+        specialty: Optional specialty filter
+
+    Returns:
+        Dictionary containing question data, or None if no questions available
+    """
+    # Prefer non-AI-generated questions for fallback
+    query = db.query(Question).filter(
+        ~Question.source.like('%AI Generated%')
+    )
+
+    if specialty:
+        query = query.filter(Question.source.like(f"%{specialty}%"))
+
+    # Get random question
+    question = query.order_by(func.random()).first()
+
+    if not question:
+        # Fallback to any question if specialty filter returns nothing
+        question = db.query(Question).filter(
+            ~Question.source.like('%AI Generated%')
+        ).order_by(func.random()).first()
+
+    if not question:
+        return None
+
+    return {
+        "vignette": question.vignette,
+        "choices": question.choices,
+        "answer_key": question.answer_key,
+        "explanation": question.explanation,
+        "source": f"{question.source} (Fallback)",
+        "specialty": specialty or "General",
+        "recency_weight": question.recency_weight,
+        "metadata": {
+            "fallback": True,
+            "original_id": question.id,
+            "reason": "circuit_breaker_open"
+        }
+    }
+
+
+def generate_question(
+    db: Session,
+    specialty: Optional[str] = None,
+    topic: Optional[str] = None,
+    use_cache: bool = True
+) -> Dict:
     """
     Generate a novel USMLE Step 2 CK question using OpenAI
     Follows official USMLE content distribution and targets high-yield topics
@@ -178,9 +170,14 @@ def generate_question(db: Session, specialty: Optional[str] = None, topic: Optio
         db: Database session
         specialty: Medical specialty (if None, weighted by USMLE distribution)
         topic: Specific topic within specialty (if None, selects high-yield topic)
+        use_cache: Whether to check/use cache (default: True)
 
     Returns:
         Dictionary containing generated question data
+
+    Raises:
+        CircuitBreakerOpenError: If OpenAI is unavailable (circuit breaker open)
+        ValueError: If response validation fails
     """
 
     # Use USMLE-weighted specialty selection
@@ -190,6 +187,16 @@ def generate_question(db: Session, specialty: Optional[str] = None, topic: Optio
     # Select high-yield topic if not provided
     if not topic:
         topic = get_high_yield_topic(specialty)
+
+    # Check cache first for faster response (target: <3s)
+    if use_cache:
+        cached = question_cache.get_cached_question(specialty, topic)
+        if cached:
+            # Add cache metadata and return
+            cached["metadata"] = cached.get("metadata", {})
+            cached["metadata"]["from_cache"] = True
+            logger.info("Cache HIT for specialty=%s", specialty)
+            return cached
 
     # Select question type based on NBME distribution
     question_type = get_question_type()
@@ -294,43 +301,64 @@ Return ONLY valid JSON (no additional text):
   "choices": ["Specific management/diagnosis A", "Specific management/diagnosis B", "Specific management/diagnosis C", "Specific management/diagnosis D", "Specific management/diagnosis E"],
   "answer_key": "B",
   "explanation": {{
+    "type": "One of: TYPE_A_STABILITY (patient stability assessment), TYPE_B_TIME (time-sensitive decisions), TYPE_C_DIAGNOSTIC (diagnostic workup sequence), TYPE_D_RISK (risk stratification), TYPE_E_TREATMENT (treatment selection/hierarchy), TYPE_F_DIFFERENTIAL (differential diagnosis)",
+    "quick_answer": "A 1-2 sentence direct answer explaining why the correct choice is right. This is the first thing students see - make it clear and memorable.",
     "principle": "State the core medical principle concisely using clinical language",
     "clinical_reasoning": "Use structured format with arrows (→) to show diagnostic/therapeutic pathway. Example: 'History + exam → provisional diagnosis → confirm with test → treatment'. Keep it clear and flowing with logical progression.",
-    "correct_answer_explanation": "Explain why this is correct using clear clinical logic. Use arrow notation (→) to show cause-effect or step-progression when relevant. Example: 'Risk factors → pathophysiology → clinical presentation → indicated management'",
+    "correct_answer_explanation": "Explain why this is correct using clear clinical logic. Use arrow notation (→) to show cause-effect or step-progression when relevant.",
     "distractor_explanations": {{
-      "A": "Concise reason why wrong. Use arrows if showing why pathway leads elsewhere. Example: 'This would be used if patient had X → leading to Y, but patient has Z instead'",
-      "C": "Concise reason why wrong. Focus on key differentiating factor",
-      "D": "Concise reason why wrong. Mention when this would be appropriate instead",
-      "E": "Concise reason why wrong. State the critical difference"
+      "A": "Concise reason why wrong",
+      "B": "Concise reason why wrong (skip if this is the correct answer)",
+      "C": "Concise reason why wrong",
+      "D": "Concise reason why wrong",
+      "E": "Concise reason why wrong"
+    }},
+    "concept": "The main medical concept being tested (e.g., 'Acute Coronary Syndrome Management', 'Diabetic Ketoacidosis')",
+    "educational_objective": "What the student should learn from this question - a clear learning takeaway",
+    "deep_dive": {{
+      "pathophysiology": "Explain the underlying pathophysiology relevant to this case",
+      "differential_comparison": "Compare key differentials and how to distinguish them",
+      "clinical_pearls": ["High-yield clinical pearl 1", "High-yield clinical pearl 2", "High-yield clinical pearl 3"]
+    }},
+    "step_by_step": [
+      {{"step": 1, "action": "First clinical action", "rationale": "Why this step comes first"}},
+      {{"step": 2, "action": "Second clinical action", "rationale": "Why this follows"}},
+      {{"step": 3, "action": "Third clinical action", "rationale": "Final reasoning step"}}
+    ],
+    "memory_hooks": {{
+      "mnemonic": "A helpful mnemonic if applicable (or null)",
+      "analogy": "A relatable analogy to remember this concept (or null)",
+      "clinical_story": null
+    }},
+    "common_traps": [
+      {{
+        "trap": "A common mistake students make",
+        "why_wrong": "Why this thinking is incorrect",
+        "correct_thinking": "The right way to approach it"
+      }}
+    ],
+    "related_topics": ["Related topic 1", "Related topic 2", "Related topic 3"],
+    "difficulty_factors": {{
+      "content_difficulty": "basic OR intermediate OR advanced",
+      "reasoning_complexity": "single_step OR multi_step OR integration",
+      "common_error_rate": 0.3
     }}
   }},
-
-EXPLANATION FORMATTING RULES:
-- Use arrows (→) to show progression, causation, or logical flow
-- Keep each explanation focused and clear without unnecessary words
-- Use line breaks naturally (no bullet points or numbered lists)
-- Example good format: "Patient presents with X → suggesting Y → confirmed by Z → therefore treatment is A"
-- Make explanations educational but concise
-- Use clinical reasoning flow rather than paragraph style
   "specialty": "{specialty}"
 }}"""
 
     try:
-        # Call OpenAI API with retry logic
-        def make_api_call():
-            return client.chat.completions.create(
-                model="gpt-4o",
-                messages=[
-                    {"role": "system", "content": "You are an expert USMLE Step 2 CK question writer. You create exam-quality clinical vignettes that test medical knowledge at the level of a third-year medical student. Generate only valid JSON responses with clinically accurate content following current evidence-based guidelines."},
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=0.7,  # Balanced: creative but consistent
-                max_tokens=1500,
-                response_format={"type": "json_object"}
-            )
-
-        # Wrap with retry logic
-        response = retry_with_exponential_backoff(make_api_call)()
+        # Call OpenAI API with circuit breaker protection
+        response = openai_service.chat_completion(
+            messages=[
+                {"role": "system", "content": "You are an expert USMLE Step 2 CK question writer. You create exam-quality clinical vignettes that test medical knowledge at the level of a third-year medical student. Generate only valid JSON responses with clinically accurate content following current evidence-based guidelines."},
+                {"role": "user", "content": prompt}
+            ],
+            model="gpt-4o",
+            temperature=0.7,  # Balanced: creative but consistent
+            max_tokens=2500,  # Increased for comprehensive explanations
+            response_format={"type": "json_object"}
+        )
 
         # Parse response
         generated_data = json.loads(response.choices[0].message.content)
@@ -359,21 +387,135 @@ EXPLANATION FORMATTING RULES:
         generated_data["specialty"] = specialty
         generated_data["recency_weight"] = 1.0  # AI-generated questions get highest weight
 
+        # Cache the generated question for future requests
+        if use_cache:
+            question_cache.cache_question(generated_data, specialty, topic)
+            logger.info("Cached new question for specialty=%s, topic=%s", specialty, topic)
+
         return generated_data
 
+    except CircuitBreakerOpenError:
+        # Circuit breaker is open - try cache first, then database fallback
+        logger.warning("Circuit breaker open, attempting fallback for specialty=%s", specialty)
+
+        # Try any cached question first
+        cached_fallback = question_cache.get_any_cached_question(specialty)
+        if cached_fallback:
+            cached_fallback["metadata"] = cached_fallback.get("metadata", {})
+            cached_fallback["metadata"]["fallback"] = True
+            cached_fallback["metadata"]["reason"] = "circuit_breaker_open"
+            logger.info("Serving cached fallback question for specialty=%s", specialty)
+            return cached_fallback
+
+        # Then try database
+        fallback = get_fallback_question(db, specialty)
+        if fallback:
+            logger.info("Serving database fallback question for specialty=%s", specialty)
+            return fallback
+
+        # No fallback available, re-raise
+        raise
+
     except Exception as e:
-        print(f"Error generating question: {str(e)}")
+        logger.error("Error generating question: %s", str(e), exc_info=True)
         raise
 
 
+def validate_explanation_quality(explanation: Dict, answer_key: str) -> Dict:
+    """
+    Validate explanation quality and return validation results.
+
+    Checks:
+    - All 5 distractor_explanations are present (A-E)
+    - Correct answer is excluded from distractor_explanations
+    - Arrow notation (→) is used in clinical_reasoning and principle
+    - Threshold patterns with units are present where applicable
+
+    Returns:
+        Dict with 'valid' bool and 'warnings' list
+    """
+    warnings = []
+    all_choices = ["A", "B", "C", "D", "E"]
+    expected_distractors = [c for c in all_choices if c != answer_key]
+
+    # Check distractor_explanations
+    distractor_explanations = explanation.get("distractor_explanations", {})
+
+    if not distractor_explanations:
+        warnings.append("Missing distractor_explanations entirely")
+    else:
+        # Check all 4 wrong answers have explanations
+        for choice in expected_distractors:
+            if choice not in distractor_explanations:
+                warnings.append(f"Missing distractor explanation for choice {choice}")
+            elif not distractor_explanations[choice] or distractor_explanations[choice].strip() == "":
+                warnings.append(f"Empty distractor explanation for choice {choice}")
+
+        # Check correct answer is not in distractors (or has meaningful "correct" indicator)
+        if answer_key in distractor_explanations:
+            distractor_text = distractor_explanations[answer_key].lower()
+            if "correct" not in distractor_text and "right answer" not in distractor_text:
+                warnings.append(f"Correct answer {answer_key} should not have a 'why wrong' distractor explanation")
+
+    # Check arrow notation in clinical_reasoning
+    clinical_reasoning = explanation.get("clinical_reasoning", "")
+    if clinical_reasoning and "→" not in clinical_reasoning:
+        warnings.append("clinical_reasoning missing arrow notation (→) for logical flow")
+
+    # Check principle has clear structure
+    principle = explanation.get("principle", "")
+    if not principle or len(principle) < 10:
+        warnings.append("principle is missing or too short")
+
+    # Check for educational_objective
+    if not explanation.get("educational_objective"):
+        warnings.append("Missing educational_objective")
+
+    # Check deep_dive has required subfields
+    deep_dive = explanation.get("deep_dive", {})
+    if deep_dive:
+        if not deep_dive.get("pathophysiology"):
+            warnings.append("deep_dive missing pathophysiology")
+        if not deep_dive.get("clinical_pearls"):
+            warnings.append("deep_dive missing clinical_pearls")
+    else:
+        warnings.append("Missing deep_dive section")
+
+    # Log warnings for monitoring
+    if warnings:
+        logger.warning(
+            "Explanation quality warnings for answer_key=%s: %s",
+            answer_key,
+            "; ".join(warnings)
+        )
+
+    return {
+        "valid": len(warnings) == 0,
+        "warnings": warnings,
+        "distractor_count": len([c for c in expected_distractors if c in distractor_explanations]),
+        "has_arrow_notation": "→" in clinical_reasoning,
+        "has_deep_dive": bool(deep_dive and deep_dive.get("pathophysiology"))
+    }
+
+
 def save_generated_question(db: Session, question_data: Dict) -> Question:
-    """Save a generated question to the database"""
+    """Save a generated question to the database with validation"""
 
     import json
 
     # Convert explanation dict to JSON string for storage
     explanation_data = question_data.get("explanation")
+
+    # Validate explanation quality before saving
     if isinstance(explanation_data, dict):
+        answer_key = question_data.get("answer_key", "")
+        validation_result = validate_explanation_quality(explanation_data, answer_key)
+
+        # Store validation metadata
+        if "metadata" not in question_data:
+            question_data["metadata"] = {}
+        question_data["metadata"]["explanation_validation"] = validation_result
+
         explanation_json = json.dumps(explanation_data)
     else:
         explanation_json = explanation_data

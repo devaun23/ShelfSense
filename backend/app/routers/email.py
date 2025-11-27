@@ -14,7 +14,8 @@ from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.models.models import EmailLog, UserSettings, UnsubscribeToken
+from app.models.models import EmailLog, UserSettings, UnsubscribeToken, User
+from app.routers.auth import get_admin_user
 
 logger = logging.getLogger(__name__)
 
@@ -158,6 +159,28 @@ async def _disable_email_for_user(db: Session, user_id: str):
         settings.email_notifications = False
         settings.daily_reminder = False
         db.commit()
+
+
+@router.post("/admin/send-digests")
+async def admin_send_digests(
+    admin_user: User = Depends(get_admin_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Admin endpoint to manually trigger weekly digest emails.
+    Useful for testing or re-sending missed digests.
+    """
+    from app.services.email.weekly_digest import send_weekly_digests
+
+    try:
+        sent_count = await send_weekly_digests()
+        return {
+            "status": "success",
+            "digests_sent": sent_count
+        }
+    except Exception as e:
+        logger.error(f"Failed to send digests: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 def _render_unsubscribe_page(success: bool, message: str) -> str:

@@ -9,6 +9,9 @@ Handles Stripe API interactions for payment processing:
 """
 
 import os
+from dotenv import load_dotenv
+load_dotenv()
+
 import stripe
 from datetime import datetime, timedelta
 from typing import Optional, Dict, Any, Tuple
@@ -219,6 +222,7 @@ def handle_checkout_completed(
     """
     Handle successful checkout completion.
     Retrieves the subscription and syncs state.
+    Sends confirmation email to user.
     """
     if session.mode != "subscription":
         return None
@@ -230,7 +234,61 @@ def handle_checkout_completed(
     # Retrieve the full subscription from Stripe
     stripe_subscription = stripe.Subscription.retrieve(subscription_id)
 
-    return sync_subscription_from_stripe(db, stripe_subscription)
+    local_subscription = sync_subscription_from_stripe(db, stripe_subscription)
+
+    # Send confirmation email
+    if local_subscription:
+        _send_subscription_email(db, local_subscription, stripe_subscription)
+
+    return local_subscription
+
+
+def _send_subscription_email(
+    db: Session,
+    subscription: Subscription,
+    stripe_subscription: stripe.Subscription
+) -> None:
+    """
+    Send subscription confirmation email (async task).
+    Called after successful checkout completion.
+    """
+    import asyncio
+    import logging
+
+    logger = logging.getLogger(__name__)
+
+    try:
+        # Get the user
+        user = db.query(User).filter(User.id == subscription.user_id).first()
+        if not user or not user.email:
+            logger.warning(f"Cannot send subscription email: user {subscription.user_id} not found or no email")
+            return
+
+        # Format next billing date
+        next_billing_date = None
+        if stripe_subscription.current_period_end:
+            next_billing_date = datetime.fromtimestamp(
+                stripe_subscription.current_period_end
+            ).strftime("%B %d, %Y")
+
+        # Send email asynchronously
+        from app.services.email.email_service import get_email_service
+        email_service = get_email_service()
+
+        # Create and run the async task
+        asyncio.create_task(
+            email_service.send_subscription_confirmation(
+                db=db,
+                user=user,
+                tier=subscription.tier,
+                billing_cycle=subscription.billing_cycle or "monthly",
+                next_billing_date=next_billing_date
+            )
+        )
+        logger.info(f"Subscription confirmation email queued for user {user.id}")
+
+    except Exception as e:
+        logger.error(f"Failed to queue subscription email: {e}")
 
 
 def handle_subscription_deleted(

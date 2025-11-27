@@ -1,264 +1,342 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useRef, useCallback } from 'react';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useUser } from '@/contexts/UserContext';
+import { UserButton } from '@clerk/nextjs';
+import ShelfSenseLogo from '@/components/icons/ShelfSenseLogo';
 
 interface SidebarProps {
   isOpen: boolean;
   onToggle: () => void;
-  isHomePage?: boolean;
 }
 
-const clerkships = [
-  { name: 'Internal Medicine', available: true },
-  { name: 'Surgery', available: false },
-  { name: 'Pediatrics', available: false },
-  { name: 'Obstetrics & Gynecology', available: false },
-  { name: 'Family Medicine', available: false },
-  { name: 'Emergency Medicine', available: false },
-  { name: 'Neurology', available: false },
-  { name: 'Psychiatry', available: false },
+// Simple specialty list - no colors, no emojis
+const SHELF_EXAMS = [
+  { id: 'im', name: 'Internal Medicine', apiName: 'Internal Medicine' },
+  { id: 'surgery', name: 'Surgery', apiName: 'Surgery' },
+  { id: 'peds', name: 'Pediatrics', apiName: 'Pediatrics' },
+  { id: 'psych', name: 'Psychiatry', apiName: 'Psychiatry' },
+  { id: 'obgyn', name: 'OBGYN', apiName: 'Obstetrics and Gynecology' },
+  { id: 'fm', name: 'Family Medicine', apiName: 'Family Medicine' },
+  { id: 'em', name: 'Emergency Medicine', apiName: 'Emergency Medicine' },
+  { id: 'neuro', name: 'Neurology', apiName: 'Neurology' },
 ];
 
-export default function Sidebar({ isOpen, onToggle, isHomePage = false }: SidebarProps) {
-  const [selectedSpecialty, setSelectedSpecialty] = useState<string>('Internal Medicine');
-  const [showFeedback, setShowFeedback] = useState(false);
-  const [showAbout, setShowAbout] = useState(false);
-  const [touchStart, setTouchStart] = useState<number | null>(null);
-  const [touchEnd, setTouchEnd] = useState<number | null>(null);
-  const [emailCopied, setEmailCopied] = useState(false);
+export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { user } = useUser();
+  const sidebarRef = useRef<HTMLElement>(null);
+  const firstFocusableRef = useRef<HTMLButtonElement>(null);
+  const lastFocusableRef = useRef<HTMLButtonElement>(null);
 
-  const copyEmail = async () => {
-    try {
-      await navigator.clipboard.writeText('devaun0506@gmail.com');
-      setEmailCopied(true);
-      setTimeout(() => setEmailCopied(false), 2000);
-    } catch (err) {
-      console.error('Failed to copy email:', err);
-    }
-  };
+  // Get current specialty from URL
+  const currentSpecialty = searchParams.get('specialty');
 
-  // Swipe detection - minimum swipe distance (in px)
-  const minSwipeDistance = 50;
-
-  const onTouchStart = (e: React.TouchEvent) => {
-    setTouchEnd(null);
-    setTouchStart(e.targetTouches[0].clientX);
-  };
-
-  const onTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientX);
-  };
-
-  const onTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
-
-    const distance = touchStart - touchEnd;
-    const isLeftSwipe = distance > minSwipeDistance;
-
-    // Close sidebar on left swipe
-    if (isLeftSwipe && isOpen) {
+  // Handle ESC key to close sidebar
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.key === 'Escape' && isOpen) {
       onToggle();
     }
 
-    setTouchStart(null);
-    setTouchEnd(null);
+    // Focus trap for mobile
+    if (e.key === 'Tab' && isOpen && window.innerWidth < 768) {
+      const focusableElements = sidebarRef.current?.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      if (!focusableElements || focusableElements.length === 0) return;
+
+      const firstElement = focusableElements[0] as HTMLElement;
+      const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+      if (e.shiftKey && document.activeElement === firstElement) {
+        e.preventDefault();
+        lastElement.focus();
+      } else if (!e.shiftKey && document.activeElement === lastElement) {
+        e.preventDefault();
+        firstElement.focus();
+      }
+    }
+  }, [isOpen, onToggle]);
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [handleKeyDown]);
+
+  // Focus first element when sidebar opens on mobile
+  useEffect(() => {
+    if (isOpen && window.innerWidth < 768 && firstFocusableRef.current) {
+      firstFocusableRef.current.focus();
+    }
+  }, [isOpen]);
+
+  // Auto-close sidebar on mobile when navigating
+  useEffect(() => {
+    // Close on route change for mobile
+    if (typeof window !== 'undefined' && window.innerWidth < 768 && isOpen) {
+      // Small delay to allow navigation to start
+      const timer = setTimeout(() => {
+        if (window.innerWidth < 768) {
+          onToggle();
+        }
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname, searchParams]);
+
+  const handleSpecialtyClick = (apiName: string | null) => {
+    if (apiName) {
+      router.push(`/study?specialty=${encodeURIComponent(apiName)}`);
+    } else {
+      router.push('/study');
+    }
+    if (window.innerWidth < 768) {
+      onToggle();
+    }
   };
 
   return (
     <>
-      {/* Sidebar - Full width on mobile, 256px on desktop */}
-      <div
-        className={`fixed left-0 top-0 h-full bg-black border-r border-gray-800 transition-all duration-300 z-50 ${
-          isOpen ? 'w-full md:w-64' : 'w-0'
-        } overflow-hidden`}
-        onTouchStart={onTouchStart}
-        onTouchMove={onTouchMove}
-        onTouchEnd={onTouchEnd}
+      {/* Sidebar */}
+      <aside
+        ref={sidebarRef}
+        className={`fixed left-0 top-0 h-full w-64 bg-gray-950 border-r border-gray-900 motion-safe:transition-transform motion-safe:duration-300 ease-out z-50 flex flex-col ${
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+        role="navigation"
+        aria-label="Main navigation"
+        aria-hidden={!isOpen}
       >
-        <div className="p-6 pt-16 h-full flex flex-col">
-          <div className={`mb-6 transition-all duration-300 ${isOpen ? 'ml-8' : 'ml-0'}`}>
+        {/* Top Section - Logo */}
+        <div className="p-4 flex-shrink-0">
+          <button
+            ref={firstFocusableRef}
+            onClick={() => router.push('/')}
+            className="flex items-center gap-2 text-xl font-semibold text-white hover:text-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] focus:ring-offset-2 focus:ring-offset-gray-950 rounded"
+            style={{ fontFamily: 'var(--font-serif)' }}
+            tabIndex={isOpen ? 0 : -1}
+          >
+            <ShelfSenseLogo size={28} animate={true} />
+            <span>ShelfSense</span>
+          </button>
+        </div>
+
+        {/* Scrollable Middle Section */}
+        <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0">
+          {/* Step 2 CK Prep - separate tab */}
+          <div className="px-4 pb-1">
             <button
-              onClick={() => router.push('/')}
-              className="text-xl font-semibold hover:text-gray-300 transition-colors"
-              style={{ fontFamily: 'var(--font-cormorant)' }}
+              onClick={() => handleSpecialtyClick(null)}
+              className={`w-full text-left px-3 py-1.5 text-base rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
+                pathname === '/study' && !currentSpecialty
+                  ? 'text-white bg-gray-800'
+                  : 'text-gray-200 hover:text-white hover:bg-gray-900'
+              }`}
+              style={{ fontFamily: 'var(--font-serif)' }}
+              tabIndex={isOpen ? 0 : -1}
+              aria-current={pathname === '/study' && !currentSpecialty ? 'page' : undefined}
             >
-              ShelfSense
+              Step 2 CK Prep
             </button>
           </div>
 
-          <nav className="space-y-3 flex-1 overflow-y-auto">
-            {/* Feedback Section */}
-            <div className="px-3 py-2 mb-4">
-              <button
-                onClick={() => setShowFeedback(!showFeedback)}
-                className="text-lg font-semibold text-white hover:text-gray-300 transition-colors"
-                style={{ fontFamily: 'var(--font-cormorant)' }}
-              >
-                Feedback
-              </button>
-              {showFeedback && (
-                <div className="mt-3 text-sm text-gray-400 leading-relaxed">
-                  <p>Please email me at anytime for feedback on this product.</p>
-                  <div className="mt-2 flex items-center gap-2">
-                    <a href="mailto:devaun0506@gmail.com" className="text-blue-400 hover:text-blue-300 underline">
-                      devaun0506@gmail.com
-                    </a>
-                    <button
-                      onClick={copyEmail}
-                      className="p-1 hover:bg-gray-800 rounded transition-colors"
-                      title="Copy email address"
-                    >
-                      {emailCopied ? (
-                        <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                      ) : (
-                        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                        </svg>
-                      )}
-                    </button>
-                  </div>
-                </div>
-              )}
+          {/* Shelf Exams Section */}
+          <div className="px-4" role="group" aria-labelledby="shelf-exams-label">
+            <div id="shelf-exams-label" className="px-3 py-1.5 text-xs text-gray-600 font-medium uppercase tracking-wider">
+              Shelf Exams
             </div>
-
-            {/* About ShelfSense Section */}
-            <div className="px-3 py-2 mb-4">
-              <button
-                onClick={() => setShowAbout(!showAbout)}
-                className="text-lg font-semibold text-white hover:text-gray-300 transition-colors"
-                style={{ fontFamily: 'var(--font-cormorant)' }}
-              >
-                About ShelfSense
-              </button>
-              {showAbout && (
-                <p className="mt-3 text-sm text-gray-400 leading-relaxed">
-                  Master Step 2 CK with intelligent, adaptive learning that focuses on your weak areas.
-                  Our platform analyzes your performance in real time and delivers high quality practice
-                  questions that mirror the exam. Study smarter, not harder. Every question is tailored
-                  to maximize your score potential.
-                </p>
-              )}
-            </div>
-
-            {/* Study Modes Section */}
-            <div className="px-3 py-2 border-t border-gray-800 pt-4">
-              <button
-                onClick={() => router.push('/study-modes')}
-                className="w-full flex items-center gap-3 px-3 py-2 text-white hover:bg-gray-900 rounded-lg transition-colors"
-              >
-                <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                </svg>
-                <span className="text-lg font-semibold" style={{ fontFamily: 'var(--font-cormorant)' }}>
-                  Study Modes
-                </span>
-              </button>
-            </div>
-
-            {/* Step 2 CK Header */}
-            <div className="px-3 py-2 border-t border-gray-800 pt-4">
-              <h3 className="text-lg font-semibold text-gray-400" style={{ fontFamily: 'var(--font-cormorant)' }}>
-                Step 2 CK
-              </h3>
-            </div>
-
-            {/* Clerkships Section */}
-            <div className="border-t border-gray-800 pt-3">
-              <div className="px-3 pb-2">
-                <p className="text-sm text-gray-500 uppercase tracking-wide">Clerkships</p>
-              </div>
-
-              <div className="space-y-1">
-                {clerkships.filter(c => c.available).map((clerkship) => (
-                  <button
-                    key={clerkship.name}
-                    onClick={() => setSelectedSpecialty(clerkship.name)}
-                    className={`w-full text-left px-3 py-2 rounded transition-colors text-lg font-semibold ${
-                      selectedSpecialty === clerkship.name
-                        ? 'bg-gray-900 text-white'
-                        : 'text-gray-400 hover:text-white hover:bg-gray-900'
-                    }`}
-                    style={{ fontFamily: 'var(--font-cormorant)' }}
-                  >
-                    {clerkship.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </nav>
-
-          {/* User Profile Section at bottom */}
-          {user && (
-            <div className="mt-auto pt-4 border-t border-gray-800">
-              <div className="px-3 py-3">
-                <div className="text-sm text-gray-400 mb-1">Logged in as</div>
-                <div className="text-white font-semibold mb-3">{user.firstName} {user.lastName}</div>
+            <div className="space-y-0.5">
+              {SHELF_EXAMS.map((shelf) => (
                 <button
-                  onClick={() => {
-                    localStorage.removeItem('user');
-                    router.push('/login');
-                  }}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-900 hover:bg-gray-800 text-red-400 hover:text-red-300 rounded-lg transition-colors"
+                  key={shelf.id}
+                  onClick={() => handleSpecialtyClick(shelf.apiName)}
+                  className={`w-full text-left px-3 py-1.5 text-sm rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
+                    currentSpecialty === shelf.apiName
+                      ? 'text-white bg-gray-800'
+                      : 'text-gray-200 hover:text-white hover:bg-gray-900'
+                  }`}
+                  style={{ fontFamily: 'var(--font-serif)' }}
+                  tabIndex={isOpen ? 0 : -1}
+                  aria-current={currentSpecialty === shelf.apiName ? 'page' : undefined}
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                  </svg>
-                  <span>Logout</span>
+                  {shelf.name}
                 </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Links - at bottom */}
+        <nav className="flex-shrink-0 px-3 pb-2" aria-label="Quick links">
+          <div className="border-t border-gray-900 pt-3">
+            <button
+              onClick={() => router.push('/analytics')}
+              className={`w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
+                pathname === '/analytics' && searchParams.get('view') !== 'weak'
+                  ? 'text-white bg-gray-900'
+                  : 'text-gray-400 hover:text-white hover:bg-gray-900'
+              }`}
+              tabIndex={isOpen ? 0 : -1}
+              aria-current={pathname === '/analytics' && searchParams.get('view') !== 'weak' ? 'page' : undefined}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+              <span>Analytics</span>
+            </button>
+            <button
+              onClick={() => router.push('/reviews')}
+              className={`w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
+                pathname === '/reviews'
+                  ? 'text-white bg-gray-900'
+                  : 'text-gray-400 hover:text-white hover:bg-gray-900'
+              }`}
+              tabIndex={isOpen ? 0 : -1}
+              aria-current={pathname === '/reviews' ? 'page' : undefined}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                <line x1="3" y1="10" x2="21" y2="10" />
+                <line x1="8" y1="2" x2="8" y2="6" />
+                <line x1="16" y1="2" x2="16" y2="6" />
+              </svg>
+              <span>Reviews</span>
+            </button>
+            <button
+              onClick={() => router.push('/analytics?view=weak')}
+              className={`w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
+                pathname === '/analytics' && searchParams.get('view') === 'weak'
+                  ? 'text-white bg-gray-900'
+                  : 'text-gray-400 hover:text-white hover:bg-gray-900'
+              }`}
+              tabIndex={isOpen ? 0 : -1}
+              aria-current={pathname === '/analytics' && searchParams.get('view') === 'weak' ? 'page' : undefined}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              <span>Weak Areas</span>
+            </button>
+            <button
+              onClick={() => router.push('/pricing')}
+              className={`w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
+                pathname === '/pricing'
+                  ? 'text-white bg-gray-900'
+                  : 'text-gray-400 hover:text-white hover:bg-gray-900'
+              }`}
+              tabIndex={isOpen ? 0 : -1}
+              aria-current={pathname === '/pricing' ? 'page' : undefined}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>Pricing</span>
+            </button>
+            <button
+              ref={user?.isAdmin ? undefined : lastFocusableRef}
+              onClick={() => router.push('/help')}
+              className={`w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
+                pathname === '/help'
+                  ? 'text-white bg-gray-900'
+                  : 'text-gray-400 hover:text-white hover:bg-gray-900'
+              }`}
+              tabIndex={isOpen ? 0 : -1}
+              aria-current={pathname === '/help' ? 'page' : undefined}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>Help</span>
+            </button>
+            {user?.isAdmin && (
+              <button
+                ref={lastFocusableRef}
+                onClick={() => router.push('/admin')}
+                className={`w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
+                  pathname.startsWith('/admin')
+                    ? 'text-white bg-gray-900'
+                    : 'text-gray-400 hover:text-white hover:bg-gray-900'
+                }`}
+                tabIndex={isOpen ? 0 : -1}
+                aria-current={pathname.startsWith('/admin') ? 'page' : undefined}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span>Admin</span>
+              </button>
+            )}
+          </div>
+        </nav>
+
+        {/* Bottom Section - User Profile */}
+        {user && (
+          <div className="flex-shrink-0 border-t border-gray-900 p-2">
+            <div className="flex items-center gap-3 px-2 py-1">
+              {/* Clerk UserButton */}
+              <UserButton
+                appearance={{
+                  elements: {
+                    avatarBox: 'w-8 h-8',
+                  },
+                }}
+                afterSignOutUrl="/sign-in"
+              />
+
+              {/* Name */}
+              <span className="text-sm text-gray-300 truncate flex-1 text-left">
+                {user.firstName}
+              </span>
+
+              {/* Feedback button */}
+              <div className="relative group">
+                <button
+                  onClick={() => window.location.href = 'mailto:devaun0506@gmail.com?subject=ShelfSense Feedback'}
+                  className="p-1.5 text-gray-600 hover:text-gray-300 transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                  </svg>
+                </button>
+                <span className="absolute right-full top-1/2 -translate-y-1/2 mr-2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                  Feedback
+                </span>
               </div>
             </div>
-          )}
+          </div>
+        )}
+      </aside>
 
-          {/* Home Icon at bottom right - only shown when NOT on home page */}
-          {!isHomePage && (
-            <div className="pt-4 flex justify-end px-3 pb-4">
-              <button
-                onClick={() => router.push('/')}
-                className="flex items-center gap-2 px-3 py-2 text-gray-400 hover:text-white hover:bg-gray-900 rounded-lg transition-colors"
-                aria-label="Go to home page"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                </svg>
-                <span className="text-sm font-medium">Home</span>
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Visual indicator line when sidebar is closed */}
-      {!isOpen && (
-        <div className="fixed left-0 top-0 h-full w-[1px] bg-gray-700 z-40" />
-      )}
-
-      {/* Toggle Button - Thicker and more visible */}
+      {/* Toggle Button - better mobile positioning */}
       <button
         onClick={onToggle}
-        className="fixed left-4 top-4 z-[60] px-3 py-2 text-gray-300 hover:text-white transition-colors duration-200 text-2xl font-bold"
-        style={{ lineHeight: '1' }}
+        className={`fixed top-4 z-[60] p-2.5 text-gray-400 hover:text-white hover:bg-gray-900 rounded-lg motion-safe:transition-all motion-safe:duration-300 ease-out ${
+          isOpen ? 'left-[17rem]' : 'left-3 md:left-4'
+        }`}
         aria-label={isOpen ? 'Close sidebar' : 'Open sidebar'}
       >
-        {isOpen ? '←' : '→'}
+        {isOpen ? (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+          </svg>
+        ) : (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        )}
       </button>
 
-      {/* Overlay when sidebar is open (mobile) */}
+      {/* Mobile Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          className="fixed inset-0 bg-black/60 z-40 md:hidden"
           onClick={onToggle}
+          aria-hidden="true"
         />
       )}
     </>

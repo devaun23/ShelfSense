@@ -109,24 +109,11 @@ export function UserProvider({ children }: { children: ReactNode }) {
         }),
       });
 
-      if (!response.ok) {
+      if (response.ok) {
+        const data = await response.json();
+        setIsAdmin(data.is_admin || false);
+      } else {
         console.error('Failed to sync user with backend');
-      }
-
-      // Fetch profile to get admin status and other backend data
-      if (token) {
-        const profileResponse = await fetch(`${getApiUrl()}/api/profile/me`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-
-        if (profileResponse.ok) {
-          const profile = await profileResponse.json();
-          setIsAdmin(profile.is_admin || false);
-          if (profile.target_score) setTargetScore(profile.target_score);
-          if (profile.exam_date) setExamDate(profile.exam_date);
-        }
       }
     } catch (error) {
       console.error('Error syncing user:', error);

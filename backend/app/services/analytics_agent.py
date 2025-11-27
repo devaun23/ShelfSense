@@ -536,17 +536,19 @@ def get_dashboard_data(db: Session, user_id: str) -> Dict[str, Any]:
     """
     Get all dashboard data in a single call for efficiency.
     Combines all analytics into one response.
+
+    Optimized: Consolidated initial stats into single query.
     """
-    # Summary stats
-    total_questions = db.query(func.count(QuestionAttempt.id)).filter(
+    # Summary stats - single query for total and correct counts
+    summary_stats = db.query(
+        func.count(QuestionAttempt.id).label('total'),
+        func.sum(func.cast(QuestionAttempt.is_correct, Integer)).label('correct')
+    ).filter(
         QuestionAttempt.user_id == user_id
-    ).scalar() or 0
+    ).first()
 
-    correct_count = db.query(func.count(QuestionAttempt.id)).filter(
-        QuestionAttempt.user_id == user_id,
-        QuestionAttempt.is_correct == True
-    ).scalar() or 0
-
+    total_questions = summary_stats.total or 0
+    correct_count = summary_stats.correct or 0
     overall_accuracy = (correct_count / total_questions * 100) if total_questions > 0 else 0
 
     # Get all component data

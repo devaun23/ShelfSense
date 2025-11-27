@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic';
 import { useUser } from '@/contexts/UserContext';
 import { SPECIALTIES } from '@/lib/specialties';
 import { Button, Badge, CollapsibleSection } from '@/components/ui';
+import { ScoreGauge, NBMEInputForm, PredictionHistory, ScoreBreakdown } from '@/components/analytics';
 
 // Dynamically import Sidebar to avoid useSearchParams SSR issues
 const Sidebar = dynamic(() => import('@/components/Sidebar'), { ssr: false });
@@ -111,6 +112,53 @@ const ERROR_TYPE_LABELS: Record<string, string> = {
   time_pressure: 'Time Pressure'
 };
 
+// NBME Score Predictor types
+interface NBMEScore {
+  id: string;
+  assessment_type: string;
+  assessment_name: string;
+  score: number;
+  percentile?: number;
+  date_taken: string;
+  notes?: string;
+  created_at: string;
+}
+
+interface CalibratedPrediction {
+  predicted_score: number;
+  confidence_interval_low: number;
+  confidence_interval_high: number;
+  confidence_level: string;
+  shelfsense_contribution: {
+    weight: number;
+    raw_score: number | null;
+    questions: number;
+    weighted_accuracy: number;
+  };
+  external_contribution: {
+    nbme: { weight: number; scores: Array<{ score: number }>; avg: number | null };
+    uwsa: { weight: number; scores: Array<{ score: number }>; avg: number | null };
+  };
+  weight_breakdown: { shelfsense: number; nbme: number; uwsa: number };
+  strategy: string;
+  recommendations: string[];
+  data_sources: { shelfsense_questions: number; nbme_count: number; uwsa_count: number };
+}
+
+interface PredictionHistoryData {
+  history: Array<{
+    date: string;
+    predicted_score: number;
+    confidence_low: number;
+    confidence_high: number;
+    confidence_level: string;
+    external_score_count: number;
+  }>;
+  trend: string;
+  score_change_30d: number | null;
+  score_change_7d: number | null;
+}
+
 type TabType = 'performance' | 'specialties' | 'insights' | 'peers';
 
 export default function AnalyticsPage() {
@@ -128,6 +176,11 @@ export default function AnalyticsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // NBME Score Predictor state
+  const [nbmeScores, setNbmeScores] = useState<NBMEScore[]>([]);
+  const [calibratedPrediction, setCalibratedPrediction] = useState<CalibratedPrediction | null>(null);
+  const [predictionHistory, setPredictionHistory] = useState<PredictionHistoryData | null>(null);
+
   // Tab and collapsible state
   const [activeTab, setActiveTab] = useState<TabType>('performance');
   const [showTrendChart, setShowTrendChart] = useState(true);
@@ -143,6 +196,7 @@ export default function AnalyticsPage() {
 
     if (user) {
       fetchDashboardData();
+      fetchScorePredictorData();
     }
   }, [user, userLoading, router]);
 
@@ -176,6 +230,42 @@ export default function AnalyticsPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const fetchScorePredictorData = async () => {
+    if (!user) return;
+
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
+      const [scoresRes, predictionRes, historyRes] = await Promise.all([
+        fetch(`${apiUrl}/api/score-predictor/assessments?user_id=${user.userId}`),
+        fetch(`${apiUrl}/api/score-predictor/predict/detailed?user_id=${user.userId}`),
+        fetch(`${apiUrl}/api/score-predictor/history?user_id=${user.userId}&days=90`)
+      ]);
+
+      if (scoresRes.ok) {
+        setNbmeScores(await scoresRes.json());
+      }
+      if (predictionRes.ok) {
+        setCalibratedPrediction(await predictionRes.json());
+      }
+      if (historyRes.ok) {
+        setPredictionHistory(await historyRes.json());
+      }
+    } catch (err) {
+      console.error('Error fetching score predictor data:', err);
+    }
+  };
+
+  const handleScoreAdded = (score: NBMEScore) => {
+    setNbmeScores(prev => [score, ...prev]);
+    fetchScorePredictorData(); // Refresh predictions
+  };
+
+  const handleScoreDeleted = (scoreId: string) => {
+    setNbmeScores(prev => prev.filter(s => s.id !== scoreId));
+    fetchScorePredictorData(); // Refresh predictions
   };
 
   const getTrendIcon = (trend: string) => {
@@ -267,26 +357,55 @@ export default function AnalyticsPage() {
         <div className="max-w-4xl mx-auto px-4 md:px-6 py-6 md:py-8 pt-14 md:pt-16">
 
           {/* Hero Section - Predicted Score */}
-          <div className="text-center mb-8 md:mb-10">
+          <div className="text-center mb-6 md:mb-8">
             <p className="text-gray-500 text-xs md:text-sm mb-2 uppercase tracking-wider">
-              Predicted Step 2 CK Score
+              {calibratedPrediction && calibratedPrediction.data_sources.nbme_count > 0
+                ? 'NBME-Calibrated Predicted Score'
+                : 'Predicted Step 2 CK Score'}
             </p>
             <div className="flex items-baseline justify-center gap-2 md:gap-3 mb-3">
               <span
                 className="text-5xl md:text-7xl font-semibold text-white"
                 style={{ fontFamily: 'var(--font-serif)' }}
               >
-                {summary.predicted_score || '---'}
+                {calibratedPrediction?.predicted_score || summary.predicted_score || '---'}
               </span>
-              {summary.confidence_interval && (
-                <span className="text-xl md:text-2xl text-gray-600">±{summary.confidence_interval}</span>
+              {(calibratedPrediction || summary.confidence_interval) && (
+                <span className="text-xl md:text-2xl text-gray-600">
+                  ±{calibratedPrediction
+                    ? Math.round((calibratedPrediction.confidence_interval_high - calibratedPrediction.confidence_interval_low) / 2)
+                    : summary.confidence_interval}
+                </span>
               )}
             </div>
-            <div className={`flex items-center justify-center gap-2 text-sm ${getTrendColor(score_details.score_trajectory)}`}>
-              <span className="text-lg">{getTrendIcon(score_details.score_trajectory)}</span>
-              <span className="capitalize">{score_details.score_trajectory.replace('_', ' ')}</span>
+            <div className={`flex items-center justify-center gap-2 text-sm ${getTrendColor(predictionHistory?.trend || score_details.score_trajectory)}`}>
+              <span className="text-lg">{getTrendIcon(predictionHistory?.trend || score_details.score_trajectory)}</span>
+              <span className="capitalize">{(predictionHistory?.trend || score_details.score_trajectory).replace('_', ' ')}</span>
             </div>
           </div>
+
+          {/* Score Gauge - Visual Confidence Band */}
+          {(calibratedPrediction?.predicted_score || summary.predicted_score) && (
+            <ScoreGauge
+              predictedScore={calibratedPrediction?.predicted_score || summary.predicted_score || 0}
+              confidenceInterval={calibratedPrediction
+                ? Math.round((calibratedPrediction.confidence_interval_high - calibratedPrediction.confidence_interval_low) / 2)
+                : summary.confidence_interval || 15}
+              targetScore={user?.targetScore}
+            />
+          )}
+
+          {/* NBME Score Input */}
+          {user && (
+            <div className="mb-6">
+              <NBMEInputForm
+                userId={user.userId}
+                existingScores={nbmeScores}
+                onScoreAdded={handleScoreAdded}
+                onScoreDeleted={handleScoreDeleted}
+              />
+            </div>
+          )}
 
           {/* Stats Row */}
           <div className="flex flex-wrap justify-center gap-6 md:gap-10 border-t border-gray-900 pt-6 md:pt-8 mb-8 md:mb-10">
@@ -334,6 +453,41 @@ export default function AnalyticsPage() {
           {/* Performance Tab */}
           {activeTab === 'performance' && (
             <div>
+              {/* Score Breakdown - NEW */}
+              {calibratedPrediction && (
+                <CollapsibleSection title="Score Sources" defaultOpen={true}>
+                  <div className="pt-4">
+                    <ScoreBreakdown
+                      shelfsenseWeight={calibratedPrediction.weight_breakdown.shelfsense}
+                      shelfsenseScore={calibratedPrediction.shelfsense_contribution.raw_score}
+                      shelfsenseQuestions={calibratedPrediction.shelfsense_contribution.questions}
+                      nbmeWeight={calibratedPrediction.weight_breakdown.nbme}
+                      nbmeAvg={calibratedPrediction.external_contribution.nbme.avg}
+                      nbmeCount={calibratedPrediction.data_sources.nbme_count}
+                      uwsaWeight={calibratedPrediction.weight_breakdown.uwsa}
+                      uwsaAvg={calibratedPrediction.external_contribution.uwsa.avg}
+                      uwsaCount={calibratedPrediction.data_sources.uwsa_count}
+                      finalScore={calibratedPrediction.predicted_score}
+                      strategy={calibratedPrediction.strategy}
+                    />
+                  </div>
+                </CollapsibleSection>
+              )}
+
+              {/* Prediction History - NEW */}
+              {predictionHistory && predictionHistory.history.length > 0 && (
+                <CollapsibleSection title="Prediction History" defaultOpen={true}>
+                  <div className="pt-4">
+                    <PredictionHistory
+                      data={predictionHistory.history}
+                      trend={predictionHistory.trend}
+                      scoreChange30d={predictionHistory.score_change_30d}
+                      scoreChange7d={predictionHistory.score_change_7d}
+                    />
+                  </div>
+                </CollapsibleSection>
+              )}
+
               {/* Accuracy Trend Chart */}
               <CollapsibleSection
                 title="Performance Trend"
@@ -465,22 +619,24 @@ export default function AnalyticsPage() {
                   <button
                     key={specialty.id}
                     onClick={() => router.push(`/study?specialty=${encodeURIComponent(specialty.apiName)}`)}
-                    className={`p-5 rounded-2xl border ${specialty.borderColor} ${specialty.bgColor} text-left transition-all hover:scale-[1.02]`}
+                    className="p-5 rounded-2xl border border-gray-800 bg-gray-900/50 text-left transition-all hover:bg-gray-900 hover:border-gray-700"
                   >
-                    <div className="flex items-center gap-3 mb-3">
-                      <span className="text-2xl">{specialty.icon}</span>
-                      <span className={`text-base font-medium ${specialty.color}`}>
-                        {specialty.shortName}
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-base font-medium text-white" style={{ fontFamily: 'var(--font-serif)' }}>
+                        {specialty.name}
                       </span>
+                      {stats && stats.predicted_score !== null && (
+                        <span className="text-sm text-[#4169E1] font-medium">
+                          {stats.predicted_score}
+                        </span>
+                      )}
                     </div>
 
                     {stats && stats.total > 0 ? (
                       <>
                         <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden mb-2">
                           <div
-                            className={`h-full rounded-full ${
-                              stats.accuracy >= 70 ? 'bg-emerald-500' : stats.accuracy >= 50 ? 'bg-yellow-500' : 'bg-red-500'
-                            }`}
+                            className="h-full rounded-full bg-[#4169E1]"
                             style={{ width: `${stats.accuracy}%` }}
                           />
                         </div>

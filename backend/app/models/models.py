@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, Float, Boolean, DateTime, JSON, ForeignKey, Text, Index
+from sqlalchemy import Column, String, Integer, Float, Boolean, DateTime, JSON, ForeignKey, Text, Index, UniqueConstraint
 from sqlalchemy.orm import relationship
 from datetime import datetime
 import uuid
@@ -11,7 +11,6 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(String, primary_key=True, default=generate_uuid)
-    clerk_id = Column(String, unique=True, nullable=True, index=True)  # Clerk user ID
     full_name = Column(String, nullable=False)
     first_name = Column(String, nullable=False, index=True)
     email = Column(String, unique=True, nullable=False, index=True)
@@ -81,10 +80,11 @@ class Question(Base):
     editor = relationship("User", foreign_keys=[last_edited_by])
     expert_reviewer = relationship("User", foreign_keys=[expert_reviewer_id])
 
-    # Composite indexes for adaptive algorithm queries
+    # Composite indexes for pool queries and filtering
     __table_args__ = (
-        Index('idx_source_recency', 'source', 'recency_weight'),  # Filter by specialty + sort
-        Index('idx_rejected_recency', 'rejected', 'recency_weight'),  # Exclude rejected + sort
+        Index('ix_questions_source_rejected_specialty', 'source', 'rejected', 'specialty'),
+        Index('ix_questions_specialty_difficulty_rejected', 'specialty', 'difficulty_level', 'rejected'),
+        Index('ix_questions_status_specialty', 'content_status', 'specialty', 'rejected'),
     )
 
 
@@ -106,11 +106,11 @@ class QuestionAttempt(Base):
     user = relationship("User", back_populates="attempts")
     question = relationship("Question", back_populates="attempts")
 
-    # Composite indexes for common query patterns
+    # Composite indexes for analytics queries
     __table_args__ = (
-        Index('idx_user_question', 'user_id', 'question_id'),  # Check if user answered question
-        Index('idx_user_attempted_at', 'user_id', 'attempted_at'),  # User's recent attempts
-        Index('idx_user_correct', 'user_id', 'is_correct'),  # User's accuracy queries
+        Index('ix_attempts_user_question_correct', 'user_id', 'question_id', 'is_correct'),
+        Index('ix_attempts_user_date_correct', 'user_id', 'attempted_at', 'is_correct'),
+        Index('ix_attempts_question_correct_time', 'question_id', 'is_correct', 'time_spent_seconds'),
     )
 
 
@@ -118,8 +118,8 @@ class UserPerformance(Base):
     __tablename__ = "user_performance"
 
     id = Column(String, primary_key=True, default=generate_uuid)
-    user_id = Column(String, ForeignKey("users.id"), nullable=False, index=True)
-    session_date = Column(DateTime, default=datetime.utcnow, index=True)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False)
+    session_date = Column(DateTime, default=datetime.utcnow)
     questions_answered = Column(Integer, default=0)
     accuracy_overall = Column(Float, default=0.0)  # Percentage
     accuracy_weighted = Column(Float, default=0.0)  # Recency-weighted accuracy
@@ -130,11 +130,6 @@ class UserPerformance(Base):
 
     # Relationships
     user = relationship("User", back_populates="performance")
-
-    # Composite index for historical performance queries
-    __table_args__ = (
-        Index('idx_user_session_date', 'user_id', 'session_date'),  # User's performance over time
-    )
 
 
 class ScheduledReview(Base):
@@ -147,7 +142,7 @@ class ScheduledReview(Base):
     scheduled_for = Column(DateTime, nullable=False, index=True)  # When to review
     review_interval = Column(String, nullable=False)  # "1d", "3d", "7d", "14d", "30d"
     times_reviewed = Column(Integer, default=0)  # How many times reviewed
-    learning_stage = Column(String, default="New")  # "New", "Learning", "Review", "Mastered"
+    learning_stage = Column(String, default="New", index=True)  # "New", "Learning", "Review", "Mastered"
     source = Column(String, nullable=True)  # Topic/source for filtering
     created_at = Column(DateTime, default=datetime.utcnow)
     last_reviewed = Column(DateTime, nullable=True)
@@ -156,10 +151,10 @@ class ScheduledReview(Base):
     user = relationship("User")
     question = relationship("Question")
 
-    # Composite index for spaced repetition queries
+    # Composite indexes for due reviews queries
     __table_args__ = (
-        Index('idx_user_scheduled', 'user_id', 'scheduled_for'),  # Upcoming reviews for user
-        Index('idx_user_stage', 'user_id', 'learning_stage'),  # User's learning stages
+        Index('ix_reviews_user_scheduled_stage', 'user_id', 'scheduled_for', 'learning_stage'),
+        Index('ix_reviews_user_question', 'user_id', 'question_id'),
     )
 
 
@@ -352,6 +347,67 @@ class PasswordResetToken(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     expires_at = Column(DateTime, nullable=False)
     used = Column(Boolean, default=False)
+
+    # Relationships
+    user = relationship("User")
+
+
+class UserBadge(Base):
+    """
+    Tracks badges/achievements earned by users.
+    Badges are awarded for reaching milestones in various categories.
+    """
+    __tablename__ = "user_badges"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False, index=True)
+    badge_id = Column(String, nullable=False, index=True)  # e.g., "streak_7", "accuracy_master"
+
+    # When the badge was earned
+    earned_at = Column(DateTime, default=datetime.utcnow, index=True)
+
+    # Context when badge was earned
+    context = Column(JSON, nullable=True)  # e.g., {"streak": 7, "accuracy": 85}
+
+    # Notification tracking
+    notification_sent = Column(Boolean, default=False)
+
+    # Relationships
+    user = relationship("User")
+
+    # Unique constraint: one badge per user
+    __table_args__ = (
+        UniqueConstraint('user_id', 'badge_id', name='uq_user_badge'),
+    )
+
+
+class PushSubscription(Base):
+    """
+    Stores web push notification subscriptions for users.
+    Each user can have multiple subscriptions (multiple devices/browsers).
+    """
+    __tablename__ = "push_subscriptions"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False, index=True)
+
+    # Push subscription data from browser
+    endpoint = Column(String, nullable=False, unique=True)
+    p256dh_key = Column(String, nullable=False)  # Public key for encryption
+    auth_key = Column(String, nullable=False)  # Auth secret
+
+    # Device info
+    device_name = Column(String, nullable=True)  # e.g., "Chrome on Windows"
+    user_agent = Column(String, nullable=True)
+
+    # Status
+    is_active = Column(Boolean, default=True, index=True)
+    last_used = Column(DateTime, nullable=True)
+    failed_attempts = Column(Integer, default=0)
+
+    # Metadata
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     # Relationships
     user = relationship("User")
@@ -1087,6 +1143,12 @@ class ConceptRetention(Base):
     # Relationships
     user = relationship("User")
 
+    # Unique constraint: one record per user per concept
+    __table_args__ = (
+        UniqueConstraint('user_id', 'concept', name='uq_concept_retention_user_concept'),
+        Index('ix_concept_retention_user_specialty', 'user_id', 'specialty'),
+    )
+
 
 # ============================================================================
 # USAGE ANALYTICS MODELS (Admin Dashboard)
@@ -1191,3 +1253,76 @@ class CohortRetention(Base):
     # Timestamps
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+# ============================================================================
+# NBME-CALIBRATED SCORE PREDICTOR MODELS
+# ============================================================================
+
+class ExternalAssessmentScore(Base):
+    """
+    Stores user-entered NBME/UWSA self-assessment scores.
+    Used to calibrate and improve Step 2 CK score predictions.
+    """
+    __tablename__ = "external_assessment_scores"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False, index=True)
+
+    # Assessment identification
+    assessment_type = Column(String, nullable=False, index=True)  # "nbme", "uwsa", "free120"
+    assessment_name = Column(String, nullable=False)  # "NBME 11", "UWSA 2", "Free 120"
+
+    # Score data
+    score = Column(Integer, nullable=False)  # The reported score (e.g., 235)
+    percentile = Column(Integer, nullable=True)  # If reported (e.g., 75)
+
+    # Context at time of assessment
+    date_taken = Column(DateTime, nullable=False)  # When user took the assessment
+    shelfsense_accuracy_at_time = Column(Float, nullable=True)  # User's ShelfSense accuracy when entered
+    shelfsense_questions_at_time = Column(Integer, nullable=True)  # Total questions answered
+
+    # User notes
+    notes = Column(Text, nullable=True)
+
+    # Metadata
+    created_at = Column(DateTime, default=datetime.utcnow, index=True)
+
+    # Relationships
+    user = relationship("User")
+
+
+class ScorePredictionHistory(Base):
+    """
+    Tracks score predictions over time for trend analysis.
+    Stores daily snapshots of predictions with all input factors.
+    """
+    __tablename__ = "score_prediction_history"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False, index=True)
+
+    # Prediction output
+    predicted_score = Column(Integer, nullable=False)  # 194-300
+    confidence_interval_low = Column(Integer, nullable=False)  # Lower bound
+    confidence_interval_high = Column(Integer, nullable=False)  # Upper bound
+    confidence_level = Column(String, nullable=False)  # "low", "medium", "high"
+
+    # Input factors (snapshot)
+    shelfsense_accuracy = Column(Float, nullable=False)  # Weighted accuracy at time
+    shelfsense_questions = Column(Integer, nullable=False)  # Total questions at time
+    external_score_count = Column(Integer, default=0)  # Number of NBME/UWSA scores used
+    external_score_avg = Column(Float, nullable=True)  # Average of external scores
+
+    # Weighting breakdown
+    weight_breakdown = Column(JSON, nullable=True)
+    # Example: {"shelfsense": 0.4, "nbme_avg": 0.35, "uwsa_avg": 0.25}
+
+    # Algorithm metadata
+    algorithm_version = Column(String, nullable=False, default="v1.0")
+
+    # Metadata
+    calculated_at = Column(DateTime, default=datetime.utcnow, index=True)
+
+    # Relationships
+    user = relationship("User")

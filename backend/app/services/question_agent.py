@@ -10,10 +10,13 @@ Enhanced with:
 """
 
 import json
+import logging
 import random
 import time
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
+
+logger = logging.getLogger(__name__)
 from typing import Optional, Dict, List, Tuple
 from sqlalchemy.orm import Session
 from app.models.models import Question
@@ -40,7 +43,7 @@ from app.services.ai_question_analytics import (
     get_user_learning_stage,
     get_generation_recommendations
 )
-from app.utils.openai_client import get_openai_client
+from app.services.openai_service import openai_service, CircuitBreakerOpenError
 
 # Fine-tuned model ID for fast generation
 FINE_TUNED_MODEL = "ft:gpt-3.5-turbo-0125:personal:shelfsense-usmle-v1:CgNY0xCx"
@@ -141,22 +144,24 @@ class QuestionGenerationAgent:
 
     def _call_llm(self, system_prompt: str, user_prompt: str, temperature: float = 0.7,
                   response_format: Optional[Dict] = None) -> str:
-        """Helper method to call OpenAI API with conversation tracking"""
+        """Helper method to call OpenAI API with circuit breaker protection"""
         messages = [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt}
         ]
 
         kwargs = {
-            "model": self.model,
-            "messages": messages,
             "temperature": temperature,
         }
 
         if response_format:
             kwargs["response_format"] = response_format
 
-        response = get_openai_client().chat.completions.create(**kwargs)
+        response = openai_service.chat_completion(
+            messages=messages,
+            model=self.model,
+            **kwargs
+        )
         return response.choices[0].message.content
 
     def step1_analyze_examples(self, specialty: str, examples: List[Dict]) -> Dict:
@@ -643,10 +648,10 @@ Return JSON:
 
         while retry_count <= max_retries:
             try:
-                print(f"[Agent] Step 1/6: Analyzing {len(examples)} example questions...")
+                logger.debug("Step 1/6: Analyzing %d example questions...", len(examples))
                 analysis = self.step1_analyze_examples(specialty, examples)
 
-                print(f"[Agent] Step 2/6: Creating clinical scenario for {topic} (difficulty: {difficulty})...")
+                logger.debug("Step 2/6: Creating clinical scenario for %s (difficulty: %s)...", topic, difficulty)
                 scenario = self.step2_create_clinical_scenario(
                     specialty, topic, question_type, clinical_setting, analysis, difficulty
                 )
@@ -655,55 +660,55 @@ Return JSON:
                 scenario_score, scenario_issues = self.score_clinical_scenario(scenario, specialty)
                 quality_scores["scenario"] = scenario_score
                 if scenario_score < 0.6:
-                    print(f"[Agent] ⚠ Scenario score too low ({scenario_score:.2f}): {', '.join(scenario_issues)}")
+                    logger.debug("Scenario score too low (%.2f): %s", scenario_score, ', '.join(scenario_issues))
                     retry_count += 1
                     if retry_count <= max_retries:
-                        print(f"[Agent] Early abort - retrying with new scenario...")
+                        logger.debug("Early abort - retrying with new scenario...")
                         continue
                     else:
                         raise ValueError(f"Scenario quality too low: {scenario_issues}")
 
-                print(f"[Agent] Step 3/6: Generating answer choices...")
+                logger.debug("Step 3/6: Generating answer choices...")
                 choices_data = self.step3_generate_answer_choices(scenario, specialty, difficulty)
 
                 # Real-time scoring checkpoint after step 3
                 choices_score, choices_issues = self.score_answer_choices(choices_data)
                 quality_scores["choices"] = choices_score
                 if choices_score < 0.6:
-                    print(f"[Agent] ⚠ Choices score too low ({choices_score:.2f}): {', '.join(choices_issues)}")
+                    logger.debug("Choices score too low (%.2f): %s", choices_score, ', '.join(choices_issues))
                     retry_count += 1
                     if retry_count <= max_retries:
-                        print(f"[Agent] Early abort - retrying with new scenario...")
+                        logger.debug("Early abort - retrying with new scenario...")
                         continue
                     else:
                         raise ValueError(f"Choice quality too low: {choices_issues}")
 
-                print(f"[Agent] Step 4/6: Writing clinical vignette...")
+                logger.debug("Step 4/6: Writing clinical vignette...")
                 vignette = self.step4_write_vignette(scenario, analysis)
 
                 # Real-time scoring checkpoint after step 4
                 vignette_score, vignette_issues = self.score_vignette(vignette, scenario)
                 quality_scores["vignette"] = vignette_score
                 if vignette_score < 0.6:
-                    print(f"[Agent] ⚠ Vignette score too low ({vignette_score:.2f}): {', '.join(vignette_issues)}")
+                    logger.debug("Vignette score too low (%.2f): %s", vignette_score, ', '.join(vignette_issues))
                     retry_count += 1
                     if retry_count <= max_retries:
-                        print(f"[Agent] Early abort - retrying with new scenario...")
+                        logger.debug("Early abort - retrying with new scenario...")
                         continue
                     else:
                         raise ValueError(f"Vignette quality too low: {vignette_issues}")
 
-                print(f"[Agent] Step 5/6: Creating explanation...")
+                logger.debug("Step 5/6: Creating explanation...")
                 explanation = self.step5_create_explanation(scenario, choices_data)
 
-                print(f"[Agent] Step 6/6: Validating quality (specialty: {specialty})...")
+                logger.debug("Step 6/6: Validating quality (specialty: %s)...", specialty)
                 passes_quality, issues = self.step6_quality_validation(
                     vignette, choices_data, explanation, scenario, specialty
                 )
 
                 if passes_quality:
                     avg_score = sum(quality_scores.values()) / len(quality_scores)
-                    print(f"[Agent] ✓ Question passed! (avg score: {avg_score:.2f})")
+                    logger.debug("Question passed! (avg score: %.2f)", avg_score)
 
                     return {
                         "vignette": vignette.strip(),
@@ -724,16 +729,16 @@ Return JSON:
                     }
                 else:
                     retry_count += 1
-                    print(f"[Agent] ✗ Quality validation failed (attempt {retry_count}/{max_retries + 1})")
-                    print(f"[Agent] Issues found: {', '.join(issues)}")
+                    logger.debug("Quality validation failed (attempt %d/%d)", retry_count, max_retries + 1)
+                    logger.debug("Issues found: %s", ', '.join(issues))
                     if retry_count <= max_retries:
-                        print(f"[Agent] Retrying with new scenario...")
+                        logger.debug("Retrying with new scenario...")
 
             except Exception as e:
                 retry_count += 1
-                print(f"[Agent] Error in generation pipeline: {str(e)}")
+                logger.warning("Error in generation pipeline: %s", str(e))
                 if retry_count <= max_retries:
-                    print(f"[Agent] Retrying ({retry_count}/{max_retries + 1})...")
+                    logger.debug("Retrying (%d/%d)...", retry_count, max_retries + 1)
                 else:
                     raise
 
@@ -778,13 +783,13 @@ Return JSON:
 
                 # Step 1: Analyze examples
                 t1 = time.time()
-                print(f"[Agent-P] Step 1/6: Analyzing examples...")
+                logger.debug("Step 1/6: Analyzing examples...")
                 analysis = self.step1_analyze_examples(specialty, examples)
                 step_times["step1_analyze"] = time.time() - t1
 
                 # Step 2: Create scenario (depends on step 1)
                 t2 = time.time()
-                print(f"[Agent-P] Step 2/6: Creating scenario (difficulty: {difficulty})...")
+                logger.debug("Step 2/6: Creating scenario (difficulty: %s)...", difficulty)
                 scenario = self.step2_create_clinical_scenario(
                     specialty, topic, question_type, clinical_setting, analysis, difficulty
                 )
@@ -794,13 +799,13 @@ Return JSON:
                 scenario_score, scenario_issues = self.score_clinical_scenario(scenario, specialty)
                 quality_scores["scenario"] = scenario_score
                 if scenario_score < 0.6:
-                    print(f"[Agent-P] Early abort: scenario score {scenario_score:.2f}")
+                    logger.debug("Early abort: scenario score %.2f", scenario_score)
                     retry_count += 1
                     continue
 
                 # Step 3: Generate choices (depends on step 2)
                 t3 = time.time()
-                print(f"[Agent-P] Step 3/6: Generating choices...")
+                logger.debug("Step 3/6: Generating choices...")
                 choices_data = self.step3_generate_answer_choices(scenario, specialty, difficulty)
                 step_times["step3_choices"] = time.time() - t3
 
@@ -808,7 +813,7 @@ Return JSON:
                 choices_score, choices_issues = self.score_answer_choices(choices_data)
                 quality_scores["choices"] = choices_score
                 if choices_score < 0.6:
-                    print(f"[Agent-P] Early abort: choices score {choices_score:.2f}")
+                    logger.debug("Early abort: choices score %.2f", choices_score)
                     retry_count += 1
                     continue
 
@@ -818,7 +823,7 @@ Return JSON:
 
                 # Step 4: Write vignette
                 t4 = time.time()
-                print(f"[Agent-P] Step 4/6: Writing vignette...")
+                logger.debug("Step 4/6: Writing vignette...")
                 vignette = self.step4_write_vignette(scenario, analysis)
                 step_times["step4_vignette"] = time.time() - t4
 
@@ -826,19 +831,19 @@ Return JSON:
                 vignette_score, vignette_issues = self.score_vignette(vignette, scenario)
                 quality_scores["vignette"] = vignette_score
                 if vignette_score < 0.6:
-                    print(f"[Agent-P] Early abort: vignette score {vignette_score:.2f}")
+                    logger.debug("Early abort: vignette score %.2f", vignette_score)
                     retry_count += 1
                     continue
 
                 # Step 5: Create explanation
                 t5 = time.time()
-                print(f"[Agent-P] Step 5/6: Creating explanation...")
+                logger.debug("Step 5/6: Creating explanation...")
                 explanation = self.step5_create_explanation(scenario, choices_data)
                 step_times["step5_explanation"] = time.time() - t5
 
                 # Step 6: Quality validation
                 t6 = time.time()
-                print(f"[Agent-P] Step 6/6: Validating...")
+                logger.debug("Step 6/6: Validating...")
                 passes_quality, issues = self.step6_quality_validation(
                     vignette, choices_data, explanation, scenario, specialty
                 )
@@ -848,8 +853,8 @@ Return JSON:
 
                 if passes_quality:
                     avg_score = sum(quality_scores.values()) / len(quality_scores)
-                    print(f"[Agent-P] ✓ Done in {total_time:.1f}s (avg score: {avg_score:.2f})")
-                    print(f"[Agent-P] Step times: {', '.join(f'{k}: {v:.1f}s' for k, v in step_times.items())}")
+                    logger.debug("Done in %.1fs (avg score: %.2f)", total_time, avg_score)
+                    logger.debug("Step times: %s", ', '.join(f'{k}: {v:.1f}s' for k, v in step_times.items()))
 
                     return {
                         "vignette": vignette.strip(),
@@ -872,11 +877,11 @@ Return JSON:
                     }
                 else:
                     retry_count += 1
-                    print(f"[Agent-P] ✗ Validation failed: {', '.join(issues)}")
+                    logger.debug("Validation failed: %s", ', '.join(issues))
 
             except Exception as e:
                 retry_count += 1
-                print(f"[Agent-P] Error: {e}")
+                logger.warning("Error: %s", e)
                 if retry_count > max_retries:
                     raise
 
@@ -919,11 +924,11 @@ Return JSON:
 
         while retry_count <= max_retries:
             try:
-                print(f"[Targeted] Step 1/6: Analyzing examples for {specialty}...")
+                logger.debug("Targeted Step 1/6: Analyzing examples for %s...", specialty)
                 analysis = self.step1_analyze_examples(specialty, examples)
 
                 # Modified step 2 with targeting context
-                print(f"[Targeted] Step 2/6: Creating targeted scenario...")
+                logger.debug("Targeted Step 2/6: Creating targeted scenario...")
                 scenario = self._create_targeted_scenario(
                     specialty, topic, question_type, clinical_setting,
                     analysis, difficulty, targeting_context, most_common_error
@@ -936,7 +941,7 @@ Return JSON:
                     retry_count += 1
                     continue
 
-                print(f"[Targeted] Step 3/6: Generating answer choices...")
+                logger.debug("Targeted Step 3/6: Generating answer choices...")
                 choices_data = self.step3_generate_answer_choices(scenario, specialty, difficulty)
 
                 choices_score, choices_issues = self.score_answer_choices(choices_data)
@@ -945,7 +950,7 @@ Return JSON:
                     retry_count += 1
                     continue
 
-                print(f"[Targeted] Step 4/6: Writing clinical vignette...")
+                logger.debug("Targeted Step 4/6: Writing clinical vignette...")
                 vignette = self.step4_write_vignette(scenario, analysis)
 
                 vignette_score, vignette_issues = self.score_vignette(vignette, scenario)
@@ -954,10 +959,10 @@ Return JSON:
                     retry_count += 1
                     continue
 
-                print(f"[Targeted] Step 5/6: Creating explanation...")
+                logger.debug("Targeted Step 5/6: Creating explanation...")
                 explanation = self.step5_create_explanation(scenario, choices_data)
 
-                print(f"[Targeted] Step 6/6: Validating quality...")
+                logger.debug("Targeted Step 6/6: Validating quality...")
                 passes_quality, issues = self.step6_quality_validation(
                     vignette, choices_data, explanation, scenario, specialty
                 )
@@ -966,7 +971,7 @@ Return JSON:
 
                 if passes_quality:
                     avg_score = sum(quality_scores.values()) / len(quality_scores)
-                    print(f"[Targeted] ✓ Generated in {total_time:.1f}s (score: {avg_score:.2f})")
+                    logger.debug("Targeted generated in %.1fs (score: %.2f)", total_time, avg_score)
 
                     return {
                         "vignette": vignette.strip(),
@@ -990,11 +995,11 @@ Return JSON:
                     }
                 else:
                     retry_count += 1
-                    print(f"[Targeted] ✗ Validation failed: {', '.join(issues)}")
+                    logger.debug("Targeted validation failed: %s", ', '.join(issues))
 
             except Exception as e:
                 retry_count += 1
-                print(f"[Targeted] Error: {e}")
+                logger.warning("Targeted error: %s", e)
                 if retry_count > max_retries:
                     raise
 
@@ -1205,14 +1210,14 @@ def generate_question_fast(db: Session, specialty: Optional[str] = None,
     retry_count = 0
     while retry_count <= max_retries:
         try:
-            print(f"[FastGen] Generating {specialty} question about {topic}...")
+            logger.debug("FastGen generating %s question about %s...", specialty, topic)
 
-            response = get_openai_client().chat.completions.create(
-                model=FINE_TUNED_MODEL,
+            response = openai_service.chat_completion(
                 messages=[
                     {"role": "system", "content": FINE_TUNED_SYSTEM_PROMPT},
                     {"role": "user", "content": prompt}
                 ],
+                model=FINE_TUNED_MODEL,
                 temperature=0.7,
                 max_tokens=3500
             )
@@ -1236,7 +1241,7 @@ def generate_question_fast(db: Session, specialty: Optional[str] = None,
                 raise ValueError(f"Invalid answer_key: {question_data.get('answer_key')}")
 
             generation_time = time.time() - start_time
-            print(f"[FastGen] Generated in {generation_time:.2f}s")
+            logger.debug("FastGen generated in %.2fs", generation_time)
 
             # Format output to match standard question structure
             return {
@@ -1258,13 +1263,13 @@ def generate_question_fast(db: Session, specialty: Optional[str] = None,
 
         except json.JSONDecodeError as e:
             retry_count += 1
-            print(f"[FastGen] JSON parse error (attempt {retry_count}/{max_retries + 1}): {e}")
+            logger.warning("FastGen JSON parse error (attempt %d/%d): %s", retry_count, max_retries + 1, e)
             if retry_count > max_retries:
                 raise ValueError(f"Failed to parse response after {max_retries + 1} attempts")
 
         except Exception as e:
             retry_count += 1
-            print(f"[FastGen] Error (attempt {retry_count}/{max_retries + 1}): {e}")
+            logger.warning("FastGen error (attempt %d/%d): %s", retry_count, max_retries + 1, e)
             if retry_count > max_retries:
                 raise
 
@@ -1294,7 +1299,7 @@ def generate_questions_fast_batch(db: Session, count: int = 5,
             topic = get_high_yield_topic(specialty) if specialty else None
             return generate_question_fast(db, specialty, topic, max_retries=1)
         except Exception as e:
-            print(f"[FastBatch] Question {i+1} failed: {e}")
+            logger.warning("FastBatch question %d failed: %s", i+1, e)
             return None
 
     # Use ThreadPoolExecutor for parallel generation
@@ -1303,7 +1308,7 @@ def generate_questions_fast_batch(db: Session, count: int = 5,
 
     # Filter out None results
     successful = [q for q in results if q is not None]
-    print(f"[FastBatch] Generated {len(successful)}/{count} questions successfully")
+    logger.info("FastBatch generated %d/%d questions successfully", len(successful), count)
     return successful
 
 
@@ -1332,7 +1337,7 @@ def generate_questions_batch(db: Session, count: int = 5,
             topic = get_high_yield_topic(specialty) if specialty else None
             return agent.generate_question(specialty, topic, difficulty, max_retries=1)
         except Exception as e:
-            print(f"[Batch] Question {i+1} failed: {e}")
+            logger.warning("Batch question %d failed: %s", i+1, e)
             return None
 
     # Use ThreadPoolExecutor for parallel generation
@@ -1368,7 +1373,7 @@ def generate_weakness_targeted_question(db: Session, user_id: str) -> Dict:
         # Target the weakest specialty
         weakest = weakness_profile["weak_specialties"][0]
         specialty = weakest["specialty"]
-        print(f"[Targeted] Targeting weak specialty: {specialty} ({weakest['accuracy']:.0%})")
+        logger.debug("Targeting weak specialty: %s (%.0f%%)", specialty, weakest['accuracy'] * 100)
     else:
         # No clear weakness - use weighted random
         specialty = get_weighted_specialty()
@@ -1434,9 +1439,9 @@ def generate_learning_stage_question(db: Session, user_id: str,
     if not topic:
         topic = rec.get("topic") or get_high_yield_topic(specialty)
 
-    print(f"[LearningStage] Generating for {user_id}")
-    print(f"[LearningStage] Stage: {learning_stage}, Difficulty: {difficulty}")
-    print(f"[LearningStage] Target: {specialty} - {topic}")
+    logger.debug("LearningStage generating for user_id=%s", user_id)
+    logger.debug("LearningStage stage=%s, difficulty=%s", learning_stage, difficulty)
+    logger.debug("LearningStage target: %s - %s", specialty, topic)
 
     # Build generation context based on learning stage
     stage_context = _build_learning_stage_context(learning_stage, generation_params)
@@ -1546,7 +1551,7 @@ def generate_optimal_question(db: Session, user_id: Optional[str] = None,
         try:
             return generate_learning_stage_question(db, user_id, topic)
         except Exception as e:
-            print(f"[Optimal] Learning stage generation failed: {e}, falling back")
+            logger.warning("Optimal learning stage generation failed: %s, falling back", e)
 
     # Fallback to standard generation
     if not specialty:

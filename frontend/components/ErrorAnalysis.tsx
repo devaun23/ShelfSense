@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, memo } from 'react';
 
 interface ErrorAnalysisData {
   error_type: string;
@@ -40,7 +40,7 @@ const TEXT_COLOR_MAP = {
   gray: 'text-gray-400'
 } as const;
 
-export default function ErrorAnalysis({ questionId, userId, isCorrect }: ErrorAnalysisProps) {
+export default memo(function ErrorAnalysis({ questionId, userId, isCorrect }: ErrorAnalysisProps) {
   const [errorData, setErrorData] = useState<ErrorAnalysisData | null>(null);
   const [loading, setLoading] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -154,17 +154,18 @@ export default function ErrorAnalysis({ questionId, userId, isCorrect }: ErrorAn
           </div>
         </div>
         <svg
-          className={`w-5 h-5 text-gray-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+          className={`w-5 h-5 text-gray-400 motion-safe:transition-transform motion-safe:duration-200 ${isExpanded ? 'rotate-180' : ''}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
+          aria-hidden="true"
         >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       </button>
 
       {/* Expanded Content */}
-      {isExpanded && (
+      <div className={`motion-safe:transition-all motion-safe:duration-200 ease-out overflow-hidden ${isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}>
         <div className="px-4 pb-4 space-y-4 border-t border-gray-700/50">
           {/* Why This Happened */}
           <div>
@@ -210,14 +211,14 @@ export default function ErrorAnalysis({ questionId, userId, isCorrect }: ErrorAn
 
           {errorData.user_acknowledged && (
             <div className="flex items-center gap-2 text-green-400 text-sm pt-2">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
               <span>Acknowledged - Keep practicing!</span>
             </div>
           )}
         </div>
-      )}
+      </div>
     </div>
   );
-}
+});
