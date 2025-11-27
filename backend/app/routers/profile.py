@@ -56,6 +56,7 @@ class ProfileResponse(BaseModel):
     target_score: Optional[int] = None
     exam_date: Optional[datetime] = None
     avatar_url: Optional[str] = None
+    is_admin: bool = False
     created_at: datetime
     updated_at: Optional[datetime] = None
 
@@ -109,6 +110,7 @@ async def get_profile(
         target_score=current_user.target_score,
         exam_date=current_user.exam_date,
         avatar_url=current_user.avatar_url,
+        is_admin=current_user.is_admin or False,
         created_at=current_user.created_at,
         updated_at=current_user.updated_at
     )
@@ -149,6 +151,7 @@ async def update_profile(
         target_score=current_user.target_score,
         exam_date=current_user.exam_date,
         avatar_url=current_user.avatar_url,
+        is_admin=current_user.is_admin or False,
         created_at=current_user.created_at,
         updated_at=current_user.updated_at
     )

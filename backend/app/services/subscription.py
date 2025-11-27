@@ -97,7 +97,7 @@ def get_or_create_subscription(db: Session, user_id: str) -> Subscription:
 
 
 def get_user_tier(db: Session, user_id: str) -> str:
-    """Get user's current subscription tier."""
+    """Get user's current subscription tier, accounting for grace periods."""
     subscription = get_or_create_subscription(db, user_id)
 
     # Check if subscription has expired
@@ -105,9 +105,42 @@ def get_user_tier(db: Session, user_id: str) -> str:
         # Downgrade to free tier
         subscription.tier = "free"
         subscription.expires_at = None
+        subscription.payment_status = "failed"
         db.commit()
 
+    # Check grace period - if past_due but within grace period, maintain access
+    if subscription.payment_status == "past_due" and subscription.grace_period_ends_at:
+        if datetime.utcnow() < subscription.grace_period_ends_at:
+            # Still in grace period - maintain current tier
+            return subscription.tier
+        else:
+            # Grace period expired - downgrade to free
+            subscription.tier = "free"
+            subscription.payment_status = "failed"
+            db.commit()
+            return "free"
+
     return subscription.tier
+
+
+def get_effective_tier_with_status(db: Session, user_id: str) -> tuple:
+    """
+    Get user's effective tier and whether they're in grace period.
+    Returns (tier, in_grace_period).
+    """
+    subscription = get_or_create_subscription(db, user_id)
+
+    # First get the tier (handles expiration and grace period logic)
+    tier = get_user_tier(db, user_id)
+
+    # Check if currently in grace period
+    in_grace_period = (
+        subscription.payment_status == "past_due" and
+        subscription.grace_period_ends_at is not None and
+        datetime.utcnow() < subscription.grace_period_ends_at
+    )
+
+    return tier, in_grace_period
 
 
 def get_tier_limits(tier: str) -> Dict[str, Any]:
@@ -375,7 +408,7 @@ def can_access_feature(db: Session, user_id: str, feature: str) -> Dict[str, Any
 def get_subscription_status(db: Session, user_id: str) -> Dict[str, Any]:
     """Get comprehensive subscription status for a user."""
     subscription = get_or_create_subscription(db, user_id)
-    tier = get_user_tier(db, user_id)
+    tier, in_grace_period = get_effective_tier_with_status(db, user_id)
     limits = get_tier_limits(tier)
     usage = get_remaining_usage(db, user_id)
 
@@ -391,6 +424,12 @@ def get_subscription_status(db: Session, user_id: str) -> Dict[str, Any]:
         delta = subscription.expires_at - datetime.utcnow()
         days_remaining = max(0, delta.days)
 
+    # Calculate grace period days remaining
+    grace_period_days_remaining = None
+    if in_grace_period and subscription.grace_period_ends_at:
+        delta = subscription.grace_period_ends_at - datetime.utcnow()
+        grace_period_days_remaining = max(0, delta.days)
+
     return {
         "tier": tier,
         "is_active": tier != "free",
@@ -401,7 +440,14 @@ def get_subscription_status(db: Session, user_id: str) -> Dict[str, Any]:
         "expires_at": subscription.expires_at.isoformat() if subscription.expires_at else None,
         "days_remaining": days_remaining,
         "is_cancelled": subscription.cancelled_at is not None,
+        "cancelled_at": subscription.cancelled_at.isoformat() if subscription.cancelled_at else None,
         "can_start_trial": not subscription.has_used_trial,
+        # Payment & grace period info
+        "payment_status": subscription.payment_status or "ok",
+        "stripe_status": subscription.stripe_status,
+        "in_grace_period": in_grace_period,
+        "grace_period_ends_at": subscription.grace_period_ends_at.isoformat() if subscription.grace_period_ends_at else None,
+        "grace_period_days_remaining": grace_period_days_remaining,
         "usage": usage,
         "features": {
             "daily_questions": limits["daily_questions"] if limits["daily_questions"] != float('inf') else "unlimited",

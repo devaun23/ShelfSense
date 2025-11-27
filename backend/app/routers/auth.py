@@ -2,6 +2,9 @@
 Authentication Router
 Handles user registration, login, logout, and token management.
 """
+import os
+import asyncio
+import logging
 from fastapi import APIRouter, Depends, HTTPException, status, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
@@ -27,6 +30,7 @@ from app.services.auth import (
 )
 
 router = APIRouter(prefix="/api/auth", tags=["authentication"])
+logger = logging.getLogger(__name__)
 
 # Security scheme for protected routes
 security = HTTPBearer(auto_error=False)
@@ -174,6 +178,21 @@ async def get_optional_user(
         return None
 
 
+async def get_admin_user(
+    current_user: User = Depends(get_current_user)
+) -> User:
+    """
+    Dependency to require admin access.
+    Use this in admin-only routes.
+    """
+    if not current_user.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required"
+        )
+    return current_user
+
+
 # ==================== Auth Endpoints ====================
 
 @router.post("/register", response_model=AuthResponse, status_code=status.HTTP_201_CREATED)
@@ -265,6 +284,15 @@ async def register(
     )
     db.add(session)
     db.commit()
+
+    # Send welcome email (non-blocking)
+    try:
+        from app.services.email.email_service import get_email_service
+        email_service = get_email_service()
+        asyncio.create_task(email_service.send_welcome_email(db, new_user))
+    except Exception as e:
+        logger.warning(f"Failed to queue welcome email: {e}")
+        # Don't fail registration if email fails
 
     return AuthResponse(
         user=create_user_response(new_user),
@@ -593,6 +621,9 @@ async def clerk_sync(
     # First, try to find user by Clerk ID (stored in id field now)
     existing_user = db.query(User).filter(User.id == request.clerk_user_id).first()
 
+    # Check for admin email env var
+    admin_email = os.getenv("ADMIN_EMAIL")
+
     if existing_user:
         # Update existing user
         existing_user.full_name = request.full_name
@@ -600,6 +631,11 @@ async def clerk_sync(
         if request.email:
             existing_user.email = request.email
         existing_user.last_login = datetime.utcnow()
+
+        # Auto-promote to admin if email matches ADMIN_EMAIL
+        if admin_email and existing_user.email and existing_user.email.lower() == admin_email.lower():
+            existing_user.is_admin = True
+
         db.commit()
         db.refresh(existing_user)
 
@@ -623,6 +659,11 @@ async def clerk_sync(
             email_user.full_name = request.full_name
             email_user.first_name = request.first_name
             email_user.last_login = datetime.utcnow()
+
+            # Auto-promote to admin if email matches ADMIN_EMAIL
+            if admin_email and email_user.email and email_user.email.lower() == admin_email.lower():
+                email_user.is_admin = True
+
             db.commit()
             db.refresh(email_user)
 
@@ -636,13 +677,17 @@ async def clerk_sync(
             )
 
     # Create new user with Clerk ID
+    # Auto-promote to admin if email matches ADMIN_EMAIL
+    is_admin = bool(admin_email and request.email and request.email.lower() == admin_email.lower())
+
     new_user = User(
         id=request.clerk_user_id,  # Use Clerk ID as the user ID
         full_name=request.full_name,
         first_name=request.first_name,
         email=request.email,
         email_verified=True,  # Clerk handles verification
-        last_login=datetime.utcnow()
+        last_login=datetime.utcnow(),
+        is_admin=is_admin
     )
     db.add(new_user)
     db.commit()
@@ -652,6 +697,14 @@ async def clerk_sync(
     settings = UserSettings(user_id=new_user.id)
     db.add(settings)
     db.commit()
+
+    # Send welcome email for new Clerk users (non-blocking)
+    try:
+        from app.services.email.email_service import get_email_service
+        email_service = get_email_service()
+        asyncio.create_task(email_service.send_welcome_email(db, new_user))
+    except Exception as e:
+        logger.warning(f"Failed to queue welcome email for Clerk user: {e}")
 
     return ClerkSyncResponse(
         user_id=new_user.id,

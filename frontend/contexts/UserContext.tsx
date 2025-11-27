@@ -14,6 +14,7 @@ interface User {
   targetScore: number | null;
   examDate: string | null;
   imageUrl?: string;
+  isAdmin: boolean;
 }
 
 interface UserContextType {
@@ -44,6 +45,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const { getToken } = useAuth();
   const [targetScore, setTargetScore] = useState<number | null>(null);
   const [examDate, setExamDate] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [prefsLoaded, setPrefsLoaded] = useState(false);
 
   // Load user preferences from localStorage on mount
@@ -109,6 +111,22 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
       if (!response.ok) {
         console.error('Failed to sync user with backend');
+      }
+
+      // Fetch profile to get admin status and other backend data
+      if (token) {
+        const profileResponse = await fetch(`${getApiUrl()}/api/profile/me`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        if (profileResponse.ok) {
+          const profile = await profileResponse.json();
+          setIsAdmin(profile.is_admin || false);
+          if (profile.target_score) setTargetScore(profile.target_score);
+          if (profile.exam_date) setExamDate(profile.exam_date);
+        }
       }
     } catch (error) {
       console.error('Error syncing user:', error);
@@ -189,6 +207,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
         targetScore,
         examDate,
         imageUrl: clerkUser.imageUrl,
+        isAdmin,
       }
     : null;
 

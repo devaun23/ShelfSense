@@ -26,6 +26,9 @@ class User(Base):
     failed_login_attempts = Column(Integer, default=0)
     locked_until = Column(DateTime, nullable=True)
 
+    # Admin
+    is_admin = Column(Boolean, default=False, index=True)
+
     # Metadata
     created_at = Column(DateTime, default=datetime.utcnow)
     last_login = Column(DateTime, default=datetime.utcnow)
@@ -595,9 +598,15 @@ class Subscription(Base):
     expires_at = Column(DateTime, nullable=True)  # Null for free tier
     billing_cycle = Column(String, nullable=True)  # "monthly" or "yearly"
 
-    # Stripe integration (for future payment processing)
+    # Stripe integration
     stripe_customer_id = Column(String, nullable=True, index=True)
     stripe_subscription_id = Column(String, nullable=True, index=True)
+    stripe_status = Column(String, nullable=True)  # "active", "past_due", "canceled", "trialing"
+    stripe_price_id = Column(String, nullable=True)  # Current price ID
+
+    # Payment status and grace period
+    payment_status = Column(String, default="ok")  # "ok", "past_due", "failed"
+    grace_period_ends_at = Column(DateTime, nullable=True)  # When grace period expires
 
     # Trial tracking
     trial_started_at = Column(DateTime, nullable=True)
@@ -790,6 +799,88 @@ class StudySession(Base):
     # Metadata
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    user = relationship("User")
+
+
+# ============================================================================
+# ADMIN DASHBOARD MODELS
+# ============================================================================
+
+class AdminAuditLog(Base):
+    """
+    Audit trail for admin operations.
+    Records who did what, when, for accountability and debugging.
+    """
+    __tablename__ = "admin_audit_logs"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    admin_user_id = Column(String, ForeignKey("users.id"), nullable=False, index=True)
+    action_type = Column(String, nullable=False, index=True)  # "user:list", "user:role_change", "content:edit", "content:delete"
+    target_type = Column(String, nullable=False)  # "user", "question"
+    target_id = Column(String, nullable=True)
+    previous_state = Column(JSON, nullable=True)
+    new_state = Column(JSON, nullable=True)
+    summary = Column(String, nullable=True)
+    ip_address = Column(String, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow, index=True)
+
+    # Relationships
+    admin_user = relationship("User", foreign_keys=[admin_user_id])
+
+
+# ============================================================================
+# EMAIL NOTIFICATION MODELS
+# ============================================================================
+
+class EmailLog(Base):
+    """
+    Tracks all sent emails for deliverability monitoring and debugging.
+    Records status updates from webhook events (delivered, opened, bounced, etc.)
+    """
+    __tablename__ = "email_logs"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False, index=True)
+    email_type = Column(String, nullable=False, index=True)  # "welcome", "reminder", "password_reset"
+    recipient_email = Column(String, nullable=False)
+    subject = Column(String, nullable=False)
+
+    # Provider tracking
+    provider = Column(String, nullable=False, default="resend")  # "resend", "ses"
+    provider_message_id = Column(String, nullable=True, unique=True, index=True)
+
+    # Status tracking
+    status = Column(String, default="queued", index=True)  # "queued", "sent", "delivered", "opened", "clicked", "bounced", "complained"
+    sent_at = Column(DateTime, nullable=True)
+    delivered_at = Column(DateTime, nullable=True)
+    opened_at = Column(DateTime, nullable=True)
+    clicked_at = Column(DateTime, nullable=True)
+
+    # Error tracking
+    error_message = Column(Text, nullable=True)
+    retry_count = Column(Integer, default=0)
+
+    created_at = Column(DateTime, default=datetime.utcnow, index=True)
+
+    # Relationships
+    user = relationship("User")
+
+
+class UnsubscribeToken(Base):
+    """
+    One-click unsubscribe tokens for CAN-SPAM/GDPR compliance.
+    Each token allows unsubscribing from specific email types or all emails.
+    """
+    __tablename__ = "unsubscribe_tokens"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False, index=True)
+    token = Column(String, nullable=False, unique=True, index=True)
+    email_type = Column(String, nullable=True)  # null = unsubscribe all, or specific type like "reminder"
+    created_at = Column(DateTime, default=datetime.utcnow)
+    used_at = Column(DateTime, nullable=True)
 
     # Relationships
     user = relationship("User")

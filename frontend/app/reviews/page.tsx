@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { useUser } from '@/contexts/UserContext';
 import CalendarHeatmap from '@/components/CalendarHeatmap';
+import { Button, Badge } from '@/components/ui';
 
 // Dynamically import Sidebar to avoid useSearchParams SSR issues
 const Sidebar = dynamic(() => import('@/components/Sidebar'), { ssr: false });
@@ -136,13 +137,13 @@ export default function ReviewsPage() {
     }
   };
 
-  const getStageColor = (stage: string) => {
+  const getStageVariant = (stage: string): 'info' | 'warning' | 'success' | 'purple' | 'default' => {
     switch (stage) {
-      case 'New': return 'text-blue-400 bg-blue-400/10';
-      case 'Learning': return 'text-yellow-400 bg-yellow-400/10';
-      case 'Review': return 'text-green-400 bg-green-400/10';
-      case 'Mastered': return 'text-purple-400 bg-purple-400/10';
-      default: return 'text-gray-400 bg-gray-400/10';
+      case 'New': return 'info';
+      case 'Learning': return 'warning';
+      case 'Review': return 'success';
+      case 'Mastered': return 'purple';
+      default: return 'default';
     }
   };
 
@@ -219,37 +220,33 @@ export default function ReviewsPage() {
           {/* Start Reviews Button */}
           {stats && stats.total_due_today > 0 && (
             <div className="mb-6 md:mb-8">
-              <button
+              <Button
+                variant="primary"
+                size="lg"
                 onClick={startReviews}
-                className="w-full md:w-auto px-6 md:px-8 py-3 md:py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors duration-200 text-base md:text-lg font-semibold"
+                className="w-full md:w-auto bg-emerald-600 hover:bg-emerald-700 focus:ring-emerald-600"
               >
                 Start Today&apos;s Reviews ({stats.total_due_today})
-              </button>
+              </Button>
             </div>
           )}
 
           {/* Tab Navigation */}
           <div className="flex gap-2 mb-6">
-            <button
+            <Button
+              variant={activeTab === 'upcoming' ? 'primary' : 'ghost'}
+              rounded="full"
               onClick={() => setActiveTab('upcoming')}
-              className={`px-5 py-2.5 rounded-full text-sm transition-all ${
-                activeTab === 'upcoming'
-                  ? 'bg-[#4169E1] text-white'
-                  : 'bg-gray-900 border border-gray-800 text-gray-400 hover:text-white hover:border-gray-700'
-              }`}
             >
               Upcoming Reviews
-            </button>
-            <button
+            </Button>
+            <Button
+              variant={activeTab === 'activity' ? 'primary' : 'ghost'}
+              rounded="full"
               onClick={() => setActiveTab('activity')}
-              className={`px-5 py-2.5 rounded-full text-sm transition-all ${
-                activeTab === 'activity'
-                  ? 'bg-[#4169E1] text-white'
-                  : 'bg-gray-900 border border-gray-800 text-gray-400 hover:text-white hover:border-gray-700'
-              }`}
             >
               Activity Heatmap
-            </button>
+            </Button>
           </div>
 
           {/* Activity Heatmap Tab */}
@@ -379,12 +376,9 @@ export default function ReviewsPage() {
                           return acc;
                         }, {} as Record<string, number>)
                       ).map(([stage, count]) => (
-                        <span
-                          key={stage}
-                          className={`px-3 py-1 rounded-full text-xs font-semibold ${getStageColor(stage)}`}
-                        >
+                        <Badge key={stage} variant={getStageVariant(stage)}>
                           {stage}: {count}
-                        </span>
+                        </Badge>
                       ))}
                     </div>
                   </div>
@@ -396,27 +390,19 @@ export default function ReviewsPage() {
                 <h3 className="text-lg font-semibold mb-4">Learning Stages</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getStageColor('New')} mb-2`}>
-                      New
-                    </span>
+                    <Badge variant="info" className="mb-2">New</Badge>
                     <p className="text-sm text-gray-400">First time seeing this question</p>
                   </div>
                   <div>
-                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getStageColor('Learning')} mb-2`}>
-                      Learning
-                    </span>
+                    <Badge variant="warning" className="mb-2">Learning</Badge>
                     <p className="text-sm text-gray-400">Building memory (1-3 day intervals)</p>
                   </div>
                   <div>
-                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getStageColor('Review')} mb-2`}>
-                      Review
-                    </span>
+                    <Badge variant="success" className="mb-2">Review</Badge>
                     <p className="text-sm text-gray-400">Reinforcing knowledge (7-14 day intervals)</p>
                   </div>
                   <div>
-                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getStageColor('Mastered')} mb-2`}>
-                      Mastered
-                    </span>
+                    <Badge variant="purple" className="mb-2">Mastered</Badge>
                     <p className="text-sm text-gray-400">Long-term retention (30+ day intervals)</p>
                   </div>
                 </div>

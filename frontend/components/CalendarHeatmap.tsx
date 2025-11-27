@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState, useCallback, useRef } from 'react';
 
 interface DayData {
   date: string;
@@ -30,6 +30,9 @@ export default function CalendarHeatmap({
   showWeekdayLabels = true,
   onClick,
 }: CalendarHeatmapProps) {
+  const [focusedDate, setFocusedDate] = useState<string | null>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+
   // Color schemes
   const colorSchemes = {
     green: {
@@ -157,6 +160,104 @@ export default function CalendarHeatmap({
     return tooltip;
   };
 
+  // Get accessible label for a day cell
+  const getAccessibleLabel = (date: Date, dayData: DayData | null): string => {
+    const dateStr = date.toLocaleDateString('en-US', {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+    });
+
+    if (!dayData || dayData.count === 0) {
+      return `${dateStr}, No activity`;
+    }
+
+    let label = `${dateStr}, ${dayData.count} question${dayData.count !== 1 ? 's' : ''} answered`;
+    if (dayData.accuracy !== undefined) {
+      label += `, ${Math.round(dayData.accuracy)}% accuracy`;
+    }
+    return label;
+  };
+
+  // Handle keyboard navigation
+  const handleKeyDown = useCallback((e: React.KeyboardEvent, weekIndex: number, dayIndex: number, dateStr: string) => {
+    const totalWeeks = weeks.length;
+    let newWeekIndex = weekIndex;
+    let newDayIndex = dayIndex;
+
+    switch (e.key) {
+      case 'ArrowRight':
+        e.preventDefault();
+        newWeekIndex = weekIndex + 1;
+        if (newWeekIndex >= totalWeeks) {
+          newWeekIndex = 0;
+        }
+        break;
+      case 'ArrowLeft':
+        e.preventDefault();
+        newWeekIndex = weekIndex - 1;
+        if (newWeekIndex < 0) {
+          newWeekIndex = totalWeeks - 1;
+        }
+        break;
+      case 'ArrowDown':
+        e.preventDefault();
+        newDayIndex = dayIndex + 1;
+        if (newDayIndex >= 7) {
+          newDayIndex = 0;
+          newWeekIndex = weekIndex + 1;
+          if (newWeekIndex >= totalWeeks) {
+            newWeekIndex = 0;
+          }
+        }
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        newDayIndex = dayIndex - 1;
+        if (newDayIndex < 0) {
+          newDayIndex = 6;
+          newWeekIndex = weekIndex - 1;
+          if (newWeekIndex < 0) {
+            newWeekIndex = totalWeeks - 1;
+          }
+        }
+        break;
+      case 'Enter':
+      case ' ':
+        e.preventDefault();
+        const day = weeks[weekIndex]?.[dayIndex];
+        if (day && day.date >= start && day.date <= end) {
+          onClick?.(dateStr, day.data);
+        }
+        return;
+      case 'Home':
+        e.preventDefault();
+        newWeekIndex = 0;
+        newDayIndex = 0;
+        break;
+      case 'End':
+        e.preventDefault();
+        newWeekIndex = totalWeeks - 1;
+        newDayIndex = (weeks[totalWeeks - 1]?.length || 1) - 1;
+        break;
+      default:
+        return;
+    }
+
+    // Find the new cell and focus it
+    const newCell = gridRef.current?.querySelector(
+      `[data-week="${newWeekIndex}"][data-day="${newDayIndex}"]`
+    ) as HTMLElement;
+    if (newCell) {
+      newCell.focus();
+      const newDateStr = newCell.getAttribute('data-date');
+      if (newDateStr) {
+        setFocusedDate(newDateStr);
+      }
+    }
+  }, [weeks, start, end, onClick]);
+
   return (
     <div className="overflow-x-auto">
       <div className="inline-block min-w-max">
@@ -194,22 +295,36 @@ export default function CalendarHeatmap({
           )}
 
           {/* Calendar grid */}
-          <div className="flex gap-1">
+          <div
+            ref={gridRef}
+            className="flex gap-1"
+            role="grid"
+            aria-label="Activity calendar"
+          >
             {weeks.map((week, weekIndex) => (
-              <div key={weekIndex} className="flex flex-col gap-1">
+              <div key={weekIndex} className="flex flex-col gap-1" role="row">
                 {week.map((day, dayIndex) => {
                   const count = day.data?.count || 0;
                   const dateStr = day.date.toISOString().split('T')[0];
                   const isInRange = day.date >= start && day.date <= end;
+                  const isFocused = focusedDate === dateStr;
 
                   return (
                     <div
                       key={dayIndex}
-                      className={`w-3 h-3 rounded-sm cursor-pointer transition-all hover:ring-1 hover:ring-white/30 ${
+                      role="gridcell"
+                      tabIndex={isInRange ? (isFocused || (!focusedDate && weekIndex === 0 && dayIndex === 0) ? 0 : -1) : -1}
+                      data-week={weekIndex}
+                      data-day={dayIndex}
+                      data-date={dateStr}
+                      className={`w-3 h-3 rounded-sm cursor-pointer transition-all hover:ring-1 hover:ring-white/30 focus:outline-none focus:ring-2 focus:ring-[#4169E1] focus:ring-offset-1 focus:ring-offset-gray-900 ${
                         isInRange ? getColorClass(count) : 'bg-transparent'
                       }`}
                       title={isInRange ? formatTooltip(day.date, day.data) : ''}
+                      aria-label={isInRange ? getAccessibleLabel(day.date, day.data) : undefined}
                       onClick={() => isInRange && onClick?.(dateStr, day.data)}
+                      onKeyDown={(e) => isInRange && handleKeyDown(e, weekIndex, dayIndex, dateStr)}
+                      onFocus={() => setFocusedDate(dateStr)}
                     />
                   );
                 })}
@@ -219,7 +334,7 @@ export default function CalendarHeatmap({
         </div>
 
         {/* Legend */}
-        <div className="flex items-center justify-end gap-2 mt-4 text-xs text-gray-500">
+        <div className="flex items-center justify-end gap-2 mt-4 text-xs text-gray-500" aria-hidden="true">
           <span>Less</span>
           <div className={`w-3 h-3 rounded-sm ${colors.empty}`} />
           <div className={`w-3 h-3 rounded-sm ${colors.level1}`} />
@@ -228,6 +343,9 @@ export default function CalendarHeatmap({
           <div className={`w-3 h-3 rounded-sm ${colors.level4}`} />
           <span>More</span>
         </div>
+        <p className="sr-only">
+          Use arrow keys to navigate between days, Enter or Space to select a day.
+        </p>
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { useUser } from '@/contexts/UserContext';
 import { SPECIALTIES } from '@/lib/specialties';
+import { Button, Badge } from '@/components/ui';
 
 // Dynamically import Sidebar to avoid useSearchParams SSR issues
 const Sidebar = dynamic(() => import('@/components/Sidebar'), { ssr: false });
@@ -259,12 +260,9 @@ export default function AnalyticsPage() {
         <main className={`min-h-screen bg-black text-white transition-all duration-300 ${sidebarOpen ? 'md:ml-64' : 'ml-0'}`}>
           <div className="flex flex-col items-center justify-center min-h-screen gap-4">
             <p className="text-gray-400">{error || 'No analytics data available'}</p>
-            <button
-              onClick={fetchDashboardData}
-              className="px-6 py-2.5 bg-[#4169E1] text-white rounded-full hover:bg-[#5B7FE8] transition-colors"
-            >
+            <Button variant="primary" rounded="full" onClick={fetchDashboardData}>
               Retry
-            </button>
+            </Button>
           </div>
         </main>
       </>
@@ -350,17 +348,15 @@ export default function AnalyticsPage() {
           {/* Tab Navigation */}
           <div className="flex justify-center gap-2 mb-8">
             {(['performance', 'specialties', 'insights', 'peers'] as TabType[]).map((tab) => (
-              <button
+              <Button
                 key={tab}
+                variant={activeTab === tab ? 'primary' : 'ghost'}
+                rounded="full"
                 onClick={() => setActiveTab(tab)}
-                className={`px-5 py-2.5 rounded-full text-sm capitalize transition-all ${
-                  activeTab === tab
-                    ? 'bg-[#4169E1] text-white'
-                    : 'bg-gray-950 border border-gray-800 text-gray-400 hover:text-white hover:border-gray-700'
-                }`}
+                className="capitalize"
               >
                 {tab}
-              </button>
+              </Button>
             ))}
           </div>
 
@@ -436,9 +432,7 @@ export default function AnalyticsPage() {
                 isOpen={showWeakAreas}
                 onToggle={() => setShowWeakAreas(!showWeakAreas)}
                 badge={weak_areas.length > 0 ? (
-                  <span className="text-xs text-red-400 bg-red-400/10 px-2 py-0.5 rounded-full">
-                    {weak_areas.length} topics
-                  </span>
+                  <Badge variant="danger">{weak_areas.length} topics</Badge>
                 ) : undefined}
               >
                 {weak_areas.length > 0 ? (
@@ -466,9 +460,7 @@ export default function AnalyticsPage() {
                 isOpen={showStrongAreas}
                 onToggle={() => setShowStrongAreas(!showStrongAreas)}
                 badge={strong_areas.length > 0 ? (
-                  <span className="text-xs text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full">
-                    {strong_areas.length} topics
-                  </span>
+                  <Badge variant="success">{strong_areas.length} topics</Badge>
                 ) : undefined}
               >
                 {strong_areas.length > 0 ? (
@@ -633,12 +625,9 @@ export default function AnalyticsPage() {
 
           {/* Action Footer */}
           <div className="text-center pt-10 pb-8">
-            <button
-              onClick={() => router.push('/study')}
-              className="px-8 py-3 bg-[#4169E1] hover:bg-[#5B7FE8] text-white rounded-full transition-colors text-base font-medium"
-            >
+            <Button variant="primary" size="lg" rounded="full" onClick={() => router.push('/study')}>
               Continue Studying
-            </button>
+            </Button>
           </div>
         </div>
       </main>

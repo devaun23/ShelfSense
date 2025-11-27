@@ -10,6 +10,7 @@ import FlagButton from '@/components/FlagButton';
 import { useUser } from '@/contexts/UserContext';
 import { getSpecialtyByApiName, FULL_PREP_MODE, Specialty } from '@/lib/specialties';
 import { SkeletonQuestion, LoadingSpinner } from '@/components/SkeletonLoader';
+import { Button } from '@/components/ui';
 
 // Dynamically import Sidebar to avoid useSearchParams SSR issues
 const Sidebar = dynamic(() => import('@/components/Sidebar'), { ssr: false });
@@ -254,12 +255,9 @@ function StudyContent() {
           <div className="flex flex-col items-center justify-center min-h-screen gap-4 px-4">
             <p className="text-red-400 text-center">Connection issue - unable to verify your session</p>
             <p className="text-gray-500 text-sm text-center">Please check your internet connection and try again.</p>
-            <button
-              onClick={() => window.location.reload()}
-              className="px-4 py-2 text-sm bg-gray-900 text-white border border-gray-800 rounded-lg hover:border-gray-700 transition-colors"
-            >
+            <Button variant="secondary" size="md" onClick={() => window.location.reload()}>
               Retry
-            </button>
+            </Button>
           </div>
         </main>
       </>
@@ -298,18 +296,12 @@ function StudyContent() {
           <div className="flex flex-col items-center justify-center min-h-screen gap-4 px-4">
             <p className="text-gray-400 text-center">{error || 'No questions available'}</p>
             <div className="flex gap-3">
-              <button
-                onClick={() => { setError(null); loadNextQuestion(); }}
-                className="px-4 py-2 text-sm bg-gray-900 text-white border border-gray-800 rounded-lg hover:border-gray-700 transition-colors"
-              >
+              <Button variant="secondary" size="md" onClick={() => { setError(null); loadNextQuestion(); }}>
                 Try Again
-              </button>
-              <button
-                onClick={handleBackToHome}
-                className="px-4 py-2 text-sm text-gray-400 hover:text-white border border-gray-800 rounded-lg hover:border-gray-700 transition-colors"
-              >
+              </Button>
+              <Button variant="ghost" size="md" onClick={handleBackToHome}>
                 ← Back to Home
-              </button>
+              </Button>
             </div>
           </div>
         </main>
@@ -553,21 +545,15 @@ function StudyContent() {
           {/* Action Button */}
           <div className="flex justify-center">
             {!feedback && selectedAnswer && (
-              <button
-                onClick={handleSubmit}
-                className="px-8 py-3 bg-[#4169E1] hover:bg-[#5B7FE8] text-white rounded-full transition-colors text-base font-medium"
-              >
+              <Button variant="primary" size="lg" rounded="full" onClick={handleSubmit}>
                 Submit
-              </button>
+              </Button>
             )}
 
             {feedback && (
-              <button
-                onClick={handleNext}
-                className="px-8 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-full transition-colors text-base font-medium border border-gray-800"
-              >
+              <Button variant="secondary" size="lg" rounded="full" onClick={handleNext}>
                 Continue
-              </button>
+              </Button>
             )}
           </div>
         </div>

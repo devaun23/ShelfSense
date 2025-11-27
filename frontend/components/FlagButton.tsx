@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { Button } from '@/components/ui';
 
 interface FlagButtonProps {
   questionId: string;
@@ -291,22 +292,27 @@ export default function FlagButton({
 
             {/* Actions */}
             <div className="flex gap-2">
-              <button
+              <Button
+                variant="ghost"
+                size="sm"
+                className="flex-1"
                 onClick={() => {
                   setShowMenu(false);
                   triggerRef.current?.focus();
                 }}
-                className="flex-1 px-3 py-2 text-sm text-gray-400 hover:text-white border border-gray-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500"
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="warning"
+                size="sm"
+                className="flex-1"
                 onClick={handleFlag}
                 disabled={loading}
-                className="flex-1 px-3 py-2 text-sm bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 disabled:opacity-50"
+                isLoading={loading}
               >
                 {loading ? 'Saving...' : 'Flag'}
-              </button>
+              </Button>
             </div>
           </div>
         </div>

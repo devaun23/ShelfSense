@@ -286,6 +286,7 @@ def main():
     parser.add_argument("--output", default="training_data.jsonl", help="Output file name")
     parser.add_argument("--validate", action="store_true", help="Validate questions before export")
     parser.add_argument("--min-quality", action="store_true", help="Only include questions with all enhanced fields")
+    parser.add_argument("--limit", type=int, help="Limit number of questions to use (for budget control)")
     args = parser.parse_args()
 
     db_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), args.db)
@@ -333,6 +334,12 @@ def main():
     if not questions:
         print("\nNo questions to export!")
         return
+
+    # Apply limit if specified (for budget control)
+    if args.limit and len(questions) > args.limit:
+        random.shuffle(questions)
+        questions = questions[:args.limit]
+        print(f"Limited to {args.limit} questions (for budget control)")
 
     # Create training examples
     print("\nCreating training examples...")

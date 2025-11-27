@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { useUser } from '@/contexts/UserContext';
 import { LoadingSpinner } from '@/components/SkeletonLoader';
+import { Button, Badge } from '@/components/ui';
 
 const Sidebar = dynamic(() => import('@/components/Sidebar'), { ssr: false });
 
@@ -195,12 +196,9 @@ function FlaggedContent() {
             </div>
 
             {stats && stats.total_active > 0 && (
-              <button
-                onClick={startReviewSession}
-                className="px-6 py-2.5 bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 rounded-lg transition-colors font-medium"
-              >
+              <Button variant="warning" onClick={startReviewSession}>
                 Start Review Session
-              </button>
+              </Button>
             )}
           </div>
 
@@ -274,12 +272,9 @@ function FlaggedContent() {
               <p className="text-gray-500 mb-6">
                 Flag questions during your study sessions to review them later
               </p>
-              <button
-                onClick={() => router.push('/study')}
-                className="px-6 py-2.5 bg-[#4169E1] hover:bg-[#5B7FE8] text-white rounded-lg transition-colors"
-              >
+              <Button variant="primary" onClick={() => router.push('/study')}>
                 Start Studying
-              </button>
+              </Button>
             </div>
           ) : (
             <div className="space-y-3">
@@ -298,33 +293,29 @@ function FlaggedContent() {
                       {/* Meta Info */}
                       <div className="flex flex-wrap items-center gap-2">
                         {/* Priority Badge */}
-                        <span className={`px-2 py-0.5 text-xs rounded-full ${PRIORITY_LABELS[flag.priority]?.color || 'text-gray-400 bg-gray-800'}`}>
+                        <Badge variant={flag.priority === 3 ? 'danger' : flag.priority === 2 ? 'warning' : 'info'}>
                           {PRIORITY_LABELS[flag.priority]?.label || 'Normal'}
-                        </span>
+                        </Badge>
 
                         {/* Reason Badge */}
                         {flag.flag_reason && (
-                          <span className="px-2 py-0.5 text-xs rounded-full bg-gray-800 text-gray-400">
+                          <Badge variant="default">
                             {FLAG_REASON_LABELS[flag.flag_reason] || flag.flag_reason}
-                          </span>
+                          </Badge>
                         )}
 
                         {/* Specialty */}
                         {flag.question?.specialty && (
-                          <span className="px-2 py-0.5 text-xs rounded-full bg-gray-800 text-gray-500">
+                          <Badge variant="default">
                             {flag.question.specialty}
-                          </span>
+                          </Badge>
                         )}
 
                         {/* Correct/Incorrect when flagged */}
                         {flag.flagged_after_correct !== null && (
-                          <span className={`px-2 py-0.5 text-xs rounded-full ${
-                            flag.flagged_after_correct
-                              ? 'bg-emerald-500/10 text-emerald-400'
-                              : 'bg-red-500/10 text-red-400'
-                          }`}>
+                          <Badge variant={flag.flagged_after_correct ? 'success' : 'danger'}>
                             {flag.flagged_after_correct ? 'Got it right' : 'Got it wrong'}
-                          </span>
+                          </Badge>
                         )}
 
                         {/* Review count */}

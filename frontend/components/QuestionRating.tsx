@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { Button } from '@/components/ui';
 
 interface QuestionRatingProps {
   questionId: string;
@@ -13,6 +14,58 @@ export default function QuestionRating({ questionId, userId, onRatingComplete }:
   const [selectedRating, setSelectedRating] = useState<boolean | null>(null);
   const [feedback, setFeedback] = useState('');
   const [submitting, setSubmitting] = useState(false);
+
+  const modalRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const previousActiveElement = useRef<HTMLElement | null>(null);
+
+  // Handle ESC key to close modal
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (!showModal) return;
+
+    if (e.key === 'Escape') {
+      handleSkip();
+    }
+
+    // Focus trap
+    if (e.key === 'Tab' && modalRef.current) {
+      const focusableElements = modalRef.current.querySelectorAll(
+        'button:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusableElements.length === 0) return;
+
+      const firstElement = focusableElements[0] as HTMLElement;
+      const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+      if (e.shiftKey && document.activeElement === firstElement) {
+        e.preventDefault();
+        lastElement.focus();
+      } else if (!e.shiftKey && document.activeElement === lastElement) {
+        e.preventDefault();
+        firstElement.focus();
+      }
+    }
+  }, [showModal]);
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [handleKeyDown]);
+
+  // Focus textarea and store previous element when modal opens
+  useEffect(() => {
+    if (showModal) {
+      previousActiveElement.current = document.activeElement as HTMLElement;
+      document.body.style.overflow = 'hidden';
+      textareaRef.current?.focus();
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [showModal]);
 
   const handleRatingClick = (rating: boolean) => {
     setSelectedRating(rating);
@@ -59,28 +112,29 @@ export default function QuestionRating({ questionId, userId, onRatingComplete }:
     setShowModal(false);
     setFeedback('');
     setSelectedRating(null);
+    previousActiveElement.current?.focus();
     onRatingComplete();
   };
 
   return (
     <>
       {/* Minimal Floating Rating Buttons - Bottom Right */}
-      <div className="fixed bottom-6 right-6 flex gap-2 z-50">
+      <div className="fixed bottom-6 right-6 flex gap-2 z-50" role="group" aria-label="Rate this question">
         <button
           onClick={() => handleRatingClick(true)}
-          className="w-12 h-12 rounded-lg bg-gray-900 hover:bg-[#10b981] border border-gray-800 hover:border-[#10b981] text-gray-400 hover:text-white flex items-center justify-center transition-all"
-          title="Good question"
+          className="w-12 h-12 rounded-lg bg-gray-900 hover:bg-[#10b981] border border-gray-800 hover:border-[#10b981] text-gray-400 hover:text-white flex items-center justify-center transition-all focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-black"
+          aria-label="Rate as good question"
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
           </svg>
         </button>
         <button
           onClick={() => handleRatingClick(false)}
-          className="w-12 h-12 rounded-lg bg-gray-900 hover:bg-[#ef4444] border border-gray-800 hover:border-[#ef4444] text-gray-400 hover:text-white flex items-center justify-center transition-all"
-          title="Bad question"
+          className="w-12 h-12 rounded-lg bg-gray-900 hover:bg-[#ef4444] border border-gray-800 hover:border-[#ef4444] text-gray-400 hover:text-white flex items-center justify-center transition-all focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-black"
+          aria-label="Report issue with question"
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
@@ -88,18 +142,30 @@ export default function QuestionRating({ questionId, userId, onRatingComplete }:
 
       {/* Minimal Feedback Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-[100] p-4">
-          <div className="bg-gray-950 rounded-lg max-w-md w-full p-6 border border-gray-800">
-            <h2 className="text-xl font-semibold text-white mb-2">
+        <div
+          className="fixed inset-0 bg-black/80 flex items-center justify-center z-[100] p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="rating-modal-title"
+          aria-describedby="rating-modal-description"
+          onClick={(e) => e.target === e.currentTarget && handleSkip()}
+        >
+          <div ref={modalRef} className="bg-gray-950 rounded-lg max-w-md w-full p-6 border border-gray-800">
+            <h2 id="rating-modal-title" className="text-xl font-semibold text-white mb-2">
               {selectedRating ? 'Good Question' : 'Report Issue'}
             </h2>
-            <p className="text-gray-500 text-sm mb-4">
+            <p id="rating-modal-description" className="text-gray-500 text-sm mb-4">
               {selectedRating
                 ? 'What made this question good?'
                 : 'Help improve by explaining the issue'}
             </p>
 
+            <label htmlFor="rating-feedback" className="sr-only">
+              {selectedRating ? 'Optional feedback' : 'Describe the issue'}
+            </label>
             <textarea
+              ref={textareaRef}
+              id="rating-feedback"
               value={feedback}
               onChange={(e) => setFeedback(e.target.value)}
               placeholder={
@@ -107,25 +173,26 @@ export default function QuestionRating({ questionId, userId, onRatingComplete }:
                   ? 'Optional feedback...'
                   : 'What was wrong with this question?'
               }
-              className="w-full h-24 px-4 py-3 bg-black border border-gray-800 rounded-lg text-white placeholder-gray-600 focus:border-[#4169E1] resize-none"
-              autoFocus
+              className="w-full h-24 px-4 py-3 bg-black border border-gray-800 rounded-lg text-white placeholder-gray-600 focus:border-[#4169E1] focus:outline-none focus:ring-1 focus:ring-[#4169E1] resize-none"
             />
 
             <div className="flex gap-2 mt-4">
-              <button
+              <Button
+                variant="primary"
+                className="flex-1"
                 onClick={handleSubmit}
                 disabled={submitting}
-                className="flex-1 px-4 py-3 bg-[#4169E1] hover:bg-[#5B7FE8] disabled:bg-gray-800 text-white rounded-lg transition-colors"
+                isLoading={submitting}
               >
                 {submitting ? 'Submitting...' : 'Submit'}
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="secondary"
                 onClick={handleSkip}
                 disabled={submitting}
-                className="px-4 py-3 bg-gray-900 hover:bg-gray-800 disabled:bg-gray-900 text-gray-400 rounded-lg transition-colors"
               >
                 Skip
-              </button>
+              </Button>
             </div>
           </div>
         </div>

@@ -1,11 +1,12 @@
 import os
+import asyncio
 import sentry_sdk
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from app.database import engine, Base
-from app.routers import questions, analytics, users, reviews, chat, adaptive_engine, auth, profile, sessions, subscription, content_quality, study_plan, content, batch_generation, testing_qa, study_modes, flagged
+from app.routers import questions, analytics, users, reviews, chat, adaptive_engine, auth, profile, sessions, subscription, content_quality, study_plan, content, batch_generation, testing_qa, study_modes, flagged, admin, payments, webhooks, email
 from app.middleware.rate_limiter import RateLimitMiddleware
 
 # Load environment variables
@@ -41,6 +42,17 @@ async def lifespan(app: FastAPI):
             # Don't crash on pool init failure - app can still work
     else:
         print("[Startup] Pool warming disabled via ENABLE_POOL_WARMING=false")
+
+    # Start email reminder scheduler if Resend API key is configured
+    if os.getenv("RESEND_API_KEY"):
+        try:
+            from app.services.email import run_hourly_reminder_check
+            asyncio.create_task(run_hourly_reminder_check())
+            print("[Startup] Email reminder scheduler started")
+        except Exception as e:
+            print(f"[Startup] Warning: Email scheduler failed to start: {e}")
+    else:
+        print("[Startup] Email reminders disabled (no RESEND_API_KEY)")
 
     yield  # Application runs here
 
@@ -88,6 +100,10 @@ app.include_router(batch_generation.router)  # Batch question generation
 app.include_router(testing_qa.router)  # Testing/QA Agent
 app.include_router(study_modes.router)  # Study Modes (Timed, Tutor, Challenge)
 app.include_router(flagged.router)  # Question flagging/marking system
+app.include_router(admin.router)  # Admin dashboard
+app.include_router(payments.router)  # Stripe payments
+app.include_router(webhooks.router)  # Stripe webhooks
+app.include_router(email.router)  # Email notifications
 
 
 @app.get("/")

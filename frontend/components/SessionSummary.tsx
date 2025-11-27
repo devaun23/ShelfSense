@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui';
 
 interface SpecialtyBreakdown {
   correct: number;
@@ -76,12 +77,9 @@ export default function SessionSummary({ sessionId, onClose, onNewSession }: Ses
       <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
         <div className="bg-zinc-900 rounded-xl p-8 text-center">
           <p className="text-red-400 mb-4">{error || 'Failed to load summary'}</p>
-          <button
-            onClick={() => router.push('/')}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg"
-          >
+          <Button variant="primary" onClick={() => router.push('/')}>
             Go Home
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -232,25 +230,16 @@ export default function SessionSummary({ sessionId, onClose, onNewSession }: Ses
 
         {/* Actions */}
         <div className="p-6 flex justify-center gap-4">
-          <button
-            onClick={() => router.push('/')}
-            className="px-6 py-3 bg-zinc-700 hover:bg-zinc-600 text-white rounded-lg transition-colors"
-          >
+          <Button variant="secondary" onClick={() => router.push('/')}>
             Go Home
-          </button>
-          <button
-            onClick={() => router.push('/analytics')}
-            className="px-6 py-3 bg-zinc-700 hover:bg-zinc-600 text-white rounded-lg transition-colors"
-          >
+          </Button>
+          <Button variant="secondary" onClick={() => router.push('/analytics')}>
             View Analytics
-          </button>
+          </Button>
           {onNewSession && (
-            <button
-              onClick={onNewSession}
-              className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-            >
+            <Button variant="primary" onClick={onNewSession}>
               New Session
-            </button>
+            </Button>
           )}
         </div>
       </div>

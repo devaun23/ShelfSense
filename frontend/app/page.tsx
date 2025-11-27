@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { useUser } from '@/contexts/UserContext';
+import { Button, Badge } from '@/components/ui';
+import WelcomeModal from '@/components/WelcomeModal';
 
 // Dynamically import Sidebar to avoid useSearchParams SSR issues
 const Sidebar = dynamic(() => import('@/components/Sidebar'), { ssr: false });
@@ -22,12 +24,21 @@ export default function Home() {
   const [totalAttempts, setTotalAttempts] = useState(0);
   const [dueToday, setDueToday] = useState(0);
   const router = useRouter();
-  const { user, isLoading } = useUser();
+  const { user, isLoading, updateTargetScore, updateExamDate } = useUser();
+  const [showWelcome, setShowWelcome] = useState(false);
 
   useEffect(() => {
     // Middleware handles auth redirect - just load stats when user is available
     if (user) {
       loadUserStats();
+
+      // Check if onboarding is needed
+      const onboardingKey = `shelfsense_onboarding_complete_${user.userId}`;
+      const hasCompletedOnboarding = localStorage.getItem(onboardingKey) === 'true';
+
+      if (!hasCompletedOnboarding && user.targetScore === null && user.examDate === null) {
+        setShowWelcome(true);
+      }
     }
   }, [user]);
 
@@ -58,6 +69,24 @@ export default function Home() {
     }
   };
 
+  // Handle onboarding completion
+  const handleWelcomeComplete = async (targetScore: number, examDate: string) => {
+    if (user) {
+      await updateTargetScore(targetScore);
+      await updateExamDate(examDate);
+      localStorage.setItem(`shelfsense_onboarding_complete_${user.userId}`, 'true');
+    }
+    setShowWelcome(false);
+  };
+
+  // Handle onboarding skip
+  const handleWelcomeSkip = () => {
+    if (user) {
+      localStorage.setItem(`shelfsense_onboarding_complete_${user.userId}`, 'true');
+    }
+    setShowWelcome(false);
+  };
+
   // Get time-based greeting
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -80,6 +109,15 @@ export default function Home() {
 
   return (
     <>
+      {/* Onboarding Modal */}
+      {showWelcome && user && (
+        <WelcomeModal
+          firstName={user.firstName}
+          onComplete={handleWelcomeComplete}
+          onSkip={handleWelcomeSkip}
+        />
+      )}
+
       <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
 
       <main className={`min-h-screen bg-black text-white transition-all duration-300 ${
@@ -105,10 +143,7 @@ export default function Home() {
             {/* Quick Action Buttons */}
             <div className="flex flex-wrap justify-center gap-2 mb-12">
               {/* Reviews Calendar */}
-              <button
-                onClick={() => router.push('/reviews')}
-                className="flex items-center gap-2 px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-full text-sm text-gray-400 hover:text-white hover:border-gray-700 hover:bg-gray-900 transition-all"
-              >
+              <Button variant="ghost" rounded="full" onClick={() => router.push('/reviews')}>
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                   <line x1="3" y1="10" x2="21" y2="10" />
@@ -117,33 +152,25 @@ export default function Home() {
                 </svg>
                 <span>Reviews</span>
                 {dueToday > 0 && (
-                  <span className="ml-1 px-1.5 py-0.5 bg-emerald-500/20 text-emerald-400 text-xs rounded-full">
-                    {dueToday}
-                  </span>
+                  <Badge variant="success" size="sm">{dueToday}</Badge>
                 )}
-              </button>
+              </Button>
 
               {/* Analytics */}
-              <button
-                onClick={() => router.push('/analytics')}
-                className="flex items-center gap-2 px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-full text-sm text-gray-400 hover:text-white hover:border-gray-700 hover:bg-gray-900 transition-all"
-              >
+              <Button variant="ghost" rounded="full" onClick={() => router.push('/analytics')}>
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
                 <span>Analytics</span>
-              </button>
+              </Button>
 
               {/* Weak Areas */}
-              <button
-                onClick={() => router.push('/study?mode=weak')}
-                className="flex items-center gap-2 px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-full text-sm text-gray-400 hover:text-white hover:border-gray-700 hover:bg-gray-900 transition-all"
-              >
+              <Button variant="ghost" rounded="full" onClick={() => router.push('/study?mode=weak')}>
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
                 <span>Weak Areas</span>
-              </button>
+              </Button>
             </div>
 
             {/* Stats section - minimal, centered */}
