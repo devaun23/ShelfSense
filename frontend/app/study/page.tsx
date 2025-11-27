@@ -102,6 +102,7 @@ function StudyContent() {
   const [error, setError] = useState<string | null>(null);
   const [authTimeout, setAuthTimeout] = useState(false);
   const [confidenceLevel, setConfidenceLevel] = useState<number | null>(null);
+  const [slowLoadWarning, setSlowLoadWarning] = useState(false);
 
   // Refs for keyboard handler (prevents handler recreation on state changes)
   const questionRef = useRef<Question | null>(null);
@@ -146,6 +147,7 @@ function StudyContent() {
     setExpandedChoices(new Set());
     setStartTime(Date.now());
     setConfidenceLevel(null);
+    setSlowLoadWarning(false);
 
     if (nextQuestion) {
       setQuestion(nextQuestion);
@@ -155,8 +157,17 @@ function StudyContent() {
     } else {
       setLoading(true);
       setError(null);
+
+      // Show slow load warning after 3 seconds
+      const slowLoadTimer = setTimeout(() => {
+        setSlowLoadWarning(true);
+      }, 3000);
+
       try {
         const response = await fetch(getApiUrl());
+        clearTimeout(slowLoadTimer);
+        setSlowLoadWarning(false);
+
         if (response.ok) {
           const data = await response.json();
           setQuestion(data);
@@ -169,6 +180,8 @@ function StudyContent() {
           setError(errorData.detail || 'Failed to load question. Please check your connection.');
         }
       } catch (error) {
+        clearTimeout(slowLoadTimer);
+        setSlowLoadWarning(false);
         console.error('Error loading question:', error);
         setError('Network error. Please check your internet connection.');
       } finally {
@@ -330,11 +343,18 @@ function StudyContent() {
         }`}>
           <div className="max-w-3xl mx-auto px-4 md:px-6 py-6 md:py-8 pt-14 md:pt-16 pb-24 md:pb-32">
             {/* Loading header */}
-            <div className="flex flex-wrap items-center gap-3 mb-6 md:mb-8">
-              <LoadingSpinner size="sm" />
-              <span className="text-gray-500">
-                {userLoading ? 'Verifying session...' : 'Loading question...'}
-              </span>
+            <div className="flex flex-col gap-3 mb-6 md:mb-8">
+              <div className="flex items-center gap-3">
+                <LoadingSpinner size="sm" />
+                <span className="text-gray-500">
+                  {userLoading ? 'Verifying session...' : 'Loading question...'}
+                </span>
+              </div>
+              {slowLoadWarning && !userLoading && (
+                <div className="text-sm text-gray-600 animate-pulse">
+                  Generating a fresh question for you... This may take a moment.
+                </div>
+              )}
             </div>
             <SkeletonQuestion />
           </div>

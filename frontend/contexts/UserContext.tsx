@@ -17,6 +17,26 @@ interface User {
   isAdmin: boolean;
 }
 
+// ==================== Helper Functions ====================
+
+/**
+ * Properly format a name to Title Case
+ * Handles ALL CAPS, all lowercase, and hyphenated names
+ */
+function formatName(name: string | null | undefined): string {
+  if (!name) return 'User';
+
+  // Handle names that are all uppercase or all lowercase
+  return name
+    .split(/[\s-]+/) // Split on spaces and hyphens
+    .map(part => {
+      if (part.length === 0) return '';
+      // Capitalize first letter, lowercase rest
+      return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
+    })
+    .join(name.includes('-') ? '-' : ' ');
+}
+
 interface UserContextType {
   user: User | null;
   isLoading: boolean;
@@ -200,8 +220,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const user: User | null = clerkUser
     ? {
         userId: clerkUser.id,
-        fullName: clerkUser.fullName || clerkUser.firstName || 'User',
-        firstName: clerkUser.firstName || 'User',
+        fullName: formatName(clerkUser.fullName || clerkUser.firstName),
+        firstName: formatName(clerkUser.firstName),
         email: clerkUser.primaryEmailAddress?.emailAddress || '',
         emailVerified: clerkUser.primaryEmailAddress?.verification?.status === 'verified',
         targetScore,
