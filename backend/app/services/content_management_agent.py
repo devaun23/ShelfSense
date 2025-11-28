@@ -56,7 +56,7 @@ SPECIALTIES = {
     "internal_medicine": ["Internal Medicine", "Medicine", "IM"],
     "surgery": ["Surgery", "Surg"],
     "pediatrics": ["Pediatrics", "Peds"],
-    "obstetrics_gynecology": ["OB/GYN", "Obstetrics", "Gynecology", "ObGyn"],
+    "obstetrics_gynecology": ["OBGYN", "Obstetrics", "Gynecology", "ObGyn"],
     "psychiatry": ["Psychiatry", "Psych"],
     "neurology": ["Neurology", "Neuro"],
     "family_medicine": ["Family Medicine", "FM"],

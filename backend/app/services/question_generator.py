@@ -237,7 +237,7 @@ def generate_question(
     prompt = f"""You are an expert USMLE Step 2 CK question writer creating exam-quality questions for a medical student targeting a 280+ Step 2 CK score and 99th percentile shelf exams.
 
 QUESTION SPECIFICATIONS (USMLE Official Blueprint):
-- DISCIPLINE: {specialty} (Following USMLE distribution: Medicine 55-65%, Surgery 20-30%, Pediatrics 17-27%, OB/GYN 10-20%, Psychiatry 10-15%)
+- DISCIPLINE: {specialty} (Following USMLE distribution: Medicine 55-65%, Surgery 20-30%, Pediatrics 17-27%, OBGYN 10-20%, Psychiatry 10-15%)
 - HIGH-YIELD TOPIC: {topic} (From First Aid Step 2 CK high-yield material)
 - COMPETENCY TESTED: {question_type} (Following USMLE task distribution)
 - CLINICAL SETTING: {clinical_setting}

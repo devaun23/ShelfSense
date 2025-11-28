@@ -1,5 +1,5 @@
 // Specialty configuration for ShelfSense MVP
-// All 8 shelf specialties + Step 2 CK Full Prep mode
+// All 8 shelf specialties + Step 2 CK mode
 
 export interface Specialty {
   id: string;
@@ -7,7 +7,6 @@ export interface Specialty {
   apiName: string; // Name to send to backend API
   slug: string; // URL-friendly slug for portal routes
   description?: string; // Short description for portal dashboard
-  icon?: string; // Emoji or icon identifier
 }
 
 export const SPECIALTIES: Specialty[] = [
@@ -17,7 +16,6 @@ export const SPECIALTIES: Specialty[] = [
     apiName: 'Internal Medicine',
     slug: 'internal-medicine',
     description: 'Cardiology, Pulmonology, GI, Nephrology, Heme/Onc, Endocrine, Rheumatology, ID',
-    icon: '🏥',
   },
   {
     id: 'surgery',
@@ -25,7 +23,6 @@ export const SPECIALTIES: Specialty[] = [
     apiName: 'Surgery',
     slug: 'surgery',
     description: 'General Surgery, Trauma, Vascular, Surgical Emergencies',
-    icon: '🔪',
   },
   {
     id: 'pediatrics',
@@ -33,7 +30,6 @@ export const SPECIALTIES: Specialty[] = [
     apiName: 'Pediatrics',
     slug: 'pediatrics',
     description: 'Growth & Development, Pediatric Diseases, Neonatology',
-    icon: '👶',
   },
   {
     id: 'psychiatry',
@@ -41,15 +37,13 @@ export const SPECIALTIES: Specialty[] = [
     apiName: 'Psychiatry',
     slug: 'psychiatry',
     description: 'Mood Disorders, Psychosis, Anxiety, Substance Use, Therapy',
-    icon: '🧠',
   },
   {
-    id: 'ob-gyn',
-    name: 'OB-GYN',
+    id: 'obgyn',
+    name: 'OBGYN',
     apiName: 'Obstetrics and Gynecology',
-    slug: 'ob-gyn',
+    slug: 'obgyn',
     description: 'Pregnancy, Labor & Delivery, Gynecologic Conditions',
-    icon: '🤰',
   },
   {
     id: 'family-medicine',
@@ -57,7 +51,6 @@ export const SPECIALTIES: Specialty[] = [
     apiName: 'Family Medicine',
     slug: 'family-medicine',
     description: 'Preventive Care, Chronic Disease Management, All Ages',
-    icon: '👨‍👩‍👧‍👦',
   },
   {
     id: 'emergency-medicine',
@@ -65,7 +58,6 @@ export const SPECIALTIES: Specialty[] = [
     apiName: 'Emergency Medicine',
     slug: 'emergency-medicine',
     description: 'Trauma, Resuscitation, Acute Care, Toxicology',
-    icon: '🚨',
   },
   {
     id: 'neurology',
@@ -73,18 +65,16 @@ export const SPECIALTIES: Specialty[] = [
     apiName: 'Neurology',
     slug: 'neurology',
     description: 'Stroke, Seizures, Headache, Neuromuscular, Dementia',
-    icon: '🧬',
   },
 ];
 
-// Step 2 CK Full Prep mode - mixed questions from all specialties
+// Step 2 CK mode - mixed questions from all specialties
 export const FULL_PREP_MODE: Specialty = {
   id: 'step2-ck',
-  name: 'Step 2 CK Full Prep',
+  name: 'Step 2 CK',
   apiName: '', // Empty means no specialty filter - gets mixed questions
   slug: 'step2-ck',
   description: 'Mixed practice across all specialties for comprehensive Step 2 CK prep',
-  icon: '📚',
 };
 
 // All portals including full prep mode

@@ -12,7 +12,6 @@ interface StudyModeCard {
   id: string;
   name: string;
   description: string;
-  icon: string;
   path: string;
   features: string[];
   bestFor: string;
@@ -82,7 +81,6 @@ export default function StudyModesPage() {
       id: 'timed',
       name: 'Timed Mode',
       description: 'Simulate real exam conditions with a countdown timer',
-      icon: '⏱️',
       path: '/study-modes/timed',
       features: [
         '6 minutes per question (customizable)',
@@ -96,7 +94,6 @@ export default function StudyModesPage() {
       id: 'tutor',
       name: 'Tutor Mode',
       description: 'Get immediate feedback after each question',
-      icon: '📚',
       path: '/study',
       features: [
         'Instant feedback after each answer',
@@ -111,7 +108,6 @@ export default function StudyModesPage() {
       id: 'challenge',
       name: 'Challenge Mode',
       description: 'Test yourself with the hardest questions',
-      icon: '🎯',
       path: '/study-modes/challenge',
       features: [
         'Only questions with < 60% accuracy',
@@ -126,7 +122,6 @@ export default function StudyModesPage() {
       id: 'review',
       name: 'Review Mode',
       description: 'Study questions scheduled for review today',
-      icon: '🔄',
       path: '/study-modes/review',
       features: [
         'Spaced repetition algorithm (SM-2)',
@@ -176,13 +171,10 @@ export default function StudyModesPage() {
                   </div>
                 )}
 
-                {/* Icon & Title */}
-                <div className="flex items-start gap-4 mb-4">
-                  <div className="text-5xl">{mode.icon}</div>
-                  <div className="flex-1">
-                    <h2 className="text-2xl font-bold mb-2">{mode.name}</h2>
-                    <p className="text-gray-400 text-base">{mode.description}</p>
-                  </div>
+                {/* Title */}
+                <div className="mb-4">
+                  <h2 className="text-2xl font-bold mb-2">{mode.name}</h2>
+                  <p className="text-gray-400 text-base">{mode.description}</p>
                 </div>
 
                 {/* Features */}

@@ -73,23 +73,19 @@ export default function PortalDashboard({ params }: PortalDashboardProps) {
   const basePath = `/portal/${specialty.slug}`;
 
   return (
-    <div className="p-6 lg:p-8 max-w-6xl mx-auto">
+    <div className="p-6 pl-16 lg:pl-8 lg:p-8 max-w-6xl">
       {/* Header */}
       <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <span className="text-4xl">{specialty.icon}</span>
-          <h1 className="text-3xl font-bold text-white">{specialty.name}</h1>
-        </div>
-        {specialty.description && (
-          <p className="text-gray-400">{specialty.description}</p>
-        )}
+        <h1 className="text-3xl font-bold text-white" style={{ fontFamily: 'var(--font-serif)' }}>
+          {specialty.name}
+        </h1>
       </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {/* Predicted Score */}
         <div className="bg-gray-900 rounded-xl p-5 border border-gray-800">
-          <div className="text-gray-400 text-sm mb-1">Predicted Score</div>
+          <div className="text-gray-400 text-sm mb-1" style={{ fontFamily: 'var(--font-serif)' }}>Predicted Score</div>
           {loading ? (
             <div className="h-8 bg-gray-800 rounded animate-pulse" />
           ) : stats?.predictedScore ? (
@@ -106,7 +102,7 @@ export default function PortalDashboard({ params }: PortalDashboardProps) {
 
         {/* Accuracy */}
         <div className="bg-gray-900 rounded-xl p-5 border border-gray-800">
-          <div className="text-gray-400 text-sm mb-1">Accuracy</div>
+          <div className="text-gray-400 text-sm mb-1" style={{ fontFamily: 'var(--font-serif)' }}>Accuracy</div>
           {loading ? (
             <div className="h-8 bg-gray-800 rounded animate-pulse" />
           ) : (
@@ -120,7 +116,7 @@ export default function PortalDashboard({ params }: PortalDashboardProps) {
 
         {/* Questions */}
         <div className="bg-gray-900 rounded-xl p-5 border border-gray-800">
-          <div className="text-gray-400 text-sm mb-1">Questions Done</div>
+          <div className="text-gray-400 text-sm mb-1" style={{ fontFamily: 'var(--font-serif)' }}>Questions Done</div>
           {loading ? (
             <div className="h-8 bg-gray-800 rounded animate-pulse" />
           ) : (
@@ -130,7 +126,7 @@ export default function PortalDashboard({ params }: PortalDashboardProps) {
 
         {/* Streak */}
         <div className="bg-gray-900 rounded-xl p-5 border border-gray-800">
-          <div className="text-gray-400 text-sm mb-1">Day Streak</div>
+          <div className="text-gray-400 text-sm mb-1" style={{ fontFamily: 'var(--font-serif)' }}>Day Streak</div>
           {loading ? (
             <div className="h-8 bg-gray-800 rounded animate-pulse" />
           ) : (
@@ -143,32 +139,28 @@ export default function PortalDashboard({ params }: PortalDashboardProps) {
       </div>
 
       {/* Quick Actions */}
-      <h2 className="text-xl font-semibold text-white mb-4">Quick Actions</h2>
+      <h2 className="text-xl font-semibold text-white mb-4" style={{ fontFamily: 'var(--font-serif)' }}>Quick Actions</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         {/* Start Practice */}
         <Link
           href={`${basePath}/study`}
-          className="bg-blue-600 hover:bg-blue-700 rounded-xl p-6 transition-colors group"
+          className="bg-blue-600 hover:bg-blue-700 rounded-xl p-6 transition-all duration-200 group hover:scale-[1.02] hover:shadow-lg hover:shadow-blue-500/20"
         >
-          <div className="flex items-center gap-3 mb-2">
-            <span className="text-2xl">📝</span>
-            <h3 className="text-lg font-semibold text-white">Start Practice</h3>
-          </div>
+          <h3 className="text-lg font-semibold text-white mb-2" style={{ fontFamily: 'var(--font-serif)' }}>Start Practice</h3>
           <p className="text-blue-200 text-sm">Begin an adaptive study session</p>
         </Link>
 
         {/* Reviews Due */}
         <Link
           href={`${basePath}/reviews`}
-          className={`rounded-xl p-6 transition-colors group ${
+          className={`rounded-xl p-6 transition-all duration-200 group hover:scale-[1.02] ${
             stats?.reviewsDue
-              ? 'bg-emerald-600 hover:bg-emerald-700'
+              ? 'bg-emerald-600 hover:bg-emerald-700 hover:shadow-lg hover:shadow-emerald-500/20'
               : 'bg-gray-800 hover:bg-gray-700'
           }`}
         >
           <div className="flex items-center gap-3 mb-2">
-            <span className="text-2xl">🔄</span>
-            <h3 className="text-lg font-semibold text-white">Reviews</h3>
+            <h3 className="text-lg font-semibold text-white" style={{ fontFamily: 'var(--font-serif)' }}>Reviews</h3>
             {stats?.reviewsDue ? (
               <span className="bg-white/20 text-white text-sm font-medium px-2 py-0.5 rounded-full">
                 {stats.reviewsDue} due
@@ -183,12 +175,9 @@ export default function PortalDashboard({ params }: PortalDashboardProps) {
         {/* Weak Areas */}
         <Link
           href={`${basePath}/weak-areas`}
-          className="bg-gray-800 hover:bg-gray-700 rounded-xl p-6 transition-colors group"
+          className="bg-gray-800 hover:bg-gray-700 rounded-xl p-6 transition-all duration-200 group hover:scale-[1.02]"
         >
-          <div className="flex items-center gap-3 mb-2">
-            <span className="text-2xl">🎯</span>
-            <h3 className="text-lg font-semibold text-white">Weak Areas</h3>
-          </div>
+          <h3 className="text-lg font-semibold text-white mb-2" style={{ fontFamily: 'var(--font-serif)' }}>Weak Areas</h3>
           <p className="text-gray-400 text-sm">Focus on topics needing improvement</p>
         </Link>
       </div>
@@ -196,7 +185,7 @@ export default function PortalDashboard({ params }: PortalDashboardProps) {
       {/* Progress Section */}
       {stats?.totalQuestions && stats.totalQuestions > 0 && (
         <div className="bg-gray-900 rounded-xl p-6 border border-gray-800">
-          <h2 className="text-lg font-semibold text-white mb-4">Your Progress</h2>
+          <h2 className="text-lg font-semibold text-white mb-4" style={{ fontFamily: 'var(--font-serif)' }}>Your Progress</h2>
           <div className="space-y-4">
             {/* Accuracy bar */}
             <div>

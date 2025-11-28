@@ -62,7 +62,7 @@ const SPECIALTIES = [
   'Dermatology',
   'Emergency Medicine',
   'Pediatrics',
-  'OB/GYN',
+  'OBGYN',
   'Surgery',
   'Orthopedics',
   'Urology',

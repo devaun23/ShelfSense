@@ -161,7 +161,7 @@ async def start_batch_generation_endpoint(
     # Validate specialty if provided
     valid_specialties = [
         "Internal Medicine", "Surgery", "Pediatrics", "Psychiatry",
-        "OB/GYN", "Family Medicine", "Emergency Medicine", "Preventive Medicine"
+        "OBGYN", "Family Medicine", "Emergency Medicine", "Preventive Medicine"
     ]
     if request.specialty and request.specialty not in valid_specialties:
         raise HTTPException(

@@ -68,7 +68,7 @@ describe('Sidebar', () => {
       expect(screen.getByText('Surgery')).toBeInTheDocument()
       expect(screen.getByText('Pediatrics')).toBeInTheDocument()
       expect(screen.getByText('Psychiatry')).toBeInTheDocument()
-      expect(screen.getByText('OB-GYN')).toBeInTheDocument()
+      expect(screen.getByText('OBGYN')).toBeInTheDocument()
       expect(screen.getByText('Family Medicine')).toBeInTheDocument()
       expect(screen.getByText('Emergency')).toBeInTheDocument()
       expect(screen.getByText('Neurology')).toBeInTheDocument()

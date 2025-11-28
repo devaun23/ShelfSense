@@ -93,13 +93,13 @@ interface StudySession {
 }
 
 // Mode display info
-const MODE_INFO: Record<string, { name: string; icon: string; color: string }> = {
-  practice: { name: 'Practice', icon: '📚', color: 'text-blue-400' },
-  timed: { name: 'Timed Test', icon: '⏱️', color: 'text-red-400' },
-  tutor: { name: 'Tutor', icon: '🎓', color: 'text-green-400' },
-  challenge: { name: 'Challenge', icon: '🔥', color: 'text-orange-400' },
-  review: { name: 'Review', icon: '🔄', color: 'text-purple-400' },
-  weak_focus: { name: 'Weak Areas', icon: '🎯', color: 'text-yellow-400' },
+const MODE_INFO: Record<string, { name: string; color: string }> = {
+  practice: { name: 'Practice', color: 'text-blue-400' },
+  timed: { name: 'Timed Test', color: 'text-red-400' },
+  tutor: { name: 'Tutor', color: 'text-green-400' },
+  challenge: { name: 'Challenge', color: 'text-orange-400' },
+  review: { name: 'Review', color: 'text-purple-400' },
+  weak_focus: { name: 'Weak Areas', color: 'text-yellow-400' },
 };
 
 function StudyContent() {
@@ -626,8 +626,7 @@ function StudyContent() {
 
               {/* Mode Badge (if session-based) */}
               {currentModeInfo && (
-                <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gray-900/80 border border-gray-800`}>
-                  <span className="text-sm">{currentModeInfo.icon}</span>
+                <div className={`px-2.5 py-1 rounded-full bg-gray-900/80 border border-gray-800`}>
                   <span className={`text-xs font-medium ${currentModeInfo.color}`}>
                     {currentModeInfo.name}
                   </span>

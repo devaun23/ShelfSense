@@ -4,24 +4,11 @@ import { useEffect, useRef, useCallback } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useUser } from '@/contexts/UserContext';
 import { UserButton } from '@clerk/nextjs';
-import ShelfSenseLogo from '@/components/icons/ShelfSenseLogo';
 
 interface SidebarProps {
   isOpen: boolean;
   onToggle: () => void;
 }
-
-// Simple specialty list - no colors, no emojis
-const SHELF_EXAMS = [
-  { id: 'im', name: 'Internal Medicine', apiName: 'Internal Medicine' },
-  { id: 'surgery', name: 'Surgery', apiName: 'Surgery' },
-  { id: 'peds', name: 'Pediatrics', apiName: 'Pediatrics' },
-  { id: 'psych', name: 'Psychiatry', apiName: 'Psychiatry' },
-  { id: 'obgyn', name: 'OBGYN', apiName: 'Obstetrics and Gynecology' },
-  { id: 'fm', name: 'Family Medicine', apiName: 'Family Medicine' },
-  { id: 'em', name: 'Emergency Medicine', apiName: 'Emergency Medicine' },
-  { id: 'neuro', name: 'Neurology', apiName: 'Neurology' },
-];
 
 export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
   const router = useRouter();
@@ -31,9 +18,6 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
   const sidebarRef = useRef<HTMLElement>(null);
   const firstFocusableRef = useRef<HTMLButtonElement>(null);
   const lastFocusableRef = useRef<HTMLButtonElement>(null);
-
-  // Get current specialty from URL
-  const currentSpecialty = searchParams.get('specialty');
 
   // Handle ESC key to close sidebar
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -102,17 +86,6 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
     return () => window.removeEventListener('resize', handleResize);
   }, [isOpen, onToggle]);
 
-  const handleSpecialtyClick = (apiName: string | null) => {
-    if (apiName) {
-      router.push(`/study?specialty=${encodeURIComponent(apiName)}`);
-    } else {
-      router.push('/study');
-    }
-    if (window.innerWidth < 768) {
-      onToggle();
-    }
-  };
-
   return (
     <>
       {/* Sidebar */}
@@ -130,70 +103,25 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
           <button
             ref={firstFocusableRef}
             onClick={() => router.push('/')}
-            className="flex items-center gap-2 text-xl font-semibold text-white hover:text-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] focus:ring-offset-2 focus:ring-offset-gray-950 rounded"
+            className="text-xl font-semibold text-white hover:text-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] focus:ring-offset-2 focus:ring-offset-gray-950 rounded"
             style={{ fontFamily: 'var(--font-serif)' }}
             tabIndex={isOpen ? 0 : -1}
           >
-            <ShelfSenseLogo size={28} animate={true} />
-            <span>ShelfSense</span>
+            ShelfSense
           </button>
         </div>
 
-        {/* Scrollable Middle Section */}
-        <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0">
-          {/* Step 2 CK Prep - separate tab */}
-          <div className="px-4 pb-1">
-            <button
-              onClick={() => handleSpecialtyClick(null)}
-              className={`w-full text-left px-3 py-1.5 text-base rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
-                pathname === '/study' && !currentSpecialty
-                  ? 'text-white bg-gray-800'
-                  : 'text-gray-200 hover:text-white hover:bg-gray-900'
-              }`}
-              style={{ fontFamily: 'var(--font-serif)' }}
-              tabIndex={isOpen ? 0 : -1}
-              aria-current={pathname === '/study' && !currentSpecialty ? 'page' : undefined}
-            >
-              Step 2 CK Prep
-            </button>
-          </div>
-
-          {/* Shelf Exams Section */}
-          <div className="px-4" role="group" aria-labelledby="shelf-exams-label">
-            <div id="shelf-exams-label" className="px-3 py-1.5 text-xs text-gray-600 font-medium uppercase tracking-wider">
-              Shelf Exams
-            </div>
-            <div className="space-y-0.5">
-              {SHELF_EXAMS.map((shelf) => (
-                <button
-                  key={shelf.id}
-                  onClick={() => handleSpecialtyClick(shelf.apiName)}
-                  className={`w-full text-left px-3 py-1.5 text-sm rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
-                    currentSpecialty === shelf.apiName
-                      ? 'text-white bg-gray-800'
-                      : 'text-gray-200 hover:text-white hover:bg-gray-900'
-                  }`}
-                  style={{ fontFamily: 'var(--font-serif)' }}
-                  tabIndex={isOpen ? 0 : -1}
-                  aria-current={currentSpecialty === shelf.apiName ? 'page' : undefined}
-                >
-                  {shelf.name}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Quick Links - at bottom */}
-        <nav className="flex-shrink-0 px-3 pb-2" aria-label="Quick links">
-          <div className="border-t border-gray-900 pt-3">
+        {/* Navigation Links */}
+        <nav className="flex-1 px-3 pt-4" aria-label="Main navigation">
+          <div className="space-y-1">
             <button
               onClick={() => router.push('/analytics')}
-              className={`w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
                 pathname === '/analytics' && searchParams.get('view') !== 'weak'
                   ? 'text-white bg-gray-900'
                   : 'text-gray-400 hover:text-white hover:bg-gray-900'
               }`}
+              style={{ fontFamily: 'var(--font-serif)' }}
               tabIndex={isOpen ? 0 : -1}
               aria-current={pathname === '/analytics' && searchParams.get('view') !== 'weak' ? 'page' : undefined}
             >
@@ -204,11 +132,12 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
             </button>
             <button
               onClick={() => router.push('/reviews')}
-              className={`w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
                 pathname === '/reviews'
                   ? 'text-white bg-gray-900'
                   : 'text-gray-400 hover:text-white hover:bg-gray-900'
               }`}
+              style={{ fontFamily: 'var(--font-serif)' }}
               tabIndex={isOpen ? 0 : -1}
               aria-current={pathname === '/reviews' ? 'page' : undefined}
             >
@@ -222,11 +151,12 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
             </button>
             <button
               onClick={() => router.push('/analytics?view=weak')}
-              className={`w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
                 pathname === '/analytics' && searchParams.get('view') === 'weak'
                   ? 'text-white bg-gray-900'
                   : 'text-gray-400 hover:text-white hover:bg-gray-900'
               }`}
+              style={{ fontFamily: 'var(--font-serif)' }}
               tabIndex={isOpen ? 0 : -1}
               aria-current={pathname === '/analytics' && searchParams.get('view') === 'weak' ? 'page' : undefined}
             >
@@ -237,11 +167,12 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
             </button>
             <button
               onClick={() => router.push('/pricing')}
-              className={`w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
                 pathname === '/pricing'
                   ? 'text-white bg-gray-900'
                   : 'text-gray-400 hover:text-white hover:bg-gray-900'
               }`}
+              style={{ fontFamily: 'var(--font-serif)' }}
               tabIndex={isOpen ? 0 : -1}
               aria-current={pathname === '/pricing' ? 'page' : undefined}
             >
@@ -253,11 +184,12 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
             <button
               ref={user?.isAdmin ? undefined : lastFocusableRef}
               onClick={() => router.push('/help')}
-              className={`w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
                 pathname === '/help'
                   ? 'text-white bg-gray-900'
                   : 'text-gray-400 hover:text-white hover:bg-gray-900'
               }`}
+              style={{ fontFamily: 'var(--font-serif)' }}
               tabIndex={isOpen ? 0 : -1}
               aria-current={pathname === '/help' ? 'page' : undefined}
             >
@@ -270,11 +202,12 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
               <button
                 ref={lastFocusableRef}
                 onClick={() => router.push('/admin')}
-                className={`w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
                   pathname.startsWith('/admin')
                     ? 'text-white bg-gray-900'
                     : 'text-gray-400 hover:text-white hover:bg-gray-900'
                 }`}
+                style={{ fontFamily: 'var(--font-serif)' }}
                 tabIndex={isOpen ? 0 : -1}
                 aria-current={pathname.startsWith('/admin') ? 'page' : undefined}
               >

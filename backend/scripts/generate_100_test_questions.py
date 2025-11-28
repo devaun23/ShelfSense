@@ -9,7 +9,7 @@ Distribution:
 - Internal Medicine: 45 questions (45%)
 - Surgery: 20 questions (20%)
 - Pediatrics: 15 questions (15%)
-- OB/GYN: 10 questions (10%)
+- OBGYN: 10 questions (10%)
 - Psychiatry: 10 questions (10%)
 
 Difficulty: 20% easy, 60% medium, 20% hard

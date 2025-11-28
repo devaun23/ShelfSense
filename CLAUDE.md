@@ -116,3 +116,15 @@ npx pyright  # or mypy app/
 - Always use `openai_service.chat_completion()` instead of direct OpenAI calls
 - Check `question_cache.is_connected` before assuming Redis is available
 - Production tests require environment variables to be set
+
+## Design Rules (MUST FOLLOW)
+
+### No Emojis
+Never include emojis anywhere in the UI, buttons, icons, or design elements. This is a permanent rule for the entire application.
+
+### OBGYN Spelling
+The specialty name must always be spelled "OBGYN" (not "OB-GYN", "OB/GYN", or "Ob-Gyn"). This applies to:
+- Frontend display names
+- Backend specialty lists
+- Test files
+- API parameters

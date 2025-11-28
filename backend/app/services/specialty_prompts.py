@@ -294,7 +294,7 @@ vignettes typically include:
                 "obesity",
             ],
         },
-        "presentation_style": """Obstetric history with gestational context. OB/GYN vignettes include:
+        "presentation_style": """Obstetric history with gestational context. OBGYN vignettes include:
 - Gravidity and parity (G_P_) format
 - Last menstrual period or gestational age
 - Prenatal care history
@@ -411,7 +411,6 @@ def get_specialty_config(specialty: str) -> Optional[Dict]:
         "Psychiatry": "Psychiatry",
         "Obstetrics & Gynecology": "Obstetrics & Gynecology",
         "Obstetrics and Gynecology": "Obstetrics & Gynecology",
-        "OB/GYN": "Obstetrics & Gynecology",
         "OBGYN": "Obstetrics & Gynecology",
         "Emergency Medicine": "Emergency Medicine",
         "EM": "Emergency Medicine",

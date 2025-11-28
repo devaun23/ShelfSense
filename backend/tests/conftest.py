@@ -179,7 +179,7 @@ def test_question(db: Session, sample_explanation: Dict) -> Question:
 def test_questions_batch(db: Session, sample_explanation: Dict) -> list[Question]:
     """Create multiple test questions for batch testing"""
     questions = []
-    specialties = ["Internal Medicine", "Surgery", "Pediatrics", "Psychiatry", "OB/GYN"]
+    specialties = ["Internal Medicine", "Surgery", "Pediatrics", "Psychiatry", "OBGYN"]
 
     for i, specialty in enumerate(specialties):
         q = Question(

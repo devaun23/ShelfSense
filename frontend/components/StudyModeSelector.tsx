@@ -11,7 +11,6 @@ interface StudyMode {
   detailedDescription: string;
   bestFor: string[];
   features: string[];
-  icon: string;
   color: string;
   bgColor: string;
   defaults: {
@@ -29,7 +28,6 @@ const STUDY_MODES: StudyMode[] = [
     detailedDescription: 'Study at your own pace with no pressure. Get instant feedback after each question to reinforce learning.',
     bestFor: ['Daily practice', 'Learning new material', 'Building confidence'],
     features: ['Immediate feedback', 'No time limit', 'Adaptive difficulty', 'Full explanations'],
-    icon: '📚',
     color: 'text-blue-400',
     bgColor: 'from-blue-500/20 to-blue-600/10',
     defaults: { difficulty: 'adaptive' }
@@ -41,7 +39,6 @@ const STUDY_MODES: StudyMode[] = [
     detailedDescription: 'Practice under realistic exam pressure with a countdown timer. Perfect for building test-taking stamina.',
     bestFor: ['Exam preparation', 'Time management practice', 'Self-assessment'],
     features: ['Countdown timer', 'No feedback until end', 'Score at completion', 'Exam-like experience'],
-    icon: '⏱️',
     color: 'text-red-400',
     bgColor: 'from-red-500/20 to-red-600/10',
     defaults: { target_count: 40, time_limit_seconds: 3600, difficulty: 'adaptive' }
@@ -53,7 +50,6 @@ const STUDY_MODES: StudyMode[] = [
     detailedDescription: 'Get comprehensive explanations, clinical pearls, and memory hooks after each question. Ideal for thorough understanding.',
     bestFor: ['Weak topic review', 'Deep understanding', 'First-time learners'],
     features: ['Detailed explanations', 'Clinical pearls', 'Memory hooks', 'Step-by-step reasoning'],
-    icon: '🎓',
     color: 'text-green-400',
     bgColor: 'from-green-500/20 to-green-600/10',
     defaults: { target_count: 20, difficulty: 'adaptive' }
@@ -65,7 +61,6 @@ const STUDY_MODES: StudyMode[] = [
     detailedDescription: 'Push yourself with only difficult questions. No hints or aids - just you and the question.',
     bestFor: ['Advanced review', 'Identifying gaps', 'High-yield practice'],
     features: ['Hard questions only', 'No hints', 'Minimal aids', 'Rigorous testing'],
-    icon: '🔥',
     color: 'text-orange-400',
     bgColor: 'from-orange-500/20 to-orange-600/10',
     defaults: { target_count: 20, difficulty: 'hard' }
@@ -77,7 +72,6 @@ const STUDY_MODES: StudyMode[] = [
     detailedDescription: 'Review questions you\'ve previously answered using scientifically-proven spaced repetition algorithms.',
     bestFor: ['Long-term retention', 'Reinforcing weak areas', 'Efficient review'],
     features: ['Spaced repetition', 'Prioritizes mistakes', 'Optimized intervals', 'Memory strengthening'],
-    icon: '🔄',
     color: 'text-purple-400',
     bgColor: 'from-purple-500/20 to-purple-600/10',
     defaults: {}
@@ -89,7 +83,6 @@ const STUDY_MODES: StudyMode[] = [
     detailedDescription: 'Focus on topics where your performance is lowest. Efficiently improve where you need it most.',
     bestFor: ['Targeted improvement', 'Efficient studying', 'Pre-exam cramming'],
     features: ['Analyzes your stats', 'Targets weak topics', 'Adaptive difficulty', 'Focused practice'],
-    icon: '🎯',
     color: 'text-yellow-400',
     bgColor: 'from-yellow-500/20 to-yellow-600/10',
     defaults: { target_count: 30, difficulty: 'adaptive' }
@@ -102,7 +95,7 @@ const SPECIALTIES = [
   'Surgery',
   'Pediatrics',
   'Psychiatry',
-  'OB/GYN',
+  'OBGYN',
   'Family Medicine',
   'Emergency Medicine',
   'Preventive Medicine'
@@ -285,8 +278,7 @@ export default function StudyModeSelector({ userId, onSessionStart, onClose }: S
                     aria-checked={selectedMode === mode.id}
                     aria-describedby={`mode-desc-${mode.id}`}
                   >
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="text-2xl" aria-hidden="true">{mode.icon}</span>
+                    <div className="mb-2">
                       <h3 className="text-white font-semibold text-sm">{mode.name}</h3>
                     </div>
                     <p id={`mode-desc-${mode.id}`} className="text-zinc-500 text-xs leading-relaxed">{mode.description}</p>
@@ -302,12 +294,9 @@ export default function StudyModeSelector({ userId, onSessionStart, onClose }: S
               <div className="space-y-5">
                 {/* Mode Header */}
                 <div className={`p-4 rounded-lg bg-gradient-to-r ${displayedModeData.bgColor}`}>
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-3xl">{displayedModeData.icon}</span>
-                    <div>
-                      <h3 className={`text-lg font-bold ${displayedModeData.color}`}>{displayedModeData.name}</h3>
-                      <p className="text-zinc-300 text-sm">{displayedModeData.detailedDescription}</p>
-                    </div>
+                  <div>
+                    <h3 className={`text-lg font-bold ${displayedModeData.color} mb-2`}>{displayedModeData.name}</h3>
+                    <p className="text-zinc-300 text-sm">{displayedModeData.detailedDescription}</p>
                   </div>
                 </div>
 

@@ -55,7 +55,7 @@ VALID_TYPES = [
 
 SPECIALTIES = [
     "Internal Medicine", "Surgery", "Pediatrics", "Psychiatry",
-    "OB-GYN", "Family Medicine", "Emergency Medicine", "Neurology"
+    "OBGYN", "Family Medicine", "Emergency Medicine", "Neurology"
 ]
 
 TOPICS = {

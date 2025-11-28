@@ -52,11 +52,11 @@ export default function PortalSidebar({ specialty }: PortalSidebarProps) {
   };
 
   const navItems = [
-    { href: basePath, label: 'Dashboard', icon: '📊' },
-    { href: `${basePath}/study`, label: 'Study Questions', icon: '📝' },
-    { href: `${basePath}/analytics`, label: 'Analytics', icon: '📈' },
-    { href: `${basePath}/reviews`, label: 'Reviews', icon: '🔄', badge: reviewsDue > 0 ? reviewsDue : undefined },
-    { href: `${basePath}/weak-areas`, label: 'Weak Areas', icon: '🎯' },
+    { href: basePath, label: 'Dashboard', badge: undefined as number | undefined },
+    { href: `${basePath}/study`, label: 'Study Questions', badge: undefined as number | undefined },
+    { href: `${basePath}/analytics`, label: 'Analytics', badge: undefined as number | undefined },
+    { href: `${basePath}/reviews`, label: 'Reviews', badge: reviewsDue > 0 ? reviewsDue : undefined },
+    { href: `${basePath}/weak-areas`, label: 'Weak Areas', badge: undefined as number | undefined },
   ];
 
   const isActive = (href: string) => {
@@ -68,20 +68,18 @@ export default function PortalSidebar({ specialty }: PortalSidebarProps) {
 
   return (
     <>
-      {/* Mobile menu button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-gray-900 rounded-lg border border-gray-800"
-        aria-label="Toggle menu"
-      >
-        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          {isOpen ? (
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          ) : (
+      {/* Mobile menu button - only show when sidebar is closed */}
+      {!isOpen && (
+        <button
+          onClick={() => setIsOpen(true)}
+          className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-gray-900 rounded-lg border border-gray-800"
+          aria-label="Open menu"
+        >
+          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-          )}
-        </svg>
-      </button>
+          </svg>
+        </button>
+      )}
 
       {/* Overlay for mobile */}
       {isOpen && (
@@ -101,30 +99,35 @@ export default function PortalSidebar({ specialty }: PortalSidebarProps) {
           flex flex-col
         `}
       >
-        {/* Back button */}
-        <div className="p-4 border-b border-gray-800">
+        {/* ShelfSense header */}
+        <div className="p-4 border-b border-gray-800 flex items-center justify-between">
           <button
             onClick={handleExitPortal}
-            className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors w-full"
+            className="text-xl font-semibold text-white hover:text-gray-300 transition-colors"
+            style={{ fontFamily: 'var(--font-serif)' }}
+          >
+            ShelfSense
+          </button>
+          {/* Close button for mobile */}
+          <button
+            onClick={() => setIsOpen(false)}
+            className="lg:hidden p-1.5 text-gray-400 hover:text-white transition-colors"
+            aria-label="Close menu"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
-            <span className="text-sm">Back to Exams</span>
           </button>
         </div>
 
         {/* Specialty header */}
-        <div className="p-4 border-b border-gray-800">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">{specialty.icon}</span>
-            <div>
-              <h2 className="text-white font-semibold">{specialty.name}</h2>
-              {specialty.description && (
-                <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">{specialty.description}</p>
-              )}
-            </div>
-          </div>
+        <div className="px-4 py-3 border-b border-gray-800">
+          <h2
+            className="text-sm text-gray-400 font-medium"
+            style={{ fontFamily: 'var(--font-serif)' }}
+          >
+            {specialty.name}
+          </h2>
         </div>
 
         {/* Navigation */}
@@ -141,8 +144,8 @@ export default function PortalSidebar({ specialty }: PortalSidebarProps) {
                   : 'text-gray-400 hover:bg-gray-800 hover:text-white'
                 }
               `}
+              style={{ fontFamily: 'var(--font-serif)' }}
             >
-              <span className="text-lg">{item.icon}</span>
               <span className="flex-1">{item.label}</span>
               {item.badge && (
                 <span className="bg-emerald-500 text-white text-xs font-medium px-2 py-0.5 rounded-full">
