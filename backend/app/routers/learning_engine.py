@@ -15,6 +15,8 @@ from typing import List, Optional
 from pydantic import BaseModel
 
 from app.database import get_db
+from app.models.models import User
+from app.routers.auth import get_current_user
 from app.services.learning_engine import (
     # Gap 1
     get_specialty_difficulty_target,
@@ -115,22 +117,24 @@ class AnswerProcessResponse(BaseModel):
 # GAP 1: PER-SPECIALTY DIFFICULTY ENDPOINTS
 # =============================================================================
 
-@router.get("/specialty-difficulty/{user_id}/{specialty}", response_model=SpecialtyDifficultyResponse)
+@router.get("/specialty-difficulty/{specialty}", response_model=SpecialtyDifficultyResponse)
 def get_specialty_difficulty(
-    user_id: str,
     specialty: str,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Get difficulty target for a specific specialty."""
+    """Get difficulty target for a specific specialty for authenticated user."""
+    user_id = current_user.id
     return get_specialty_difficulty_target(db, user_id, specialty)
 
 
-@router.get("/specialty-difficulties/{user_id}", response_model=List[SpecialtyDifficultyResponse])
+@router.get("/specialty-difficulties", response_model=List[SpecialtyDifficultyResponse])
 def get_all_specialty_difficulty_levels(
-    user_id: str,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Get difficulty levels for all specialties the user has attempted."""
+    """Get difficulty levels for all specialties the authenticated user has attempted."""
+    user_id = current_user.id
     return get_all_specialty_difficulties(db, user_id)
 
 
@@ -138,13 +142,14 @@ def get_all_specialty_difficulty_levels(
 # GAP 2: PERSONALIZED SM-2 ENDPOINTS
 # =============================================================================
 
-@router.get("/retention-metrics/{user_id}", response_model=RetentionMetricsResponse)
+@router.get("/retention-metrics", response_model=RetentionMetricsResponse)
 def get_retention_metrics(
-    user_id: str,
     specialty: Optional[str] = None,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Get personalized retention metrics for a user."""
+    """Get personalized retention metrics for authenticated user."""
+    user_id = current_user.id
     metrics = get_or_create_retention_metrics(db, user_id, specialty)
     return {
         "easiness_factor": metrics.easiness_factor,
@@ -158,15 +163,16 @@ def get_retention_metrics(
     }
 
 
-@router.get("/calculate-interval/{user_id}")
+@router.get("/calculate-interval")
 def get_personalized_interval(
-    user_id: str,
     current_interval_days: int = Query(..., ge=0),
     is_correct: bool = Query(...),
     specialty: Optional[str] = None,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Calculate the next personalized review interval."""
+    """Calculate the next personalized review interval for authenticated user."""
+    user_id = current_user.id
     interval = calculate_personalized_interval(
         db, user_id, current_interval_days, is_correct, specialty
     )
@@ -177,22 +183,24 @@ def get_personalized_interval(
 # GAP 3: INTERLEAVING STRATEGY ENDPOINTS
 # =============================================================================
 
-@router.get("/session-mix/{user_id}", response_model=SessionMixResponse)
+@router.get("/session-mix", response_model=SessionMixResponse)
 def get_session_mix(
-    user_id: str,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Get the optimal question mix for a study session."""
+    """Get the optimal question mix for a study session for authenticated user."""
+    user_id = current_user.id
     return calculate_optimal_mix(db, user_id)
 
 
-@router.get("/interleaved-question/{user_id}")
+@router.get("/interleaved-question")
 def get_interleaved_question(
-    user_id: str,
     session_questions: Optional[str] = Query(None, description="Comma-separated list of question IDs already in session"),
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Get the next question using interleaving strategy."""
+    """Get the next question using interleaving strategy for authenticated user."""
+    user_id = current_user.id
     question_list = session_questions.split(",") if session_questions else []
     question, selection_type = select_interleaved_question(db, user_id, question_list)
 
@@ -211,23 +219,25 @@ def get_interleaved_question(
 # GAP 4: FORGETTING CURVE ENDPOINTS
 # =============================================================================
 
-@router.get("/concepts-needing-review/{user_id}", response_model=List[ConceptReviewResponse])
+@router.get("/concepts-needing-review", response_model=List[ConceptReviewResponse])
 def get_concepts_for_review(
-    user_id: str,
     min_retention: float = Query(0.7, ge=0.0, le=1.0),
     limit: int = Query(20, ge=1, le=100),
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Get concepts whose retention has dropped below threshold."""
+    """Get concepts whose retention has dropped below threshold for authenticated user."""
+    user_id = current_user.id
     return get_concepts_needing_review(db, user_id, min_retention, limit)
 
 
-@router.post("/update-concept-retentions/{user_id}")
+@router.post("/update-concept-retentions")
 def update_concept_retentions(
-    user_id: str,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Update all concept retentions (decay calculation)."""
+    """Update all concept retentions (decay calculation) for authenticated user."""
+    user_id = current_user.id
     updated = update_all_concept_retentions(db, user_id)
     return {"concepts_updated": updated}
 

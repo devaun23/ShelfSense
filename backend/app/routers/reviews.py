@@ -4,9 +4,9 @@ Reviews Router
 Provides endpoints for spaced repetition review system.
 """
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel
 from datetime import datetime
 
@@ -110,11 +110,16 @@ def get_upcoming_review_calendar(
 
 
 @router.get("/stats", response_model=ReviewStatsResponse)
-def get_user_review_stats(user_id: str, db: Session = Depends(get_db)):
+def get_user_review_stats(
+    user_id: str,
+    specialty: Optional[str] = Query(None, description="Filter by specialty (e.g., 'Internal Medicine')"),
+    db: Session = Depends(get_db)
+):
     """
     Get review statistics for user.
+    Optionally filter by specialty for portal-specific views.
     """
-    stats = get_review_stats(db, user_id)
+    stats = get_review_stats(db, user_id, specialty=specialty)
 
     return ReviewStatsResponse(
         total_reviews=stats['total_reviews'],

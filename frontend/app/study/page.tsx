@@ -107,10 +107,10 @@ function StudyContent() {
   const searchParams = useSearchParams();
   const { user, isLoading: userLoading } = useUser();
 
-  // Start with sidebar closed on mobile
+  // Start with sidebar closed on narrow viewports
   const [sidebarOpen, setSidebarOpen] = useState(() => {
     if (typeof window !== 'undefined') {
-      return window.innerWidth >= 768;
+      return window.innerWidth >= 900;
     }
     return true;
   });
@@ -132,6 +132,10 @@ function StudyContent() {
   const [error, setError] = useState<string | null>(null);
   const [authTimeout, setAuthTimeout] = useState(false);
   const [confidenceLevel, setConfidenceLevel] = useState<number | null>(null);
+
+  // Optimistic UI states for faster perceived performance
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [optimisticFeedback, setOptimisticFeedback] = useState<{ submitted: boolean; answer: string } | null>(null);
 
   // Timed mode state
   const [sessionTimeRemaining, setSessionTimeRemaining] = useState<number | null>(null);
@@ -218,29 +222,47 @@ function StudyContent() {
   };
 
   const preloadNextQuestion = async () => {
-    if (sessionParam) {
-      // Don't preload for session-based - let the API handle order
-      return;
-    }
     try {
-      const response = await fetch(getApiUrl());
-      if (response.ok) {
-        const data = await response.json();
-        setNextQuestion(data);
+      if (sessionParam) {
+        // Session-based preloading - fetch next question in background
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+        const response = await fetch(`${apiUrl}/api/study-modes/sessions/${sessionParam}/peek`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data && !data.completed) {
+            setNextQuestion(data.question);
+          }
+        }
+      } else {
+        // Legacy preloading
+        const response = await fetch(getApiUrl());
+        if (response.ok) {
+          const data = await response.json();
+          setNextQuestion(data);
+        }
       }
     } catch (error) {
-      console.error('Error preloading question:', error);
+      // Silently fail - preloading is an optimization, not critical
+      console.debug('Question preload skipped:', error);
     }
   };
 
   const loadNextQuestion = async () => {
     setSelectedAnswer(null);
     setFeedback(null);
+    setOptimisticFeedback(null);
     setStartTime(Date.now());
     setConfidenceLevel(null);
 
     if (sessionParam) {
-      // Session-based loading
+      // Session-based loading - use preloaded question if available
+      if (nextQuestion) {
+        setQuestion(nextQuestion);
+        setNextQuestion(null);
+        setLoading(false);
+        return;
+      }
+
       setLoading(true);
       const q = await loadSessionQuestion(sessionParam);
       if (q) {
@@ -398,10 +420,14 @@ function StudyContent() {
   }, [handleKeyPress]);
 
   const handleSubmit = async () => {
-    if (!selectedAnswer || !question || !user) return;
+    if (!selectedAnswer || !question || !user || isSubmitting) return;
 
     const timeSpent = Math.floor((Date.now() - startTime) / 1000);
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
+    // Optimistic UI: immediately show submission state
+    setIsSubmitting(true);
+    setOptimisticFeedback({ submitted: true, answer: selectedAnswer });
 
     try {
       // Use session-based submit if we have a session
@@ -427,7 +453,10 @@ function StudyContent() {
           });
           setQuestionCount(prev => prev + 1);
 
+          // Preload next question while user reviews feedback
+          preloadNextQuestion();
         } else {
+          setOptimisticFeedback(null);
           setError('Failed to submit answer. Please try again.');
         }
       } else {
@@ -451,12 +480,16 @@ function StudyContent() {
 
           preloadNextQuestion();
         } else {
+          setOptimisticFeedback(null);
           setError('Failed to submit answer. Please try again.');
         }
       }
     } catch (error) {
       console.error('Error submitting answer:', error);
+      setOptimisticFeedback(null);
       setError('Network error while submitting.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -692,16 +725,20 @@ function StudyContent() {
               const isSelected = selectedAnswer === choice;
               const isCorrectAnswer = feedback && choice === feedback.correct_answer;
               const isUserWrongChoice = feedback && isSelected && !feedback.is_correct;
+              const isOptimisticSelected = optimisticFeedback?.answer === choice;
 
-              let containerClass = 'border border-gray-800 rounded-xl transition-all';
+              let containerClass = 'border border-gray-800 rounded-xl transition-all duration-200';
               if (feedback) {
                 if (isCorrectAnswer) {
-                  containerClass = 'border-2 border-emerald-500/50 bg-emerald-500/5 rounded-xl';
+                  containerClass = 'border-2 border-emerald-500/50 bg-emerald-500/5 rounded-xl animate-in fade-in duration-300';
                 } else if (isUserWrongChoice) {
-                  containerClass = 'border-2 border-red-500/50 bg-red-500/5 rounded-xl';
+                  containerClass = 'border-2 border-red-500/50 bg-red-500/5 rounded-xl animate-in fade-in duration-300';
                 } else {
                   containerClass = 'border border-gray-800/50 rounded-xl opacity-60';
                 }
+              } else if (isOptimisticSelected && isSubmitting) {
+                // Optimistic: show selected answer with pulse while waiting
+                containerClass = 'border-2 border-[#4169E1] bg-[#4169E1]/10 rounded-xl animate-pulse';
               } else if (isSelected) {
                 containerClass = 'border-2 border-[#4169E1] bg-[#4169E1]/5 rounded-xl';
               }
@@ -822,8 +859,25 @@ function StudyContent() {
             )}
 
             {!feedback && selectedAnswer && (
-              <Button variant="primary" size="lg" rounded="full" onClick={handleSubmit}>
-                Submit
+              <Button
+                variant="primary"
+                size="lg"
+                rounded="full"
+                onClick={handleSubmit}
+                disabled={isSubmitting}
+                className={isSubmitting ? 'opacity-80' : ''}
+              >
+                {isSubmitting ? (
+                  <span className="flex items-center gap-2">
+                    <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Checking...
+                  </span>
+                ) : (
+                  'Submit'
+                )}
               </Button>
             )}
 

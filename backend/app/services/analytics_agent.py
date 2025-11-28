@@ -20,9 +20,15 @@ from app.models.models import (
 )
 
 
-def get_performance_trends(db: Session, user_id: str, days: int = 30) -> Dict[str, Any]:
+def get_performance_trends(db: Session, user_id: str, days: int = 30, specialty: Optional[str] = None) -> Dict[str, Any]:
     """
     Get daily performance trends over specified time period.
+
+    Args:
+        db: Database session
+        user_id: User identifier
+        days: Number of days to analyze
+        specialty: Optional specialty filter
 
     Returns:
         - daily_data: List of {date, questions_answered, correct, accuracy, predicted_score}
@@ -31,8 +37,8 @@ def get_performance_trends(db: Session, user_id: str, days: int = 30) -> Dict[st
     """
     start_date = datetime.utcnow() - timedelta(days=days)
 
-    # Get daily aggregated data
-    daily_stats = db.query(
+    # Build base query for daily aggregated data
+    base_query = db.query(
         func.date(QuestionAttempt.attempted_at).label('date'),
         func.count(QuestionAttempt.id).label('questions_answered'),
         func.sum(cast(QuestionAttempt.is_correct, Integer)).label('correct'),
@@ -40,7 +46,15 @@ def get_performance_trends(db: Session, user_id: str, days: int = 30) -> Dict[st
     ).filter(
         QuestionAttempt.user_id == user_id,
         QuestionAttempt.attempted_at >= start_date
-    ).group_by(
+    )
+
+    # Add specialty filter if provided
+    if specialty:
+        base_query = base_query.join(
+            Question, QuestionAttempt.question_id == Question.id
+        ).filter(Question.specialty == specialty)
+
+    daily_stats = base_query.group_by(
         func.date(QuestionAttempt.attempted_at)
     ).order_by(
         func.date(QuestionAttempt.attempted_at)
@@ -128,17 +142,23 @@ def _calculate_trend(daily_data: List[Dict]) -> str:
         return "stable"
 
 
-def get_detailed_weak_areas(db: Session, user_id: str, threshold: float = 0.6) -> Dict[str, Any]:
+def get_detailed_weak_areas(db: Session, user_id: str, threshold: float = 0.6, specialty: Optional[str] = None) -> Dict[str, Any]:
     """
     Identify weak and strong areas with detailed breakdown.
+
+    Args:
+        db: Database session
+        user_id: User identifier
+        threshold: Accuracy threshold for weak areas (default 0.6)
+        specialty: Optional specialty filter
 
     Returns:
         - weak_areas: List sorted by priority (impact * weakness)
         - strong_areas: List of mastered topics
         - focus_recommendation: Top 3 areas to focus on
     """
-    # Get performance by source (specialty)
-    results = db.query(
+    # Build base query for performance by source (topic)
+    base_query = db.query(
         Question.source,
         func.count(QuestionAttempt.id).label('total'),
         func.sum(cast(QuestionAttempt.is_correct, Integer)).label('correct'),
@@ -147,9 +167,13 @@ def get_detailed_weak_areas(db: Session, user_id: str, threshold: float = 0.6) -
         QuestionAttempt, Question.id == QuestionAttempt.question_id
     ).filter(
         QuestionAttempt.user_id == user_id
-    ).group_by(
-        Question.source
-    ).all()
+    )
+
+    # Add specialty filter if provided
+    if specialty:
+        base_query = base_query.filter(Question.specialty == specialty)
+
+    results = base_query.group_by(Question.source).all()
 
     weak_areas = []
     strong_areas = []
@@ -194,9 +218,14 @@ def get_detailed_weak_areas(db: Session, user_id: str, threshold: float = 0.6) -
     }
 
 
-def analyze_behavioral_patterns(db: Session, user_id: str) -> Dict[str, Any]:
+def analyze_behavioral_patterns(db: Session, user_id: str, specialty: Optional[str] = None) -> Dict[str, Any]:
     """
     Analyze behavioral data from question attempts.
+
+    Args:
+        db: Database session
+        user_id: User identifier
+        specialty: Optional specialty filter
 
     Returns:
         - time_analysis: Average time by outcome, time distribution
@@ -204,7 +233,7 @@ def analyze_behavioral_patterns(db: Session, user_id: str) -> Dict[str, Any]:
         - scroll_analysis: Reading thoroughness patterns
         - optimal_conditions: Best time of day, session length
     """
-    attempts = db.query(
+    base_query = db.query(
         QuestionAttempt.is_correct,
         QuestionAttempt.time_spent_seconds,
         QuestionAttempt.hover_events,
@@ -214,7 +243,15 @@ def analyze_behavioral_patterns(db: Session, user_id: str) -> Dict[str, Any]:
     ).filter(
         QuestionAttempt.user_id == user_id,
         QuestionAttempt.time_spent_seconds.isnot(None)
-    ).all()
+    )
+
+    # Add specialty filter if provided
+    if specialty:
+        base_query = base_query.join(
+            Question, QuestionAttempt.question_id == Question.id
+        ).filter(Question.specialty == specialty)
+
+    attempts = base_query.all()
 
     if not attempts:
         return {
@@ -349,9 +386,14 @@ def _analyze_confidence_accuracy(confidence_data: List) -> Dict[str, Any]:
     }
 
 
-def calculate_predicted_score_detailed(db: Session, user_id: str) -> Dict[str, Any]:
+def calculate_predicted_score_detailed(db: Session, user_id: str, specialty: Optional[str] = None) -> Dict[str, Any]:
     """
     Calculate detailed predicted Step 2 CK score.
+
+    Args:
+        db: Database session
+        user_id: User identifier
+        specialty: Optional specialty filter
 
     Returns:
         - current_score: 194-300
@@ -359,8 +401,8 @@ def calculate_predicted_score_detailed(db: Session, user_id: str) -> Dict[str, A
         - score_trajectory: improving/declining/stable
         - breakdown: by specialty contribution
     """
-    # Get all attempts with question weights
-    attempts = db.query(
+    # Build base query for all attempts with question weights
+    base_query = db.query(
         QuestionAttempt.is_correct,
         QuestionAttempt.attempted_at,
         Question.recency_weight,
@@ -369,9 +411,13 @@ def calculate_predicted_score_detailed(db: Session, user_id: str) -> Dict[str, A
         Question, QuestionAttempt.question_id == Question.id
     ).filter(
         QuestionAttempt.user_id == user_id
-    ).order_by(
-        QuestionAttempt.attempted_at
-    ).all()
+    )
+
+    # Add specialty filter if provided
+    if specialty:
+        base_query = base_query.filter(Question.specialty == specialty)
+
+    attempts = base_query.order_by(QuestionAttempt.attempted_at).all()
 
     if not attempts:
         return {
@@ -532,33 +578,46 @@ def get_error_distribution(db: Session, user_id: str) -> Dict[str, Any]:
     }
 
 
-def get_dashboard_data(db: Session, user_id: str) -> Dict[str, Any]:
+def get_dashboard_data(db: Session, user_id: str, specialty: Optional[str] = None) -> Dict[str, Any]:
     """
     Get all dashboard data in a single call for efficiency.
     Combines all analytics into one response.
 
+    Args:
+        db: Database session
+        user_id: User identifier
+        specialty: Optional specialty filter (e.g., 'Internal Medicine')
+
     Optimized: Consolidated initial stats into single query.
     """
-    # Summary stats - single query for total and correct counts
-    summary_stats = db.query(
+    # Build base query with optional specialty filter
+    base_query = db.query(
         func.count(QuestionAttempt.id).label('total'),
         func.sum(func.cast(QuestionAttempt.is_correct, Integer)).label('correct')
     ).filter(
         QuestionAttempt.user_id == user_id
-    ).first()
+    )
+
+    # Add specialty filter if provided
+    if specialty:
+        base_query = base_query.join(
+            Question, QuestionAttempt.question_id == Question.id
+        ).filter(Question.specialty == specialty)
+
+    summary_stats = base_query.first()
 
     total_questions = summary_stats.total or 0
     correct_count = summary_stats.correct or 0
     overall_accuracy = (correct_count / total_questions * 100) if total_questions > 0 else 0
 
-    # Get all component data
-    score_data = calculate_predicted_score_detailed(db, user_id)
-    weak_strong = get_detailed_weak_areas(db, user_id)
-    trends = get_performance_trends(db, user_id, days=30)
-    behavioral = analyze_behavioral_patterns(db, user_id)
+    # Get all component data (pass specialty to filter these as well)
+    score_data = calculate_predicted_score_detailed(db, user_id, specialty=specialty)
+    weak_strong = get_detailed_weak_areas(db, user_id, specialty=specialty)
+    trends = get_performance_trends(db, user_id, days=30, specialty=specialty)
+    behavioral = analyze_behavioral_patterns(db, user_id, specialty=specialty)
     errors = get_error_distribution(db, user_id)
 
-    # Calculate streak
+    # Calculate streak (not specialty-filtered - global)
     streak = _calculate_streak(db, user_id)
 
     return {
@@ -568,8 +627,8 @@ def get_dashboard_data(db: Session, user_id: str) -> Dict[str, Any]:
             "overall_accuracy": round(overall_accuracy, 1),
             "weighted_accuracy": score_data.get("weighted_accuracy", 0),
             "predicted_score": score_data.get("current_score"),
-            "confidence_interval": score_data.get("confidence_interval"),
-            "streak": streak
+            "score_confidence": score_data.get("confidence_interval"),
+            "current_streak": streak
         },
         "score_details": score_data,
         "weak_areas": weak_strong["weak_areas"],
@@ -577,7 +636,8 @@ def get_dashboard_data(db: Session, user_id: str) -> Dict[str, Any]:
         "focus_recommendation": weak_strong["focus_recommendation"],
         "trends": trends,
         "behavioral_insights": behavioral,
-        "error_distribution": errors
+        "error_distribution": errors,
+        "specialty_filter": specialty
     }
 
 

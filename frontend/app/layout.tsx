@@ -4,6 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import "./globals.css";
 import { UserProvider } from "@/contexts/UserContext";
+import { ExamProvider } from "@/contexts/ExamContext";
 import PaymentStatusBanner from "@/components/PaymentStatusBanner";
 import ErrorBoundary from "@/components/ErrorBoundary";
 
@@ -56,8 +57,10 @@ export default function RootLayout({
         <body className={`${inter.variable} ${sourceSerif.variable} ${inter.className} antialiased`}>
           <ErrorBoundary>
             <UserProvider>
-              <PaymentStatusBanner />
-              {children}
+              <ExamProvider>
+                <PaymentStatusBanner />
+                {children}
+              </ExamProvider>
             </UserProvider>
           </ErrorBoundary>
         </body>

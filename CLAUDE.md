@@ -38,7 +38,7 @@ When ending a session, add incomplete tasks here:
 
 ---
 
-## 2024-11-27: Production Hardening Session
+## 2025-11-27: Production Hardening Session
 
 ### Completed
 - [x] Error Handling with circuit breaker (`openai_service.py`)
@@ -46,43 +46,34 @@ When ending a session, add incomplete tasks here:
 - [x] Burst rate limiting (`rate_limiter.py`)
 - [x] Production test suite (`tests/production/`)
 - [x] GitHub Actions workflow (`production-tests.yml`)
+- [x] Fixed `rate_limiter` middleware exports (ImportError bug)
+- [x] Set `RAILWAY_URL` GitHub secret
+- [x] Production tests passing
 
-### Next Steps (TODO)
+### Current Status
+- 🟢 **Railway API**: https://shelfsense-production-d135.up.railway.app (healthy)
+- 🟢 **Production Tests**: Passing
+- 🟢 **Circuit Breaker**: Implemented
+- 🟢 **Rate Limiting**: Tier-based (free/student/premium)
+- 🟡 **Caching**: Ready (needs Redis addon)
+- 🔴 **CI/CD Pipeline**: Failing (missing `CLERK_PUBLISHABLE_KEY` secret)
 
-#### 1. Railway Redis Setup
-```bash
-railway add redis
-```
-This will automatically inject `REDIS_URL` into the environment.
+### Remaining TODO
 
-#### 2. GitHub Secrets Configuration
-Add these secrets to the repository settings (Settings > Secrets and variables > Actions):
-- `RAILWAY_URL` - Your Railway deployment URL (e.g., `https://shelfsense-backend.up.railway.app`)
-- `TEST_USER_EMAIL` - Email for a test user account
-- `TEST_USER_PASSWORD` - Password for the test user
-- `TEST_USER_ID` - (Optional) Test user's ID
-- `SLACK_WEBHOOK_URL` - (Optional) For failure notifications
+#### 1. Add Redis to Railway (Optional - for caching)
+Go to https://railway.app/dashboard → ShelfSense project → **"+ New"** → **"Database"** → **"Redis"**
 
-#### 3. Verify Deployment
-After deploying:
-1. Check health: `curl https://your-railway-url.up.railway.app/health`
-2. Check circuit breaker status (admin): `GET /api/admin/openai-status`
-3. Check cache stats (when Redis is connected)
+Railway auto-injects `REDIS_URL`. Without Redis, app works but no caching.
 
-#### 4. Run Production Tests Manually
-```bash
-RAILWAY_URL=https://your-url.up.railway.app \
-TEST_USER_EMAIL=test@example.com \
-TEST_USER_PASSWORD=yourpassword \
-pytest backend/tests/production/ -v
-```
+#### 2. Fix CI/CD Pipeline (Optional)
+Add these GitHub secrets:
+- `CLERK_PUBLISHABLE_KEY` - From Clerk dashboard
+- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` - Same value
 
-#### 5. Monitor Success Metrics
-- **Error Handling**: Zero unhandled 500 errors from OpenAI failures
-- **Caching**: 80%+ cache hit rate, <100ms for cached responses
-- **Overall Latency**: 95% of requests under 3 seconds
-- **Rate Limiting**: Proper 429 responses with Retry-After headers
-- **Testing**: All 12+ learning engine endpoints passing
+#### 3. Add Remaining Test Secrets (Optional)
+- `TEST_USER_EMAIL` - For authenticated tests
+- `TEST_USER_PASSWORD` - For login tests
+- `SLACK_WEBHOOK_URL` - For failure notifications
 
 ### Key Files Added/Modified This Session
 | File | Description |

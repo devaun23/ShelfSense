@@ -27,7 +27,8 @@ from app.services.adaptive_learning_engine import (
     improve_question_explanation,
     select_next_adaptive_question
 )
-from app.models.models import Question
+from app.models.models import Question, User
+from app.routers.auth import get_current_user
 
 router = APIRouter(prefix="/api/adaptive", tags=["adaptive-learning"])
 
@@ -176,14 +177,14 @@ class ComprehensiveReportResponse(BaseModel):
 # User Analytics Endpoints
 # =========================================================================
 
-@router.get("/weak-areas/{user_id}", response_model=WeakAreasResponse)
+@router.get("/weak-areas", response_model=WeakAreasResponse)
 async def get_weak_areas(
-    user_id: str,
     threshold: float = Query(0.6, ge=0, le=1, description="Accuracy threshold for weak areas"),
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
-    Get detailed weak area analysis with recency weighting.
+    Get detailed weak area analysis with recency weighting for authenticated user.
 
     Returns areas where user has accuracy below threshold, including:
     - Recency-weighted accuracy
@@ -191,20 +192,21 @@ async def get_weak_areas(
     - Average time spent and confidence
     - Actionable recommendations
     """
+    user_id = current_user.id
     agent = get_adaptive_learning_engine(db)
     result = agent.get_detailed_weak_areas(user_id, threshold)
     return result
 
 
-@router.get("/next-question/{user_id}", response_model=QuestionResponse)
+@router.get("/next-question", response_model=QuestionResponse)
 async def get_next_adaptive_question(
-    user_id: str,
     prefer_weak_areas: bool = Query(True, description="Prioritize weak areas"),
     difficulty_adjustment: float = Query(0.0, ge=-1, le=1, description="Difficulty adjustment (-1 to 1)"),
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
-    Get the next question using adaptive selection algorithm.
+    Get the next question using adaptive selection algorithm for authenticated user.
 
     Algorithm considers:
     - User's weak areas (if prefer_weak_areas=True)
@@ -212,6 +214,7 @@ async def get_next_adaptive_question(
     - Recently answered questions (avoided)
     - Question recency weight
     """
+    user_id = current_user.id
     agent = get_adaptive_learning_engine(db)
     question = agent.select_adaptive_question(
         user_id,
@@ -231,13 +234,13 @@ async def get_next_adaptive_question(
     )
 
 
-@router.get("/time-analysis/{user_id}", response_model=TimeAnalysisResponse)
+@router.get("/time-analysis", response_model=TimeAnalysisResponse)
 async def get_time_analysis(
-    user_id: str,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
-    Analyze user's time-to-answer patterns.
+    Analyze authenticated user's time-to-answer patterns.
 
     Returns:
     - Accuracy by time bucket (rushed, quick, normal, careful, slow)
@@ -245,17 +248,18 @@ async def get_time_analysis(
     - Average time for correct vs incorrect answers
     - Personalized recommendations
     """
+    user_id = current_user.id
     agent = get_adaptive_learning_engine(db)
     return agent.analyze_time_patterns(user_id)
 
 
-@router.get("/confidence/{user_id}", response_model=ConfidenceAnalysisResponse)
+@router.get("/confidence", response_model=ConfidenceAnalysisResponse)
 async def get_confidence_analysis(
-    user_id: str,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
-    Analyze user's confidence calibration.
+    Analyze authenticated user's confidence calibration.
 
     Returns:
     - Calibration score (0-100, higher is better calibrated)
@@ -263,17 +267,18 @@ async def get_confidence_analysis(
     - Overconfident/underconfident patterns
     - Metacognitive analysis and recommendations
     """
+    user_id = current_user.id
     agent = get_adaptive_learning_engine(db)
     return agent.analyze_confidence_patterns(user_id)
 
 
-@router.get("/velocity/{user_id}", response_model=LearningVelocityResponse)
+@router.get("/velocity", response_model=LearningVelocityResponse)
 async def get_learning_velocity(
-    user_id: str,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
-    Measure user's learning velocity.
+    Measure authenticated user's learning velocity.
 
     Returns:
     - Velocity score (0-100)
@@ -281,17 +286,18 @@ async def get_learning_velocity(
     - Topic-specific learning speed
     - Estimated weeks to target accuracy
     """
+    user_id = current_user.id
     agent = get_adaptive_learning_engine(db)
     return agent.calculate_learning_velocity(user_id)
 
 
-@router.get("/prediction/{user_id}", response_model=PredictionResponse)
+@router.get("/prediction", response_model=PredictionResponse)
 async def get_performance_prediction(
-    user_id: str,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
-    Get predicted exam performance.
+    Get predicted exam performance for authenticated user.
 
     Returns:
     - Predicted Step 2 CK score with confidence interval
@@ -299,17 +305,18 @@ async def get_performance_prediction(
     - Risk areas for exam
     - Readiness assessment
     """
+    user_id = current_user.id
     agent = get_adaptive_learning_engine(db)
     return agent.predict_exam_performance(user_id)
 
 
-@router.get("/report/{user_id}", response_model=ComprehensiveReportResponse)
+@router.get("/report", response_model=ComprehensiveReportResponse)
 async def get_comprehensive_report(
-    user_id: str,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
-    Generate comprehensive learning report.
+    Generate comprehensive learning report for authenticated user.
 
     Combines all analytics:
     - Weak areas
@@ -319,6 +326,7 @@ async def get_comprehensive_report(
     - Performance prediction
     - Top recommendations
     """
+    user_id = current_user.id
     report = get_user_learning_report(db, user_id)
     return report
 

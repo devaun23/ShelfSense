@@ -9,7 +9,8 @@ import logging
 logger = logging.getLogger(__name__)
 
 from app.database import get_db
-from app.models.models import Question, QuestionAttempt, QuestionRating, ErrorAnalysis, generate_uuid
+from app.models.models import Question, QuestionAttempt, QuestionRating, ErrorAnalysis, generate_uuid, User
+from app.routers.auth import get_current_user
 from app.services.adaptive import select_next_question
 from app.services.question_generator import generate_and_save_question, save_generated_question
 from app.services.question_agent import (
@@ -533,14 +534,18 @@ def warm_question_pool(
     }
 
 
-@router.get("/difficulty/{user_id}")
-def get_difficulty_target(user_id: str, db: Session = Depends(get_db)):
+@router.get("/difficulty")
+def get_difficulty_target(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
-    Get the recommended difficulty level for a user based on their overall performance.
+    Get the recommended difficulty level for the authenticated user based on their overall performance.
 
     Returns difficulty level, target accuracy, and complexity settings.
     This determines what difficulty of questions will be generated for them.
     """
+    user_id = current_user.id
     difficulty_info = get_user_difficulty_target(db, user_id)
     return {
         "user_id": user_id,
@@ -549,14 +554,18 @@ def get_difficulty_target(user_id: str, db: Session = Depends(get_db)):
     }
 
 
-@router.get("/weakness-profile/{user_id}")
-def get_weakness_profile(user_id: str, db: Session = Depends(get_db)):
+@router.get("/weakness-profile")
+def get_weakness_profile(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
-    Get comprehensive weakness profile for a user.
+    Get comprehensive weakness profile for the authenticated user.
 
     Returns weak specialties, error patterns, missed concepts, and recommended focus.
     This is used to generate targeted questions for adaptive learning.
     """
+    user_id = current_user.id
     profile = get_user_weakness_profile(db, user_id)
     return {
         "user_id": user_id,
@@ -565,10 +574,13 @@ def get_weakness_profile(user_id: str, db: Session = Depends(get_db)):
     }
 
 
-@router.get("/targeted/{user_id}", response_model=QuestionResponse)
-def get_targeted_question(user_id: str, db: Session = Depends(get_db)):
+@router.get("/targeted", response_model=QuestionResponse)
+def get_targeted_question(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
-    Generate a question specifically targeting the user's weaknesses.
+    Generate a question specifically targeting the authenticated user's weaknesses.
 
     This is the core adaptive learning endpoint - it generates questions
     designed to address the user's specific weak areas and error patterns.
@@ -583,6 +595,7 @@ def get_targeted_question(user_id: str, db: Session = Depends(get_db)):
     """
     from app.services.question_agent import generate_weakness_targeted_question
 
+    user_id = current_user.id
     try:
         # Get weakness profile first to check if we have enough data
         profile = get_user_weakness_profile(db, user_id)
@@ -831,10 +844,14 @@ def get_quality_score(question_id: str, db: Session = Depends(get_db)):
     return quality
 
 
-@router.get("/analytics/learning-stage/{user_id}")
-def get_learning_stage(user_id: str, topic: Optional[str] = None, db: Session = Depends(get_db)):
+@router.get("/analytics/learning-stage")
+def get_learning_stage(
+    topic: Optional[str] = None,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
-    Determine user's learning stage for targeted question generation.
+    Determine authenticated user's learning stage for targeted question generation.
 
     Learning Stages:
     - New: < 10 questions, < 50% accuracy
@@ -843,7 +860,6 @@ def get_learning_stage(user_id: str, topic: Optional[str] = None, db: Session = 
     - Mastered: 100+ questions, > 85% accuracy
 
     Args:
-        user_id: User ID
         topic: Optional topic/specialty filter
 
     Returns:
@@ -851,12 +867,16 @@ def get_learning_stage(user_id: str, topic: Optional[str] = None, db: Session = 
     - generation_params: Recommended question generation parameters
     - next_milestone: What's needed to advance to next stage
     """
+    user_id = current_user.id
     stage = get_user_learning_stage(db, user_id, topic)
     return stage
 
 
-@router.get("/analytics/recommendations/{user_id}")
-def get_recommendations(user_id: str, db: Session = Depends(get_db)):
+@router.get("/analytics/recommendations")
+def get_recommendations(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
     Get comprehensive recommendations for AI question generation.
 
@@ -867,6 +887,7 @@ def get_recommendations(user_id: str, db: Session = Depends(get_db)):
 
     Returns specific parameters to use when generating the next question.
     """
+    user_id = current_user.id
     recommendations = get_generation_recommendations(db, user_id)
     return recommendations
 
@@ -944,10 +965,14 @@ def submit_detailed_feedback(request: DetailedFeedbackRequest, db: Session = Dep
     }
 
 
-@router.get("/optimal/{user_id}", response_model=QuestionResponse)
-def get_optimal_question(user_id: str, topic: Optional[str] = None, db: Session = Depends(get_db)):
+@router.get("/optimal", response_model=QuestionResponse)
+def get_optimal_question(
+    topic: Optional[str] = None,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
-    Generate the most optimal question for a user based on their learning stage and weaknesses.
+    Generate the most optimal question for the authenticated user based on their learning stage and weaknesses.
 
     This is the recommended endpoint for personalized question generation.
     It automatically:
@@ -956,12 +981,12 @@ def get_optimal_question(user_id: str, topic: Optional[str] = None, db: Session 
     - Generates a question optimized for their current learning needs
 
     Args:
-        user_id: User ID for personalization
         topic: Optional topic filter
 
     Returns:
         QuestionResponse with personalized question
     """
+    user_id = current_user.id
     try:
         logger.info("Generating optimal question for user_id=%s", user_id)
 

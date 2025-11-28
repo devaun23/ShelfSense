@@ -193,9 +193,14 @@ def get_upcoming_reviews(db: Session, user_id: str, days: int = 7) -> dict:
     return calendar
 
 
-def get_review_stats(db: Session, user_id: str) -> dict:
+def get_review_stats(db: Session, user_id: str, specialty: Optional[str] = None) -> dict:
     """
     Get review statistics for user.
+
+    Args:
+        db: Database session
+        user_id: User ID
+        specialty: Optional specialty filter (e.g., 'Internal Medicine')
 
     Returns:
         Dict with review stats:
@@ -208,8 +213,16 @@ def get_review_stats(db: Session, user_id: str) -> dict:
             "by_source": {...}
         }
     """
-    # Get all reviews for user
-    all_reviews = db.query(ScheduledReview).filter_by(user_id=user_id).all()
+    # Build base query for all reviews
+    base_query = db.query(ScheduledReview).filter(ScheduledReview.user_id == user_id)
+
+    # Add specialty filter if provided (join with Question table)
+    if specialty:
+        base_query = base_query.join(
+            Question, ScheduledReview.question_id == Question.id
+        ).filter(Question.specialty == specialty)
+
+    all_reviews = base_query.all()
 
     # Count by stage
     learning = sum(1 for r in all_reviews if r.learning_stage == "Learning")

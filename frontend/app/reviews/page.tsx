@@ -57,10 +57,10 @@ interface HeatmapResponse {
 export default function ReviewsPage() {
   const router = useRouter();
   const { user, isLoading: userLoading } = useUser();
-  // Start with sidebar closed on mobile
+  // Start with sidebar closed on narrow viewports
   const [sidebarOpen, setSidebarOpen] = useState(() => {
     if (typeof window !== 'undefined') {
-      return window.innerWidth >= 768;
+      return window.innerWidth >= 900;
     }
     return true;
   });

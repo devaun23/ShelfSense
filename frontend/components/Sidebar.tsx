@@ -88,6 +88,20 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname, searchParams]);
 
+  // Auto-close sidebar when window is resized below threshold
+  useEffect(() => {
+    const SIDEBAR_BREAKPOINT = 900; // px - sidebar auto-closes below this
+
+    const handleResize = () => {
+      if (window.innerWidth < SIDEBAR_BREAKPOINT && isOpen) {
+        onToggle();
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [isOpen, onToggle]);
+
   const handleSpecialtyClick = (apiName: string | null) => {
     if (apiName) {
       router.push(`/study?specialty=${encodeURIComponent(apiName)}`);
@@ -104,10 +118,9 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
       {/* Sidebar */}
       <aside
         ref={sidebarRef}
-        className={`fixed left-0 top-0 h-dvh w-64 bg-gray-950 border-r border-gray-900 motion-safe:transition-transform motion-safe:duration-300 ease-out z-50 flex flex-col ${
+        className={`fixed left-0 top-0 bottom-0 w-64 bg-gray-950 border-r border-gray-900 motion-safe:transition-transform motion-safe:duration-300 ease-out z-50 flex flex-col ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
-        style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
         role="navigation"
         aria-label="Main navigation"
         aria-hidden={!isOpen}
@@ -277,7 +290,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
 
         {/* Bottom Section - User Profile */}
         {user && (
-          <div className="flex-shrink-0 border-t border-gray-900 p-3 pb-6">
+          <div className="flex-shrink-0 border-t border-gray-900 px-3 pt-3">
             <div className="flex items-center gap-3 px-2 py-2">
               {/* Clerk UserButton */}
               <UserButton
@@ -311,6 +324,9 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
             </div>
           </div>
         )}
+
+        {/* Bottom spacer - ensures content never touches viewport edge */}
+        <div className="flex-shrink-0 h-6" aria-hidden="true" />
       </aside>
 
       {/* Toggle Button - better mobile positioning */}

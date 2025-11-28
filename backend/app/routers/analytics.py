@@ -151,13 +151,18 @@ def get_user_stats(user_id: str, db: Session = Depends(get_db)):
 # =============================================================================
 
 @router.get("/dashboard")
-def get_analytics_dashboard(user_id: str, db: Session = Depends(get_db)):
+def get_analytics_dashboard(
+    user_id: str,
+    specialty: Optional[str] = Query(None, description="Filter by specialty (e.g., 'Internal Medicine')"),
+    db: Session = Depends(get_db)
+):
     """
     Get complete dashboard data in a single call.
     Returns all analytics data for the comprehensive dashboard.
+    Optionally filter by specialty for portal-specific views.
     """
     try:
-        dashboard_data = get_dashboard_data(db, user_id)
+        dashboard_data = get_dashboard_data(db, user_id, specialty=specialty)
         return dashboard_data
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching dashboard data: {str(e)}")
@@ -222,9 +227,14 @@ def get_error_analysis(user_id: str, db: Session = Depends(get_db)):
 
 
 @router.get("/weak-areas")
-def get_weak_areas_detailed(user_id: str, db: Session = Depends(get_db)):
+def get_weak_areas_detailed(
+    user_id: str,
+    specialty: Optional[str] = Query(None, description="Filter by specialty (e.g., 'Internal Medicine')"),
+    db: Session = Depends(get_db)
+):
     """
     Get detailed weak and strong area analysis.
+    Optionally filter by specialty for portal-specific views.
 
     Returns:
         - Weak areas sorted by priority
@@ -232,7 +242,7 @@ def get_weak_areas_detailed(user_id: str, db: Session = Depends(get_db)):
         - Focus recommendations (top 3 areas)
     """
     try:
-        areas = get_detailed_weak_areas(db, user_id)
+        areas = get_detailed_weak_areas(db, user_id, specialty=specialty)
         return areas
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching weak areas: {str(e)}")

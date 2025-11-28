@@ -40,13 +40,20 @@ const TEXT_COLOR_MAP = {
   gray: 'text-gray-400'
 } as const;
 
+// Polling configuration
+const INITIAL_POLL_INTERVAL = 500; // Start fast (500ms)
+const MAX_POLL_INTERVAL = 3000; // Slow down to 3s max
+const MAX_POLL_ATTEMPTS = 20; // Stop after ~30 seconds total
+
 export default memo(function ErrorAnalysis({ questionId, userId, isCorrect }: ErrorAnalysisProps) {
   const [errorData, setErrorData] = useState<ErrorAnalysisData | null>(null);
   const [loading, setLoading] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [pollAttempts, setPollAttempts] = useState(0);
 
   // Use ref to track if we've successfully fetched data (avoids infinite polling)
   const hasDataRef = useRef(false);
+  const pollIntervalRef = useRef(INITIAL_POLL_INTERVAL);
 
   useEffect(() => {
     // Only load error analysis if question was answered incorrectly
@@ -55,8 +62,10 @@ export default memo(function ErrorAnalysis({ questionId, userId, isCorrect }: Er
       return;
     }
 
-    // Reset ref when question changes
+    // Reset state when question changes
     hasDataRef.current = false;
+    pollIntervalRef.current = INITIAL_POLL_INTERVAL;
+    setPollAttempts(0);
 
     const loadErrorAnalysis = async () => {
       // Skip if we already have data for this question
@@ -72,30 +81,47 @@ export default memo(function ErrorAnalysis({ questionId, userId, isCorrect }: Er
             hasDataRef.current = true;
             setErrorData(data);
             setIsExpanded(true); // Auto-expand on load
+            setLoading(false);
+            return true;
           }
         }
       } catch (error) {
         console.error('Error loading error analysis:', error);
-      } finally {
+      }
+      return false;
+    };
+
+    let timeoutId: NodeJS.Timeout;
+
+    // Adaptive polling with exponential backoff
+    const poll = async () => {
+      setPollAttempts(prev => prev + 1);
+
+      const success = await loadErrorAnalysis();
+
+      if (!success && !hasDataRef.current && pollAttempts < MAX_POLL_ATTEMPTS) {
+        // Exponential backoff: increase interval by 50% each time, cap at max
+        pollIntervalRef.current = Math.min(pollIntervalRef.current * 1.5, MAX_POLL_INTERVAL);
+        timeoutId = setTimeout(poll, pollIntervalRef.current);
+      } else if (pollAttempts >= MAX_POLL_ATTEMPTS) {
+        // Give up after max attempts
         setLoading(false);
       }
     };
 
-    // Poll for error analysis (it's generated asynchronously)
-    const pollInterval = setInterval(() => {
-      if (!hasDataRef.current) {
-        loadErrorAnalysis();
-      } else {
-        clearInterval(pollInterval);
-      }
-    }, 2000); // Check every 2 seconds
-
     // Initial load
-    loadErrorAnalysis();
+    loadErrorAnalysis().then(success => {
+      if (!success) {
+        // Start polling if initial load didn't succeed
+        timeoutId = setTimeout(poll, pollIntervalRef.current);
+      }
+    });
 
     // Cleanup
-    return () => clearInterval(pollInterval);
-  }, [questionId, userId, isCorrect]);
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [questionId, userId, isCorrect, pollAttempts]);
 
   const acknowledgeError = async () => {
     try {
@@ -117,13 +143,29 @@ export default memo(function ErrorAnalysis({ questionId, userId, isCorrect }: Er
     return null;
   }
 
-  // Show loading state
+  // Show loading state with skeleton shimmer
   if (loading && !errorData) {
     return (
-      <div className="border border-gray-700 rounded-lg bg-black/50 p-4 mb-4">
+      <div className="border border-gray-700 rounded-lg bg-black/50 p-4 mb-4 overflow-hidden">
         <div className="flex items-center gap-3">
-          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#4169E1]"></div>
-          <span className="text-gray-400 text-sm">Analyzing your mistake...</span>
+          <div className="relative">
+            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#4169E1]"></div>
+          </div>
+          <div className="flex-1">
+            <div className="flex items-center gap-2">
+              <span className="text-gray-400 text-sm">Analyzing your mistake</span>
+              <span className="flex gap-1">
+                <span className="w-1 h-1 bg-[#4169E1] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
+                <span className="w-1 h-1 bg-[#4169E1] rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+                <span className="w-1 h-1 bg-[#4169E1] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+              </span>
+            </div>
+            {/* Skeleton preview */}
+            <div className="mt-3 space-y-2">
+              <div className="h-3 bg-gray-800 rounded animate-pulse w-3/4"></div>
+              <div className="h-3 bg-gray-800 rounded animate-pulse w-1/2"></div>
+            </div>
+          </div>
         </div>
       </div>
     );
