@@ -59,13 +59,13 @@ const PRIORITY_LABELS: Record<number, { label: string; color: string }> = {
 function FlaggedContent() {
   const router = useRouter();
   const { user, isLoading: userLoading } = useUser();
-  // Start with sidebar closed on narrow viewports
-  const [sidebarOpen, setSidebarOpen] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return window.innerWidth >= 900;
-    }
-    return true;
-  });
+  // Start with sidebar closed to avoid hydration mismatch
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Set initial sidebar state after mount
+  useEffect(() => {
+    setSidebarOpen(window.innerWidth >= 900);
+  }, []);
 
   const [flagged, setFlagged] = useState<FlaggedQuestion[]>([]);
   const [stats, setStats] = useState<FlaggedStats | null>(null);

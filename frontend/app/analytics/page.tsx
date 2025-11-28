@@ -164,13 +164,13 @@ type TabType = 'performance' | 'specialties' | 'insights' | 'peers';
 export default function AnalyticsPage() {
   const router = useRouter();
   const { user, isLoading: userLoading } = useUser();
-  // Start with sidebar closed on narrow viewports
-  const [sidebarOpen, setSidebarOpen] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return window.innerWidth >= 900;
-    }
-    return true;
-  });
+  // Start with sidebar closed to avoid hydration mismatch, then set based on viewport
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Set initial sidebar state after mount to avoid hydration mismatch
+  useEffect(() => {
+    setSidebarOpen(window.innerWidth >= 900);
+  }, []);
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [specialtyData, setSpecialtyData] = useState<SpecialtyBreakdown | null>(null);
   const [loading, setLoading] = useState(true);

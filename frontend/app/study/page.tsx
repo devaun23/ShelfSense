@@ -107,13 +107,13 @@ function StudyContent() {
   const searchParams = useSearchParams();
   const { user, isLoading: userLoading } = useUser();
 
-  // Start with sidebar closed on narrow viewports
-  const [sidebarOpen, setSidebarOpen] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return window.innerWidth >= 900;
-    }
-    return true;
-  });
+  // Start with sidebar closed to avoid hydration mismatch
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Set initial sidebar state after mount
+  useEffect(() => {
+    setSidebarOpen(window.innerWidth >= 900);
+  }, []);
 
   // Mode selector state
   const [showModeSelector, setShowModeSelector] = useState(false);

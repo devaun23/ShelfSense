@@ -13,13 +13,13 @@ import EyeLogo from '@/components/icons/EyeLogo';
 const Sidebar = dynamic(() => import('@/components/Sidebar'), { ssr: false });
 
 export default function Home() {
-  // Start with sidebar closed on narrow viewports
-  const [sidebarOpen, setSidebarOpen] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return window.innerWidth >= 900;
-    }
-    return true;
-  });
+  // Start with sidebar closed to avoid hydration mismatch
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Set initial sidebar state after mount
+  useEffect(() => {
+    setSidebarOpen(window.innerWidth >= 900);
+  }, []);
 
   const router = useRouter();
   const { user, isLoading, updateTargetScore, updateExamDate } = useUser();
