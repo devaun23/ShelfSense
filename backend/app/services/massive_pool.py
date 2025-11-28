@@ -340,8 +340,7 @@ _replenish_queue = []
 
 def _trigger_replenish_check(specialty: str, difficulty: str):
     """Add to replenishment queue if not already there."""
-    global _replenish_queue
-
+    # Note: No global needed since we're mutating the list, not reassigning it
     item = (specialty, difficulty)
     if item not in _replenish_queue:
         _replenish_queue.append(item)
