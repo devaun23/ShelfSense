@@ -128,3 +128,94 @@ The specialty name must always be spelled "OBGYN" (not "OB-GYN", "OB/GYN", or "O
 - Backend specialty lists
 - Test files
 - API parameters
+
+---
+
+## MVP Development Strategy (CRITICAL)
+
+### Focus: Internal Medicine Only
+For MVP, **only Internal Medicine (IM)** is active. All other specialties are visible but disabled on the homepage with "(soon)" labels.
+
+### Portal Architecture
+All specialty portals share the same components:
+- `frontend/app/portal/[specialty]/page.tsx` - Dashboard
+- `frontend/app/portal/[specialty]/study/page.tsx` - Study mode
+- `frontend/app/portal/[specialty]/analytics/page.tsx` - Analytics
+- `frontend/app/portal/[specialty]/reviews/page.tsx` - Spaced repetition
+- `frontend/app/portal/[specialty]/weak-areas/page.tsx` - Weak areas
+- `frontend/components/PortalSidebar.tsx` - Shared sidebar
+
+**Any changes made to the IM portal automatically apply to all other specialty portals** since they use the same dynamic route components. When other specialties are re-enabled, they will have all the same features.
+
+### Core Features to Perfect (MVP)
+1. **Study Flow** - Question display, answer selection, feedback, explanations
+2. **Analytics** - Accuracy, predicted score, weak areas identification
+3. **Spaced Repetition** - Review scheduling, learning stages
+4. **AI Explanations** - Quality, completeness, patient-specific reasoning
+
+### Re-enabling Other Specialties
+When ready to enable other specialties, update `frontend/app/page.tsx`:
+```tsx
+// Change this line to add more enabled specialties:
+const isEnabled = exam.id === 'internal-medicine';
+// To:
+const isEnabled = ['internal-medicine', 'surgery', 'pediatrics'].includes(exam.id);
+```
+
+### Why This Approach
+- Concentrate effort on perfecting one specialty's experience
+- Shared components mean no duplicate work
+- Quality > Quantity for launch
+- Users get a polished IM experience rather than half-baked multi-specialty
+
+---
+
+## Automatic Agent Workflow (MUST FOLLOW)
+
+Claude MUST automatically invoke these agents without waiting for user request:
+
+### After EVERY Code Edit
+- **`protective-code-reviewer`** - Run immediately after writing/editing any code
+  - Security vulnerabilities, correctness issues, best practices
+  - Beginner-friendly explanations of any issues found
+
+### Security-Sensitive Code (auth, API, database, user data)
+- **`security-auditor`** - Deep security analysis in addition to code reviewer
+  - Authentication flows, API endpoints, data handling
+  - OWASP Top 10 checks, injection prevention
+
+### Medical Education Features
+- **`medical-education-expert`** - Question design, NBME patterns, learning algorithms
+  - Invoke when designing question formats, explanations, difficulty curves
+- **`medical-education-architect`** - System design, database schema, API boundaries
+  - Invoke when adding new tables, services, or major features
+- **`medical-question-pipeline`** - Question ingestion, parsing, NLP tagging
+  - Invoke when processing/importing questions
+- **`adaptive-learning-algorithm`** - Spaced repetition, question selection, plateau detection
+  - Invoke when working on learning algorithms or question selection logic
+
+### Testing & Quality
+- **`medical-education-tester`** - Medical accuracy, algorithm validation, load testing
+  - Invoke when writing tests or validating educational content
+
+### Compliance
+- **`medical-education-compliance`** - HIPAA/FERPA review
+  - Invoke when handling student data, PII, or educational records
+
+### Product & Business
+- **`entrepreneur`** - Market analysis, product strategy
+- **`monetization`** - Revenue models, pricing
+  - Invoke when discussing business decisions or feature prioritization
+
+### User Management
+- **`user_management`** - Account features, auth flows
+- **`testing_qa`** - QA protocols
+  - Invoke when building user-facing account features
+
+### Invocation Pattern
+```
+1. Complete the requested code/feature
+2. Immediately invoke relevant agent(s) using Task tool
+3. Report agent findings to user
+4. Fix any issues found before considering task complete
+```
