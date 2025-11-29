@@ -130,7 +130,7 @@ class OllamaService:
                 payload = {
                     "model": model,
                     "prompt": prompt,
-                    "stream": False,
+                    "stream": True,  # Use streaming to avoid timeout on slow hardware
                     "options": {
                         "temperature": temperature,
                         "num_predict": max_tokens
@@ -140,24 +140,36 @@ class OllamaService:
                 if system:
                     payload["system"] = system
 
-                response = await client.post(
+                # Use streaming to collect response incrementally
+                full_response = []
+                async with client.stream(
+                    "POST",
                     f"{self.base_url}/api/generate",
                     json=payload
-                )
+                ) as response:
+                    if response.status_code == 404:
+                        raise OllamaNotAvailableError(
+                            f"Model '{model}' not found. "
+                            f"Run: ollama pull {model}"
+                        )
 
-                if response.status_code == 404:
-                    raise OllamaNotAvailableError(
-                        f"Model '{model}' not found. "
-                        f"Run: ollama pull {model}"
-                    )
+                    response.raise_for_status()
 
-                response.raise_for_status()
-                result = response.json()
+                    async for line in response.aiter_lines():
+                        if line:
+                            try:
+                                chunk = json.loads(line)
+                                if chunk.get("response"):
+                                    full_response.append(chunk["response"])
+                                if chunk.get("done"):
+                                    break
+                            except json.JSONDecodeError:
+                                continue
 
                 latency_ms = (datetime.utcnow() - start_time).total_seconds() * 1000
                 self._record_call(model, success=True, latency_ms=latency_ms)
 
-                return result.get("response", "")
+                return "".join(full_response)
 
         except httpx.ConnectError:
             self._record_call(model, success=False, error="Connection failed")
