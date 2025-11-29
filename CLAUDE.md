@@ -1,9 +1,9 @@
-# ShelfSense - Claude Code Context
+# ShelfPass - Claude Code Context
 
-This file provides context for Claude Code sessions working on ShelfSense.
+This file provides context for Claude Code sessions working on ShelfPass.
 
 ## Project Overview
-ShelfSense is an AI-powered adaptive learning platform for medical students preparing for USMLE Step 2 CK.
+ShelfPass is an AI-powered adaptive learning platform for medical students preparing for USMLE Step 2 CK.
 
 ## Tech Stack
 - **Backend**: FastAPI, SQLAlchemy, PostgreSQL (Railway), Redis (caching)

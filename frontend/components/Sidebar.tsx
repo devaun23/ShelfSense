@@ -107,7 +107,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
             style={{ fontFamily: 'var(--font-serif)' }}
             tabIndex={isOpen ? 0 : -1}
           >
-            ShelfSense
+            ShelfPass
           </button>
         </div>
 
@@ -208,7 +208,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
               {/* Feedback button */}
               <div className="relative group">
                 <button
-                  onClick={() => window.location.href = 'mailto:devaun0506@gmail.com?subject=ShelfSense Feedback'}
+                  onClick={() => window.location.href = 'mailto:devaun0506@gmail.com?subject=ShelfPass Feedback'}
                   className="p-1.5 text-gray-600 hover:text-gray-300 transition-colors"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">

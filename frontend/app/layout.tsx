@@ -22,7 +22,7 @@ const sourceSerif = Source_Serif_4({
 });
 
 export const metadata: Metadata = {
-  title: "ShelfSense",
+  title: "ShelfPass",
   description: "Adaptive learning platform for USMLE Step 2 CK",
 };
 

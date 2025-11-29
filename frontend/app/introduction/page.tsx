@@ -20,7 +20,7 @@ export default function IntroductionPage() {
   useEffect(() => {
     // If user has already seen intro, redirect to home
     if (user) {
-      const introKey = `shelfsense_intro_seen_${user.userId}`;
+      const introKey = `shelfpass_intro_seen_${user.userId}`;
       const hasSeenIntro = localStorage.getItem(introKey) === 'true';
       if (hasSeenIntro) {
         router.replace('/');
@@ -31,7 +31,7 @@ export default function IntroductionPage() {
   const handleBegin = () => {
     setIsTransitioning(true);
     if (user) {
-      const introKey = `shelfsense_intro_seen_${user.userId}`;
+      const introKey = `shelfpass_intro_seen_${user.userId}`;
       localStorage.setItem(introKey, 'true');
     }
     // Smooth fade out then navigate
@@ -95,7 +95,7 @@ export default function IntroductionPage() {
           }`}
           style={{ fontFamily: 'var(--font-serif)' }}
         >
-          Welcome to ShelfSense
+          Welcome to ShelfPass
         </h1>
 
         {/* Empathetic Opening - NO HYPHENS */}

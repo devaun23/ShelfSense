@@ -1,17 +1,18 @@
+# Load environment variables FIRST before any other imports
+from dotenv import load_dotenv
+load_dotenv()
+
 import os
 import asyncio
 import logging
 import sentry_sdk
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from dotenv import load_dotenv
+from app.dependencies.auth import get_admin_user
 from app.database import engine, Base
-from app.routers import questions, analytics, users, reviews, chat, adaptive_engine, auth, profile, sessions, subscription, content_quality, study_plan, content, batch_generation, testing_qa, study_modes, flagged, admin, admin_analytics, payments, webhooks, email, learning_engine, score_predictor, gamification, notifications
+from app.routers import questions, analytics, users, reviews, chat, adaptive_engine, auth, profile, sessions, subscription, content_quality, study_plan, content, batch_generation, testing_qa, study_modes, flagged, admin, admin_analytics, payments, webhooks, email, learning_engine, score_predictor, gamification, notifications, self_assessment, curriculum
 from app.middleware.rate_limiter import RateLimitMiddleware
-
-# Load environment variables
-load_dotenv()
 
 # Configure logging
 logging.basicConfig(
@@ -168,11 +169,11 @@ tags_metadata = [
 ]
 
 app = FastAPI(
-    title="ShelfSense API",
+    title="ShelfPass API",
     description="""
-## ShelfSense USMLE Step 2 CK Adaptive Learning Platform
+## ShelfPass USMLE Step 2 CK Adaptive Learning Platform
 
-ShelfSense is an AI-powered adaptive learning platform for medical students preparing for USMLE Step 2 CK.
+ShelfPass is an AI-powered adaptive learning platform for medical students preparing for USMLE Step 2 CK.
 
 ### Features
 - **Adaptive Question Selection** - Questions tailored to your weak areas
@@ -194,18 +195,26 @@ ShelfSense is an AI-powered adaptive learning platform for medical students prep
 )
 
 # CORS middleware for Next.js frontend
+# SECURITY: Explicitly list allowed origins - no wildcards
+ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # Next.js dev server
+    "http://localhost:3001",  # Next.js dev server (alternate port)
+    "https://shelfpass.com",  # Production custom domain
+    "https://www.shelfpass.com",  # www subdomain
+    "https://shelfsense99.netlify.app",  # Netlify production
+]
+
+# Allow additional origins from environment (for preview deploys)
+extra_origins = os.getenv("CORS_ALLOWED_ORIGINS", "")
+if extra_origins:
+    ALLOWED_ORIGINS.extend([o.strip() for o in extra_origins.split(",") if o.strip()])
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",  # Next.js dev server
-        "https://shelfsense.com",  # Production custom domain
-        "https://www.shelfsense.com",  # www subdomain
-        "https://shelfsense99.netlify.app",  # Netlify fallback
-        "https://*.netlify.app",  # Netlify preview deploys
-    ],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allow_headers=["Authorization", "Content-Type", "X-Requested-With", "Accept"],
 )
 
 # Rate limiting middleware
@@ -238,12 +247,14 @@ app.include_router(learning_engine.router)  # Advanced learning engine (Gaps 1-5
 app.include_router(score_predictor.router)  # NBME-calibrated score predictor
 app.include_router(gamification.router)  # Streaks, badges, achievements
 app.include_router(notifications.router)  # Push notifications
+app.include_router(self_assessment.router)  # NBME Self-Assessment Simulator
+app.include_router(curriculum.router)  # StudySync AI - Curriculum mapping
 
 
 @app.get("/")
 def root():
     return {
-        "message": "ShelfSense API",
+        "message": "ShelfPass API",
         "version": "1.0.0",
         "docs": "/docs"
     }
@@ -255,7 +266,19 @@ def health_check():
 
 
 @app.get("/sentry-debug")
-async def trigger_error():
-    """Test endpoint to verify Sentry is capturing errors."""
+async def trigger_error(admin=Depends(get_admin_user)):
+    """
+    Test endpoint to verify Sentry is capturing errors. ADMIN ONLY.
+    Disabled in production to prevent accidental crashes.
+    """
+    # SECURITY: Disable in production environment
+    if os.getenv("RAILWAY_ENVIRONMENT") == "production" or os.getenv("ENVIRONMENT") == "production":
+        from fastapi import HTTPException
+        raise HTTPException(
+            status_code=403,
+            detail="Sentry debug endpoint is disabled in production"
+        )
+
+    logger.warning(f"Sentry debug endpoint triggered by admin user_id={admin.id}")
     division_by_zero = 1 / 0
     return {"error": "This should not be reached"}

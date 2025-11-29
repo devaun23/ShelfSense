@@ -30,7 +30,7 @@ export default function Home() {
   useEffect(() => {
     if (user) {
       // Check if user has seen the introduction page
-      const introKey = `shelfsense_intro_seen_${user.userId}`;
+      const introKey = `shelfpass_intro_seen_${user.userId}`;
       const hasSeenIntro = localStorage.getItem(introKey) === 'true';
 
       if (!hasSeenIntro) {
@@ -39,7 +39,7 @@ export default function Home() {
       }
 
       // Check if onboarding (goal-setting) is needed
-      const onboardingKey = `shelfsense_onboarding_complete_${user.userId}`;
+      const onboardingKey = `shelfpass_onboarding_complete_${user.userId}`;
       const hasCompletedOnboarding = localStorage.getItem(onboardingKey) === 'true';
 
       if (!hasCompletedOnboarding && user.targetScore === null && user.examDate === null) {
@@ -57,14 +57,14 @@ export default function Home() {
     if (user) {
       await updateTargetScore(targetScore);
       await updateExamDate(examDate);
-      localStorage.setItem(`shelfsense_onboarding_complete_${user.userId}`, 'true');
+      localStorage.setItem(`shelfpass_onboarding_complete_${user.userId}`, 'true');
     }
     setShowWelcome(false);
   };
 
   const handleWelcomeSkip = () => {
     if (user) {
-      localStorage.setItem(`shelfsense_onboarding_complete_${user.userId}`, 'true');
+      localStorage.setItem(`shelfpass_onboarding_complete_${user.userId}`, 'true');
     }
     setShowWelcome(false);
   };
