@@ -1,9 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import { useUser } from '@/contexts/UserContext';
 import { redirectToCheckout } from '@/lib/stripe';
+
+const Sidebar = dynamic(() => import('@/components/Sidebar'), { ssr: false });
 
 interface Plan {
   tier: string;
@@ -73,11 +76,16 @@ const plans: Plan[] = [
 ];
 
 export default function PricingPage() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('yearly');
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const { user, isAuthenticated, getAccessToken } = useUser();
+
+  useEffect(() => {
+    setSidebarOpen(window.innerWidth >= 900);
+  }, []);
 
   const handleSubscribe = async (tier: 'student' | 'premium') => {
     if (!isAuthenticated || !user) {
@@ -98,8 +106,13 @@ export default function PricingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white py-12 px-4 font-serif">
-      <div className="max-w-6xl mx-auto">
+    <>
+      <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
+
+      <main className={`min-h-screen bg-black text-white py-12 px-4 transition-all duration-300 ${
+        sidebarOpen ? 'md:ml-64' : 'ml-0'
+      }`}>
+        <div className="max-w-6xl mx-auto pt-8">
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold mb-4">
@@ -227,7 +240,8 @@ export default function PricingPage() {
             Questions? <a href="mailto:support@shelfsense.com" className="text-[#4169E1] hover:underline">Contact us</a>
           </p>
         </div>
-      </div>
-    </div>
+        </div>
+      </main>
+    </>
   );
 }

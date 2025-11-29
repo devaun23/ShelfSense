@@ -2,6 +2,7 @@
 
 // Skeleton components for loading states
 // Uses motion-safe for users who prefer reduced motion
+// Eye-based loading animation for brand consistency
 
 export function SkeletonText({ className = '' }: { className?: string }) {
   return (
@@ -107,34 +108,93 @@ export function SkeletonStats() {
 }
 
 export function LoadingSpinner({ size = 'md', label = 'Loading' }: { size?: 'sm' | 'md' | 'lg'; label?: string }) {
-  const sizeClasses = {
-    sm: 'h-4 w-4',
-    md: 'h-6 w-6',
-    lg: 'h-8 w-8',
+  const sizes = {
+    sm: 24,
+    md: 40,
+    lg: 64,
   };
+  const pixelSize = sizes[size];
+  const dotSize = pixelSize * 0.12;
+  const radius = pixelSize * 0.35;
 
   return (
-    <svg
-      className={`motion-safe:animate-spin text-[#4169E1] ${sizeClasses[size]}`}
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
+    <div
+      className="relative inline-flex items-center justify-center"
       role="status"
       aria-label={label}
+      style={{ width: pixelSize, height: pixelSize }}
     >
-      <circle
-        className="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="4"
-      />
-      <path
-        className="opacity-75"
-        fill="currentColor"
-        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-      />
-    </svg>
+      {/* Faded eye outline */}
+      <svg
+        width={pixelSize}
+        height={pixelSize * 0.625}
+        viewBox="0 0 32 20"
+        fill="none"
+        className="absolute opacity-20"
+      >
+        <path
+          d="M4 4 Q16 0, 28 4"
+          stroke="white"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          fill="none"
+        />
+        <path
+          d="M2 10 Q8 2, 16 2 Q24 2, 30 10 Q24 18, 16 18 Q8 18, 2 10 Z"
+          stroke="white"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          fill="none"
+        />
+        <path
+          d="M29 10 L32 12"
+          stroke="white"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+      </svg>
+
+      {/* Spinning dots */}
+      <div
+        className="absolute animate-spin"
+        style={{
+          width: radius * 2,
+          height: radius * 2,
+          animationDuration: '1s',
+        }}
+      >
+        {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => {
+          const angle = (i * 45 - 90) * (Math.PI / 180);
+          const x = radius + radius * 0.8 * Math.cos(angle);
+          const y = radius + radius * 0.8 * Math.sin(angle);
+          const opacity = 0.15 + (i / 8) * 0.85;
+
+          return (
+            <div
+              key={i}
+              className="absolute rounded-full bg-white"
+              style={{
+                width: dotSize,
+                height: dotSize,
+                left: x - dotSize / 2,
+                top: y - dotSize / 2,
+                opacity,
+              }}
+            />
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// Full page loading screen with eye animation
+export function PageLoader({ message = 'Loading...' }: { message?: string }) {
+  return (
+    <div className="min-h-screen bg-black flex flex-col items-center justify-center gap-6">
+      <LoadingSpinner size="lg" label={message} />
+      <p className="text-gray-400 font-serif text-lg animate-pulse">{message}</p>
+    </div>
   );
 }

@@ -11,11 +11,11 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 }
 
 const variantStyles = {
-  primary: 'bg-[#4169E1] hover:bg-[#5B7FE8] text-white focus-visible:ring-[#4169E1]',
-  secondary: 'bg-gray-900 border border-gray-800 text-white hover:border-gray-700 hover:bg-gray-800 focus-visible:ring-gray-600',
-  danger: 'bg-red-500/20 text-red-400 hover:bg-red-500/30 focus-visible:ring-red-500',
-  warning: 'bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 focus-visible:ring-amber-500',
-  ghost: 'text-gray-400 hover:text-white hover:bg-gray-900 focus-visible:ring-gray-500',
+  primary: 'bg-[#4169E1] hover:bg-[#5B7FE8] active:bg-[#3558C8] text-white focus-visible:ring-[#4169E1] shadow-sm hover:shadow-md hover:shadow-[#4169E1]/20',
+  secondary: 'bg-gray-900 border border-gray-800 text-white hover:border-gray-700 hover:bg-gray-800 active:bg-gray-850 focus-visible:ring-gray-600',
+  danger: 'bg-red-500/20 text-red-400 hover:bg-red-500/30 active:bg-red-500/40 focus-visible:ring-red-500',
+  warning: 'bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 active:bg-amber-500/40 focus-visible:ring-amber-500',
+  ghost: 'text-gray-400 hover:text-white hover:bg-gray-900 active:bg-gray-800 focus-visible:ring-gray-500',
 };
 
 const sizeStyles = {
@@ -41,9 +41,11 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const roundedClass = rounded === 'full' ? 'rounded-full' : 'rounded-lg';
 
     const baseStyles = [
-      'inline-flex items-center justify-center font-medium transition-all',
+      'inline-flex items-center justify-center font-medium',
+      'transition-all duration-200 ease-out',
+      'transform active:scale-[0.98]',
       'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-black',
-      'disabled:opacity-50 disabled:cursor-not-allowed',
+      'disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none',
       variantStyles[variant],
       sizeStyles[size],
       roundedClass,
