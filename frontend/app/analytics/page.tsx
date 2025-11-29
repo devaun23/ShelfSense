@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect, Suspense, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { useUser } from '@/contexts/UserContext';
 import { SPECIALTIES } from '@/lib/specialties';
 import { Button, Badge, CollapsibleSection } from '@/components/ui';
 import { ScoreGauge, NBMEInputForm, PredictionHistory, ScoreBreakdown } from '@/components/analytics';
+import { LoadingSpinner } from '@/components/SkeletonLoader';
 
 // Dynamically import Sidebar to avoid useSearchParams SSR issues
 const Sidebar = dynamic(() => import('@/components/Sidebar'), { ssr: false });
@@ -292,29 +293,95 @@ export default function AnalyticsPage() {
     return hour > 12 ? `${hour - 12} PM` : `${hour} AM`;
   };
 
+  // Loading state with eye spinner
   if (loading) {
     return (
       <>
         <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
         <main className={`min-h-screen bg-black text-white transition-all duration-300 ${sidebarOpen ? 'md:ml-64' : 'ml-0'}`}>
-          <div className="flex items-center justify-center min-h-screen">
-            <div className="animate-pulse text-gray-500">Loading analytics...</div>
+          <div className="flex flex-col items-center justify-center min-h-screen gap-4">
+            <LoadingSpinner size="lg" label="Loading analytics" />
+            <p className="text-gray-500 text-sm">Loading analytics...</p>
           </div>
         </main>
       </>
     );
   }
 
+  // Empty/error state - show minimalistic page structure
   if (!dashboardData) {
     return (
       <>
         <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
         <main className={`min-h-screen bg-black text-white transition-all duration-300 ${sidebarOpen ? 'md:ml-64' : 'ml-0'}`}>
-          <div className="flex flex-col items-center justify-center min-h-screen gap-4">
-            <p className="text-gray-400">{error || 'No analytics data available'}</p>
-            <Button variant="primary" rounded="full" onClick={fetchDashboardData}>
-              Retry
-            </Button>
+          <div className="max-w-4xl mx-auto px-4 md:px-6 py-6 md:py-8 pt-14 md:pt-16">
+            {/* Hero Section - Placeholder Score */}
+            <div className="text-center mb-6 md:mb-8">
+              <p className="text-gray-500 text-xs md:text-sm mb-2 uppercase tracking-wider">
+                Predicted Step 2 CK Score
+              </p>
+              <div className="flex items-baseline justify-center gap-2 md:gap-3 mb-3">
+                <span
+                  className="text-5xl md:text-7xl font-semibold text-gray-700"
+                  style={{ fontFamily: 'var(--font-serif)' }}
+                >
+                  ---
+                </span>
+              </div>
+              <p className="text-gray-600 text-sm">Answer questions to see your predicted score</p>
+            </div>
+
+            {/* Stats Row - Placeholder */}
+            <div className="flex flex-wrap justify-center gap-6 md:gap-10 border-t border-gray-900 pt-6 md:pt-8 mb-8 md:mb-10">
+              <div className="text-center">
+                <p className="text-2xl font-semibold text-gray-700" style={{ fontFamily: 'var(--font-serif)' }}>0</p>
+                <p className="text-xs text-gray-600 uppercase tracking-wider">Questions</p>
+              </div>
+              <div className="text-center">
+                <p className="text-2xl font-semibold text-gray-700" style={{ fontFamily: 'var(--font-serif)' }}>--%</p>
+                <p className="text-xs text-gray-600 uppercase tracking-wider">Accuracy</p>
+              </div>
+              <div className="text-center">
+                <p className="text-2xl font-semibold text-gray-700" style={{ fontFamily: 'var(--font-serif)' }}>0</p>
+                <p className="text-xs text-gray-600 uppercase tracking-wider">Day Streak</p>
+              </div>
+            </div>
+
+            {/* Error message if applicable */}
+            {error && (
+              <div className="text-center mb-8">
+                <p className="text-gray-500 text-sm mb-4">{error}</p>
+                <Button variant="ghost" rounded="full" onClick={fetchDashboardData}>
+                  Retry
+                </Button>
+              </div>
+            )}
+
+            {/* Specialty Grid - Placeholder */}
+            <div className="mb-8">
+              <h3 className="text-lg font-medium text-white mb-4" style={{ fontFamily: 'var(--font-serif)' }}>
+                Specialties
+              </h3>
+              <div className="grid grid-cols-2 gap-3">
+                {SPECIALTIES.map((specialty) => (
+                  <button
+                    key={specialty.id}
+                    onClick={() => router.push(`/study?specialty=${encodeURIComponent(specialty.apiName)}`)}
+                    className="p-4 rounded-2xl border border-gray-800 bg-gray-900/30 text-left transition-all hover:bg-gray-900 hover:border-gray-700"
+                  >
+                    <span className="text-sm font-medium text-gray-400">{specialty.name}</span>
+                    <p className="text-xs text-gray-600 mt-1">Not started</p>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* CTA */}
+            <div className="text-center pt-6 pb-8">
+              <Button variant="primary" size="lg" rounded="full" onClick={() => router.push('/study')}>
+                Start Studying
+              </Button>
+            </div>
           </div>
         </main>
       </>

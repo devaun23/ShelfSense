@@ -8,6 +8,7 @@ import { useExam } from '@/contexts/ExamContext';
 import WelcomeModal from '@/components/WelcomeModal';
 import { SPECIALTIES, FULL_PREP_MODE, Specialty } from '@/lib/specialties';
 import EyeLogo from '@/components/icons/EyeLogo';
+import SpecialtyIcon from '@/components/icons/SpecialtyIcon';
 
 // Dynamically import Sidebar to avoid useSearchParams SSR issues
 const Sidebar = dynamic(() => import('@/components/Sidebar'), { ssr: false });
@@ -111,15 +112,16 @@ export default function Home() {
           Select an exam to begin
         </p>
 
-        {/* Exam Pills - Wrapped row, text only with staggered bounce animation */}
+        {/* Exam Pills - Wrapped row with icons and staggered bounce animation */}
         <div className="flex flex-wrap justify-center gap-2 max-w-2xl mb-8">
           {SPECIALTIES.map((exam, index) => (
             <button
               key={exam.id}
               onClick={() => handleExamSelect(exam)}
-              className="px-4 py-2.5 bg-gray-900/50 hover:bg-gray-800 border border-gray-800 hover:border-gray-600 rounded-full text-sm text-gray-300 hover:text-white transition-all duration-200 animate-bounce-in"
+              className="flex items-center gap-2 px-4 py-2.5 bg-gray-900/50 hover:bg-gray-800 border border-gray-800 hover:border-gray-600 rounded-full text-sm text-gray-300 hover:text-white transition-all duration-200 ease-out animate-bounce-in active:scale-95 hover:shadow-lg hover:shadow-black/20"
               style={{ animationDelay: `${index * 80}ms` }}
             >
+              <SpecialtyIcon specialty={exam.id} size={14} />
               {exam.name}
             </button>
           ))}
@@ -128,9 +130,10 @@ export default function Home() {
         {/* Step 2 CK - Slightly larger with delayed animation */}
         <button
           onClick={() => handleExamSelect(FULL_PREP_MODE)}
-          className="px-6 py-3 bg-gray-900/50 hover:bg-gray-800 border border-gray-800 hover:border-gray-600 rounded-full text-gray-300 hover:text-white transition-all duration-200 animate-bounce-in"
+          className="flex items-center gap-2 px-6 py-3 bg-gray-900/50 hover:bg-gray-800 border border-gray-800 hover:border-gray-600 rounded-full text-gray-300 hover:text-white transition-all duration-200 ease-out animate-bounce-in active:scale-95 hover:shadow-lg hover:shadow-black/20"
           style={{ animationDelay: `${SPECIALTIES.length * 80 + 100}ms` }}
         >
+          <SpecialtyIcon specialty="step2-ck" size={16} />
           <span className="font-medium">{FULL_PREP_MODE.name}</span>
         </button>
 

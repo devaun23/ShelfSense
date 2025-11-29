@@ -116,7 +116,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
           <div className="space-y-1">
             <button
               onClick={() => router.push('/analytics')}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#4169E1] active:scale-[0.98] ${
                 pathname === '/analytics' && searchParams.get('view') !== 'weak'
                   ? 'text-white bg-gray-900'
                   : 'text-gray-400 hover:text-white hover:bg-gray-900'
@@ -131,43 +131,8 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
               <span>Analytics</span>
             </button>
             <button
-              onClick={() => router.push('/reviews')}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
-                pathname === '/reviews'
-                  ? 'text-white bg-gray-900'
-                  : 'text-gray-400 hover:text-white hover:bg-gray-900'
-              }`}
-              style={{ fontFamily: 'var(--font-serif)' }}
-              tabIndex={isOpen ? 0 : -1}
-              aria-current={pathname === '/reviews' ? 'page' : undefined}
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                <line x1="3" y1="10" x2="21" y2="10" />
-                <line x1="8" y1="2" x2="8" y2="6" />
-                <line x1="16" y1="2" x2="16" y2="6" />
-              </svg>
-              <span>Reviews</span>
-            </button>
-            <button
-              onClick={() => router.push('/analytics?view=weak')}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
-                pathname === '/analytics' && searchParams.get('view') === 'weak'
-                  ? 'text-white bg-gray-900'
-                  : 'text-gray-400 hover:text-white hover:bg-gray-900'
-              }`}
-              style={{ fontFamily: 'var(--font-serif)' }}
-              tabIndex={isOpen ? 0 : -1}
-              aria-current={pathname === '/analytics' && searchParams.get('view') === 'weak' ? 'page' : undefined}
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-              <span>Weak Areas</span>
-            </button>
-            <button
               onClick={() => router.push('/pricing')}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#4169E1] active:scale-[0.98] ${
                 pathname === '/pricing'
                   ? 'text-white bg-gray-900'
                   : 'text-gray-400 hover:text-white hover:bg-gray-900'
@@ -184,7 +149,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
             <button
               ref={user?.isAdmin ? undefined : lastFocusableRef}
               onClick={() => router.push('/help')}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#4169E1] active:scale-[0.98] ${
                 pathname === '/help'
                   ? 'text-white bg-gray-900'
                   : 'text-gray-400 hover:text-white hover:bg-gray-900'
@@ -202,7 +167,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
               <button
                 ref={lastFocusableRef}
                 onClick={() => router.push('/admin')}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] ${
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#4169E1] active:scale-[0.98] ${
                   pathname.startsWith('/admin')
                     ? 'text-white bg-gray-900'
                     : 'text-gray-400 hover:text-white hover:bg-gray-900'

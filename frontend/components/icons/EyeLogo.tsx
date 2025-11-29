@@ -88,22 +88,20 @@ export default function EyeLogo({
         strokeLinecap="round"
       />
 
-      {/* Iris ring */}
+      {/* Eye of Horus style pupil - circle with spiral drop */}
       <circle
         cx="16"
-        cy="10"
-        r="5"
-        stroke="white"
-        strokeWidth="1"
-        fill="none"
-      />
-
-      {/* Pupil */}
-      <circle
-        cx="16"
-        cy="10"
-        r="2"
+        cy="9"
+        r="3"
         fill="white"
+      />
+      {/* Spiral drop below pupil */}
+      <path
+        d="M16 12 Q14 14, 15 16 Q16 15, 16 14"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        fill="none"
       />
     </svg>
   );

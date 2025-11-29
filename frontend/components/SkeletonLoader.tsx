@@ -114,8 +114,8 @@ export function LoadingSpinner({ size = 'md', label = 'Loading' }: { size?: 'sm'
     lg: 64,
   };
   const pixelSize = sizes[size];
-  const dotSize = pixelSize * 0.12;
-  const radius = pixelSize * 0.35;
+  const dotSize = pixelSize * 0.15;
+  const radius = pixelSize * 0.4;
 
   return (
     <div
@@ -124,40 +124,9 @@ export function LoadingSpinner({ size = 'md', label = 'Loading' }: { size?: 'sm'
       aria-label={label}
       style={{ width: pixelSize, height: pixelSize }}
     >
-      {/* Faded eye outline */}
-      <svg
-        width={pixelSize}
-        height={pixelSize * 0.625}
-        viewBox="0 0 32 20"
-        fill="none"
-        className="absolute opacity-20"
-      >
-        <path
-          d="M4 4 Q16 0, 28 4"
-          stroke="white"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          fill="none"
-        />
-        <path
-          d="M2 10 Q8 2, 16 2 Q24 2, 30 10 Q24 18, 16 18 Q8 18, 2 10 Z"
-          stroke="white"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          fill="none"
-        />
-        <path
-          d="M29 10 L32 12"
-          stroke="white"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-        />
-      </svg>
-
-      {/* Spinning dots */}
+      {/* Spinning dots only */}
       <div
-        className="absolute animate-spin"
+        className="relative animate-spin"
         style={{
           width: radius * 2,
           height: radius * 2,
@@ -166,9 +135,9 @@ export function LoadingSpinner({ size = 'md', label = 'Loading' }: { size?: 'sm'
       >
         {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => {
           const angle = (i * 45 - 90) * (Math.PI / 180);
-          const x = radius + radius * 0.8 * Math.cos(angle);
-          const y = radius + radius * 0.8 * Math.sin(angle);
-          const opacity = 0.15 + (i / 8) * 0.85;
+          const x = radius + radius * 0.85 * Math.cos(angle);
+          const y = radius + radius * 0.85 * Math.sin(angle);
+          const opacity = 0.2 + (i / 8) * 0.8;
 
           return (
             <div

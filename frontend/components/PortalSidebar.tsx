@@ -94,7 +94,7 @@ export default function PortalSidebar({ specialty }: PortalSidebarProps) {
         className={`
           fixed lg:static inset-y-0 left-0 z-40
           w-64 bg-gray-950 border-r border-gray-800
-          transform transition-transform duration-200 ease-in-out
+          transform transition-all duration-300 ease-out
           ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
           flex flex-col
         `}
@@ -138,7 +138,7 @@ export default function PortalSidebar({ specialty }: PortalSidebarProps) {
               href={item.href}
               onClick={() => setIsOpen(false)}
               className={`
-                flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors
+                flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ease-out active:scale-[0.98]
                 ${isActive(item.href)
                   ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30'
                   : 'text-gray-400 hover:bg-gray-800 hover:text-white'

@@ -77,7 +77,7 @@ const plans: Plan[] = [
 
 export default function PricingPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('yearly');
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();

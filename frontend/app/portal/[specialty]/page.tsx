@@ -73,7 +73,7 @@ export default function PortalDashboard({ params }: PortalDashboardProps) {
   const basePath = `/portal/${specialty.slug}`;
 
   return (
-    <div className="p-6 pl-16 lg:pl-8 lg:p-8 max-w-6xl">
+    <div className="p-6 pl-16 lg:pl-8 lg:p-8 max-w-6xl animate-fade-in-up">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-white" style={{ fontFamily: 'var(--font-serif)' }}>
@@ -82,9 +82,9 @@ export default function PortalDashboard({ params }: PortalDashboardProps) {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8 stagger-children">
         {/* Predicted Score */}
-        <div className="bg-gray-900 rounded-xl p-5 border border-gray-800">
+        <div className="bg-gray-900 rounded-xl p-5 border border-gray-800 card-hover hover:border-gray-700">
           <div className="text-gray-400 text-sm mb-1" style={{ fontFamily: 'var(--font-serif)' }}>Predicted Score</div>
           {loading ? (
             <div className="h-8 bg-gray-800 rounded animate-pulse" />
@@ -101,7 +101,7 @@ export default function PortalDashboard({ params }: PortalDashboardProps) {
         </div>
 
         {/* Accuracy */}
-        <div className="bg-gray-900 rounded-xl p-5 border border-gray-800">
+        <div className="bg-gray-900 rounded-xl p-5 border border-gray-800 card-hover hover:border-gray-700">
           <div className="text-gray-400 text-sm mb-1" style={{ fontFamily: 'var(--font-serif)' }}>Accuracy</div>
           {loading ? (
             <div className="h-8 bg-gray-800 rounded animate-pulse" />
@@ -115,7 +115,7 @@ export default function PortalDashboard({ params }: PortalDashboardProps) {
         </div>
 
         {/* Questions */}
-        <div className="bg-gray-900 rounded-xl p-5 border border-gray-800">
+        <div className="bg-gray-900 rounded-xl p-5 border border-gray-800 card-hover hover:border-gray-700">
           <div className="text-gray-400 text-sm mb-1" style={{ fontFamily: 'var(--font-serif)' }}>Questions Done</div>
           {loading ? (
             <div className="h-8 bg-gray-800 rounded animate-pulse" />
@@ -125,7 +125,7 @@ export default function PortalDashboard({ params }: PortalDashboardProps) {
         </div>
 
         {/* Streak */}
-        <div className="bg-gray-900 rounded-xl p-5 border border-gray-800">
+        <div className="bg-gray-900 rounded-xl p-5 border border-gray-800 card-hover hover:border-gray-700">
           <div className="text-gray-400 text-sm mb-1" style={{ fontFamily: 'var(--font-serif)' }}>Day Streak</div>
           {loading ? (
             <div className="h-8 bg-gray-800 rounded animate-pulse" />
