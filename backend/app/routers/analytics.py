@@ -1,3 +1,11 @@
+"""
+Analytics Router
+
+API endpoints for user analytics, performance tracking, and insights.
+
+SECURITY: All user-specific endpoints require authentication and IDOR protection.
+"""
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import func
@@ -6,7 +14,8 @@ from typing import Dict, Optional, List, Any
 from datetime import datetime, timedelta
 
 from app.database import get_db
-from app.models.models import QuestionAttempt, Question
+from app.models.models import QuestionAttempt, Question, User
+from app.dependencies.auth import get_current_user, get_admin_user, verify_user_access
 from app.services.adaptive import (
     calculate_predicted_score,
     get_performance_by_source
@@ -17,7 +26,8 @@ from app.services.analytics_agent import (
     analyze_behavioral_patterns,
     get_error_distribution,
     get_detailed_weak_areas,
-    calculate_predicted_score_detailed
+    calculate_predicted_score_detailed,
+    calculate_readiness
 )
 
 router = APIRouter(prefix="/api/analytics", tags=["analytics"])
@@ -89,10 +99,18 @@ class UserStatsResponse(BaseModel):
 
 
 @router.get("/stats", response_model=UserStatsResponse)
-def get_user_stats(user_id: str, db: Session = Depends(get_db)):
+def get_user_stats(
+    user_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
-    Get comprehensive user statistics
+    Get comprehensive user statistics.
+
+    SECURITY: Requires authentication. Users can only access their own data.
     """
+    # IDOR protection
+    verify_user_access(current_user, user_id)
     # Total questions answered
     total = db.query(func.count(QuestionAttempt.id)).filter(
         QuestionAttempt.user_id == user_id
@@ -154,13 +172,18 @@ def get_user_stats(user_id: str, db: Session = Depends(get_db)):
 def get_analytics_dashboard(
     user_id: str,
     specialty: Optional[str] = Query(None, description="Filter by specialty (e.g., 'Internal Medicine')"),
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
     Get complete dashboard data in a single call.
     Returns all analytics data for the comprehensive dashboard.
     Optionally filter by specialty for portal-specific views.
+
+    SECURITY: Requires authentication. Users can only access their own data.
     """
+    # IDOR protection
+    verify_user_access(current_user, user_id)
     try:
         dashboard_data = get_dashboard_data(db, user_id, specialty=specialty)
         return dashboard_data
@@ -172,10 +195,13 @@ def get_analytics_dashboard(
 def get_trends(
     user_id: str,
     days: int = Query(default=30, ge=7, le=90),
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
     Get performance trends over specified time period.
+
+    SECURITY: Requires authentication. Users can only access their own data.
 
     Args:
         user_id: User identifier
@@ -184,6 +210,8 @@ def get_trends(
     Returns:
         Daily data, weekly summary, and overall trend direction
     """
+    # IDOR protection
+    verify_user_access(current_user, user_id)
     try:
         trends = get_performance_trends(db, user_id, days)
         return trends
@@ -192,9 +220,15 @@ def get_trends(
 
 
 @router.get("/behavioral")
-def get_behavioral_insights(user_id: str, db: Session = Depends(get_db)):
+def get_behavioral_insights(
+    user_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
     Get behavioral pattern analysis.
+
+    SECURITY: Requires authentication. Users can only access their own data.
 
     Returns:
         - Time analysis (avg time by outcome)
@@ -202,6 +236,8 @@ def get_behavioral_insights(user_id: str, db: Session = Depends(get_db)):
         - Confidence vs accuracy correlation
         - Optimal study conditions (best time of day)
     """
+    # IDOR protection
+    verify_user_access(current_user, user_id)
     try:
         behavioral = analyze_behavioral_patterns(db, user_id)
         return behavioral
@@ -210,15 +246,23 @@ def get_behavioral_insights(user_id: str, db: Session = Depends(get_db)):
 
 
 @router.get("/errors")
-def get_error_analysis(user_id: str, db: Session = Depends(get_db)):
+def get_error_analysis(
+    user_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
     Get error type distribution and trends.
+
+    SECURITY: Requires authentication. Users can only access their own data.
 
     Returns:
         - Error counts by type
         - Most common error type
         - Improvement trends per error type
     """
+    # IDOR protection
+    verify_user_access(current_user, user_id)
     try:
         errors = get_error_distribution(db, user_id)
         return errors
@@ -230,17 +274,22 @@ def get_error_analysis(user_id: str, db: Session = Depends(get_db)):
 def get_weak_areas_detailed(
     user_id: str,
     specialty: Optional[str] = Query(None, description="Filter by specialty (e.g., 'Internal Medicine')"),
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
     Get detailed weak and strong area analysis.
     Optionally filter by specialty for portal-specific views.
 
+    SECURITY: Requires authentication. Users can only access their own data.
+
     Returns:
         - Weak areas sorted by priority
         - Strong areas (mastered topics)
         - Focus recommendations (top 3 areas)
     """
+    # IDOR protection
+    verify_user_access(current_user, user_id)
     try:
         areas = get_detailed_weak_areas(db, user_id, specialty=specialty)
         return areas
@@ -249,9 +298,15 @@ def get_weak_areas_detailed(
 
 
 @router.get("/score-details")
-def get_score_breakdown(user_id: str, db: Session = Depends(get_db)):
+def get_score_breakdown(
+    user_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
     Get detailed predicted score breakdown.
+
+    SECURITY: Requires authentication. Users can only access their own data.
 
     Returns:
         - Current predicted score (194-300)
@@ -259,6 +314,8 @@ def get_score_breakdown(user_id: str, db: Session = Depends(get_db)):
         - Score trajectory (improving/declining/stable)
         - Breakdown by specialty
     """
+    # IDOR protection
+    verify_user_access(current_user, user_id)
     try:
         score_data = calculate_predicted_score_detailed(db, user_id)
         return score_data
@@ -270,10 +327,13 @@ def get_score_breakdown(user_id: str, db: Session = Depends(get_db)):
 def get_activity_heatmap(
     user_id: str,
     days: int = Query(default=365, ge=30, le=365),
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
     Get daily activity data for calendar heatmap visualization.
+
+    SECURITY: Requires authentication. Users can only access their own data.
 
     Args:
         user_id: User identifier
@@ -282,6 +342,8 @@ def get_activity_heatmap(
     Returns:
         Array of daily data with date, count (questions answered), and accuracy
     """
+    # IDOR protection
+    verify_user_access(current_user, user_id)
     from sqlalchemy import Integer
 
     end_date = datetime.now().date()
@@ -349,13 +411,21 @@ def get_activity_heatmap(
 
 
 @router.get("/specialty-breakdown")
-def get_specialty_breakdown(user_id: str, db: Session = Depends(get_db)):
+def get_specialty_breakdown(
+    user_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
     Get performance breakdown by specialty for the dashboard.
+
+    SECURITY: Requires authentication. Users can only access their own data.
 
     Returns accuracy, questions answered, and predicted scores per specialty.
     Optimized: Single query with GROUP BY instead of N+1 queries.
     """
+    # IDOR protection
+    verify_user_access(current_user, user_id)
     from sqlalchemy import case, Integer
 
     # Define the 8 main specialties
@@ -435,9 +505,15 @@ def get_specialty_breakdown(user_id: str, db: Session = Depends(get_db)):
 
 
 @router.get("/peer-comparison")
-def get_peer_comparison(user_id: str, db: Session = Depends(get_db)):
+def get_peer_comparison(
+    user_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
     Get anonymous peer comparison data.
+
+    SECURITY: Requires authentication. Users can only access their own comparison.
 
     Compares the user's performance against all other users in the system.
     All data is anonymized - no usernames or identifiable information shared.
@@ -448,6 +524,8 @@ def get_peer_comparison(user_id: str, db: Session = Depends(get_db)):
     - Distribution charts data
     - Specialty comparisons
     """
+    # IDOR protection
+    verify_user_access(current_user, user_id)
     from sqlalchemy import Integer, distinct
 
     # Get user's stats
@@ -645,9 +723,14 @@ def _get_percentile_label(percentile: int) -> str:
 
 
 @router.get("/quality-metrics")
-def get_quality_metrics_dashboard(db: Session = Depends(get_db)):
+def get_quality_metrics_dashboard(
+    current_user: User = Depends(get_admin_user),
+    db: Session = Depends(get_db)
+):
     """
     Get quality metrics dashboard for monitoring question and AI performance.
+
+    SECURITY: Requires ADMIN authentication.
 
     This endpoint is for admin/monitoring purposes.
 
@@ -766,3 +849,37 @@ def get_quality_metrics_dashboard(db: Session = Depends(get_db)):
             "avg_daily_attempts": round(recent_attempts / 7, 1)
         }
     }
+
+
+@router.get("/readiness")
+def get_readiness_status(
+    user_id: str,
+    specialty: str = Query(..., description="Specialty to check readiness for (e.g., 'Internal Medicine')"),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Get exam readiness status for a specialty.
+
+    SECURITY: Requires authentication. Users can only access their own data.
+
+    Readiness = Coverage × Mastery
+    - Coverage: % of topics attempted (at least 5 questions)
+    - Mastery: Average accuracy across mastered topics (≥70% with 5+ attempts)
+
+    Returns:
+        - readiness_score: 0-100 percentage
+        - status: "Ready", "Almost Ready", "In Progress", "Early Stage"
+        - coverage: % of topics touched
+        - mastery: Average topic accuracy
+        - topics_mastered: Count of topics with ≥70% accuracy
+        - topics_total: Total topics for this specialty
+        - weak_topics: List of topics needing work
+    """
+    # IDOR protection
+    verify_user_access(current_user, user_id)
+    try:
+        readiness_data = calculate_readiness(db, user_id, specialty)
+        return readiness_data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error calculating readiness: {str(e)}")
