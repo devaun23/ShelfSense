@@ -1,0 +1,427 @@
+{
+  "analysis_date": "1764406117.979755",
+  "total_questions": 1294,
+  "target_questions": 4000,
+  "system_gaps": [
+    {
+      "system": "social_sciences_ethics",
+      "current": 0,
+      "target": 500,
+      "gap": 500,
+      "priority": "HIGH"
+    },
+    {
+      "system": "renal_urinary_reproductive",
+      "current": 130,
+      "target": 400,
+      "gap": 270,
+      "priority": "HIGH"
+    },
+    {
+      "system": "musculoskeletal_skin",
+      "current": 148,
+      "target": 360,
+      "gap": 212,
+      "priority": "HIGH"
+    },
+    {
+      "system": "behavioral_health",
+      "current": 46,
+      "target": 300,
+      "gap": 254,
+      "priority": "MEDIUM"
+    },
+    {
+      "system": "nervous_system",
+      "current": 94,
+      "target": 300,
+      "gap": 206,
+      "priority": "MEDIUM"
+    },
+    {
+      "system": "respiratory",
+      "current": 122,
+      "target": 300,
+      "gap": 178,
+      "priority": "MEDIUM"
+    },
+    {
+      "system": "gastrointestinal",
+      "current": 220,
+      "target": 300,
+      "gap": 80,
+      "priority": "MEDIUM"
+    },
+    {
+      "system": "multisystem",
+      "current": 34,
+      "target": 240,
+      "gap": 206,
+      "priority": "MEDIUM"
+    },
+    {
+      "system": "immune",
+      "current": 15,
+      "target": 160,
+      "gap": 145,
+      "priority": "MEDIUM"
+    },
+    {
+      "system": "blood_lymph",
+      "current": 31,
+      "target": 180,
+      "gap": 149,
+      "priority": "MEDIUM"
+    },
+    {
+      "system": "biostatistics_epi",
+      "current": 12,
+      "target": 160,
+      "gap": 148,
+      "priority": "MEDIUM"
+    },
+    {
+      "system": "pregnancy_ob",
+      "current": 43,
+      "target": 200,
+      "gap": 157,
+      "priority": "MEDIUM"
+    },
+    {
+      "system": "endocrine",
+      "current": 25,
+      "target": 200,
+      "gap": 175,
+      "priority": "MEDIUM"
+    },
+    {
+      "system": "human_development",
+      "current": 9,
+      "target": 120,
+      "gap": 111,
+      "priority": "LOW"
+    }
+  ],
+  "task_gaps": [
+    {
+      "task": "diagnosis",
+      "current": 705,
+      "target": 720,
+      "gap": 15,
+      "priority": "HIGH"
+    },
+    {
+      "task": "lab_diagnostic",
+      "current": 128,
+      "target": 600,
+      "gap": 472,
+      "priority": "HIGH"
+    },
+    {
+      "task": "mixed_management",
+      "current": 243,
+      "target": 560,
+      "gap": 317,
+      "priority": "HIGH"
+    },
+    {
+      "task": "pharmacotherapy",
+      "current": 12,
+      "target": 400,
+      "gap": 388,
+      "priority": "MEDIUM"
+    },
+    {
+      "task": "clinical_interventions",
+      "current": 92,
+      "target": 320,
+      "gap": 228,
+      "priority": "MEDIUM"
+    },
+    {
+      "task": "health_maintenance",
+      "current": 45,
+      "target": 300,
+      "gap": 255,
+      "priority": "MEDIUM"
+    },
+    {
+      "task": "prognosis",
+      "current": 33,
+      "target": 280,
+      "gap": 247,
+      "priority": "MEDIUM"
+    },
+    {
+      "task": "systems_practice",
+      "current": 7,
+      "target": 240,
+      "gap": 233,
+      "priority": "MEDIUM"
+    },
+    {
+      "task": "professionalism",
+      "current": 1,
+      "target": 240,
+      "gap": 239,
+      "priority": "MEDIUM"
+    },
+    {
+      "task": "practice_learning",
+      "current": 28,
+      "target": 160,
+      "gap": 132,
+      "priority": "LOW"
+    }
+  ],
+  "matrix_gaps": [
+    {
+      "system": "social_sciences_ethics",
+      "task": "diagnosis",
+      "current": 0,
+      "target": 10,
+      "gap": 10,
+      "priority_score": 9
+    },
+    {
+      "system": "social_sciences_ethics",
+      "task": "lab_diagnostic",
+      "current": 0,
+      "target": 10,
+      "gap": 10,
+      "priority_score": 9
+    },
+    {
+      "system": "social_sciences_ethics",
+      "task": "mixed_management",
+      "current": 0,
+      "target": 10,
+      "gap": 10,
+      "priority_score": 9
+    },
+    {
+      "system": "musculoskeletal_skin",
+      "task": "lab_diagnostic",
+      "current": 8,
+      "target": 10,
+      "gap": 2,
+      "priority_score": 9
+    },
+    {
+      "system": "social_sciences_ethics",
+      "task": "pharmacotherapy",
+      "current": 0,
+      "target": 10,
+      "gap": 10,
+      "priority_score": 3
+    },
+    {
+      "system": "renal_urinary_reproductive",
+      "task": "pharmacotherapy",
+      "current": 2,
+      "target": 10,
+      "gap": 8,
+      "priority_score": 3
+    },
+    {
+      "system": "musculoskeletal_skin",
+      "task": "pharmacotherapy",
+      "current": 2,
+      "target": 10,
+      "gap": 8,
+      "priority_score": 3
+    },
+    {
+      "system": "cardiovascular",
+      "task": "pharmacotherapy",
+      "current": 4,
+      "target": 10,
+      "gap": 6,
+      "priority_score": 3
+    },
+    {
+      "system": "biostatistics_epi",
+      "task": "lab_diagnostic",
+      "current": 0,
+      "target": 5,
+      "gap": 5,
+      "priority_score": 3
+    },
+    {
+      "system": "biostatistics_epi",
+      "task": "mixed_management",
+      "current": 0,
+      "target": 5,
+      "gap": 5,
+      "priority_score": 3
+    },
+    {
+      "system": "human_development",
+      "task": "lab_diagnostic",
+      "current": 0,
+      "target": 5,
+      "gap": 5,
+      "priority_score": 3
+    },
+    {
+      "system": "multisystem",
+      "task": "lab_diagnostic",
+      "current": 1,
+      "target": 5,
+      "gap": 4,
+      "priority_score": 3
+    },
+    {
+      "system": "immune",
+      "task": "mixed_management",
+      "current": 1,
+      "target": 5,
+      "gap": 4,
+      "priority_score": 3
+    },
+    {
+      "system": "immune",
+      "task": "lab_diagnostic",
+      "current": 2,
+      "target": 5,
+      "gap": 3,
+      "priority_score": 3
+    },
+    {
+      "system": "immune",
+      "task": "diagnosis",
+      "current": 3,
+      "target": 5,
+      "gap": 2,
+      "priority_score": 3
+    },
+    {
+      "system": "blood_lymph",
+      "task": "mixed_management",
+      "current": 3,
+      "target": 5,
+      "gap": 2,
+      "priority_score": 3
+    },
+    {
+      "system": "endocrine",
+      "task": "lab_diagnostic",
+      "current": 3,
+      "target": 5,
+      "gap": 2,
+      "priority_score": 3
+    },
+    {
+      "system": "human_development",
+      "task": "mixed_management",
+      "current": 3,
+      "target": 5,
+      "gap": 2,
+      "priority_score": 3
+    },
+    {
+      "system": "nervous_system",
+      "task": "lab_diagnostic",
+      "current": 4,
+      "target": 5,
+      "gap": 1,
+      "priority_score": 3
+    },
+    {
+      "system": "biostatistics_epi",
+      "task": "diagnosis",
+      "current": 4,
+      "target": 5,
+      "gap": 1,
+      "priority_score": 3
+    },
+    {
+      "system": "nervous_system",
+      "task": "pharmacotherapy",
+      "current": 0,
+      "target": 5,
+      "gap": 5,
+      "priority_score": 1
+    },
+    {
+      "system": "multisystem",
+      "task": "pharmacotherapy",
+      "current": 0,
+      "target": 5,
+      "gap": 5,
+      "priority_score": 1
+    },
+    {
+      "system": "immune",
+      "task": "pharmacotherapy",
+      "current": 0,
+      "target": 5,
+      "gap": 5,
+      "priority_score": 1
+    },
+    {
+      "system": "blood_lymph",
+      "task": "pharmacotherapy",
+      "current": 0,
+      "target": 5,
+      "gap": 5,
+      "priority_score": 1
+    },
+    {
+      "system": "biostatistics_epi",
+      "task": "pharmacotherapy",
+      "current": 0,
+      "target": 5,
+      "gap": 5,
+      "priority_score": 1
+    },
+    {
+      "system": "pregnancy_ob",
+      "task": "pharmacotherapy",
+      "current": 0,
+      "target": 5,
+      "gap": 5,
+      "priority_score": 1
+    },
+    {
+      "system": "endocrine",
+      "task": "pharmacotherapy",
+      "current": 0,
+      "target": 5,
+      "gap": 5,
+      "priority_score": 1
+    },
+    {
+      "system": "human_development",
+      "task": "pharmacotherapy",
+      "current": 0,
+      "target": 5,
+      "gap": 5,
+      "priority_score": 1
+    },
+    {
+      "system": "behavioral_health",
+      "task": "pharmacotherapy",
+      "current": 1,
+      "target": 5,
+      "gap": 4,
+      "priority_score": 1
+    },
+    {
+      "system": "gastrointestinal",
+      "task": "pharmacotherapy",
+      "current": 1,
+      "target": 5,
+      "gap": 4,
+      "priority_score": 1
+    },
+    {
+      "system": "respiratory",
+      "task": "pharmacotherapy",
+      "current": 2,
+      "target": 5,
+      "gap": 3,
+      "priority_score": 1
+    }
+  ]
+}

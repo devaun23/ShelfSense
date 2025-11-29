@@ -30,7 +30,9 @@ from app.services.auth import (
     generate_password_reset_token,
     hash_reset_token,
     verify_reset_token,
-    REFRESH_TOKEN_EXPIRE_DAYS
+    enforce_session_limit,
+    REFRESH_TOKEN_EXPIRE_DAYS,
+    MAX_SESSIONS_PER_USER
 )
 
 router = APIRouter(prefix="/api/auth", tags=["authentication"])
@@ -218,8 +220,8 @@ async def register(
     Register a new user with email and password.
     Returns user info and auth tokens.
     """
-    # Validate password strength
-    is_valid, error_msg = validate_password_strength(request.password)
+    # Validate password strength (with email check for security)
+    is_valid, error_msg = validate_password_strength(request.password, request.email)
     if not is_valid:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -373,6 +375,11 @@ async def login(
     access_token = create_access_token(user.id)
     refresh_token = create_refresh_token(user.id)
 
+    # SECURITY: Enforce session limit before creating new session
+    terminated = enforce_session_limit(db, user.id)
+    if terminated > 0:
+        logger.info(f"Terminated {terminated} old sessions for user {user.id} (max: {MAX_SESSIONS_PER_USER})")
+
     # Create session
     ip, device = get_client_info(req)
     session = UserSession(
@@ -514,8 +521,8 @@ async def change_password(
             detail="Current password is incorrect"
         )
 
-    # Validate new password
-    is_valid, error_msg = validate_password_strength(request.new_password)
+    # Validate new password (with email check for security)
+    is_valid, error_msg = validate_password_strength(request.new_password, current_user.email)
     if not is_valid:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -644,8 +651,8 @@ async def reset_password(
             detail="Invalid or expired reset token"
         )
 
-    # Validate new password
-    is_valid, error_msg = validate_password_strength(request.new_password)
+    # Validate new password (with email check for security)
+    is_valid, error_msg = validate_password_strength(request.new_password, user.email)
     if not is_valid:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

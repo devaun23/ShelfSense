@@ -73,7 +73,7 @@ class OllamaService:
     def __init__(
         self,
         base_url: str = "http://localhost:11434",
-        default_model: str = "llama3:8b"
+        default_model: str = "llama3.2:3b"
     ):
         if self._initialized:
             return
@@ -93,14 +93,14 @@ class OllamaService:
         system: Optional[str] = None,
         temperature: float = 0.7,
         max_tokens: int = 4096,
-        timeout: float = 120.0
+        timeout: float = 300.0
     ) -> str:
         """
         Generate text using local Ollama model.
 
         Args:
             prompt: The prompt to generate from
-            model: Model to use (default: llama3:8b)
+            model: Model to use (default: llama3.2:3b)
             system: Optional system prompt
             temperature: Sampling temperature (0-1)
             max_tokens: Maximum tokens to generate
@@ -116,8 +116,17 @@ class OllamaService:
         model = model or self.default_model
         start_time = datetime.utcnow()
 
+        # Configure timeout properly for slow inference
+        # read timeout needs to be very high for LLM generation
+        timeout_config = httpx.Timeout(
+            connect=30.0,
+            read=timeout,
+            write=30.0,
+            pool=30.0
+        )
+
         try:
-            async with httpx.AsyncClient(timeout=timeout) as client:
+            async with httpx.AsyncClient(timeout=timeout_config) as client:
                 payload = {
                     "model": model,
                     "prompt": prompt,

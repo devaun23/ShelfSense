@@ -245,6 +245,11 @@ class MessageResponse(BaseModel):
 
 # ==================== Helper Functions ====================
 
+import logging
+
+logger = logging.getLogger(__name__)
+
+
 def log_admin_action(
     db: Session,
     admin: User,
@@ -254,9 +259,29 @@ def log_admin_action(
     previous_state: dict = None,
     new_state: dict = None,
     summary: str = None,
-    ip_address: str = None
+    ip_address: str = None,
+    commit: bool = False
 ):
-    """Log an admin action to the audit log"""
+    """
+    Log an admin action to the audit log.
+
+    SECURITY: All admin actions should be logged for:
+    - Compliance (HIPAA, FERPA audit trails)
+    - Security incident investigation
+    - Abuse detection
+
+    Args:
+        db: Database session
+        admin: Admin user performing the action
+        action_type: Type of action (e.g., "user:view", "content:edit")
+        target_type: Type of target (e.g., "user", "question")
+        target_id: ID of the target entity
+        previous_state: State before the action (for modifications)
+        new_state: State after the action (for modifications)
+        summary: Human-readable summary of the action
+        ip_address: Client IP address
+        commit: Whether to commit the transaction (default False)
+    """
     log = AdminAuditLog(
         id=generate_uuid(),
         admin_user_id=admin.id,
@@ -269,7 +294,56 @@ def log_admin_action(
         ip_address=ip_address
     )
     db.add(log)
-    # Caller handles commit
+
+    # Also log to application logger for real-time monitoring
+    logger.info(
+        f"ADMIN_AUDIT: action={action_type} admin={admin.email} "
+        f"target={target_type}:{target_id or 'N/A'} ip={ip_address}"
+    )
+
+    if commit:
+        db.commit()
+
+
+def log_security_event(
+    db: Session,
+    event_type: str,
+    details: dict,
+    ip_address: str = None,
+    user_id: str = None,
+    severity: str = "warning"
+):
+    """
+    Log a security event (failed access attempts, suspicious activity, etc.)
+
+    SECURITY: Security events are logged for:
+    - Failed authentication attempts
+    - Unauthorized access attempts
+    - Rate limit violations
+    - Suspicious activity patterns
+    """
+    log = AdminAuditLog(
+        id=generate_uuid(),
+        admin_user_id=user_id,  # May be None for anonymous attempts
+        action_type=f"security:{event_type}",
+        target_type="security_event",
+        target_id=None,
+        previous_state=None,
+        new_state=details,
+        summary=f"Security event: {event_type}",
+        ip_address=ip_address
+    )
+    db.add(log)
+    db.commit()
+
+    # Log to application logger at appropriate severity
+    log_msg = f"SECURITY_EVENT: type={event_type} ip={ip_address} details={details}"
+    if severity == "critical":
+        logger.critical(log_msg)
+    elif severity == "error":
+        logger.error(log_msg)
+    else:
+        logger.warning(log_msg)
 
 
 # ==================== Dashboard Endpoints ====================
@@ -378,6 +452,7 @@ async def list_users(
 @router.get("/users/{user_id}", response_model=UserDetailResponse)
 async def get_user_detail(
     user_id: str,
+    req: Request,
     admin: User = Depends(get_admin_user),
     db: Session = Depends(get_db)
 ):
@@ -387,6 +462,19 @@ async def get_user_detail(
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+
+    # SECURITY: Log access to user PII data
+    ip, _ = get_client_info(req)
+    log_admin_action(
+        db=db,
+        admin=admin,
+        action_type="user:view_detail",
+        target_type="user",
+        target_id=user_id,
+        summary=f"Viewed user details for {user.email}",
+        ip_address=ip,
+        commit=True
+    )
 
     # Get attempt stats
     total_attempts = db.query(func.count(QuestionAttempt.id)).filter(
@@ -475,6 +563,7 @@ async def get_user_detail(
 @router.get("/users/{user_id}/attempts", response_model=UserAttemptsResponse)
 async def get_user_attempts(
     user_id: str,
+    req: Request,
     page: int = Query(1, ge=1),
     per_page: int = Query(20, ge=1, le=100),
     admin: User = Depends(get_admin_user),
@@ -484,6 +573,19 @@ async def get_user_attempts(
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+
+    # SECURITY: Log access to user learning history
+    ip, _ = get_client_info(req)
+    log_admin_action(
+        db=db,
+        admin=admin,
+        action_type="user:view_attempts",
+        target_type="user",
+        target_id=user_id,
+        summary=f"Viewed attempts for {user.email} (page {page})",
+        ip_address=ip,
+        commit=True
+    )
 
     # Get total count
     total = db.query(func.count(QuestionAttempt.id)).filter(

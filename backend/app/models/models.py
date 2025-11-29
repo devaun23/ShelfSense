@@ -14,6 +14,7 @@ class User(Base):
     full_name = Column(String, nullable=False)
     first_name = Column(String, nullable=False, index=True)
     email = Column(String, unique=True, nullable=False, index=True)
+    clerk_id = Column(String, unique=True, nullable=True, index=True)  # Clerk user ID for SSO auth
     password_hash = Column(String, nullable=True)  # Optional for backwards compatibility
     email_verified = Column(Boolean, default=False)
 

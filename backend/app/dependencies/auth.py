@@ -333,8 +333,15 @@ def verify_user_access(current_user: User, user_id: str) -> None:
         user_id: The user ID being accessed
 
     Raises:
-        HTTPException: If access is denied
+        HTTPException: If access is denied or user_id is invalid
     """
+    # SECURITY: Validate user_id is not empty/None to prevent bypass
+    if not user_id or not str(user_id).strip():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid user ID"
+        )
+
     # Admin can access any user
     if current_user.is_admin:
         return

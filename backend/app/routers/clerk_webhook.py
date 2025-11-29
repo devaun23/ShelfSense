@@ -115,7 +115,14 @@ async def clerk_webhook(
             raise HTTPException(status_code=401, detail="Invalid webhook signature")
     else:
         # In production, this should fail. Log warning for development.
-        if os.getenv('RAILWAY_ENVIRONMENT') or os.getenv('PRODUCTION'):
+        # SECURITY: Check multiple production indicators (Railway uses RAILWAY_ENVIRONMENT_NAME)
+        is_production = any([
+            os.getenv('RAILWAY_ENVIRONMENT_NAME') == 'production',
+            os.getenv('RAILWAY_STATIC_URL'),  # Only set in Railway deployments
+            os.getenv('ENVIRONMENT') == 'production',
+            os.getenv('PRODUCTION'),
+        ])
+        if is_production:
             logger.error("CLERK_WEBHOOK_SECRET not configured in production!")
             raise HTTPException(status_code=500, detail="Webhook secret not configured")
         logger.warning("CLERK_WEBHOOK_SECRET not set - skipping signature verification (dev only)")
