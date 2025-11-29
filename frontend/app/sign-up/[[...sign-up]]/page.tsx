@@ -9,8 +9,8 @@ export default function Page() {
             elements: {
               rootBox: "mx-auto",
               card: "bg-gray-900/50 border border-gray-800",
-              headerTitle: "text-white",
-              headerSubtitle: "text-gray-400",
+              headerTitle: "hidden",
+              headerSubtitle: "hidden",
               socialButtonsBlockButton: "bg-gray-800 border-gray-700 hover:bg-gray-700 text-white",
               socialButtonsBlockButtonText: "text-white",
               formButtonPrimary: "bg-[#4169E1] hover:bg-[#3158D0] text-white",
