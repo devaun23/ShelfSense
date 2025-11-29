@@ -82,30 +82,35 @@ def get_clerk_jwks(force_refresh: bool = False) -> dict:
                 return cached_jwks
 
         # Construct JWKS URL from Clerk frontend API
-        clerk_pub_key = os.getenv("NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY", "")
-
-        if clerk_pub_key.startswith("pk_test_") or clerk_pub_key.startswith("pk_live_"):
-            # Extract the Clerk instance identifier
-            # Format: pk_test_xxxxx or pk_live_xxxxx
-            # The JWKS is at https://{instance}.clerk.accounts.dev/.well-known/jwks.json
-            import base64
-            try:
-                # Clerk publishable key contains base64-encoded instance URL
-                key_part = clerk_pub_key.split("_", 2)[2] if "_" in clerk_pub_key else clerk_pub_key
-                # Add padding if needed
-                padding = 4 - len(key_part) % 4
-                if padding != 4:
-                    key_part += "=" * padding
-                decoded = base64.b64decode(key_part).decode('utf-8')
-                # Validate it looks like a Clerk domain
-                if not decoded.endswith('.clerk.accounts.dev'):
-                    logger.warning(f"Unexpected Clerk domain format: {decoded}")
-                jwks_url = f"https://{decoded}/.well-known/jwks.json"
-            except Exception as e:
-                logger.error(f"Failed to parse Clerk publishable key: {e}")
-                jwks_url = CLERK_JWKS_URL
-        else:
+        # SECURITY: Prioritize manually configured JWKS URL for custom domains
+        if CLERK_JWKS_URL:
             jwks_url = CLERK_JWKS_URL
+            logger.debug(f"Using manually configured JWKS URL: {jwks_url}")
+        else:
+            clerk_pub_key = os.getenv("NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY", "")
+
+            if clerk_pub_key.startswith("pk_test_") or clerk_pub_key.startswith("pk_live_"):
+                # Extract the Clerk instance identifier
+                # Format: pk_test_xxxxx or pk_live_xxxxx
+                # The JWKS is at https://{instance}.clerk.accounts.dev/.well-known/jwks.json
+                import base64
+                try:
+                    # Clerk publishable key contains base64-encoded instance URL
+                    key_part = clerk_pub_key.split("_", 2)[2] if "_" in clerk_pub_key else clerk_pub_key
+                    # Add padding if needed
+                    padding = 4 - len(key_part) % 4
+                    if padding != 4:
+                        key_part += "=" * padding
+                    decoded = base64.b64decode(key_part).decode('utf-8')
+                    # Validate it looks like a Clerk domain
+                    if not decoded.endswith('.clerk.accounts.dev'):
+                        logger.warning(f"Unexpected Clerk domain format: {decoded}")
+                    jwks_url = f"https://{decoded}/.well-known/jwks.json"
+                except Exception as e:
+                    logger.error(f"Failed to parse Clerk publishable key: {e}")
+                    jwks_url = None
+            else:
+                jwks_url = None
 
         if not jwks_url:
             logger.error("No JWKS URL configured for Clerk")
@@ -189,16 +194,33 @@ def verify_clerk_jwt(token: str) -> dict:
             # Audience validation enabled
             decode_kwargs["audience"] = CLERK_AUDIENCE
         else:
-            # SECURITY: In production, audience validation is strongly recommended
-            # Log warning and continue (future: consider making this a hard failure)
-            is_production = os.getenv("RAILWAY_ENVIRONMENT") or os.getenv("PRODUCTION")
+            # SECURITY: Check if we're in production
+            # Railway sets RAILWAY_ENVIRONMENT="production" in production
+            railway_env = os.getenv("RAILWAY_ENVIRONMENT", "").lower()
+            is_production = (
+                railway_env == "production" or
+                os.getenv("PRODUCTION", "").lower() == "true" or
+                os.getenv("ENVIRONMENT", "").lower() == "production"
+            )
+
             if is_production:
-                logger.error(
-                    "SECURITY WARNING: CLERK_AUDIENCE not configured in production! "
-                    "This allows token reuse across applications. "
-                    "Set CLERK_AUDIENCE env var immediately."
+                # SECURITY: Hard failure in production - audience MUST be configured
+                # to prevent token reuse attacks across Clerk applications
+                logger.critical(
+                    "SECURITY CRITICAL: CLERK_AUDIENCE not configured in production! "
+                    "Authentication is disabled until this is fixed. "
+                    "Set CLERK_AUDIENCE=https://shelfpass.com in Railway environment variables."
                 )
-            decode_options["verify_aud"] = False
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="Authentication configuration error. Please contact support."
+                )
+            else:
+                # Development only - skip audience validation with warning
+                logger.warning(
+                    "CLERK_AUDIENCE not set - skipping audience validation (development mode only)"
+                )
+                decode_options["verify_aud"] = False
 
         if decode_options:
             decode_kwargs["options"] = decode_options
