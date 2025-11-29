@@ -81,7 +81,7 @@ export default function IntroductionPage() {
       <div className="max-w-2xl w-full text-center">
         {/* Eye Logo */}
         <div
-          className={`mb-6 transition-all duration-700 ease-out ${
+          className={`mb-4 transition-all duration-700 ease-out ${
             showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}
         >
@@ -90,7 +90,7 @@ export default function IntroductionPage() {
 
         {/* Welcome Heading */}
         <h1
-          className={`text-2xl md:text-3xl text-white mb-4 transition-all duration-700 ease-out delay-150 ${
+          className={`text-2xl md:text-3xl text-white mb-3 transition-all duration-700 ease-out delay-150 ${
             showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}
           style={{ fontFamily: 'var(--font-serif)' }}
@@ -100,7 +100,7 @@ export default function IntroductionPage() {
 
         {/* Empathetic Opening - NO HYPHENS */}
         <p
-          className={`text-gray-400 text-base mb-6 leading-relaxed transition-all duration-700 ease-out delay-300 ${
+          className={`text-gray-400 text-base mb-4 leading-relaxed transition-all duration-700 ease-out delay-300 ${
             showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}
           style={{ fontFamily: 'var(--font-serif)' }}
@@ -112,14 +112,14 @@ export default function IntroductionPage() {
 
         {/* Divider */}
         <div
-          className={`w-12 h-px bg-gray-700 mx-auto mb-6 transition-all duration-700 ease-out delay-450 ${
+          className={`w-12 h-px bg-gray-700 mx-auto mb-4 transition-all duration-700 ease-out delay-450 ${
             showContent ? 'opacity-100 scale-x-100' : 'opacity-0 scale-x-0'
           }`}
         />
 
         {/* Features - Centered */}
         <div
-          className={`space-y-3 mb-6 transition-all duration-700 ease-out delay-500 ${
+          className={`space-y-2 mb-4 transition-all duration-700 ease-out delay-500 ${
             showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}
         >
@@ -151,25 +151,25 @@ export default function IntroductionPage() {
 
         {/* Divider */}
         <div
-          className={`w-12 h-px bg-gray-700 mx-auto mb-6 transition-all duration-700 ease-out delay-600 ${
+          className={`w-12 h-px bg-gray-700 mx-auto mb-4 transition-all duration-700 ease-out delay-600 ${
             showContent ? 'opacity-100 scale-x-100' : 'opacity-0 scale-x-0'
           }`}
         />
 
         {/* Personal Message & Attribution */}
         <div
-          className={`mb-6 transition-all duration-700 ease-out delay-650 ${
+          className={`mb-4 transition-all duration-700 ease-out delay-650 ${
             showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}
         >
           <p
-            className="text-gray-300 text-sm leading-relaxed mb-1"
+            className="text-gray-300 text-sm leading-relaxed mb-2"
             style={{ fontFamily: 'var(--font-serif)' }}
           >
             Made with care, for students like you.
           </p>
           <p
-            className="text-gray-500 text-xs"
+            className="text-white text-lg font-extralight tracking-wide"
             style={{ fontFamily: 'var(--font-serif)' }}
           >
             By Devaun Reid & friends
@@ -212,18 +212,18 @@ export default function IntroductionPage() {
 
         {/* Feedback Note */}
         <div
-          className={`mt-8 transition-all duration-700 ease-out delay-900 ${
+          className={`mt-6 transition-all duration-700 ease-out delay-900 ${
             showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}
         >
           <p
-            className="text-gray-400 text-xs leading-relaxed"
+            className="text-white text-xs leading-relaxed"
             style={{ fontFamily: 'var(--font-serif)' }}
           >
             Questions or ideas? We'd love to hear from you.
           </p>
           <p
-            className="text-gray-500 text-xs mt-1"
+            className="text-white/70 text-xs mt-1"
             style={{ fontFamily: 'var(--font-serif)' }}
           >
             Look for the feedback button at the bottom of the sidebar.
