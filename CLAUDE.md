@@ -122,6 +122,16 @@ npx pyright  # or mypy app/
 ### No Emojis
 Never include emojis anywhere in the UI, buttons, icons, or design elements. This is a permanent rule for the entire application.
 
+### No Hyphens in Text
+Never use hyphens (—, -, –) in user-facing text content. Use commas, periods, or line breaks instead. This applies to:
+- Marketing copy and descriptions
+- Loading messages and feedback
+- Button labels and headings
+- All UI text throughout the application
+
+### Consistent Loading Animation
+Always use the spinning circles animation (LoadingSpinner component) for any loading states or stalls in the app. Located at `frontend/components/ui/LoadingSpinner.tsx`.
+
 ### OBGYN Spelling
 The specialty name must always be spelled "OBGYN" (not "OB-GYN", "OB/GYN", or "Ob-Gyn"). This applies to:
 - Frontend display names
