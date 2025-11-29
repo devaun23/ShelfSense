@@ -28,6 +28,11 @@ const nextConfig: NextConfig = {
             value: "camera=(), microphone=(), geolocation=()",
           },
           {
+            // SECURITY: HSTS - Force HTTPS for 1 year, include subdomains
+            key: "Strict-Transport-Security",
+            value: "max-age=31536000; includeSubDomains",
+          },
+          {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
