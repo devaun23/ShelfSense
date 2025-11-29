@@ -33,10 +33,14 @@ const nextConfig: NextConfig = {
             value: "max-age=31536000; includeSubDomains",
           },
           {
+            // SECURITY: Content Security Policy
+            // - 'unsafe-inline' is required for Next.js hydration (inline scripts/styles)
+            // - 'unsafe-eval' removed to strengthen XSS protection
+            //   If Clerk auth breaks, add it back with documentation why it's needed
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://clerk.shelfpass.com https://*.clerk.accounts.dev https://static.cloudflareinsights.com https://challenges.cloudflare.com",
+              "script-src 'self' 'unsafe-inline' https://clerk.shelfpass.com https://*.clerk.accounts.dev https://static.cloudflareinsights.com https://challenges.cloudflare.com https://js.stripe.com",
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: https:",
               "font-src 'self' data:",
