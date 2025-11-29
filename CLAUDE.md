@@ -222,6 +222,48 @@ Claude MUST automatically invoke these agents without waiting for user request:
 - **`testing_qa`** - QA protocols
   - Invoke when building user-facing account features
 
+### Study & Learning Analytics
+- **`cognitive-pattern-detector`** - After every 20 questions answered
+  - Analyze decision-making patterns, identify failure modes
+  - Auto-deploy to provide ongoing pattern analysis
+- **`performance-tracker`** - At session start/end
+  - Load baseline metrics, capture breakthroughs, document trajectory
+  - Deploy when user asks about progress or improvement
+- **`score-trajectory-predictor`** - After 50+ questions, then every 20 more
+  - Generate three-tier predictions (pessimistic/realistic/optimistic)
+  - Deploy before scheduled exams for pre-exam reports
+- **`intervention-designer`** - When pattern detector finds >70% failure rate
+  - Design targeted learning protocols for specific vulnerabilities
+  - Weekly proactive deployment for emerging patterns
+
+### Question Quality Assurance
+- **`medical-fact-verifier`** - Before any AI-generated question reaches users
+  - Validate clinical accuracy, check treatment guidelines
+  - Auto-deploy as safety checkpoint for new content
+- **`nbme-pattern-validator`** - For every new AI question + weekly batch validation
+  - Ensure questions match real NBME patterns
+  - Flag unrealistic or off-pattern questions
+
+### Product & Engineering Planning
+- **`mvp-feature-prioritizer`** - During sprint planning, when scope creep detected
+  - Ruthlessly prioritize for maximum impact
+  - Kill low-value work before it consumes resources
+- **`product-definition`** - When raw product ideas need structuring
+  - Transform concepts into validated product definitions
+  - Define problem, ICP, MVP scope, success metrics
+- **`market-customer-research`** - When validating ideas or understanding market
+  - Competitor analysis, customer profiles, validation plans
+- **`technical-architect`** - Converting specs to technical implementation
+  - System architecture, tech selection, data models, API contracts
+- **`project-roadmap-builder`** - After planning, before implementation
+  - Transform plans into actionable 90-day roadmaps with sprints
+- **`ux-ui-designer`** - When designing new features or improving UX
+  - User flows, wireframes, interaction patterns, copy guidelines
+- **`engineering-architect`** - For comprehensive development plans
+  - Full-stack architecture, CI/CD, testing strategies, launch readiness
+- **`gtm-growth-strategist`** - Pre-launch and growth planning
+  - Positioning, acquisition channels, onboarding funnels, retention
+
 ### Invocation Pattern
 ```
 1. Complete the requested code/feature
