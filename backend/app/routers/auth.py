@@ -907,3 +907,73 @@ async def clerk_sync(
         is_admin=new_user.is_admin or False,
         synced=True
     )
+
+
+# ==================== Admin Bootstrap ====================
+
+class BootstrapAdminRequest(BaseModel):
+    """Request to bootstrap first admin user"""
+    email: EmailStr
+    secret: str
+
+
+class BootstrapAdminResponse(BaseModel):
+    """Response from bootstrap admin endpoint"""
+    success: bool
+    message: str
+
+
+@router.post("/bootstrap-admin", response_model=BootstrapAdminResponse)
+def bootstrap_admin(
+    request: BootstrapAdminRequest,
+    db: Session = Depends(get_db)
+):
+    """
+    One-time admin bootstrap endpoint.
+    Requires ADMIN_BOOTSTRAP_SECRET environment variable to be set.
+    Use this to promote the first admin user in production.
+    """
+    import secrets
+
+    bootstrap_secret = os.getenv("ADMIN_BOOTSTRAP_SECRET")
+
+    if not bootstrap_secret:
+        logger.warning("Bootstrap admin attempt but ADMIN_BOOTSTRAP_SECRET not configured")
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Admin bootstrap not configured"
+        )
+
+    # Constant-time comparison to prevent timing attacks
+    if not secrets.compare_digest(request.secret, bootstrap_secret):
+        logger.warning(f"Bootstrap admin attempt with invalid secret for email: {request.email}")
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Invalid bootstrap secret"
+        )
+
+    # Find the user
+    user = db.query(User).filter(User.email == request.email).first()
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found. Please sign in first to create your account."
+        )
+
+    if user.is_admin:
+        return BootstrapAdminResponse(
+            success=True,
+            message=f"User {request.email} is already an admin"
+        )
+
+    # Promote to admin
+    user.is_admin = True
+    db.commit()
+
+    logger.info(f"User {request.email} promoted to admin via bootstrap")
+
+    return BootstrapAdminResponse(
+        success=True,
+        message=f"User {request.email} has been promoted to admin"
+    )
