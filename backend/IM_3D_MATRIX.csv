@@ -1,0 +1,158 @@
+Subspecialty,Task Type,Easy (20%),Medium (50%),Hard (25%),Very Hard (5%),Total
+Cardiology,Diagnosis,12,29,15,3,59
+Cardiology,Lab/Diagnostic,10,24,12,3,49
+Cardiology,Mixed Management,9,23,12,2,46
+Cardiology,Pharmacotherapy,7,16,8,2,33
+Cardiology,Clinical Interventions,5,13,7,1,26
+Cardiology,Prognosis,5,12,5,1,23
+Cardiology,Health Maintenance,5,12,5,1,23
+Cardiology,Professionalism,4,10,5,1,20
+Cardiology,Systems Practice,4,10,5,1,20
+Cardiology,Practice Learning,3,7,3,0,13
+Cardiology,Mechanism,3,8,4,1,16
+Cardiology,SUBTOTAL,67,164,81,16,328
+Pulmonology,Diagnosis,9,23,12,1,45
+Pulmonology,Lab/Diagnostic,8,19,9,2,38
+Pulmonology,Mixed Management,7,18,9,1,35
+Pulmonology,Pharmacotherapy,5,13,6,1,25
+Pulmonology,Clinical Interventions,4,10,5,1,20
+Pulmonology,Prognosis,4,9,4,1,18
+Pulmonology,Health Maintenance,4,9,4,1,18
+Pulmonology,Professionalism,3,8,4,0,15
+Pulmonology,Systems Practice,3,8,4,0,15
+Pulmonology,Practice Learning,2,5,3,0,10
+Pulmonology,Mechanism,3,6,3,1,13
+Pulmonology,SUBTOTAL,52,128,63,9,252
+Gastroenterology,Diagnosis,9,23,12,1,45
+Gastroenterology,Lab/Diagnostic,8,19,9,2,38
+Gastroenterology,Mixed Management,7,18,9,1,35
+Gastroenterology,Pharmacotherapy,5,13,6,1,25
+Gastroenterology,Clinical Interventions,4,10,5,1,20
+Gastroenterology,Prognosis,4,9,4,1,18
+Gastroenterology,Health Maintenance,4,9,4,1,18
+Gastroenterology,Professionalism,3,8,4,0,15
+Gastroenterology,Systems Practice,3,8,4,0,15
+Gastroenterology,Practice Learning,2,5,3,0,10
+Gastroenterology,Mechanism,3,6,3,1,13
+Gastroenterology,SUBTOTAL,52,128,63,9,252
+Infectious Disease,Diagnosis,9,23,12,1,45
+Infectious Disease,Lab/Diagnostic,8,19,9,2,38
+Infectious Disease,Mixed Management,7,18,9,1,35
+Infectious Disease,Pharmacotherapy,5,13,6,1,25
+Infectious Disease,Clinical Interventions,4,10,5,1,20
+Infectious Disease,Prognosis,4,9,4,1,18
+Infectious Disease,Health Maintenance,4,9,4,1,18
+Infectious Disease,Professionalism,3,8,4,0,15
+Infectious Disease,Systems Practice,3,8,4,0,15
+Infectious Disease,Practice Learning,2,5,3,0,10
+Infectious Disease,Mechanism,3,6,3,1,13
+Infectious Disease,SUBTOTAL,52,128,63,9,252
+Renal,Diagnosis,7,18,9,2,36
+Renal,Lab/Diagnostic,6,15,8,1,30
+Renal,Mixed Management,6,14,7,1,28
+Renal,Pharmacotherapy,4,10,5,1,20
+Renal,Clinical Interventions,3,8,4,1,16
+Renal,Prognosis,3,7,4,0,14
+Renal,Health Maintenance,3,7,4,0,14
+Renal,Professionalism,2,6,3,1,12
+Renal,Systems Practice,2,6,3,1,12
+Renal,Practice Learning,2,4,2,0,8
+Renal,Mechanism,2,5,3,0,10
+Renal,SUBTOTAL,40,100,52,8,200
+Endocrinology,Diagnosis,7,18,9,2,36
+Endocrinology,Lab/Diagnostic,6,15,8,1,30
+Endocrinology,Mixed Management,6,14,7,1,28
+Endocrinology,Pharmacotherapy,4,10,5,1,20
+Endocrinology,Clinical Interventions,3,8,4,1,16
+Endocrinology,Prognosis,3,7,4,0,14
+Endocrinology,Health Maintenance,3,7,4,0,14
+Endocrinology,Professionalism,2,6,3,1,12
+Endocrinology,Systems Practice,2,6,3,1,12
+Endocrinology,Practice Learning,2,4,2,0,8
+Endocrinology,Mechanism,2,5,3,0,10
+Endocrinology,SUBTOTAL,40,100,52,8,200
+Hematology/Oncology,Diagnosis,7,18,9,2,36
+Hematology/Oncology,Lab/Diagnostic,6,15,8,1,30
+Hematology/Oncology,Mixed Management,6,14,7,1,28
+Hematology/Oncology,Pharmacotherapy,4,10,5,1,20
+Hematology/Oncology,Clinical Interventions,3,8,4,1,16
+Hematology/Oncology,Prognosis,3,7,4,0,14
+Hematology/Oncology,Health Maintenance,3,7,4,0,14
+Hematology/Oncology,Professionalism,2,6,3,1,12
+Hematology/Oncology,Systems Practice,2,6,3,1,12
+Hematology/Oncology,Practice Learning,2,4,2,0,8
+Hematology/Oncology,Mechanism,2,5,3,0,10
+Hematology/Oncology,SUBTOTAL,40,100,52,8,200
+Rheumatology,Diagnosis,5,14,7,1,27
+Rheumatology,Lab/Diagnostic,5,11,6,1,23
+Rheumatology,Mixed Management,4,11,5,1,21
+Rheumatology,Pharmacotherapy,3,8,4,0,15
+Rheumatology,Clinical Interventions,2,6,3,1,12
+Rheumatology,Prognosis,2,5,3,1,11
+Rheumatology,Health Maintenance,2,5,3,1,11
+Rheumatology,Professionalism,2,5,2,0,9
+Rheumatology,Systems Practice,2,5,2,0,9
+Rheumatology,Practice Learning,1,3,2,0,6
+Rheumatology,Mechanism,2,4,2,0,8
+Rheumatology,SUBTOTAL,30,77,39,6,152
+Neurology,Diagnosis,5,14,7,1,27
+Neurology,Lab/Diagnostic,5,11,6,1,23
+Neurology,Mixed Management,4,11,5,1,21
+Neurology,Pharmacotherapy,3,8,4,0,15
+Neurology,Clinical Interventions,2,6,3,1,12
+Neurology,Prognosis,2,5,3,1,11
+Neurology,Health Maintenance,2,5,3,1,11
+Neurology,Professionalism,2,5,2,0,9
+Neurology,Systems Practice,2,5,2,0,9
+Neurology,Practice Learning,1,3,2,0,6
+Neurology,Mechanism,2,4,2,0,8
+Neurology,SUBTOTAL,30,77,39,6,152
+Immunology/Allergy,Diagnosis,4,9,5,0,18
+Immunology/Allergy,Lab/Diagnostic,3,8,4,0,15
+Immunology/Allergy,Mixed Management,3,7,4,0,14
+Immunology/Allergy,Pharmacotherapy,2,5,3,0,10
+Immunology/Allergy,Clinical Interventions,2,4,2,0,8
+Immunology/Allergy,Prognosis,1,4,2,0,7
+Immunology/Allergy,Health Maintenance,1,4,2,0,7
+Immunology/Allergy,Professionalism,1,3,2,0,6
+Immunology/Allergy,Systems Practice,1,3,2,0,6
+Immunology/Allergy,Practice Learning,1,2,1,0,4
+Immunology/Allergy,Mechanism,1,3,1,0,5
+Immunology/Allergy,SUBTOTAL,20,52,28,0,100
+Ethics/Professionalism,Diagnosis,9,23,12,1,45
+Ethics/Professionalism,Lab/Diagnostic,8,19,9,2,38
+Ethics/Professionalism,Mixed Management,7,18,9,1,35
+Ethics/Professionalism,Pharmacotherapy,5,13,6,1,25
+Ethics/Professionalism,Clinical Interventions,4,10,5,1,20
+Ethics/Professionalism,Prognosis,4,9,4,1,18
+Ethics/Professionalism,Health Maintenance,4,9,4,1,18
+Ethics/Professionalism,Professionalism,3,8,4,0,15
+Ethics/Professionalism,Systems Practice,3,8,4,0,15
+Ethics/Professionalism,Practice Learning,2,5,3,0,10
+Ethics/Professionalism,Mechanism,3,6,3,1,13
+Ethics/Professionalism,SUBTOTAL,52,128,63,9,252
+Biostatistics/Epidemiology,Diagnosis,5,11,6,1,23
+Biostatistics/Epidemiology,Lab/Diagnostic,4,9,5,1,19
+Biostatistics/Epidemiology,Mixed Management,4,9,4,1,18
+Biostatistics/Epidemiology,Pharmacotherapy,3,6,3,0,12
+Biostatistics/Epidemiology,Clinical Interventions,2,5,2,1,10
+Biostatistics/Epidemiology,Prognosis,2,4,2,1,9
+Biostatistics/Epidemiology,Health Maintenance,2,4,2,1,9
+Biostatistics/Epidemiology,Professionalism,1,4,2,0,7
+Biostatistics/Epidemiology,Systems Practice,1,4,2,0,7
+Biostatistics/Epidemiology,Practice Learning,1,3,1,0,5
+Biostatistics/Epidemiology,Mechanism,1,3,2,0,6
+Biostatistics/Epidemiology,SUBTOTAL,26,62,31,6,125
+Multisystem,Diagnosis,2,5,2,0,9
+Multisystem,Lab/Diagnostic,2,4,2,0,8
+Multisystem,Mixed Management,1,4,2,0,7
+Multisystem,Pharmacotherapy,1,3,1,0,5
+Multisystem,Clinical Interventions,1,2,1,0,4
+Multisystem,Prognosis,1,2,1,0,4
+Multisystem,Health Maintenance,1,2,1,0,4
+Multisystem,Professionalism,1,2,1,0,4
+Multisystem,Systems Practice,1,2,1,0,4
+Multisystem,Practice Learning,0,1,0,0,1
+Multisystem,Mechanism,0,1,0,0,1
+Multisystem,SUBTOTAL,11,28,12,0,51
+GRAND TOTAL,,511,1272,636,86,2505
