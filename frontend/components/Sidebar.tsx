@@ -103,7 +103,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
           <button
             ref={firstFocusableRef}
             onClick={() => router.push('/')}
-            className="text-xl font-semibold text-white hover:text-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-[#4169E1] focus:ring-offset-2 focus:ring-offset-gray-950 rounded"
+            className="text-xl font-semibold text-white hover:text-gray-300 transition-colors outline-none rounded"
             style={{ fontFamily: 'var(--font-serif)' }}
             tabIndex={isOpen ? 0 : -1}
           >
@@ -116,7 +116,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
           <div className="space-y-1">
             <button
               onClick={() => router.push('/analytics')}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#4169E1] active:scale-[0.98] ${
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ease-out outline-none active:scale-[0.98] ${
                 pathname === '/analytics' && searchParams.get('view') !== 'weak'
                   ? 'text-white bg-gray-900'
                   : 'text-gray-400 hover:text-white hover:bg-gray-900'
@@ -132,7 +132,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
             </button>
             <button
               onClick={() => router.push('/pricing')}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#4169E1] active:scale-[0.98] ${
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ease-out outline-none active:scale-[0.98] ${
                 pathname === '/pricing'
                   ? 'text-white bg-gray-900'
                   : 'text-gray-400 hover:text-white hover:bg-gray-900'
@@ -149,7 +149,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
             <button
               ref={user?.isAdmin ? undefined : lastFocusableRef}
               onClick={() => router.push('/help')}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#4169E1] active:scale-[0.98] ${
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ease-out outline-none active:scale-[0.98] ${
                 pathname === '/help'
                   ? 'text-white bg-gray-900'
                   : 'text-gray-400 hover:text-white hover:bg-gray-900'
@@ -167,7 +167,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
               <button
                 ref={lastFocusableRef}
                 onClick={() => router.push('/admin')}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#4169E1] active:scale-[0.98] ${
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ease-out outline-none active:scale-[0.98] ${
                   pathname.startsWith('/admin')
                     ? 'text-white bg-gray-900'
                     : 'text-gray-400 hover:text-white hover:bg-gray-900'
@@ -224,7 +224,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
             <div className="px-2 py-2">
               <button
                 onClick={() => router.push('/sign-in')}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[#4169E1] hover:bg-[#5B7FE8] text-white rounded-lg transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#4169E1] focus:ring-offset-2 focus:ring-offset-gray-950 active:scale-[0.98]"
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[#4169E1] hover:bg-[#5B7FE8] text-white rounded-lg transition-all duration-200 ease-out outline-none active:scale-[0.92]"
                 style={{ fontFamily: 'var(--font-serif)' }}
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">

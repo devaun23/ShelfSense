@@ -24,6 +24,8 @@ interface Question {
   choices: string[];
   source: string;
   recency_weight: number;
+  image_url?: string;
+  image_type?: string;
 }
 
 interface StepByStep {
@@ -672,6 +674,37 @@ function StudyContent() {
               >
                 Try again
               </button>
+            </div>
+          )}
+
+          {/* Medical Image Display (ECG, CXR, etc.) */}
+          {question.image_url && (
+            <div className="mb-6">
+              <div className="relative bg-gray-900 rounded-xl overflow-hidden border border-gray-800">
+                {/* Image type label */}
+                <div className="absolute top-3 left-3 z-10">
+                  <span className="px-2 py-1 bg-black/70 rounded text-xs text-gray-300 uppercase tracking-wide">
+                    {question.image_type === 'ecg' ? '12-Lead ECG' :
+                     question.image_type === 'cxr' ? 'Chest X-Ray' :
+                     question.image_type === 'ct' ? 'CT Scan' :
+                     question.image_type === 'mri' ? 'MRI' :
+                     question.image_type === 'fundus' ? 'Fundoscopy' :
+                     question.image_type === 'histology' ? 'Histology' :
+                     'Clinical Image'}
+                  </span>
+                </div>
+                {/* The image */}
+                <img
+                  src={question.image_url}
+                  alt={`${question.image_type || 'Clinical'} image for question`}
+                  className="w-full h-auto max-h-96 object-contain"
+                  loading="eager"
+                />
+              </div>
+              {/* Expand hint */}
+              <p className="text-xs text-gray-600 mt-2 text-center">
+                Click image to expand (if supported)
+              </p>
             </div>
           )}
 

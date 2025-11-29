@@ -1,0 +1,440 @@
+{
+  "target_total": 2500,
+  "completed_total": 1481,
+  "targets": [
+    {
+      "system": "cardiovascular",
+      "task": "diagnosis",
+      "target": 158,
+      "completed": 158
+    },
+    {
+      "system": "cardiovascular",
+      "task": "management",
+      "target": 136,
+      "completed": 136
+    },
+    {
+      "system": "cardiovascular",
+      "task": "lab_diagnostic",
+      "target": 68,
+      "completed": 68
+    },
+    {
+      "system": "cardiovascular",
+      "task": "pharmacotherapy",
+      "target": 46,
+      "completed": 46
+    },
+    {
+      "system": "cardiovascular",
+      "task": "health_maintenance",
+      "target": 23,
+      "completed": 23
+    },
+    {
+      "system": "cardiovascular",
+      "task": "prognosis",
+      "target": 23,
+      "completed": 23
+    },
+    {
+      "system": "respiratory",
+      "task": "diagnosis",
+      "target": 106,
+      "completed": 106
+    },
+    {
+      "system": "respiratory",
+      "task": "management",
+      "target": 91,
+      "completed": 91
+    },
+    {
+      "system": "respiratory",
+      "task": "lab_diagnostic",
+      "target": 46,
+      "completed": 46
+    },
+    {
+      "system": "respiratory",
+      "task": "pharmacotherapy",
+      "target": 31,
+      "completed": 31
+    },
+    {
+      "system": "respiratory",
+      "task": "health_maintenance",
+      "target": 16,
+      "completed": 16
+    },
+    {
+      "system": "respiratory",
+      "task": "prognosis",
+      "target": 16,
+      "completed": 16
+    },
+    {
+      "system": "gastrointestinal",
+      "task": "diagnosis",
+      "target": 122,
+      "completed": 122
+    },
+    {
+      "system": "gastrointestinal",
+      "task": "management",
+      "target": 105,
+      "completed": 105
+    },
+    {
+      "system": "gastrointestinal",
+      "task": "lab_diagnostic",
+      "target": 52,
+      "completed": 52
+    },
+    {
+      "system": "gastrointestinal",
+      "task": "pharmacotherapy",
+      "target": 35,
+      "completed": 35
+    },
+    {
+      "system": "gastrointestinal",
+      "task": "health_maintenance",
+      "target": 17,
+      "completed": 17
+    },
+    {
+      "system": "gastrointestinal",
+      "task": "prognosis",
+      "target": 17,
+      "completed": 17
+    },
+    {
+      "system": "renal_urinary_reproductive",
+      "task": "diagnosis",
+      "target": 87,
+      "completed": 87
+    },
+    {
+      "system": "renal_urinary_reproductive",
+      "task": "management",
+      "target": 75,
+      "completed": 75
+    },
+    {
+      "system": "renal_urinary_reproductive",
+      "task": "lab_diagnostic",
+      "target": 37,
+      "completed": 37
+    },
+    {
+      "system": "renal_urinary_reproductive",
+      "task": "pharmacotherapy",
+      "target": 25,
+      "completed": 25
+    },
+    {
+      "system": "renal_urinary_reproductive",
+      "task": "health_maintenance",
+      "target": 12,
+      "completed": 12
+    },
+    {
+      "system": "renal_urinary_reproductive",
+      "task": "prognosis",
+      "target": 12,
+      "completed": 12
+    },
+    {
+      "system": "endocrine",
+      "task": "diagnosis",
+      "target": 105,
+      "completed": 105
+    },
+    {
+      "system": "endocrine",
+      "task": "management",
+      "target": 90,
+      "completed": 20
+    },
+    {
+      "system": "endocrine",
+      "task": "lab_diagnostic",
+      "target": 45,
+      "completed": 0
+    },
+    {
+      "system": "endocrine",
+      "task": "pharmacotherapy",
+      "target": 30,
+      "completed": 0
+    },
+    {
+      "system": "endocrine",
+      "task": "health_maintenance",
+      "target": 15,
+      "completed": 0
+    },
+    {
+      "system": "endocrine",
+      "task": "prognosis",
+      "target": 15,
+      "completed": 0
+    },
+    {
+      "system": "nervous_system",
+      "task": "diagnosis",
+      "target": 70,
+      "completed": 0
+    },
+    {
+      "system": "nervous_system",
+      "task": "management",
+      "target": 60,
+      "completed": 0
+    },
+    {
+      "system": "nervous_system",
+      "task": "lab_diagnostic",
+      "target": 30,
+      "completed": 0
+    },
+    {
+      "system": "nervous_system",
+      "task": "pharmacotherapy",
+      "target": 20,
+      "completed": 0
+    },
+    {
+      "system": "nervous_system",
+      "task": "health_maintenance",
+      "target": 10,
+      "completed": 0
+    },
+    {
+      "system": "nervous_system",
+      "task": "prognosis",
+      "target": 10,
+      "completed": 0
+    },
+    {
+      "system": "blood_lymph",
+      "task": "diagnosis",
+      "target": 70,
+      "completed": 0
+    },
+    {
+      "system": "blood_lymph",
+      "task": "management",
+      "target": 60,
+      "completed": 0
+    },
+    {
+      "system": "blood_lymph",
+      "task": "lab_diagnostic",
+      "target": 30,
+      "completed": 0
+    },
+    {
+      "system": "blood_lymph",
+      "task": "pharmacotherapy",
+      "target": 20,
+      "completed": 0
+    },
+    {
+      "system": "blood_lymph",
+      "task": "health_maintenance",
+      "target": 10,
+      "completed": 0
+    },
+    {
+      "system": "blood_lymph",
+      "task": "prognosis",
+      "target": 10,
+      "completed": 0
+    },
+    {
+      "system": "musculoskeletal_skin",
+      "task": "diagnosis",
+      "target": 52,
+      "completed": 0
+    },
+    {
+      "system": "musculoskeletal_skin",
+      "task": "management",
+      "target": 45,
+      "completed": 0
+    },
+    {
+      "system": "musculoskeletal_skin",
+      "task": "lab_diagnostic",
+      "target": 22,
+      "completed": 0
+    },
+    {
+      "system": "musculoskeletal_skin",
+      "task": "pharmacotherapy",
+      "target": 15,
+      "completed": 0
+    },
+    {
+      "system": "musculoskeletal_skin",
+      "task": "health_maintenance",
+      "target": 7,
+      "completed": 0
+    },
+    {
+      "system": "musculoskeletal_skin",
+      "task": "prognosis",
+      "target": 7,
+      "completed": 0
+    },
+    {
+      "system": "immune",
+      "task": "diagnosis",
+      "target": 35,
+      "completed": 0
+    },
+    {
+      "system": "immune",
+      "task": "management",
+      "target": 30,
+      "completed": 0
+    },
+    {
+      "system": "immune",
+      "task": "lab_diagnostic",
+      "target": 15,
+      "completed": 0
+    },
+    {
+      "system": "immune",
+      "task": "pharmacotherapy",
+      "target": 10,
+      "completed": 0
+    },
+    {
+      "system": "immune",
+      "task": "health_maintenance",
+      "target": 5,
+      "completed": 0
+    },
+    {
+      "system": "immune",
+      "task": "prognosis",
+      "target": 5,
+      "completed": 0
+    },
+    {
+      "system": "multisystem",
+      "task": "diagnosis",
+      "target": 35,
+      "completed": 0
+    },
+    {
+      "system": "multisystem",
+      "task": "management",
+      "target": 30,
+      "completed": 0
+    },
+    {
+      "system": "multisystem",
+      "task": "lab_diagnostic",
+      "target": 15,
+      "completed": 0
+    },
+    {
+      "system": "multisystem",
+      "task": "pharmacotherapy",
+      "target": 10,
+      "completed": 0
+    },
+    {
+      "system": "multisystem",
+      "task": "health_maintenance",
+      "target": 5,
+      "completed": 0
+    },
+    {
+      "system": "multisystem",
+      "task": "prognosis",
+      "target": 5,
+      "completed": 0
+    },
+    {
+      "system": "biostatistics_epi",
+      "task": "diagnosis",
+      "target": 17,
+      "completed": 0
+    },
+    {
+      "system": "biostatistics_epi",
+      "task": "management",
+      "target": 15,
+      "completed": 0
+    },
+    {
+      "system": "biostatistics_epi",
+      "task": "lab_diagnostic",
+      "target": 7,
+      "completed": 0
+    },
+    {
+      "system": "biostatistics_epi",
+      "task": "pharmacotherapy",
+      "target": 5,
+      "completed": 0
+    },
+    {
+      "system": "biostatistics_epi",
+      "task": "health_maintenance",
+      "target": 2,
+      "completed": 0
+    },
+    {
+      "system": "biostatistics_epi",
+      "task": "prognosis",
+      "target": 2,
+      "completed": 0
+    },
+    {
+      "system": "behavioral_health",
+      "task": "diagnosis",
+      "target": 17,
+      "completed": 0
+    },
+    {
+      "system": "behavioral_health",
+      "task": "management",
+      "target": 15,
+      "completed": 0
+    },
+    {
+      "system": "behavioral_health",
+      "task": "lab_diagnostic",
+      "target": 7,
+      "completed": 0
+    },
+    {
+      "system": "behavioral_health",
+      "task": "pharmacotherapy",
+      "target": 5,
+      "completed": 0
+    },
+    {
+      "system": "behavioral_health",
+      "task": "health_maintenance",
+      "target": 2,
+      "completed": 0
+    },
+    {
+      "system": "behavioral_health",
+      "task": "prognosis",
+      "target": 2,
+      "completed": 0
+    }
+  ],
+  "started_at": "2025-11-29T07:09:55.535943",
+  "errors": 0
+}

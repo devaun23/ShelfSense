@@ -56,6 +56,10 @@ class Question(Base):
     extra_data = Column(JSON, nullable=True)  # Additional data
     rejected = Column(Boolean, default=False, index=True)  # User rejected this question
 
+    # Image support for ECG, CXR, fundus photos, etc.
+    image_url = Column(String, nullable=True)  # URL to image (S3, PhysioNet, etc.)
+    image_type = Column(String, nullable=True, index=True)  # "ecg", "cxr", "ct", "mri", "fundus", "histology"
+
     # Content Management fields
     content_status = Column(String, default="active", index=True)  # "draft", "pending_review", "active", "archived"
     source_type = Column(String, nullable=True, index=True)  # "nbme", "ai_generated", "community", "imported"

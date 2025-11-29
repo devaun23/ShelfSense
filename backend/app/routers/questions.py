@@ -58,6 +58,8 @@ class QuestionResponse(BaseModel):
     choices: List[str]
     source: str
     recency_weight: float
+    image_url: Optional[str] = None
+    image_type: Optional[str] = None  # "ecg", "cxr", "ct", "mri", "fundus", "histology"
 
     class Config:
         from_attributes = True
@@ -151,7 +153,9 @@ def get_next_question(
         vignette=question.vignette,
         choices=question.choices,
         source=question.source or "Unknown",
-        recency_weight=question.recency_weight or 0.5
+        recency_weight=question.recency_weight or 0.5,
+        image_url=question.image_url,
+        image_type=question.image_type
     )
 
 
@@ -489,7 +493,9 @@ def get_random_question(
         vignette=question.vignette,
         choices=question.choices,
         source=question.source or "ShelfSense",
-        recency_weight=question.recency_weight or 0.5
+        recency_weight=question.recency_weight or 0.5,
+        image_url=question.image_url,
+        image_type=question.image_type
     )
 
 
@@ -648,7 +654,9 @@ def get_targeted_question(
                 vignette=question.vignette,
                 choices=question.choices,
                 source=question.source or "AI Targeted",
-                recency_weight=question.recency_weight or 1.0
+                recency_weight=question.recency_weight or 1.0,
+                image_url=question.image_url,
+                image_type=question.image_type
             )
         else:
             # Not enough data - use standard instant generation
@@ -663,7 +671,9 @@ def get_targeted_question(
                 vignette=question.vignette,
                 choices=question.choices,
                 source=question.source or "AI Generated",
-                recency_weight=question.recency_weight or 1.0
+                recency_weight=question.recency_weight or 1.0,
+                image_url=question.image_url,
+                image_type=question.image_type
             )
 
     except Exception as e:
@@ -1070,7 +1080,9 @@ def get_optimal_question(
             vignette=question.vignette,
             choices=question.choices,
             source=question.source or "AI Optimal",
-            recency_weight=question.recency_weight or 1.0
+            recency_weight=question.recency_weight or 1.0,
+            image_url=question.image_url,
+            image_type=question.image_type
         )
     except Exception as e:
         logger.error("Optimal generation failed: %s", e, exc_info=True)

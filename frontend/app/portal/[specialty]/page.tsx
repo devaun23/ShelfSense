@@ -173,7 +173,7 @@ export default function PortalDashboard({ params }: PortalDashboardProps) {
 
       {/* Specialty Banner */}
       <div
-        className="flex items-center gap-3 px-6 py-4 bg-gray-900/50 border border-gray-800 rounded-2xl mb-8 animate-bounce-in"
+        className="flex items-center gap-3 px-6 py-4 bg-gray-900/50 rounded-2xl mb-8 animate-bounce-in"
         style={{ animationDelay: '200ms' }}
       >
         <SpecialtyIcon specialty={specialty.id} size={24} className="text-gray-400" />
@@ -196,7 +196,7 @@ export default function PortalDashboard({ params }: PortalDashboardProps) {
           <button
             key={card.id}
             onClick={() => router.push(`${basePath}${card.href}`)}
-            className="flex items-center gap-2 px-4 py-2.5 bg-gray-900/50 hover:bg-gray-800 border border-gray-800 hover:border-gray-600 rounded-full text-sm text-gray-400 hover:text-white transition-all duration-200 ease-out active:scale-95 animate-bounce-in"
+            className="flex items-center gap-2 px-4 py-2.5 bg-gray-900/50 hover:bg-gray-800 border border-gray-800 hover:border-gray-600 rounded-full text-sm text-gray-400 hover:text-white transition-all duration-200 ease-out active:scale-[0.92] outline-none animate-bounce-in"
             style={{ animationDelay: `${300 + index * 80}ms` }}
           >
             {card.icon}
@@ -209,8 +209,8 @@ export default function PortalDashboard({ params }: PortalDashboardProps) {
       <button
         onClick={handleStartStudying}
         disabled={isStarting}
-        className="px-8 py-4 bg-[#4169E1] hover:bg-[#5B7FE8] text-white font-medium rounded-full transition-all duration-200 ease-out active:scale-95 hover:shadow-lg hover:shadow-blue-500/20 animate-bounce-in disabled:opacity-70"
-        style={{ fontFamily: 'var(--font-serif)', animationDelay: '550ms' }}
+        className="px-8 py-4 bg-[#4169E1] hover:bg-[#5B7FE8] text-white font-medium rounded-full transition-all duration-200 ease-out active:scale-[0.92] hover:scale-105 hover:shadow-xl hover:shadow-blue-500/30 outline-none animate-continuous-bounce disabled:opacity-70 disabled:animate-none"
+        style={{ fontFamily: 'var(--font-serif)' }}
       >
         {isStarting ? (
           <div className="flex items-center gap-3">
@@ -248,12 +248,23 @@ export default function PortalDashboard({ params }: PortalDashboardProps) {
             transform: scale(1) translateY(0);
           }
         }
+        @keyframes continuousBounce {
+          0%, 100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-8px);
+          }
+        }
         .animate-fade-in {
           animation: fadeIn 0.3s ease-out forwards;
         }
         .animate-bounce-in {
           opacity: 0;
           animation: bounceIn 0.5s ease-out forwards;
+        }
+        .animate-continuous-bounce {
+          animation: continuousBounce 2s ease-in-out infinite;
         }
       `}</style>
       </main>

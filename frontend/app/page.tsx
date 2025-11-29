@@ -96,9 +96,9 @@ export default function Home() {
                 key={exam.id}
                 onClick={() => isEnabled && handleExamSelect(exam)}
                 disabled={!isEnabled}
-                className={`flex items-center gap-2 px-4 py-2.5 border rounded-full text-sm transition-all duration-200 ease-out animate-bounce-in ${
+                className={`flex items-center gap-2 px-4 py-2.5 border rounded-full text-sm transition-all duration-200 ease-out outline-none animate-bounce-in ${
                   isEnabled
-                    ? 'bg-gray-900/50 hover:bg-gray-800 border-gray-800 hover:border-gray-600 text-gray-300 hover:text-white active:scale-95 hover:shadow-lg hover:shadow-black/20 cursor-pointer'
+                    ? 'bg-gray-900/50 hover:bg-gray-800 border-gray-800 hover:border-gray-600 text-gray-300 hover:text-white active:scale-[0.92] hover:shadow-lg hover:shadow-black/20 cursor-pointer'
                     : 'bg-gray-900/30 border-gray-800/50 text-gray-600 cursor-not-allowed'
                 }`}
                 style={{ animationDelay: `${index * 80}ms` }}

@@ -44,6 +44,8 @@ class QuestionResponse(BaseModel):
     vignette: str
     choices: List[str]
     source: str
+    image_url: Optional[str] = None
+    image_type: Optional[str] = None  # "ecg", "cxr", "ct", "mri", "fundus", "histology"
     # In tutor mode, return immediately after answer
     # In timed/challenge mode, withhold until session end
 
