@@ -28,13 +28,6 @@ export default function Page() {
               fontFamily: "var(--font-serif)"
             }
           }}
-          localization={{
-            signIn: {
-              start: {
-                title: "Sign in to ShelfPass!"
-              }
-            }
-          }}
         />
       </div>
     </div>
