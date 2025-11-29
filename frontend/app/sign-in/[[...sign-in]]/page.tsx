@@ -8,8 +8,9 @@ export default function Page() {
           appearance={{
             elements: {
               rootBox: "mx-auto",
-              card: "bg-gray-900/50 border border-gray-800",
-              headerTitle: "hidden",
+              card: "bg-gray-900/50 border border-gray-800 pt-8",
+              header: "text-center",
+              headerTitle: "text-white text-xl",
               headerSubtitle: "hidden",
               socialButtonsBlockButton: "bg-gray-800 border-gray-700 hover:bg-gray-700 text-white",
               socialButtonsBlockButtonText: "text-white",
@@ -19,6 +20,12 @@ export default function Page() {
               footerActionLink: "text-[#4169E1] hover:text-[#3158D0]",
               identityPreviewText: "text-white",
               formFieldInputShowPasswordButton: "text-gray-400"
+            },
+            layout: {
+              logoPlacement: "none"
+            },
+            variables: {
+              fontFamily: "var(--font-serif)"
             }
           }}
         />

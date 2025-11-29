@@ -33,13 +33,22 @@ import asyncio
 import argparse
 import json
 import logging
+import os
 import sys
 from pathlib import Path
 from datetime import datetime
 from typing import List, Dict, Any, Optional
 
 # Add backend to path
-sys.path.insert(0, str(Path(__file__).parent.parent / "backend"))
+backend_path = Path(__file__).parent.parent / "backend"
+sys.path.insert(0, str(backend_path))
+
+# Load environment variables from backend/.env
+from dotenv import load_dotenv
+env_file = backend_path / ".env"
+if env_file.exists():
+    load_dotenv(env_file)
+    print(f"Loaded environment from {env_file}")
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -56,22 +65,32 @@ class ContentPipeline:
     Orchestrates the full content generation pipeline.
     """
 
+    # Compute absolute paths based on script location
+    _script_dir = Path(__file__).parent.resolve()
+    _project_root = _script_dir.parent
+    _db_path = (_project_root / 'backend' / 'shelfsense.db').resolve()
+    _default_db = f"sqlite:///{_db_path}"
+    _default_gaps = str((_project_root / "backend" / "curriculum_gaps.json").resolve())
+
     def __init__(
         self,
-        db_url: str = "sqlite:///backend/shelfsense.db",
-        gaps_file: str = "backend/curriculum_gaps.json",
+        db_url: str = None,
+        gaps_file: str = None,
         skip_validation: bool = False,
         dry_run: bool = False,
-        model: str = "llama3.2:3b"
+        model: str = "llama3.2:3b",
+        use_cloud: bool = False
     ):
-        self.db_url = db_url
-        self.gaps_file = gaps_file
+        self.db_url = db_url or self._default_db
+        self.gaps_file = gaps_file or self._default_gaps
         self.skip_validation = skip_validation
         self.dry_run = dry_run
         self.model = model
+        self.use_cloud = use_cloud
 
         # Initialize database
-        engine = create_engine(db_url)
+        logger.info(f"Using database: {self.db_url}")
+        engine = create_engine(self.db_url)
         Session = sessionmaker(bind=engine)
         self.db = Session()
 
@@ -107,19 +126,34 @@ class ContentPipeline:
         Returns:
             Pipeline run statistics
         """
-        from app.services.ollama_question_generator import OllamaQuestionGenerator
-        from app.services.ollama_service import OllamaNotAvailableError
-
         self.stats["start_time"] = datetime.utcnow()
         logger.info(f"Starting content pipeline: target {count} questions")
 
-        # Check Ollama availability
-        try:
-            generator = OllamaQuestionGenerator(self.db, model=self.model)
-            logger.info(f"Using Ollama model: {self.model}")
-        except Exception as e:
-            logger.error(f"Failed to initialize generator: {e}")
-            return self.stats
+        # Initialize generator based on mode
+        if self.use_cloud:
+            from app.services.cloud_question_generator import (
+                CloudQuestionGenerator,
+                get_available_providers
+            )
+            try:
+                generator = CloudQuestionGenerator(self.db, provider="auto")
+                logger.info(f"Using CLOUD generation ({generator.provider}) - ~$0.01/question")
+            except ValueError as e:
+                logger.error(f"Cloud provider error: {e}")
+                available = get_available_providers()
+                if not available:
+                    logger.info("Set OPENAI_API_KEY or ANTHROPIC_API_KEY to use cloud generation")
+                return self.stats
+        else:
+            from app.services.ollama_question_generator import OllamaQuestionGenerator
+            from app.services.ollama_service import OllamaNotAvailableError
+            try:
+                generator = OllamaQuestionGenerator(self.db, model=self.model)
+                logger.info(f"Using LOCAL Ollama model: {self.model}")
+            except Exception as e:
+                logger.error(f"Failed to initialize Ollama: {e}")
+                logger.info("TIP: Use --use-cloud for faster cloud-based generation")
+                return self.stats
 
         # Determine what to generate
         if system and task:
@@ -418,20 +452,25 @@ async def main():
     parser.add_argument(
         "--db-url",
         type=str,
-        default="sqlite:///backend/shelfsense.db",
-        help="Database URL"
+        default=None,  # Use class default (absolute path)
+        help="Database URL (default: auto-detected absolute path)"
     )
     parser.add_argument(
         "--gaps-file",
         type=str,
-        default="backend/curriculum_gaps.json",
-        help="Path to curriculum gaps JSON"
+        default=None,  # Use class default (absolute path)
+        help="Path to curriculum gaps JSON (default: auto-detected absolute path)"
     )
     parser.add_argument(
         "--model", "-m",
         type=str,
         default="llama3.2:3b",
         help="Ollama model to use (default: llama3.2:3b)"
+    )
+    parser.add_argument(
+        "--use-cloud",
+        action="store_true",
+        help="Use Claude/GPT instead of local Ollama (faster but costs money)"
     )
 
     args = parser.parse_args()
@@ -446,7 +485,8 @@ async def main():
         gaps_file=args.gaps_file,
         skip_validation=args.skip_validation,
         dry_run=args.dry_run,
-        model=args.model
+        model=args.model,
+        use_cloud=args.use_cloud
     )
 
     try:
