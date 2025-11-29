@@ -13,12 +13,23 @@ const isPublicRoute = createRouteMatcher([
   '/api/webhook(.*)', // Allow webhooks
 ])
 
-export default clerkMiddleware(async (auth, request) => {
-  // Protect all routes except public ones
-  if (!isPublicRoute(request)) {
-    await auth.protect()
+export default clerkMiddleware(
+  async (auth, request) => {
+    // Protect all routes except public ones
+    if (!isPublicRoute(request)) {
+      await auth.protect()
+    }
+  },
+  {
+    // Security: Only allow requests from these domains
+    authorizedParties: [
+      'https://shelfpass.com',
+      'https://www.shelfpass.com',
+      'https://shelfsense99.netlify.app',
+      ...(process.env.NODE_ENV === 'development' ? ['http://localhost:3000'] : []),
+    ],
   }
-})
+)
 
 export const config = {
   matcher: [
