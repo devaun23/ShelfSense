@@ -1,10 +1,10 @@
-# ShelfSense
+# ShelfPass
 
 Adaptive shelf exam preparation platform with cognitive pattern recognition.
 
 ## Project Overview
 
-ShelfSense is an intelligent medical education platform that helps medical students prepare for NBME shelf exams through adaptive learning and reasoning pattern recognition.
+ShelfPass is an intelligent medical education platform that helps medical students prepare for NBME shelf exams through adaptive learning and reasoning pattern recognition.
 
 ## Features
 
