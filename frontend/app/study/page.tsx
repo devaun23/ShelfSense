@@ -10,11 +10,10 @@ import FlagButton from '@/components/FlagButton';
 import ConfidenceSelector from '@/components/ConfidenceSelector';
 import { useUser } from '@/contexts/UserContext';
 import { getSpecialtyByApiName, FULL_PREP_MODE, Specialty } from '@/lib/specialties';
-import { getRandomEncouragement } from '@/lib/encouragement';
+import { getRandomEncouragement, getRandomCorrectMessage, getRandomIncorrectMessage } from '@/lib/encouragement';
 import { SkeletonQuestion, LoadingSpinner } from '@/components/SkeletonLoader';
 import { Button } from '@/components/ui';
 import TabbedExplanation from '@/components/TabbedExplanation';
-import StudyModeSelector from '@/components/StudyModeSelector';
 
 // Dynamically import Sidebar to avoid useSearchParams SSR issues
 const Sidebar = dynamic(() => import('@/components/Sidebar'), { ssr: false });
@@ -93,15 +92,6 @@ interface StudySession {
   started_at: string;
 }
 
-// Mode display info
-const MODE_INFO: Record<string, { name: string; color: string }> = {
-  practice: { name: 'Practice', color: 'text-blue-400' },
-  timed: { name: 'Timed Test', color: 'text-red-400' },
-  tutor: { name: 'Tutor', color: 'text-green-400' },
-  challenge: { name: 'Challenge', color: 'text-orange-400' },
-  review: { name: 'Review', color: 'text-purple-400' },
-  weak_focus: { name: 'Weak Areas', color: 'text-yellow-400' },
-};
 
 function StudyContent() {
   const router = useRouter();
@@ -116,8 +106,7 @@ function StudyContent() {
     setSidebarOpen(window.innerWidth >= 900);
   }, []);
 
-  // Mode selector state
-  const [showModeSelector, setShowModeSelector] = useState(false);
+  // Session state (simplified, no mode selection)
   const [session, setSession] = useState<StudySession | null>(null);
 
   // Question state
@@ -138,6 +127,9 @@ function StudyContent() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [optimisticFeedback, setOptimisticFeedback] = useState<{ submitted: boolean; answer: string } | null>(null);
 
+  // Warm message state (set once when feedback received)
+  const [warmMessage, setWarmMessage] = useState<string>('');
+
   // Timed mode state
   const [sessionTimeRemaining, setSessionTimeRemaining] = useState<number | null>(null);
 
@@ -145,24 +137,19 @@ function StudyContent() {
   const questionRef = useRef<Question | null>(null);
   const selectedAnswerRef = useRef<string | null>(null);
   const feedbackRef = useRef<Feedback | null>(null);
-  const showModeSelectorRef = useRef(false);
 
   // Keep refs in sync with state
   questionRef.current = question;
   selectedAnswerRef.current = selectedAnswer;
   feedbackRef.current = feedback;
-  showModeSelectorRef.current = showModeSelector;
 
   // Get params from URL
   const specialtyParam = searchParams.get('specialty');
-  const modeParam = searchParams.get('mode');
   const sessionParam = searchParams.get('session');
 
   const currentSpecialty: Specialty | null = specialtyParam
     ? getSpecialtyByApiName(specialtyParam)
     : null;
-
-  const currentModeInfo = modeParam ? MODE_INFO[modeParam] : null;
 
   // Legacy API URL for backwards compatibility
   const getApiUrl = () => {
@@ -316,7 +303,7 @@ function StudyContent() {
     }
   }, [userLoading]);
 
-  // Initialize study session
+  // Initialize study session - go straight to questions, no mode selection
   useEffect(() => {
     if (!userLoading && !user) {
       router.push('/login');
@@ -335,18 +322,13 @@ function StudyContent() {
           }
         });
       }
-      // If no session and no mode, show mode selector
-      else if (!modeParam && !question && !error) {
-        setShowModeSelector(true);
-        setLoading(false);
-      }
-      // Legacy mode - just load questions
+      // Otherwise just load questions directly
       else if (!question && !error) {
         loadNextQuestion();
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, userLoading, router, sessionParam, modeParam]);
+  }, [user, userLoading, router, sessionParam]);
 
   // Timer update for current question
   useEffect(() => {
@@ -381,9 +363,6 @@ function StudyContent() {
 
   // Stable keyboard handler using refs (prevents listener churn)
   const handleKeyPress = useCallback((e: KeyboardEvent) => {
-    // Don't handle keys when modal is open
-    if (showModeSelectorRef.current) return;
-
     if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
       return;
     }
@@ -453,6 +432,8 @@ function StudyContent() {
             source: question.source,
           });
           setQuestionCount(prev => prev + 1);
+          // Set warm message based on correctness
+          setWarmMessage(data.is_correct ? getRandomCorrectMessage() : getRandomIncorrectMessage());
 
           // Preload next question while user reviews feedback
           preloadNextQuestion();
@@ -478,6 +459,8 @@ function StudyContent() {
           const data: Feedback = await response.json();
           setFeedback(data);
           setQuestionCount(prev => prev + 1);
+          // Set warm message based on correctness
+          setWarmMessage(data.is_correct ? getRandomCorrectMessage() : getRandomIncorrectMessage());
 
           preloadNextQuestion();
         } else {
@@ -495,20 +478,11 @@ function StudyContent() {
   };
 
   const handleNext = () => {
+    setWarmMessage(''); // Reset warm message for next question
     loadNextQuestion();
   };
 
   const handleBackToHome = () => {
-    router.push('/');
-  };
-
-  const handleSessionStart = (sessionId: string) => {
-    setShowModeSelector(false);
-    // Router will navigate via the component
-  };
-
-  const handleCloseModeSelector = () => {
-    // If user closes without selecting, go back home
     router.push('/');
   };
 
@@ -518,24 +492,6 @@ function StudyContent() {
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
-
-  // Show mode selector
-  if (showModeSelector && user) {
-    return (
-      <>
-        <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
-        <main className={`min-h-screen bg-black text-white transition-all duration-300 ${
-          sidebarOpen ? 'md:ml-64' : 'ml-0'
-        }`}>
-          <StudyModeSelector
-            userId={user.userId}
-            onSessionStart={handleSessionStart}
-            onClose={handleCloseModeSelector}
-          />
-        </main>
-      </>
-    );
-  }
 
   // Auth timeout - show connection error
   if (authTimeout) {
@@ -614,9 +570,9 @@ function StudyContent() {
       }`}>
         {/* Centered content container - Claude style */}
         <div className="max-w-3xl mx-auto px-4 md:px-6 py-6 md:py-8 pt-14 md:pt-16 pb-24 md:pb-32">
-          {/* Header with mode badge, specialty badge, and timer */}
-          <div className="flex flex-wrap items-center justify-between gap-3 mb-6 md:mb-8 text-sm text-gray-600">
-            <div className="flex items-center gap-3 md:gap-4">
+          {/* Minimal header */}
+          <div className="flex items-center justify-between mb-6 md:mb-8 text-sm">
+            <div className="flex items-center gap-3">
               {/* Back button */}
               <button
                 onClick={handleBackToHome}
@@ -628,56 +584,20 @@ function StudyContent() {
                 </svg>
               </button>
 
-              {/* Mode Badge (if session-based) */}
-              {currentModeInfo && (
-                <div className={`px-2.5 py-1 rounded-full bg-gray-900/80 border border-gray-800`}>
-                  <span className={`text-xs font-medium ${currentModeInfo.color}`}>
-                    {currentModeInfo.name}
-                  </span>
-                </div>
-              )}
-
               {/* Specialty Badge */}
-              <div className="px-2.5 md:px-3 py-1 rounded-full bg-gray-900 border border-gray-800">
-                <span className="text-xs font-medium text-gray-300">
-                  {currentSpecialty ? currentSpecialty.name : 'Step 2 CK'}
-                </span>
-              </div>
-
-              {/* Question counter with progress */}
-              <span className="text-gray-600 text-xs md:text-sm">
-                Q{questionCount + 1}
-                {session?.target_count && (
-                  <span className="text-gray-700">/{session.target_count}</span>
-                )}
+              <span className="text-gray-400 text-sm" style={{ fontFamily: 'var(--font-serif)' }}>
+                {currentSpecialty ? currentSpecialty.name : 'Step 2 CK'}
               </span>
 
-              {/* Question timer */}
-              {!feedback && elapsedTime > 0 && (
-                <span className="text-gray-500 text-xs md:text-sm">
-                  {formatTime(elapsedTime)}
-                </span>
-              )}
+              {/* Question counter */}
+              <span className="text-gray-600 text-sm">
+                Q{questionCount + 1}
+              </span>
             </div>
 
-            {/* Right side - session timer, flag, keyboard hints */}
+            {/* Right side */}
             <div className="flex items-center gap-3">
-              {/* Session timer for timed mode */}
-              {session?.mode === 'timed' && sessionTimeRemaining !== null && (
-                <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full ${
-                  sessionTimeRemaining < 300 ? 'bg-red-900/50 border-red-800' : 'bg-gray-900 border-gray-800'
-                } border`}>
-                  <svg className={`w-3.5 h-3.5 ${sessionTimeRemaining < 300 ? 'text-red-400' : 'text-gray-500'}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M12 6v6l4 2" />
-                  </svg>
-                  <span className={`text-xs font-mono ${sessionTimeRemaining < 300 ? 'text-red-400' : 'text-gray-400'}`}>
-                    {formatTime(sessionTimeRemaining)}
-                  </span>
-                </div>
-              )}
-
-              {/* Flag Button - visible when question is answered */}
+              {/* Flag Button */}
               {feedback && question && user && (
                 <FlagButton
                   questionId={question.id}
@@ -686,7 +606,7 @@ function StudyContent() {
                 />
               )}
 
-              {/* Keyboard hints - hidden on mobile */}
+              {/* Keyboard hints */}
               <div className="hidden md:flex gap-3 text-xs text-gray-700">
                 {!feedback && (
                   <>
@@ -816,13 +736,13 @@ function StudyContent() {
             })}
           </div>
 
-          {/* Warm message after correct answer */}
-          {feedback && feedback.is_correct && (
+          {/* Warm message after answer */}
+          {feedback && warmMessage && (
             <p
-              className="text-emerald-400/80 text-sm mb-4"
+              className={`text-sm mb-4 ${feedback.is_correct ? 'text-emerald-400/80' : 'text-gray-400'}`}
               style={{ fontFamily: 'var(--font-serif)' }}
             >
-              That's right. Here's why.
+              {warmMessage}
             </p>
           )}
 
@@ -839,15 +759,6 @@ function StudyContent() {
             </div>
           )}
 
-          {/* Warm intro before error analysis */}
-          {feedback && question && user && !feedback.is_correct && (
-            <p
-              className="text-gray-400 text-sm mb-3"
-              style={{ fontFamily: 'var(--font-serif)' }}
-            >
-              Let's look at this together.
-            </p>
-          )}
           {feedback && question && user && (
             <ErrorAnalysis
               questionId={question.id}
@@ -928,7 +839,7 @@ export default function StudyPage() {
   return (
     <Suspense fallback={
       <main className="min-h-screen bg-black text-white flex items-center justify-center">
-        <div className="animate-pulse text-gray-500">Loading...</div>
+        <LoadingSpinner size="lg" />
       </main>
     }>
       <StudyContent />

@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic';
 import { useUser } from '@/contexts/UserContext';
 import { redirectToCheckout } from '@/lib/stripe';
 import EyeLogo from '@/components/icons/EyeLogo';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 const Sidebar = dynamic(() => import('@/components/Sidebar'), { ssr: false });
 
@@ -111,20 +112,13 @@ export default function PricingPage() {
       {/* Full-page loading overlay */}
       {loading && (
         <div className="fixed inset-0 z-[100] bg-black/95 flex flex-col items-center justify-center animate-fade-in">
-          <div className="animate-pulse mb-6">
-            <EyeLogo size={64} />
-          </div>
+          <LoadingSpinner size="lg" className="mb-6" />
           <p className="text-white text-lg mb-2" style={{ fontFamily: 'var(--font-serif)' }}>
             Preparing checkout...
           </p>
           <p className="text-gray-500 text-sm">
             Redirecting to secure payment
           </p>
-          <div className="mt-6 flex gap-1">
-            <span className="w-2 h-2 bg-[#4169E1] rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-            <span className="w-2 h-2 bg-[#4169E1] rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-            <span className="w-2 h-2 bg-[#4169E1] rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-          </div>
         </div>
       )}
 

@@ -1,208 +1,247 @@
 'use client';
 
-import { useEffect, useState, use } from 'react';
-import Link from 'next/link';
+import { useState, useEffect, use } from 'react';
+import { useRouter } from 'next/navigation';
 import { useUser } from '@/contexts/UserContext';
 import { getSpecialtyBySlug } from '@/lib/specialties';
+import EyeLogo from '@/components/icons/EyeLogo';
+import SpecialtyIcon from '@/components/icons/SpecialtyIcon';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 interface PortalDashboardProps {
   params: Promise<{ specialty: string }>;
 }
 
-interface PortalStats {
-  totalQuestions: number;
-  accuracy: number;
-  predictedScore: number | null;
-  scoreConfidence: number | null;
-  streak: number;
-  reviewsDue: number;
-  weakAreas: number;
-}
+// Warm, empathetic messages that rotate
+const ENCOURAGEMENT_MESSAGES = [
+  "You've got this.",
+  "One step at a time.",
+  "Trust your preparation.",
+  "Show up. That's what matters.",
+  "Every question is a teacher.",
+  "You're exactly where you need to be.",
+  "Breathe. Focus. Begin.",
+  "Your hard work will pay off.",
+];
+
+// Feature card definitions with icons
+const FEATURE_CARDS = [
+  {
+    id: 'analytics',
+    label: 'Analytics',
+    description: 'Track your progress',
+    href: '/analytics',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 3v18h18" />
+        <path d="M18 9l-5 5-4-4-3 3" />
+      </svg>
+    ),
+  },
+  {
+    id: 'weak-areas',
+    label: 'Weak Areas',
+    description: 'Focus on gaps',
+    href: '/weak-areas',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M12 6v6l4 2" />
+      </svg>
+    ),
+  },
+  {
+    id: 'reviews',
+    label: 'Reviews',
+    description: 'Spaced repetition',
+    href: '/reviews',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 2v4" />
+        <path d="M12 18v4" />
+        <path d="M4.93 4.93l2.83 2.83" />
+        <path d="M16.24 16.24l2.83 2.83" />
+        <path d="M2 12h4" />
+        <path d="M18 12h4" />
+        <path d="M4.93 19.07l2.83-2.83" />
+        <path d="M16.24 7.76l2.83-2.83" />
+      </svg>
+    ),
+  },
+];
 
 export default function PortalDashboard({ params }: PortalDashboardProps) {
   const { user, isLoading } = useUser();
+  const router = useRouter();
   const resolvedParams = use(params);
   const specialty = getSpecialtyBySlug(resolvedParams.specialty);
-  const [stats, setStats] = useState<PortalStats | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [isStarting, setIsStarting] = useState(false);
+  const [encouragement, setEncouragement] = useState('');
 
+  // Pick a random encouragement on client-side mount only (avoids hydration mismatch)
   useEffect(() => {
-    if (user?.userId && specialty) {
-      fetchPortalStats();
-    }
-  }, [user?.userId, specialty?.apiName]);
+    setEncouragement(
+      ENCOURAGEMENT_MESSAGES[Math.floor(Math.random() * ENCOURAGEMENT_MESSAGES.length)]
+    );
+  }, []);
 
-  const fetchPortalStats = async () => {
-    try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-      const specialtyParam = specialty?.apiName ? `&specialty=${encodeURIComponent(specialty.apiName)}` : '';
-
-      // Fetch multiple stats in parallel
-      const [dashboardRes, reviewsRes] = await Promise.all([
-        fetch(`${apiUrl}/api/analytics/dashboard?user_id=${user?.userId}${specialtyParam}`),
-        fetch(`${apiUrl}/api/reviews/stats?user_id=${user?.userId}${specialtyParam}`),
-      ]);
-
-      const dashboardData = dashboardRes.ok ? await dashboardRes.json() : {};
-      const reviewsData = reviewsRes.ok ? await reviewsRes.json() : {};
-
-      setStats({
-        totalQuestions: dashboardData.total_questions || 0,
-        accuracy: dashboardData.overall_accuracy || 0,
-        predictedScore: dashboardData.predicted_score || null,
-        scoreConfidence: dashboardData.score_confidence || null,
-        streak: dashboardData.current_streak || 0,
-        reviewsDue: reviewsData.due_today || 0,
-        weakAreas: dashboardData.weak_areas_count || 0,
-      });
-    } catch (error) {
-      console.error('Error fetching portal stats:', error);
-    } finally {
-      setLoading(false);
-    }
+  const handleStartStudying = () => {
+    if (!specialty) return;
+    setIsStarting(true);
+    // Navigate after a brief moment to show loading state
+    setTimeout(() => {
+      const specialtyParam = specialty.apiName
+        ? `specialty=${encodeURIComponent(specialty.apiName)}`
+        : '';
+      router.push(`/study?${specialtyParam}`);
+    }, 300);
   };
 
   if (isLoading || !specialty) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
-      </div>
+      <main
+        className="min-h-screen bg-black text-white flex items-center justify-center"
+        role="status"
+        aria-busy="true"
+        aria-label="Loading dashboard"
+      >
+        <LoadingSpinner size="lg" />
+        <span className="sr-only">Loading dashboard...</span>
+      </main>
     );
   }
 
   const basePath = `/portal/${specialty.slug}`;
 
   return (
-    <div className="p-6 pl-16 lg:pl-8 lg:p-8 max-w-6xl animate-fade-in-up">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white" style={{ fontFamily: 'var(--font-serif)' }}>
-          {specialty.name}
-        </h1>
+    <main className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-4 animate-fade-in">
+      {/* Eye Logo */}
+      <div className="mb-6 animate-bounce-in" style={{ animationDelay: '0ms' }}>
+        <EyeLogo size={48} />
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8 stagger-children">
-        {/* Predicted Score */}
-        <div className="bg-gray-900 rounded-xl p-5 border border-gray-800 card-hover hover:border-gray-700">
-          <div className="text-gray-400 text-sm mb-1" style={{ fontFamily: 'var(--font-serif)' }}>Predicted Score</div>
-          {loading ? (
-            <div className="h-8 bg-gray-800 rounded animate-pulse" />
-          ) : stats?.predictedScore ? (
-            <div className="flex items-baseline gap-1">
-              <span className="text-3xl font-bold text-white">{stats.predictedScore}</span>
-              {stats.scoreConfidence && (
-                <span className="text-gray-500 text-sm">+/- {stats.scoreConfidence}</span>
-              )}
-            </div>
-          ) : (
-            <span className="text-2xl text-gray-600">--</span>
-          )}
-        </div>
-
-        {/* Accuracy */}
-        <div className="bg-gray-900 rounded-xl p-5 border border-gray-800 card-hover hover:border-gray-700">
-          <div className="text-gray-400 text-sm mb-1" style={{ fontFamily: 'var(--font-serif)' }}>Accuracy</div>
-          {loading ? (
-            <div className="h-8 bg-gray-800 rounded animate-pulse" />
-          ) : (
-            <div className="flex items-baseline gap-1">
-              <span className="text-3xl font-bold text-white">
-                {stats?.totalQuestions ? `${Math.round(stats.accuracy * 100)}%` : '--'}
-              </span>
-            </div>
-          )}
-        </div>
-
-        {/* Questions */}
-        <div className="bg-gray-900 rounded-xl p-5 border border-gray-800 card-hover hover:border-gray-700">
-          <div className="text-gray-400 text-sm mb-1" style={{ fontFamily: 'var(--font-serif)' }}>Questions Done</div>
-          {loading ? (
-            <div className="h-8 bg-gray-800 rounded animate-pulse" />
-          ) : (
-            <span className="text-3xl font-bold text-white">{stats?.totalQuestions || 0}</span>
-          )}
-        </div>
-
-        {/* Streak */}
-        <div className="bg-gray-900 rounded-xl p-5 border border-gray-800 card-hover hover:border-gray-700">
-          <div className="text-gray-400 text-sm mb-1" style={{ fontFamily: 'var(--font-serif)' }}>Day Streak</div>
-          {loading ? (
-            <div className="h-8 bg-gray-800 rounded animate-pulse" />
-          ) : (
-            <div className="flex items-baseline gap-1">
-              <span className="text-3xl font-bold text-white">{stats?.streak || 0}</span>
-              <span className="text-orange-500">days</span>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Quick Actions */}
-      <h2 className="text-xl font-semibold text-white mb-4" style={{ fontFamily: 'var(--font-serif)' }}>Quick Actions</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        {/* Start Practice */}
-        <Link
-          href={`${basePath}/study`}
-          className="bg-blue-600 hover:bg-blue-700 rounded-xl p-6 transition-all duration-200 group hover:scale-[1.02] hover:shadow-lg hover:shadow-blue-500/20"
+      {/* Empathetic Encouragement */}
+      {encouragement && (
+        <p
+          className="text-gray-500 text-lg mb-8 text-center animate-bounce-in"
+          style={{ fontFamily: 'var(--font-serif)', animationDelay: '100ms' }}
         >
-          <h3 className="text-lg font-semibold text-white mb-2" style={{ fontFamily: 'var(--font-serif)' }}>Start Practice</h3>
-          <p className="text-blue-200 text-sm">Begin an adaptive study session</p>
-        </Link>
-
-        {/* Reviews Due */}
-        <Link
-          href={`${basePath}/reviews`}
-          className={`rounded-xl p-6 transition-all duration-200 group hover:scale-[1.02] ${
-            stats?.reviewsDue
-              ? 'bg-emerald-600 hover:bg-emerald-700 hover:shadow-lg hover:shadow-emerald-500/20'
-              : 'bg-gray-800 hover:bg-gray-700'
-          }`}
-        >
-          <div className="flex items-center gap-3 mb-2">
-            <h3 className="text-lg font-semibold text-white" style={{ fontFamily: 'var(--font-serif)' }}>Reviews</h3>
-            {stats?.reviewsDue ? (
-              <span className="bg-white/20 text-white text-sm font-medium px-2 py-0.5 rounded-full">
-                {stats.reviewsDue} due
-              </span>
-            ) : null}
-          </div>
-          <p className={stats?.reviewsDue ? 'text-emerald-200' : 'text-gray-400'} >
-            {stats?.reviewsDue ? 'Questions ready for review' : 'No reviews due today'}
-          </p>
-        </Link>
-
-        {/* Weak Areas */}
-        <Link
-          href={`${basePath}/weak-areas`}
-          className="bg-gray-800 hover:bg-gray-700 rounded-xl p-6 transition-all duration-200 group hover:scale-[1.02]"
-        >
-          <h3 className="text-lg font-semibold text-white mb-2" style={{ fontFamily: 'var(--font-serif)' }}>Weak Areas</h3>
-          <p className="text-gray-400 text-sm">Focus on topics needing improvement</p>
-        </Link>
-      </div>
-
-      {/* Progress Section */}
-      {stats?.totalQuestions && stats.totalQuestions > 0 && (
-        <div className="bg-gray-900 rounded-xl p-6 border border-gray-800">
-          <h2 className="text-lg font-semibold text-white mb-4" style={{ fontFamily: 'var(--font-serif)' }}>Your Progress</h2>
-          <div className="space-y-4">
-            {/* Accuracy bar */}
-            <div>
-              <div className="flex justify-between text-sm mb-1">
-                <span className="text-gray-400">Overall Accuracy</span>
-                <span className="text-white">{Math.round((stats.accuracy || 0) * 100)}%</span>
-              </div>
-              <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-blue-500 rounded-full transition-all duration-500"
-                  style={{ width: `${(stats.accuracy || 0) * 100}%` }}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
+          {encouragement}
+        </p>
       )}
+
+      {/* Specialty Banner */}
+      <div
+        className="flex items-center gap-3 px-6 py-4 bg-gray-900/50 border border-gray-800 rounded-2xl mb-8 animate-bounce-in"
+        style={{ animationDelay: '200ms' }}
+      >
+        <SpecialtyIcon specialty={specialty.id} size={24} className="text-gray-400" />
+        <div>
+          <h1
+            className="text-2xl font-semibold text-white"
+            style={{ fontFamily: 'var(--font-serif)' }}
+          >
+            {specialty.name}
+          </h1>
+          {specialty.description && (
+            <p className="text-sm text-gray-500">{specialty.description}</p>
+          )}
+        </div>
+      </div>
+
+      {/* Feature Cards - bouncing in with stagger */}
+      <div className="flex flex-wrap justify-center gap-2 max-w-md mb-10">
+        {FEATURE_CARDS.map((card, index) => (
+          <button
+            key={card.id}
+            onClick={() => router.push(`${basePath}${card.href}`)}
+            className="flex items-center gap-2 px-4 py-2.5 bg-gray-900/50 hover:bg-gray-800 border border-gray-800 hover:border-gray-600 rounded-full text-sm text-gray-400 hover:text-white transition-all duration-200 ease-out active:scale-95 animate-bounce-in"
+            style={{ animationDelay: `${300 + index * 80}ms` }}
+          >
+            {card.icon}
+            <span>{card.label}</span>
+          </button>
+        ))}
+      </div>
+
+      {/* Start Studying Button */}
+      <button
+        onClick={handleStartStudying}
+        disabled={isStarting}
+        className="px-8 py-4 bg-white hover:bg-gray-100 text-black font-medium rounded-full transition-all duration-200 ease-out active:scale-95 hover:shadow-lg hover:shadow-white/10 animate-bounce-in disabled:opacity-70"
+        style={{ fontFamily: 'var(--font-serif)', animationDelay: '550ms' }}
+      >
+        {isStarting ? (
+          <div className="flex items-center gap-3">
+            <LoadingDots />
+            <span>Loading</span>
+          </div>
+        ) : (
+          'Start Studying'
+        )}
+      </button>
+
+      {/* Back to Home */}
+      <button
+        onClick={() => router.push('/')}
+        className="mt-8 text-gray-600 hover:text-gray-400 text-sm transition-colors animate-bounce-in"
+        style={{ animationDelay: '650ms' }}
+      >
+        Back to all exams
+      </button>
+
+      {/* Animation styles */}
+      <style jsx>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+        @keyframes bounceIn {
+          0% {
+            opacity: 0;
+            transform: scale(0.3) translateY(20px);
+          }
+          50% {
+            transform: scale(1.05) translateY(-5px);
+          }
+          70% {
+            transform: scale(0.95) translateY(2px);
+          }
+          100% {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+          }
+        }
+        .animate-fade-in {
+          animation: fadeIn 0.3s ease-out forwards;
+        }
+        .animate-bounce-in {
+          opacity: 0;
+          animation: bounceIn 0.5s ease-out forwards;
+        }
+      `}</style>
+    </main>
+  );
+}
+
+// Loading dots component
+function LoadingDots() {
+  return (
+    <div className="flex gap-1">
+      {[0, 1, 2].map((i) => (
+        <div
+          key={i}
+          className="w-2 h-2 bg-black rounded-full animate-pulse"
+          style={{
+            animationDelay: `${i * 150}ms`,
+            animationDuration: '0.8s',
+          }}
+        />
+      ))}
     </div>
   );
 }

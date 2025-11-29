@@ -5,10 +5,10 @@ import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { useUser } from '@/contexts/UserContext';
 import { useExam } from '@/contexts/ExamContext';
-import WelcomeModal from '@/components/WelcomeModal';
 import { SPECIALTIES, FULL_PREP_MODE, Specialty } from '@/lib/specialties';
 import EyeLogo from '@/components/icons/EyeLogo';
 import SpecialtyIcon from '@/components/icons/SpecialtyIcon';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 // Dynamically import Sidebar to avoid useSearchParams SSR issues
 const Sidebar = dynamic(() => import('@/components/Sidebar'), { ssr: false });
@@ -23,10 +23,8 @@ export default function Home() {
   }, []);
 
   const router = useRouter();
-  const { user, isLoading, updateTargetScore, updateExamDate } = useUser();
+  const { user, isLoading } = useUser();
   const { enterPortal } = useExam();
-  const [showWelcome, setShowWelcome] = useState(false);
-
   useEffect(() => {
     if (user) {
       // Check if user has seen the introduction page
@@ -37,36 +35,13 @@ export default function Home() {
         router.push('/introduction');
         return;
       }
-
-      // Check if onboarding (goal-setting) is needed
-      const onboardingKey = `shelfpass_onboarding_complete_${user.userId}`;
-      const hasCompletedOnboarding = localStorage.getItem(onboardingKey) === 'true';
-
-      if (!hasCompletedOnboarding && user.targetScore === null && user.examDate === null) {
-        setShowWelcome(true);
-      }
+      // Note: Welcome/onboarding modal is now shown in portal pages, not here
     }
   }, [user, router]);
 
   const handleExamSelect = (exam: Specialty) => {
     enterPortal(exam.slug);
     router.push(`/portal/${exam.slug}`);
-  };
-
-  const handleWelcomeComplete = async (targetScore: number, examDate: string) => {
-    if (user) {
-      await updateTargetScore(targetScore);
-      await updateExamDate(examDate);
-      localStorage.setItem(`shelfpass_onboarding_complete_${user.userId}`, 'true');
-    }
-    setShowWelcome(false);
-  };
-
-  const handleWelcomeSkip = () => {
-    if (user) {
-      localStorage.setItem(`shelfpass_onboarding_complete_${user.userId}`, 'true');
-    }
-    setShowWelcome(false);
   };
 
   const getGreeting = () => {
@@ -79,23 +54,13 @@ export default function Home() {
   if (isLoading) {
     return (
       <main className="min-h-screen bg-black text-white flex items-center justify-center">
-        <div className="animate-pulse">
-          <EyeLogo size={48} />
-        </div>
+        <LoadingSpinner size="lg" />
       </main>
     );
   }
 
   return (
     <>
-      {showWelcome && user && (
-        <WelcomeModal
-          firstName={user.firstName}
-          onComplete={handleWelcomeComplete}
-          onSkip={handleWelcomeSkip}
-        />
-      )}
-
       <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
 
       <main className={`min-h-screen bg-black text-white flex flex-col items-center justify-center px-4 transition-all duration-300 ${
