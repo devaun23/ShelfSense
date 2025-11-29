@@ -203,7 +203,7 @@ ShelfPass is an AI-powered adaptive learning platform for medical students prepa
 )
 
 # CORS middleware for Next.js frontend
-# SECURITY: Explicitly list allowed origins - no wildcards in production
+# SECURITY: Explicitly list allowed origins - no wildcards allowed
 ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Next.js dev server
     "http://localhost:3001",  # Next.js dev server (alternate port)
