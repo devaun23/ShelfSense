@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { Inter, Source_Serif_4 } from "next/font/google";
-import { ClerkProvider } from "@clerk/nextjs";
+import { ClerkProvider, ClerkLoading, ClerkLoaded } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import "./globals.css";
 import { UserProvider } from "@/contexts/UserContext";
 import { ExamProvider } from "@/contexts/ExamContext";
 import PaymentStatusBanner from "@/components/PaymentStatusBanner";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import ClerkLoadingSpinner from "@/components/ClerkLoadingSpinner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -55,14 +56,19 @@ export default function RootLayout({
     >
       <html lang="en">
         <body className={`${inter.variable} ${sourceSerif.variable} ${inter.className} antialiased`}>
-          <ErrorBoundary>
-            <UserProvider>
-              <ExamProvider>
-                <PaymentStatusBanner />
-                {children}
-              </ExamProvider>
-            </UserProvider>
-          </ErrorBoundary>
+          <ClerkLoading>
+            <ClerkLoadingSpinner />
+          </ClerkLoading>
+          <ClerkLoaded>
+            <ErrorBoundary>
+              <UserProvider>
+                <ExamProvider>
+                  <PaymentStatusBanner />
+                  {children}
+                </ExamProvider>
+              </UserProvider>
+            </ErrorBoundary>
+          </ClerkLoaded>
         </body>
       </html>
     </ClerkProvider>

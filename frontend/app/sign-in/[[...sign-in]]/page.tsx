@@ -4,18 +4,6 @@ export default function Page() {
   return (
     <div className="min-h-screen bg-black flex items-center justify-center">
       <div className="w-full max-w-md">
-        {/* ShelfSense branding */}
-        <div className="text-center mb-8">
-          <h1
-            className="text-6xl tracking-wide font-light mb-2 text-white"
-            style={{ fontFamily: 'var(--font-cormorant)' }}
-          >
-            ShelfSense
-          </h1>
-          <p className="text-gray-400 text-sm">Sign in to continue your study session</p>
-        </div>
-
-        {/* Clerk Sign In Component */}
         <SignIn
           appearance={{
             elements: {
