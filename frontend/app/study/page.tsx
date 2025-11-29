@@ -10,6 +10,7 @@ import FlagButton from '@/components/FlagButton';
 import ConfidenceSelector from '@/components/ConfidenceSelector';
 import { useUser } from '@/contexts/UserContext';
 import { getSpecialtyByApiName, FULL_PREP_MODE, Specialty } from '@/lib/specialties';
+import { getRandomEncouragement } from '@/lib/encouragement';
 import { SkeletonQuestion, LoadingSpinner } from '@/components/SkeletonLoader';
 import { Button } from '@/components/ui';
 import TabbedExplanation from '@/components/TabbedExplanation';
@@ -564,12 +565,15 @@ function StudyContent() {
           sidebarOpen ? 'md:ml-64' : 'ml-0'
         }`}>
           <div className="max-w-3xl mx-auto px-4 md:px-6 py-6 md:py-8 pt-14 md:pt-16 pb-24 md:pb-32">
-            {/* Loading header */}
-            <div className="flex flex-wrap items-center gap-3 mb-6 md:mb-8">
+            {/* Loading header with encouragement */}
+            <div className="flex flex-col items-center gap-4 mb-6 md:mb-8">
               <LoadingSpinner size="sm" />
-              <span className="text-gray-500">
-                {userLoading ? 'Verifying session...' : 'Loading question...'}
-              </span>
+              <p
+                className="text-gray-400 text-center text-sm max-w-md"
+                style={{ fontFamily: 'var(--font-serif)' }}
+              >
+                {userLoading ? 'Verifying session...' : getRandomEncouragement()}
+              </p>
             </div>
             <SkeletonQuestion />
           </div>
@@ -812,6 +816,16 @@ function StudyContent() {
             })}
           </div>
 
+          {/* Warm message after correct answer */}
+          {feedback && feedback.is_correct && (
+            <p
+              className="text-emerald-400/80 text-sm mb-4"
+              style={{ fontFamily: 'var(--font-serif)' }}
+            >
+              That's right. Here's why.
+            </p>
+          )}
+
           {/* Tabbed Explanation */}
           {feedback && feedback.explanation && (
             <div className="mb-6">
@@ -825,7 +839,15 @@ function StudyContent() {
             </div>
           )}
 
-          {/* Error Analysis */}
+          {/* Warm intro before error analysis */}
+          {feedback && question && user && !feedback.is_correct && (
+            <p
+              className="text-gray-400 text-sm mb-3"
+              style={{ fontFamily: 'var(--font-serif)' }}
+            >
+              Let's look at this together.
+            </p>
+          )}
           {feedback && question && user && (
             <ErrorAnalysis
               questionId={question.id}

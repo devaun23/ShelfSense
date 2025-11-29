@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { useUser } from '@/contexts/UserContext';
 import { redirectToCheckout } from '@/lib/stripe';
+import EyeLogo from '@/components/icons/EyeLogo';
 
 const Sidebar = dynamic(() => import('@/components/Sidebar'), { ssr: false });
 
@@ -107,6 +108,26 @@ export default function PricingPage() {
 
   return (
     <>
+      {/* Full-page loading overlay */}
+      {loading && (
+        <div className="fixed inset-0 z-[100] bg-black/95 flex flex-col items-center justify-center animate-fade-in">
+          <div className="animate-pulse mb-6">
+            <EyeLogo size={64} />
+          </div>
+          <p className="text-white text-lg mb-2" style={{ fontFamily: 'var(--font-serif)' }}>
+            Preparing checkout...
+          </p>
+          <p className="text-gray-500 text-sm">
+            Redirecting to secure payment
+          </p>
+          <div className="mt-6 flex gap-1">
+            <span className="w-2 h-2 bg-[#4169E1] rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+            <span className="w-2 h-2 bg-[#4169E1] rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+            <span className="w-2 h-2 bg-[#4169E1] rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+          </div>
+        </div>
+      )}
+
       <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
 
       <main className={`min-h-screen bg-black text-white py-12 px-4 transition-all duration-300 ${
@@ -115,29 +136,35 @@ export default function PricingPage() {
         <div className="max-w-6xl mx-auto pt-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">
+          <h1 className="text-4xl font-bold mb-4" style={{ fontFamily: 'var(--font-serif)' }}>
             Choose Your Plan
           </h1>
-          <p className="text-gray-400 text-lg mb-8">
+          <p className="text-gray-400 text-lg mb-8" style={{ fontFamily: 'var(--font-serif)' }}>
             Unlock your full potential for Step 2 CK
           </p>
 
           {/* Billing Toggle */}
           <div className="flex items-center justify-center gap-4 mb-8">
-            <span className={billingCycle === 'monthly' ? 'text-white' : 'text-gray-500'}>
+            <span
+              className={`transition-colors duration-200 ${billingCycle === 'monthly' ? 'text-white' : 'text-gray-500'}`}
+              style={{ fontFamily: 'var(--font-serif)' }}
+            >
               Monthly
             </span>
             <button
               onClick={() => setBillingCycle(prev => prev === 'monthly' ? 'yearly' : 'monthly')}
-              className="relative w-14 h-7 bg-gray-700 rounded-full transition-colors"
+              className="relative w-14 h-7 bg-gray-700 rounded-full transition-colors duration-200 hover:bg-gray-600"
             >
               <div
-                className={`absolute top-1 w-5 h-5 bg-[#4169E1] rounded-full transition-transform ${
+                className={`absolute top-1 w-5 h-5 bg-[#4169E1] rounded-full transition-all duration-300 ease-out ${
                   billingCycle === 'yearly' ? 'translate-x-7' : 'translate-x-1'
                 }`}
               />
             </button>
-            <span className={billingCycle === 'yearly' ? 'text-white' : 'text-gray-500'}>
+            <span
+              className={`transition-colors duration-200 ${billingCycle === 'yearly' ? 'text-white' : 'text-gray-500'}`}
+              style={{ fontFamily: 'var(--font-serif)' }}
+            >
               Yearly
               <span className="ml-2 text-green-500 text-sm">Save up to 43%</span>
             </span>
@@ -146,7 +173,7 @@ export default function PricingPage() {
 
         {/* Error Message */}
         {error && (
-          <div className="max-w-md mx-auto mb-8 p-4 bg-red-500/10 border border-red-500 rounded-lg text-red-500 text-center">
+          <div className="max-w-md mx-auto mb-8 p-4 bg-red-500/10 border border-red-500 rounded-lg text-red-500 text-center animate-fade-in">
             {error}
           </div>
         )}
@@ -156,10 +183,10 @@ export default function PricingPage() {
           {plans.map((plan) => (
             <div
               key={plan.tier}
-              className={`relative rounded-2xl border p-8 ${
+              className={`relative rounded-2xl border p-8 transition-all duration-300 hover:scale-[1.02] ${
                 plan.popular
-                  ? 'border-[#4169E1] bg-[#4169E1]/5'
-                  : 'border-gray-800 bg-gray-900/50'
+                  ? 'border-[#4169E1] bg-[#4169E1]/5 hover:border-[#5B7FE8] hover:bg-[#4169E1]/10'
+                  : 'border-gray-800 bg-gray-900/50 hover:border-gray-700 hover:bg-gray-900/70'
               }`}
             >
               {plan.popular && (
@@ -168,8 +195,8 @@ export default function PricingPage() {
                 </div>
               )}
 
-              <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
-              <p className="text-gray-400 mb-6">{plan.description}</p>
+              <h3 className="text-2xl font-bold mb-2" style={{ fontFamily: 'var(--font-serif)' }}>{plan.name}</h3>
+              <p className="text-gray-400 mb-6" style={{ fontFamily: 'var(--font-serif)' }}>{plan.description}</p>
 
               <div className="mb-6">
                 <span className="text-4xl font-bold">
@@ -190,7 +217,7 @@ export default function PricingPage() {
               {plan.tier === 'free' ? (
                 <button
                   onClick={() => router.push('/')}
-                  className="w-full py-3 rounded-lg bg-gray-700 text-white hover:bg-gray-600 transition-colors"
+                  className="w-full py-3 rounded-lg bg-gray-700 text-white hover:bg-gray-600 transition-all duration-200 active:scale-[0.98]"
                 >
                   Get Started Free
                 </button>
@@ -198,13 +225,19 @@ export default function PricingPage() {
                 <button
                   onClick={() => handleSubscribe(plan.tier as 'student' | 'premium')}
                   disabled={loading !== null}
-                  className={`w-full py-3 rounded-lg font-medium transition-colors ${
-                    plan.popular
-                      ? 'bg-[#4169E1] hover:bg-[#3558c0] text-white'
-                      : 'bg-gray-700 hover:bg-gray-600 text-white'
-                  } ${loading === plan.tier ? 'opacity-50 cursor-wait' : ''} disabled:opacity-50`}
+                  className="w-full py-3 rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2 bg-[#4169E1] hover:bg-[#3558c0] text-white hover:shadow-lg hover:shadow-[#4169E1]/20 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {loading === plan.tier ? 'Redirecting...' : 'Subscribe'}
+                  {loading === plan.tier ? (
+                    <>
+                      <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                      </svg>
+                      <span>Processing...</span>
+                    </>
+                  ) : (
+                    'Subscribe'
+                  )}
                 </button>
               )}
 
@@ -237,11 +270,22 @@ export default function PricingPage() {
             All plans include a 30-day money-back guarantee.
           </p>
           <p className="text-gray-500">
-            Questions? <a href="mailto:support@shelfsense.com" className="text-[#4169E1] hover:underline">Contact us</a>
+            Questions? <a href="mailto:support@shelfsense.com" className="text-[#4169E1] hover:underline transition-colors">Contact us</a>
           </p>
         </div>
         </div>
       </main>
+
+      {/* Inline styles for animations */}
+      <style jsx>{`
+        @keyframes fade-in {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        .animate-fade-in {
+          animation: fade-in 0.3s ease-out forwards;
+        }
+      `}</style>
     </>
   );
 }

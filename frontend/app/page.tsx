@@ -29,7 +29,16 @@ export default function Home() {
 
   useEffect(() => {
     if (user) {
-      // Check if onboarding is needed
+      // Check if user has seen the introduction page
+      const introKey = `shelfsense_intro_seen_${user.userId}`;
+      const hasSeenIntro = localStorage.getItem(introKey) === 'true';
+
+      if (!hasSeenIntro) {
+        router.push('/introduction');
+        return;
+      }
+
+      // Check if onboarding (goal-setting) is needed
       const onboardingKey = `shelfsense_onboarding_complete_${user.userId}`;
       const hasCompletedOnboarding = localStorage.getItem(onboardingKey) === 'true';
 
@@ -37,7 +46,7 @@ export default function Home() {
         setShowWelcome(true);
       }
     }
-  }, [user]);
+  }, [user, router]);
 
   const handleExamSelect = (exam: Specialty) => {
     enterPortal(exam.slug);
@@ -113,28 +122,39 @@ export default function Home() {
         </p>
 
         {/* Exam Pills - Wrapped row with icons and staggered bounce animation */}
+        {/* NOTE: Only Internal Medicine is active for MVP. Other specialties are disabled but visible. */}
         <div className="flex flex-wrap justify-center gap-2 max-w-2xl mb-8">
-          {SPECIALTIES.map((exam, index) => (
-            <button
-              key={exam.id}
-              onClick={() => handleExamSelect(exam)}
-              className="flex items-center gap-2 px-4 py-2.5 bg-gray-900/50 hover:bg-gray-800 border border-gray-800 hover:border-gray-600 rounded-full text-sm text-gray-300 hover:text-white transition-all duration-200 ease-out animate-bounce-in active:scale-95 hover:shadow-lg hover:shadow-black/20"
-              style={{ animationDelay: `${index * 80}ms` }}
-            >
-              <SpecialtyIcon specialty={exam.id} size={14} />
-              {exam.name}
-            </button>
-          ))}
+          {SPECIALTIES.map((exam, index) => {
+            const isEnabled = exam.id === 'internal-medicine';
+            return (
+              <button
+                key={exam.id}
+                onClick={() => isEnabled && handleExamSelect(exam)}
+                disabled={!isEnabled}
+                className={`flex items-center gap-2 px-4 py-2.5 border rounded-full text-sm transition-all duration-200 ease-out animate-bounce-in ${
+                  isEnabled
+                    ? 'bg-gray-900/50 hover:bg-gray-800 border-gray-800 hover:border-gray-600 text-gray-300 hover:text-white active:scale-95 hover:shadow-lg hover:shadow-black/20 cursor-pointer'
+                    : 'bg-gray-900/30 border-gray-800/50 text-gray-600 cursor-not-allowed'
+                }`}
+                style={{ animationDelay: `${index * 80}ms` }}
+              >
+                <SpecialtyIcon specialty={exam.id} size={14} />
+                {exam.name}
+                {!isEnabled && <span className="text-xs text-gray-700 ml-1">(soon)</span>}
+              </button>
+            );
+          })}
         </div>
 
-        {/* Step 2 CK - Slightly larger with delayed animation */}
+        {/* Step 2 CK - Disabled for MVP */}
         <button
-          onClick={() => handleExamSelect(FULL_PREP_MODE)}
-          className="flex items-center gap-2 px-6 py-3 bg-gray-900/50 hover:bg-gray-800 border border-gray-800 hover:border-gray-600 rounded-full text-gray-300 hover:text-white transition-all duration-200 ease-out animate-bounce-in active:scale-95 hover:shadow-lg hover:shadow-black/20"
+          disabled
+          className="flex items-center gap-2 px-6 py-3 bg-gray-900/30 border border-gray-800/50 rounded-full text-gray-600 cursor-not-allowed transition-all duration-200 ease-out animate-bounce-in"
           style={{ animationDelay: `${SPECIALTIES.length * 80 + 100}ms` }}
         >
           <SpecialtyIcon specialty="step2-ck" size={16} />
           <span className="font-medium">{FULL_PREP_MODE.name}</span>
+          <span className="text-xs text-gray-700 ml-1">(soon)</span>
         </button>
 
         {/* Custom animation styles */}

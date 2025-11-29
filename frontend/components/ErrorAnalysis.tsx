@@ -153,7 +153,7 @@ export default memo(function ErrorAnalysis({ questionId, userId, isCorrect }: Er
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-2">
-              <span className="text-gray-400 text-sm">Analyzing your mistake</span>
+              <span className="text-gray-400 text-sm">Let's work through this together</span>
               <span className="flex gap-1">
                 <span className="w-1 h-1 bg-[#4169E1] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
                 <span className="w-1 h-1 bg-[#4169E1] rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
@@ -246,7 +246,7 @@ export default memo(function ErrorAnalysis({ questionId, userId, isCorrect }: Er
                 onClick={acknowledgeError}
                 className="w-full px-4 py-2 bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] hover:from-[#2C5282] hover:to-[#3A4F7A] text-white rounded-lg transition-all text-sm font-semibold"
               >
-                Got it! I understand my mistake
+                Got it, I understand now
               </button>
             </div>
           )}
@@ -256,7 +256,7 @@ export default memo(function ErrorAnalysis({ questionId, userId, isCorrect }: Er
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
-              <span>Acknowledged - Keep practicing!</span>
+              <span>Understanding builds mastery</span>
             </div>
           )}
         </div>

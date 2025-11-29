@@ -14,23 +14,21 @@ export default function EyeLogo({
   const [isBlinking, setIsBlinking] = useState(false);
   const blinkTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Calculate dimensions based on size (viewBox is 32x20)
+  // Calculate dimensions based on size (viewBox is 32x18)
   const width = size;
-  const height = size * (20 / 32);
+  const height = size * (18 / 32);
 
   const handleMouseEnter = () => {
-    if (blinkTimeoutRef.current) return; // Don't interrupt if already blinking
+    if (blinkTimeoutRef.current) return;
 
-    // Single smooth blink
     setIsBlinking(true);
 
     blinkTimeoutRef.current = setTimeout(() => {
       setIsBlinking(false);
       blinkTimeoutRef.current = null;
-    }, 500);
+    }, 400);
   };
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (blinkTimeoutRef.current) {
@@ -43,12 +41,12 @@ export default function EyeLogo({
     <svg
       width={width}
       height={height}
-      viewBox="0 0 32 20"
+      viewBox="0 0 32 18"
       fill="none"
       className={`cursor-pointer ${className}`}
       onMouseEnter={handleMouseEnter}
       style={{
-        animation: isBlinking ? 'eyeBlink 0.5s ease-in-out' : 'none',
+        animation: isBlinking ? 'eyeBlink 0.4s ease-in-out' : 'none',
         transformOrigin: 'center center',
       }}
     >
@@ -56,23 +54,14 @@ export default function EyeLogo({
         {`
           @keyframes eyeBlink {
             0%, 100% { transform: scaleY(1); }
-            50% { transform: scaleY(0.1); }
+            50% { transform: scaleY(0.08); }
           }
         `}
       </style>
 
-      {/* Eyebrow - Egyptian style arch */}
+      {/* Eye outline - rounded almond shape */}
       <path
-        d="M4 4 Q16 0, 28 4"
-        stroke="white"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        fill="none"
-      />
-
-      {/* Eye outline - almond shape */}
-      <path
-        d="M2 10 Q8 2, 16 2 Q24 2, 30 10 Q24 18, 16 18 Q8 18, 2 10 Z"
+        d="M1 9 C5 3, 10 2, 16 2 C22 2, 27 3, 31 9 C27 15, 22 16, 16 16 C10 16, 5 15, 1 9 Z"
         stroke="white"
         strokeWidth="1.5"
         strokeLinecap="round"
@@ -80,28 +69,22 @@ export default function EyeLogo({
         fill="none"
       />
 
-      {/* Extended corner - Eye of Horus style */}
-      <path
-        d="M29 10 L32 12"
-        stroke="white"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-
-      {/* Eye of Horus style pupil - circle with spiral drop */}
+      {/* Iris - outer ring */}
       <circle
         cx="16"
         cy="9"
-        r="3"
-        fill="white"
-      />
-      {/* Spiral drop below pupil */}
-      <path
-        d="M16 12 Q14 14, 15 16 Q16 15, 16 14"
+        r="5.5"
         stroke="white"
         strokeWidth="1.5"
-        strokeLinecap="round"
         fill="none"
+      />
+
+      {/* Pupil - solid center */}
+      <circle
+        cx="16"
+        cy="9"
+        r="2.5"
+        fill="white"
       />
     </svg>
   );

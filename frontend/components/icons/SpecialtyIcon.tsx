@@ -25,42 +25,44 @@ export default function SpecialtyIcon({
 
   switch (specialty) {
     case 'internal-medicine':
-      // Heart with pulse line
+      // EKG/QRS wave
       return (
         <svg {...iconProps}>
-          <path d="M12 20s-7-5.5-7-10a4 4 0 0 1 7-2.5 4 4 0 0 1 7 2.5c0 4.5-7 10-7 10z" />
-          <path d="M8 12h2l1-2 2 4 1-2h2" />
+          <path d="M2 12h4l2-6 3 12 2-6h2l1.5-3 1.5 3h4" />
         </svg>
       );
 
     case 'surgery':
-      // Scalpel
+      // Vertical closed scissors
       return (
         <svg {...iconProps}>
-          <path d="M4 20l12-12" />
-          <path d="M16 8l-2-2c2-2 5-2 6-1s1 4-1 6l-2-2" />
-          <path d="M12 12l-8 8" />
+          <path d="M12 2l-3 6v5" />
+          <path d="M12 2l3 6v5" />
+          <circle cx="9" cy="18" r="3" />
+          <circle cx="15" cy="18" r="3" />
+          <path d="M9 13v2" />
+          <path d="M15 13v2" />
         </svg>
       );
 
     case 'pediatrics':
-      // Child/baby outline
+      // Baby rattle
       return (
         <svg {...iconProps}>
-          <circle cx="12" cy="6" r="3" />
-          <path d="M9 21v-5a3 3 0 0 1 6 0v5" />
-          <path d="M7 13l5 3 5-3" />
+          <circle cx="12" cy="7" r="5" />
+          <path d="M12 12v6" />
+          <path d="M10 18h4" />
+          <circle cx="10" cy="6" r="1" fill="currentColor" />
+          <circle cx="14" cy="6" r="1" fill="currentColor" />
+          <circle cx="12" cy="9" r="1" fill="currentColor" />
         </svg>
       );
 
     case 'psychiatry':
-      // Brain with thought
+      // Human head outline (profile)
       return (
         <svg {...iconProps}>
-          <path d="M12 4.5a4.5 4.5 0 0 0-4.5 4.5c0 1.5.5 2.5 1.5 3.5l-1 5.5h8l-1-5.5c1-1 1.5-2 1.5-3.5a4.5 4.5 0 0 0-4.5-4.5z" />
-          <path d="M9 7a2 2 0 0 1 3-1 2 2 0 0 1 3 1" />
-          <path d="M10 18v2" />
-          <path d="M14 18v2" />
+          <path d="M12 2C8 2 5 5 5 9c0 2.5 1.5 4.5 3 6 .5 1 1 2 1 3v2h6v-2c0-1 .5-2 1-3 1.5-1.5 3-3.5 3-6 0-4-3-7-7-7z" />
         </svg>
       );
 
@@ -75,43 +77,51 @@ export default function SpecialtyIcon({
       );
 
     case 'family-medicine':
-      // House with heart
+      // Running person (exercise/wellness)
       return (
         <svg {...iconProps}>
-          <path d="M3 10l9-7 9 7" />
-          <path d="M5 10v10h14V10" />
-          <path d="M12 13s-2 1-2 2.5a2 2 0 0 0 4 0c0-1.5-2-2.5-2-2.5z" />
+          <circle cx="14" cy="4" r="2.5" />
+          <path d="M7 22l4-8 3 3 4-7" />
+          <path d="M11 14l-4-2" />
+          <path d="M17 8l-3 5" />
         </svg>
       );
 
     case 'emergency-medicine':
-      // Cross/plus in circle
+      // First aid cross
       return (
         <svg {...iconProps}>
-          <circle cx="12" cy="12" r="9" />
-          <path d="M12 7v10" />
-          <path d="M7 12h10" />
+          <rect x="3" y="3" width="18" height="18" rx="2" />
+          <path d="M12 8v8" strokeWidth="2.5" />
+          <path d="M8 12h8" strokeWidth="2.5" />
         </svg>
       );
 
     case 'neurology':
-      // Brain outline
+      // Brain with hemispheres and folds
       return (
         <svg {...iconProps}>
-          <path d="M12 4c-2 0-4 1.5-4 4 0 1.5.5 2.5 1.5 3.5-.5 1-1 2-1 3.5 0 2 1.5 4 3.5 4s3.5-2 3.5-4c0-1.5-.5-2.5-1-3.5 1-1 1.5-2 1.5-3.5 0-2.5-2-4-4-4z" />
-          <path d="M10 8c1-.5 2-.5 3 0" />
-          <path d="M9 12c1 .5 2.5.5 4 0" />
+          {/* Left hemisphere */}
+          <path d="M12 4c-1.5 0-3 .5-4 1.5C6.5 7 6 8.5 6 10c0 1 .3 2 .8 2.8-.3.8-.5 1.5-.3 2.2.3 1.5 1.5 2.5 3 3 .5 1.5 1.5 2.5 2.5 2.5" />
+          {/* Right hemisphere */}
+          <path d="M12 4c1.5 0 3 .5 4 1.5 1.5 1.5 2 3 2 4.5 0 1-.3 2-.8 2.8.3.8.5 1.5.3 2.2-.3 1.5-1.5 2.5-3 3-.5 1.5-1.5 2.5-2.5 2.5" />
+          {/* Brain stem */}
+          <path d="M10 20.5c0 1 1 1.5 2 1.5s2-.5 2-1.5" />
+          {/* Folds/gyri */}
+          <path d="M8 8c1 .5 2 .5 3 0" />
+          <path d="M13 8c1 .5 2 .5 3 0" />
+          <path d="M7.5 12c1.5 0 2.5-.5 3.5-.5" />
+          <path d="M13 11.5c1 0 2.5.5 4 .5" />
         </svg>
       );
 
     case 'step2-ck':
-      // Book/exam
+      // Open book (comprehensive study)
       return (
         <svg {...iconProps}>
-          <path d="M4 4h16v16H4z" />
-          <path d="M4 4l8 6 8-6" />
-          <path d="M8 12h8" />
-          <path d="M8 15h5" />
+          <path d="M2 5c2-1 4-1.5 6-1.5s4 .5 4 2v14c-1-.5-2.5-1-4-1s-4 .5-6 1.5V5z" />
+          <path d="M12 5.5c0-1.5 2-2 4-2s4 .5 6 1.5v15c-2-1-4-1.5-6-1.5s-3 .5-4 1V5.5z" />
+          <path d="M12 5.5v14" />
         </svg>
       );
 
