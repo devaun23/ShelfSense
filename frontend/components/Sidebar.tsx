@@ -186,9 +186,9 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
           </div>
         </nav>
 
-        {/* Bottom Section - User Profile */}
-        {user && (
-          <div className="flex-shrink-0 border-t border-gray-900 px-3 pt-3">
+        {/* Bottom Section - User Profile or Sign In */}
+        <div className="flex-shrink-0 border-t border-gray-900 px-3 pt-3">
+          {user ? (
             <div className="flex items-center gap-3 px-2 py-2">
               {/* Clerk UserButton */}
               <UserButton
@@ -220,8 +220,21 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
                 </span>
               </div>
             </div>
-          </div>
-        )}
+          ) : (
+            <div className="px-2 py-2">
+              <button
+                onClick={() => router.push('/sign-in')}
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[#4169E1] hover:bg-[#5B7FE8] text-white rounded-lg transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#4169E1] focus:ring-offset-2 focus:ring-offset-gray-950 active:scale-[0.98]"
+                style={{ fontFamily: 'var(--font-serif)' }}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                </svg>
+                Sign In
+              </button>
+            </div>
+          )}
+        </div>
 
         {/* Bottom spacer - ensures content never touches viewport edge */}
         <div className="flex-shrink-0 h-6" aria-hidden="true" />
