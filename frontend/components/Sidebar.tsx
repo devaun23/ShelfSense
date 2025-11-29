@@ -103,7 +103,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
           <button
             ref={firstFocusableRef}
             onClick={() => router.push('/')}
-            className="text-xl font-semibold text-white hover:text-gray-300 transition-colors outline-none rounded"
+            className="text-xl font-semibold text-white hover:text-[#4169E1] transition-all duration-200 outline-none rounded hover:scale-105 active:scale-95"
             style={{ fontFamily: 'var(--font-serif)' }}
             tabIndex={isOpen ? 0 : -1}
           >
