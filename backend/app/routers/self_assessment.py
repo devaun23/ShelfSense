@@ -677,10 +677,12 @@ def get_block_questions(
                 time_spent=answer_data.get("time_spent", 0)
             ))
 
-    # Calculate time remaining
+    # Calculate time remaining based on wall-clock time only
+    # NOTE: time_spent_seconds is user-reported (for analytics), not for timer calculation
+    # Using elapsed wall-clock time prevents cheating by manipulating reported time
     if block.started_at:
         elapsed = (datetime.utcnow() - block.started_at).total_seconds()
-        time_remaining = max(0, block.time_limit_seconds - int(elapsed) - block.time_spent_seconds)
+        time_remaining = max(0, block.time_limit_seconds - int(elapsed))
     else:
         time_remaining = block.time_limit_seconds
 
@@ -734,6 +736,17 @@ def submit_block_answer(
 
     if request.question_id not in block.question_ids:
         raise HTTPException(status_code=400, detail="Question not in this block")
+
+    # Validate answer choice is valid for this question
+    question = db.query(Question).filter(Question.id == request.question_id).first()
+    if question:
+        num_choices = len(question.choices) if question.choices else 5
+        answer_index = ord(request.answer) - ord('A')
+        if answer_index >= num_choices:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid answer choice '{request.answer}' for this question (has {num_choices} choices)"
+            )
 
     # Update answer
     answers = block.answers or {}
@@ -892,14 +905,25 @@ def _finalize_assessment(db: Session, assessment: SelfAssessment):
     performance_by_system = {}
     performance_by_difficulty = {"easy": [], "medium": [], "hard": []}
 
+    # Optimization: Fetch all questions in one query instead of per-block
+    all_question_ids = []
+    for block in blocks:
+        all_question_ids.extend(block.question_ids or [])
+
+    questions = db.query(Question).filter(
+        Question.id.in_(all_question_ids)
+    ).all() if all_question_ids else []
+    question_map = {q.id: q for q in questions}
+
     for block in blocks:
         answers = block.answers or {}
-        questions = db.query(Question).filter(
-            Question.id.in_(block.question_ids)
-        ).all()
 
-        for q in questions:
-            answer_data = answers.get(q.id, {})
+        for qid in (block.question_ids or []):
+            q = question_map.get(qid)
+            if not q:
+                continue
+
+            answer_data = answers.get(qid, {})
             is_correct = answer_data.get("answer") == q.answer_key if answer_data.get("answer") else False
 
             # By system/source

@@ -45,7 +45,7 @@ CLERK_AUDIENCE = os.getenv("CLERK_AUDIENCE")  # e.g., "https://shelfsense.com"
 _jwks_cache: Tuple[Optional[dict], float] = (None, 0)
 _jwks_lock = threading.Lock()
 JWKS_CACHE_TTL_SECONDS = 3600  # 1 hour
-JWKS_MAX_STALE_SECONDS = 86400  # 24 hours max stale
+JWKS_MAX_STALE_SECONDS = 3600  # 1 hour max stale (reduced from 24h for faster key rotation response)
 
 
 def get_clerk_jwks(force_refresh: bool = False) -> dict:
@@ -189,11 +189,14 @@ def verify_clerk_jwt(token: str) -> dict:
             # Audience validation enabled
             decode_kwargs["audience"] = CLERK_AUDIENCE
         else:
-            # Log warning in production if audience not configured
-            if os.getenv("RAILWAY_ENVIRONMENT") or os.getenv("PRODUCTION"):
-                logger.warning(
-                    "CLERK_AUDIENCE not configured - audience validation disabled. "
-                    "Set CLERK_AUDIENCE env var for enhanced security."
+            # SECURITY: In production, audience validation is strongly recommended
+            # Log warning and continue (future: consider making this a hard failure)
+            is_production = os.getenv("RAILWAY_ENVIRONMENT") or os.getenv("PRODUCTION")
+            if is_production:
+                logger.error(
+                    "SECURITY WARNING: CLERK_AUDIENCE not configured in production! "
+                    "This allows token reuse across applications. "
+                    "Set CLERK_AUDIENCE env var immediately."
                 )
             decode_options["verify_aud"] = False
 

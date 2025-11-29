@@ -101,16 +101,32 @@ export default function PortalDashboard({ params }: PortalDashboardProps) {
 
   const handleWelcomeComplete = async (targetScore: number, examDate: string) => {
     if (user) {
-      await updateTargetScore(targetScore);
-      await updateExamDate(examDate);
-      localStorage.setItem(`shelfpass_onboarding_complete_${user.userId}`, 'true');
+      try {
+        await updateTargetScore(targetScore);
+        await updateExamDate(examDate);
+        try {
+          localStorage.setItem(`shelfpass_onboarding_complete_${user.userId}`, 'true');
+        } catch {
+          // localStorage might be full or disabled - continue anyway
+          console.warn('Could not save onboarding status to localStorage');
+        }
+        setShowWelcome(false);
+      } catch (error) {
+        console.error('Failed to save onboarding data:', error);
+        // Keep modal open so user can retry
+        alert('Failed to save your settings. Please try again.');
+      }
     }
-    setShowWelcome(false);
   };
 
   const handleWelcomeSkip = () => {
     if (user) {
-      localStorage.setItem(`shelfpass_onboarding_complete_${user.userId}`, 'true');
+      try {
+        localStorage.setItem(`shelfpass_onboarding_complete_${user.userId}`, 'true');
+      } catch {
+        // localStorage might be full or disabled - continue anyway
+        console.warn('Could not save onboarding skip to localStorage');
+      }
     }
     setShowWelcome(false);
   };

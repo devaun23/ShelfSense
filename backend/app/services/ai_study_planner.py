@@ -11,6 +11,18 @@ Creates daily tasks based on:
 """
 
 from typing import Dict, List, Optional
+
+
+class StudyPlannerError(Exception):
+    """Base exception for study planner errors"""
+    pass
+
+
+class MissingExamDateError(StudyPlannerError):
+    """Raised when user has no exam date set"""
+    def __init__(self, user_id: str):
+        self.user_id = user_id
+        super().__init__(f"User {user_id} has no exam date set. Please set an exam date first.")
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 from sqlalchemy import func
@@ -75,8 +87,10 @@ def generate_daily_tasks(
     """
     # Get user and plan
     user = db.query(User).filter(User.id == user_id).first()
-    if not user or not user.exam_date:
+    if not user:
         return []
+    if not user.exam_date:
+        raise MissingExamDateError(user_id)
 
     plan = get_or_create_plan(
         db, user_id, user.exam_date,

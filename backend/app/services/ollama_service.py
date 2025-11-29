@@ -177,10 +177,21 @@ class OllamaService:
                 "Ollama server is not running. "
                 "Start it with: ollama serve"
             )
+        except httpx.ReadTimeout as e:
+            self._record_call(model, success=False, error="Read timeout")
+            logger.error(f"Ollama generation timed out after {timeout}s")
+            raise OllamaServiceError(
+                f"Generation timed out after {timeout}s. "
+                "Try a smaller model or shorter prompt."
+            )
+        except httpx.TimeoutException as e:
+            self._record_call(model, success=False, error=f"Timeout: {type(e).__name__}")
+            logger.error(f"Ollama timeout: {type(e).__name__}: {e}")
+            raise OllamaServiceError(f"Request timed out: {e}")
         except Exception as e:
             self._record_call(model, success=False, error=str(e))
-            logger.error(f"Ollama generation failed: {e}")
-            raise OllamaServiceError(f"Generation failed: {e}")
+            logger.error(f"Ollama generation failed: {type(e).__name__}: {e}")
+            raise OllamaServiceError(f"Generation failed: {type(e).__name__}: {e}")
 
     # JSON response size limits
     MAX_JSON_RESPONSE_SIZE = 100000

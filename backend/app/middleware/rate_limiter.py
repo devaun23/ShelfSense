@@ -305,10 +305,11 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
     def _extract_user_id(self, request: Request) -> Optional[str]:
         """
-        Extract user ID from authenticated JWT token ONLY.
+        Extract user ID from VERIFIED JWT token only.
 
-        SECURITY: Never trust query params or path params for rate limiting.
-        User ID must come from verified JWT to prevent spoofing.
+        SECURITY: We must verify the JWT signature before trusting the user ID
+        to prevent attackers from spoofing user IDs to bypass rate limits.
+        If verification fails, returns None (falls back to IP-based limiting).
         """
         auth_header = request.headers.get("Authorization")
         if not auth_header or not auth_header.startswith("Bearer "):
@@ -319,21 +320,50 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         try:
             # Import here to avoid circular imports
             from jose import jwt
+            from jose.exceptions import JWTError, JWKError
+            from app.dependencies.auth import get_clerk_jwks
 
-            # Decode without verification to get user ID
-            # Full verification happens in the auth dependency
-            # This is safe because we're only using it for rate limiting,
-            # not for authorization decisions
-            unverified = jwt.get_unverified_claims(token)
-            user_id = unverified.get("sub")
+            # Get unverified header to find the key ID
+            unverified_header = jwt.get_unverified_header(token)
+            kid = unverified_header.get("kid")
 
-            if user_id:
-                return user_id
-        except Exception:
-            # Token parsing failed - no rate limiting by user
-            pass
+            if not kid:
+                return None
 
-        return None
+            # Fetch JWKS and find matching key
+            jwks = get_clerk_jwks()
+            rsa_key = None
+
+            for key in jwks.get("keys", []):
+                if key.get("kid") == kid:
+                    rsa_key = key
+                    break
+
+            if not rsa_key:
+                # Try force refresh for key rotation
+                jwks = get_clerk_jwks(force_refresh=True)
+                for key in jwks.get("keys", []):
+                    if key.get("kid") == kid:
+                        rsa_key = key
+                        break
+
+            if not rsa_key:
+                return None
+
+            # Verify and decode the token (skip audience check for rate limiting)
+            payload = jwt.decode(
+                token,
+                rsa_key,
+                algorithms=["RS256"],
+                options={"verify_aud": False}  # Audience checked in auth dependency
+            )
+
+            user_id = payload.get("sub")
+            return user_id if user_id else None
+
+        except (JWTError, JWKError, Exception):
+            # Token verification failed - fall back to IP-based rate limiting
+            return None
 
 
 # ============================================================================

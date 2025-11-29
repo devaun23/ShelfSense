@@ -31,7 +31,8 @@ from app.services.ai_study_planner import (
     get_weekly_overview,
     update_task_progress,
     adapt_plan,
-    get_plan_dashboard
+    get_plan_dashboard,
+    MissingExamDateError
 )
 
 router = APIRouter(prefix="/api/study-plan", tags=["study-plan"])
@@ -217,8 +218,9 @@ def get_progress_check(
     stats = plan["stats"]
     overview = plan["overview"]
 
-    # Check weekly progress
+    # Check weekly progress (prevent division by zero)
     weekly_target = plan["weekly_plan"][0]["questions_target"] if plan["weekly_plan"] else 100
+    weekly_target = max(weekly_target, 1)  # Ensure at least 1 to prevent division by zero
     weekly_progress = stats["weekly_questions"]
     weekly_percentage = round((weekly_progress / weekly_target) * 100, 1)
 
@@ -320,7 +322,13 @@ def create_study_plan(
     )
 
     # Generate initial tasks
-    generate_daily_tasks(db, user_id, days_ahead=7)
+    try:
+        generate_daily_tasks(db, user_id, days_ahead=7)
+    except MissingExamDateError:
+        raise HTTPException(
+            status_code=400,
+            detail="Please set your exam date before creating a study plan"
+        )
 
     return {
         "success": True,
