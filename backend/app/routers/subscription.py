@@ -2,6 +2,8 @@
 Subscription Router
 
 API endpoints for subscription management, feature gating, and usage tracking.
+
+SECURITY: All user-specific endpoints require authentication and IDOR protection.
 """
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -10,6 +12,8 @@ from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 
 from app.database import get_db
+from app.models.models import User
+from app.dependencies.auth import get_current_user, verify_user_access
 from app.services.subscription import (
     get_subscription_status,
     get_available_plans,
@@ -56,9 +60,15 @@ class SpecialtyCheckRequest(BaseModel):
 # =============================================================================
 
 @router.get("/status")
-def get_status(user_id: str, db: Session = Depends(get_db)):
+def get_status(
+    user_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
     Get comprehensive subscription status for a user.
+
+    SECURITY: Requires authentication. Users can only access their own data.
 
     Returns:
         - Current tier
@@ -66,6 +76,9 @@ def get_status(user_id: str, db: Session = Depends(get_db)):
         - Usage limits and remaining
         - Billing information
     """
+    # IDOR protection
+    verify_user_access(current_user, user_id)
+
     try:
         status = get_subscription_status(db, user_id)
         return status
@@ -85,14 +98,23 @@ def get_plans():
 
 
 @router.get("/usage")
-def get_usage(user_id: str, db: Session = Depends(get_db)):
+def get_usage(
+    user_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
     Get user's current daily usage and remaining limits.
+
+    SECURITY: Requires authentication. Users can only access their own data.
 
     Returns:
         - Questions used/remaining
         - Chat messages used/remaining
     """
+    # IDOR protection
+    verify_user_access(current_user, user_id)
+
     try:
         usage = get_remaining_usage(db, user_id)
         return usage
@@ -101,8 +123,19 @@ def get_usage(user_id: str, db: Session = Depends(get_db)):
 
 
 @router.get("/tier")
-def get_tier(user_id: str, db: Session = Depends(get_db)):
-    """Get user's current subscription tier."""
+def get_tier(
+    user_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Get user's current subscription tier.
+
+    SECURITY: Requires authentication. Users can only access their own data.
+    """
+    # IDOR protection
+    verify_user_access(current_user, user_id)
+
     try:
         tier = get_user_tier(db, user_id)
         return {"tier": tier}
@@ -115,13 +148,23 @@ def get_tier(user_id: str, db: Session = Depends(get_db)):
 # =============================================================================
 
 @router.post("/upgrade")
-def upgrade(user_id: str, request: UpgradeRequest, db: Session = Depends(get_db)):
+def upgrade(
+    user_id: str,
+    request: UpgradeRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
     Upgrade user's subscription to a new tier.
+
+    SECURITY: Requires authentication. Users can only modify their own subscription.
 
     Note: In production, this would integrate with Stripe for payment processing.
     Currently accepts the upgrade directly for testing purposes.
     """
+    # IDOR protection
+    verify_user_access(current_user, user_id)
+
     valid_tiers = ["student", "premium"]
     if request.tier not in valid_tiers:
         raise HTTPException(
@@ -156,13 +199,23 @@ def upgrade(user_id: str, request: UpgradeRequest, db: Session = Depends(get_db)
 
 
 @router.post("/cancel")
-def cancel(user_id: str, request: CancelRequest, db: Session = Depends(get_db)):
+def cancel(
+    user_id: str,
+    request: CancelRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
     Cancel user's subscription.
+
+    SECURITY: Requires authentication. Users can only cancel their own subscription.
 
     The subscription remains active until the end of the billing period,
     then downgrades to free tier.
     """
+    # IDOR protection
+    verify_user_access(current_user, user_id)
+
     try:
         subscription = cancel_subscription(db, user_id, request.reason)
 
@@ -176,12 +229,21 @@ def cancel(user_id: str, request: CancelRequest, db: Session = Depends(get_db)):
 
 
 @router.post("/start-trial")
-def trial(user_id: str, db: Session = Depends(get_db)):
+def trial(
+    user_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
     Start a 7-day free trial of the Student tier.
 
+    SECURITY: Requires authentication. Users can only start trial for themselves.
+
     Users can only use one trial per account.
     """
+    # IDOR protection
+    verify_user_access(current_user, user_id)
+
     try:
         subscription = start_trial(db, user_id)
 
@@ -201,15 +263,24 @@ def trial(user_id: str, db: Session = Depends(get_db)):
 # =============================================================================
 
 @router.get("/can-answer-question")
-def check_can_answer(user_id: str, db: Session = Depends(get_db)):
+def check_can_answer(
+    user_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
     Check if user can answer another question today.
+
+    SECURITY: Requires authentication. Users can only check their own permissions.
 
     Returns:
         - allowed: boolean
         - reason: why not allowed (if applicable)
         - upgrade_message: CTA for upgrade (if limit reached)
     """
+    # IDOR protection
+    verify_user_access(current_user, user_id)
+
     try:
         result = can_answer_question(db, user_id)
         return result
@@ -218,15 +289,24 @@ def check_can_answer(user_id: str, db: Session = Depends(get_db)):
 
 
 @router.get("/can-send-chat")
-def check_can_chat(user_id: str, db: Session = Depends(get_db)):
+def check_can_chat(
+    user_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
     Check if user can send another AI chat message today.
+
+    SECURITY: Requires authentication. Users can only check their own permissions.
 
     Returns:
         - allowed: boolean
         - reason: why not allowed (if applicable)
         - upgrade_message: CTA for upgrade (if limit reached)
     """
+    # IDOR protection
+    verify_user_access(current_user, user_id)
+
     try:
         result = can_send_chat_message(db, user_id)
         return result
@@ -235,15 +315,25 @@ def check_can_chat(user_id: str, db: Session = Depends(get_db)):
 
 
 @router.post("/can-access-specialty")
-def check_specialty_access(user_id: str, request: SpecialtyCheckRequest, db: Session = Depends(get_db)):
+def check_specialty_access(
+    user_id: str,
+    request: SpecialtyCheckRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
     Check if user can access a specific specialty.
+
+    SECURITY: Requires authentication. Users can only check their own permissions.
 
     Returns:
         - allowed: boolean
         - reason: why not allowed (if applicable)
         - upgrade_message: CTA for upgrade (if locked)
     """
+    # IDOR protection
+    verify_user_access(current_user, user_id)
+
     try:
         result = can_access_specialty(db, user_id, request.specialty)
         return result
@@ -252,9 +342,16 @@ def check_specialty_access(user_id: str, request: SpecialtyCheckRequest, db: Ses
 
 
 @router.post("/can-access-feature")
-def check_feature_access(user_id: str, request: FeatureCheckRequest, db: Session = Depends(get_db)):
+def check_feature_access(
+    user_id: str,
+    request: FeatureCheckRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
     Check if user can access a specific feature.
+
+    SECURITY: Requires authentication. Users can only check their own permissions.
 
     Available features:
         - spaced_repetition
@@ -271,6 +368,9 @@ def check_feature_access(user_id: str, request: FeatureCheckRequest, db: Session
         - reason: why not allowed (if applicable)
         - upgrade_message: CTA for upgrade (if locked)
     """
+    # IDOR protection
+    verify_user_access(current_user, user_id)
+
     try:
         result = can_access_feature(db, user_id, request.feature)
         return result

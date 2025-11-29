@@ -19,50 +19,74 @@ from typing import Optional
 import hmac
 import hashlib
 import json
+import os
+import logging
 from datetime import datetime
 
 from app.database import get_db
 from app.models.models import User, generate_uuid
 
+logger = logging.getLogger(__name__)
+
 router = APIRouter(prefix="/api/webhook", tags=["webhooks"])
 
 
-def verify_clerk_webhook(payload: bytes, signature: str, secret: str) -> bool:
+def verify_clerk_webhook(payload: bytes, svix_id: str, svix_timestamp: str, svix_signature: str, secret: str) -> bool:
     """
-    Verify Clerk webhook signature
+    Verify Clerk/Svix webhook signature using HMAC-SHA256
+
+    Svix signature format: "v1,<signature1> v1,<signature2>"
+    Signed payload format: "<svix_id>.<svix_timestamp>.<payload>"
 
     Args:
         payload: Raw request body
-        signature: svix-signature header
-        secret: Clerk webhook secret
+        svix_id: svix-id header
+        svix_timestamp: svix-timestamp header
+        svix_signature: svix-signature header
+        secret: Clerk webhook secret (starts with whsec_)
 
     Returns:
         True if signature is valid
     """
-    if not signature or not secret:
+    if not all([svix_id, svix_timestamp, svix_signature, secret]):
+        logger.warning("Missing required Svix headers or secret")
         return False
 
-    # Extract timestamp and signatures from header
-    # Format: "v1,timestamp signature"
-    parts = signature.split(',')
-    if len(parts) < 2:
+    # Remove 'whsec_' prefix if present and decode base64
+    import base64
+    if secret.startswith('whsec_'):
+        secret = secret[6:]
+
+    try:
+        secret_bytes = base64.b64decode(secret)
+    except Exception:
+        logger.error("Failed to decode webhook secret")
         return False
 
-    timestamp = parts[0]
-    signatures = parts[1:]
-
-    # Reconstruct signed payload
-    signed_payload = f"{timestamp}.{payload.decode('utf-8')}"
+    # Construct signed payload: "{svix_id}.{svix_timestamp}.{payload}"
+    signed_payload = f"{svix_id}.{svix_timestamp}.{payload.decode('utf-8')}"
 
     # Compute expected signature
     expected_sig = hmac.new(
-        secret.encode('utf-8'),
+        secret_bytes,
         signed_payload.encode('utf-8'),
         hashlib.sha256
-    ).hexdigest()
+    ).digest()
+    expected_sig_b64 = base64.b64encode(expected_sig).decode('utf-8')
 
-    # Compare with provided signatures
-    return any(hmac.compare_digest(expected_sig, sig.strip()) for sig in signatures)
+    # Parse signatures from header (format: "v1,<sig1> v1,<sig2>")
+    signatures = []
+    for part in svix_signature.split(' '):
+        if part.startswith('v1,'):
+            signatures.append(part[3:])  # Remove 'v1,' prefix
+
+    # Compare with provided signatures using constant-time comparison
+    for sig in signatures:
+        if hmac.compare_digest(expected_sig_b64, sig):
+            return True
+
+    logger.warning("Webhook signature verification failed")
+    return False
 
 
 @router.post("/clerk")
@@ -83,11 +107,18 @@ async def clerk_webhook(
     # Get raw body for signature verification
     body = await request.body()
 
-    # Verify webhook signature (optional - enable in production)
-    # import os
-    # webhook_secret = os.getenv('CLERK_WEBHOOK_SECRET')
-    # if webhook_secret and not verify_clerk_webhook(body, svix_signature or '', webhook_secret):
-    #     raise HTTPException(status_code=401, detail="Invalid webhook signature")
+    # Verify webhook signature - REQUIRED in production
+    webhook_secret = os.getenv('CLERK_WEBHOOK_SECRET')
+    if webhook_secret:
+        if not verify_clerk_webhook(body, svix_id or '', svix_timestamp or '', svix_signature or '', webhook_secret):
+            logger.warning("Clerk webhook signature verification failed")
+            raise HTTPException(status_code=401, detail="Invalid webhook signature")
+    else:
+        # In production, this should fail. Log warning for development.
+        if os.getenv('RAILWAY_ENVIRONMENT') or os.getenv('PRODUCTION'):
+            logger.error("CLERK_WEBHOOK_SECRET not configured in production!")
+            raise HTTPException(status_code=500, detail="Webhook secret not configured")
+        logger.warning("CLERK_WEBHOOK_SECRET not set - skipping signature verification (dev only)")
 
     # Parse webhook payload
     try:

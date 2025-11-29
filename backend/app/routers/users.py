@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
 
 from app.database import get_db
 from app.models.models import User
+from app.dependencies.auth import get_current_user, verify_user_access
 
 router = APIRouter(prefix="/api/users", tags=["users"])
 
@@ -72,10 +73,20 @@ def register_user(request: RegisterRequest, db: Session = Depends(get_db)):
 
 
 @router.get("/{user_id}", response_model=UserResponse)
-def get_user(user_id: str, db: Session = Depends(get_db)):
+def get_user(
+    user_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
-    Get user information by ID
+    Get user information by ID.
+
+    SECURITY: Requires authentication. Users can only access their own data.
+    Admins can access any user.
     """
+    # IDOR protection: verify user has access to this data
+    verify_user_access(current_user, user_id)
+
     user = db.query(User).filter(User.id == user_id).first()
 
     if not user:

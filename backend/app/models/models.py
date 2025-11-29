@@ -68,6 +68,7 @@ class Question(Base):
 
     # Quality metrics (updated by Content Management Agent)
     quality_score = Column(Float, nullable=True, index=True)  # 0-100 composite score
+    cognitive_patterns = Column(JSON, nullable=True)  # Cognitive vulnerabilities this question targets: ["aggressive_interventionist", "elderly_caution"]
     clinical_accuracy_verified = Column(Boolean, default=False)  # Expert-verified accuracy
     expert_reviewed = Column(Boolean, default=False, index=True)  # Has been reviewed by expert
     expert_reviewed_at = Column(DateTime, nullable=True)
@@ -100,6 +101,7 @@ class QuestionAttempt(Base):
     hover_events = Column(JSON, nullable=True)  # Track which choices were hovered
     scroll_events = Column(JSON, nullable=True)  # Track scrolling behavior
     confidence_level = Column(Integer, nullable=True)  # 1-5 scale
+    interaction_data = Column(JSON, nullable=True)  # Rich cognitive tracking: answer_changes, timing, changed_from_correct
     attempted_at = Column(DateTime, default=datetime.utcnow, index=True)
 
     # Relationships
@@ -721,6 +723,9 @@ class DailyUsage(Base):
     questions_answered = Column(Integer, default=0)
     ai_chat_messages = Column(Integer, default=0)
     ai_questions_generated = Column(Integer, default=0)
+    assessments_created = Column(Integer, default=0)  # Self-assessments created
+    study_plans_created = Column(Integer, default=0)  # Study plan operations
+    curriculum_uploads = Column(Integer, default=0)  # StudySync AI file uploads
 
     # Metadata
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -1230,6 +1235,215 @@ class UserEngagementScore(Base):
     user = relationship("User")
 
 
+# ============================================================================
+# NBME SELF-ASSESSMENT SIMULATOR MODELS
+# ============================================================================
+
+class SelfAssessment(Base):
+    """
+    Tracks NBME-style self-assessment exams.
+    Simulates real exam conditions: 4 blocks x 40 questions x 60 minutes.
+    """
+    __tablename__ = "self_assessments"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False, index=True)
+
+    # Assessment configuration
+    name = Column(String, nullable=False)  # "Practice Assessment 1", "Pre-Exam Assessment"
+    total_blocks = Column(Integer, default=4)  # Number of blocks (default 4 like real NBME)
+    questions_per_block = Column(Integer, default=40)  # Questions per block
+    time_per_block_minutes = Column(Integer, default=60)  # Minutes per block
+
+    # Progress tracking
+    current_block = Column(Integer, default=0)  # 0-indexed current block
+    status = Column(String, default="not_started", index=True)  # not_started, in_progress, completed, abandoned
+
+    # Question pool (JSON array of question IDs per block)
+    question_blocks = Column(JSON, nullable=True)  # [[q1,q2,...], [q3,q4,...], ...]
+
+    # Timing
+    started_at = Column(DateTime, nullable=True)
+    completed_at = Column(DateTime, nullable=True)
+    total_time_seconds = Column(Integer, default=0)
+
+    # Results (calculated on completion)
+    raw_score = Column(Integer, nullable=True)  # Number correct
+    percentage_score = Column(Float, nullable=True)  # Percentage correct
+    predicted_step2_score = Column(Integer, nullable=True)  # Predicted 3-digit score
+    confidence_interval_low = Column(Integer, nullable=True)
+    confidence_interval_high = Column(Integer, nullable=True)
+    percentile_rank = Column(Integer, nullable=True)  # Compared to other users
+
+    # Performance breakdown (JSON)
+    performance_by_system = Column(JSON, nullable=True)  # {"cardiology": 0.75, "surgery": 0.60}
+    performance_by_difficulty = Column(JSON, nullable=True)  # {"easy": 0.90, "medium": 0.70, "hard": 0.50}
+
+    # Metadata
+    created_at = Column(DateTime, default=datetime.utcnow, index=True)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    user = relationship("User")
+    blocks = relationship("AssessmentBlock", back_populates="assessment", cascade="all, delete-orphan")
+
+
+class AssessmentBlock(Base):
+    """
+    Tracks individual blocks within a self-assessment.
+    Each block is timed separately like the real NBME.
+    """
+    __tablename__ = "assessment_blocks"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    assessment_id = Column(String, ForeignKey("self_assessments.id"), nullable=False, index=True)
+    block_number = Column(Integer, nullable=False)  # 1, 2, 3, 4
+
+    # Question pool for this block
+    question_ids = Column(JSON, nullable=False)  # List of question IDs
+
+    # Status
+    status = Column(String, default="not_started", index=True)  # not_started, in_progress, completed
+
+    # Timing
+    time_limit_seconds = Column(Integer, default=3600)  # 60 minutes
+    time_spent_seconds = Column(Integer, default=0)
+    started_at = Column(DateTime, nullable=True)
+    completed_at = Column(DateTime, nullable=True)
+
+    # Results
+    questions_answered = Column(Integer, default=0)
+    questions_correct = Column(Integer, default=0)
+
+    # User answers (JSON: {question_id: {answer: "A", time_spent: 45, flagged: false}})
+    answers = Column(JSON, nullable=True)
+
+    # Metadata
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    # Relationships
+    assessment = relationship("SelfAssessment", back_populates="blocks")
+
+    __table_args__ = (
+        UniqueConstraint('assessment_id', 'block_number', name='uq_assessment_block'),
+        Index('ix_assessment_block_assessment_status', 'assessment_id', 'status'),  # For filtering blocks by assessment + status
+    )
+
+
+# ============================================================================
+# AI STUDY PLANNER MODELS
+# ============================================================================
+
+class StudyPlan(Base):
+    """
+    Persistent AI-generated study plan with daily tasks.
+    Adapts based on user performance and available time.
+    """
+    __tablename__ = "study_plans"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False, unique=True, index=True)
+
+    # Plan configuration
+    exam_date = Column(DateTime, nullable=False)
+    target_score = Column(Integer, default=240)
+    daily_hours_available = Column(Float, default=3.0)  # Hours per day for studying
+    study_days_per_week = Column(Integer, default=6)  # Days studying per week
+
+    # Current state
+    status = Column(String, default="active", index=True)  # active, paused, completed
+    current_phase = Column(String, nullable=True)  # foundation, strengthening, review, final
+    last_regenerated = Column(DateTime, default=datetime.utcnow)
+
+    # AI-generated plan data
+    weekly_schedule = Column(JSON, nullable=True)  # AI-generated weekly breakdown
+    focus_areas = Column(JSON, nullable=True)  # Priority topics/specialties
+    milestones = Column(JSON, nullable=True)  # Target milestones by date
+
+    # Adaptation tracking
+    times_adapted = Column(Integer, default=0)
+    adaptation_reasons = Column(JSON, nullable=True)  # List of why plan changed
+
+    # Metadata
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    user = relationship("User")
+    daily_tasks = relationship("DailyStudyTask", back_populates="plan", cascade="all, delete-orphan")
+
+
+class DailyStudyTask(Base):
+    """
+    Individual daily study tasks within a plan.
+    Generated by AI and adapted based on progress.
+    """
+    __tablename__ = "daily_study_tasks"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    plan_id = Column(String, ForeignKey("study_plans.id"), nullable=False, index=True)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False, index=True)
+
+    # Task details
+    date = Column(DateTime, nullable=False, index=True)
+    task_type = Column(String, nullable=False)  # new_questions, review, weak_area, assessment, break
+    specialty = Column(String, nullable=True)  # Target specialty if applicable
+    description = Column(String, nullable=False)  # Human readable task description
+
+    # Targets
+    target_questions = Column(Integer, default=0)
+    target_time_minutes = Column(Integer, default=60)
+    difficulty_mix = Column(JSON, nullable=True)  # {"easy": 20, "medium": 50, "hard": 30}
+
+    # Progress
+    status = Column(String, default="pending", index=True)  # pending, in_progress, completed, skipped
+    questions_completed = Column(Integer, default=0)
+    time_spent_minutes = Column(Integer, default=0)
+    accuracy = Column(Float, nullable=True)
+
+    # Completion
+    started_at = Column(DateTime, nullable=True)
+    completed_at = Column(DateTime, nullable=True)
+
+    # Priority and ordering
+    priority = Column(Integer, default=1)  # 1 = highest
+    order_in_day = Column(Integer, default=1)  # Task order for the day
+
+    # Metadata
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    plan = relationship("StudyPlan", back_populates="daily_tasks")
+    user = relationship("User")
+
+    __table_args__ = (
+        Index('ix_daily_tasks_user_date', 'user_id', 'date'),
+        Index('ix_daily_tasks_user_date_status', 'user_id', 'date', 'status'),  # For filtering tasks by user + date + status
+    )
+
+
+class AssessmentComparison(Base):
+    """
+    Pre-aggregated percentile data for assessment score comparisons.
+    Updated periodically to provide fast percentile lookups.
+    """
+    __tablename__ = "assessment_comparisons"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+
+    # Score buckets (percentage ranges)
+    score_bucket = Column(Integer, nullable=False, unique=True, index=True)  # 0-100 in increments of 5
+
+    # User counts at or below this score
+    users_at_or_below = Column(Integer, default=0)
+    total_assessments = Column(Integer, default=0)
+    percentile = Column(Float, nullable=False)  # Pre-calculated percentile
+
+    # Metadata
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
 class CohortRetention(Base):
     """
     Cohort-based retention tracking.
@@ -1323,6 +1537,130 @@ class ScorePredictionHistory(Base):
 
     # Metadata
     calculated_at = Column(DateTime, default=datetime.utcnow, index=True)
+
+    # Relationships
+    user = relationship("User")
+
+
+# ============================================================================
+# STUDYSYNC AI - CURRICULUM MAPPING MODELS
+# ============================================================================
+
+class CurriculumUpload(Base):
+    """
+    Stores uploaded curriculum files (lecture slides, PDFs, syllabi).
+    AI extracts topics from these files to create personalized study plans.
+    """
+    __tablename__ = "curriculum_uploads"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False, index=True)
+
+    # File metadata
+    filename = Column(String, nullable=False)
+    file_type = Column(String, nullable=False, index=True)  # "pdf", "pptx", "docx", "image", "score_report"
+    file_size_bytes = Column(Integer, nullable=True)
+    file_hash = Column(String, nullable=True)  # For deduplication
+
+    # Processing status
+    status = Column(String, default="pending", index=True)  # "pending", "processing", "completed", "failed"
+    error_message = Column(Text, nullable=True)
+
+    # Extracted content (stored for reprocessing)
+    raw_text_content = Column(Text, nullable=True)  # Extracted text from file
+    ai_extracted_topics = Column(JSON, nullable=True)  # List of topics AI found
+
+    # Context
+    upload_context = Column(String, nullable=True)  # "lecture", "syllabus", "nbme_report", "notes"
+    course_name = Column(String, nullable=True)  # e.g., "Internal Medicine Clerkship"
+    week_number = Column(Integer, nullable=True)  # Week in rotation/semester
+
+    # Metadata
+    created_at = Column(DateTime, default=datetime.utcnow, index=True)
+    processed_at = Column(DateTime, nullable=True)
+
+    # Relationships
+    user = relationship("User")
+    topics = relationship("CurriculumTopic", back_populates="upload", cascade="all, delete-orphan")
+
+
+class CurriculumTopic(Base):
+    """
+    Individual topics extracted from curriculum uploads.
+    Linked to questions for personalized study sessions.
+    """
+    __tablename__ = "curriculum_topics"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    upload_id = Column(String, ForeignKey("curriculum_uploads.id"), nullable=False, index=True)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False, index=True)
+
+    # Topic identification
+    topic_name = Column(String, nullable=False)  # e.g., "Acute Coronary Syndrome"
+    specialty = Column(String, nullable=True, index=True)  # e.g., "Internal Medicine"
+    subsystem = Column(String, nullable=True)  # e.g., "Cardiology"
+
+    # AI confidence
+    confidence_score = Column(Float, default=0.8)  # How confident AI is about this extraction
+    source_text = Column(Text, nullable=True)  # Original text that mentioned this topic
+
+    # Question matching
+    matched_question_count = Column(Integer, default=0)  # How many questions match this topic
+    questions_completed = Column(Integer, default=0)  # How many user has answered
+    questions_correct = Column(Integer, default=0)
+
+    # Priority (from NBME content outline)
+    is_high_yield = Column(Boolean, default=False)  # Matches HIGH_YIELD_TOPICS
+    usmle_weight = Column(Float, nullable=True)  # Weight from DISCIPLINE_DISTRIBUTION
+
+    # Status
+    mastery_status = Column(String, default="not_started")  # "not_started", "learning", "mastered"
+
+    # Metadata
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    upload = relationship("CurriculumUpload", back_populates="topics")
+    user = relationship("User")
+
+    __table_args__ = (
+        Index('ix_curriculum_topics_user_specialty', 'user_id', 'specialty'),
+        Index('ix_curriculum_topics_user_mastery', 'user_id', 'mastery_status'),
+    )
+
+
+class UserStudyFocus(Base):
+    """
+    Tracks user's current study focus derived from curriculum uploads.
+    Used by adaptive algorithm to prioritize matching questions.
+    """
+    __tablename__ = "user_study_focus"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False, index=True)
+
+    # Current focus (updated by AI from uploads)
+    focus_specialty = Column(String, nullable=True, index=True)  # Primary specialty to focus on
+    focus_topics = Column(JSON, nullable=True)  # List of topic names to prioritize
+    weak_areas_from_report = Column(JSON, nullable=True)  # Weak areas from NBME score report
+
+    # Source tracking
+    derived_from_uploads = Column(JSON, nullable=True)  # List of upload_ids that informed this
+    last_nbme_report_id = Column(String, ForeignKey("curriculum_uploads.id"), nullable=True)
+
+    # Recommendation settings
+    daily_question_target = Column(Integer, default=40)
+    recommended_distribution = Column(JSON, nullable=True)
+    # Example: {"focus_topics": 0.6, "weak_areas": 0.25, "review": 0.15}
+
+    # Status
+    is_active = Column(Boolean, default=True)
+    expires_at = Column(DateTime, nullable=True)  # Focus expires after exam/rotation ends
+
+    # Metadata
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     # Relationships
     user = relationship("User")

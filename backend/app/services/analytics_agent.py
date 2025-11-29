@@ -670,3 +670,96 @@ def _calculate_streak(db: Session, user_id: str) -> int:
             break
 
     return streak
+
+
+def calculate_readiness(db: Session, user_id: str, specialty: str) -> Dict[str, Any]:
+    """
+    Calculate simple readiness indicator based on coverage and mastery.
+
+    Formula: Readiness = Coverage × Mastery
+    - Coverage: % of topics studied (5+ attempts each)
+    - Mastery: Average % correct across studied topics
+
+    Args:
+        db: Database session
+        user_id: User identifier
+        specialty: Specialty to calculate readiness for
+
+    Returns:
+        Dict with readiness score, status, coverage, mastery, weak areas
+    """
+    # Get all attempts for this specialty grouped by topic
+    topic_stats = db.query(
+        Question.topic,
+        func.count(QuestionAttempt.id).label('attempts'),
+        func.sum(cast(QuestionAttempt.is_correct, Integer)).label('correct')
+    ).join(
+        QuestionAttempt, Question.id == QuestionAttempt.question_id
+    ).filter(
+        QuestionAttempt.user_id == user_id,
+        Question.specialty == specialty
+    ).group_by(
+        Question.topic
+    ).all()
+
+    # Get total unique topics for this specialty
+    total_topics_query = db.query(
+        func.count(func.distinct(Question.topic))
+    ).filter(
+        Question.specialty == specialty,
+        Question.rejected == False
+    ).scalar() or 1
+
+    # Calculate coverage and mastery
+    studied_topics = []
+    weak_areas = []
+
+    for stat in topic_stats:
+        if stat.attempts >= 5:  # Meaningful sample
+            accuracy = (stat.correct or 0) / stat.attempts * 100
+            studied_topics.append({
+                'topic': stat.topic,
+                'attempts': stat.attempts,
+                'accuracy': round(accuracy, 1)
+            })
+            if accuracy < 70:
+                weak_areas.append(stat.topic)
+
+    # Coverage = studied topics / total topics
+    coverage = len(studied_topics) / total_topics_query if total_topics_query > 0 else 0
+
+    # Mastery = average accuracy across studied topics
+    if studied_topics:
+        mastery = sum(t['accuracy'] for t in studied_topics) / len(studied_topics)
+    else:
+        mastery = 0
+
+    # Readiness score = coverage × mastery (as percentage)
+    readiness_score = coverage * (mastery / 100) * 100
+
+    # Determine status
+    if readiness_score >= 85 and len(weak_areas) == 0:
+        status = "Ready"
+        message = "Strong preparation. Focus on maintaining retention."
+    elif readiness_score >= 70:
+        status = "Almost Ready"
+        message = f"Address weak areas: {', '.join(weak_areas[:3])}" if weak_areas else "Keep practicing."
+    elif readiness_score >= 50:
+        status = "In Progress"
+        remaining = total_topics_query - len(studied_topics)
+        message = f"Keep studying. {remaining} topics remaining."
+    else:
+        status = "Early Stage"
+        message = "Focus on coverage first, then mastery."
+
+    return {
+        "readiness_score": round(readiness_score, 1),
+        "status": status,
+        "message": message,
+        "coverage": round(coverage * 100, 1),
+        "mastery": round(mastery, 1),
+        "topics_studied": len(studied_topics),
+        "total_topics": total_topics_query,
+        "weak_areas": weak_areas[:5],
+        "topic_details": sorted(studied_topics, key=lambda x: x['accuracy'])[:10]
+    }

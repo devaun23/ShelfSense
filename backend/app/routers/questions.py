@@ -1,3 +1,11 @@
+"""
+Questions Router
+
+API endpoints for question generation, retrieval, and answer submission.
+
+SECURITY: User-specific endpoints require authentication and IDOR protection.
+"""
+
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
 from typing import List, Optional, Dict, Any
@@ -10,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 from app.database import get_db
 from app.models.models import Question, QuestionAttempt, QuestionRating, ErrorAnalysis, generate_uuid, User
-from app.routers.auth import get_current_user
+from app.dependencies.auth import get_current_user, get_admin_user, verify_user_access
 from app.services.adaptive import select_next_question
 from app.services.question_generator import generate_and_save_question, save_generated_question
 from app.services.question_agent import (
@@ -63,6 +71,7 @@ class SubmitAnswerRequest(BaseModel):
     hover_events: Optional[dict] = None
     scroll_events: Optional[dict] = None
     confidence_level: Optional[int] = None  # 1-5 scale for confidence-weighted learning
+    interaction_data: Optional[dict] = None  # Rich cognitive tracking: answer_changes, timing, etc.
 
 
 class WeaknessIntervention(BaseModel):
@@ -115,10 +124,19 @@ class ErrorAnalysisResponse(BaseModel):
 
 
 @router.get("/next", response_model=QuestionResponse)
-def get_next_question(user_id: str, db: Session = Depends(get_db)):
+def get_next_question(
+    user_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
-    Get next question for user using adaptive algorithm
+    Get next question for user using adaptive algorithm.
+
+    SECURITY: Requires authentication. Users can only get questions for themselves.
     """
+    # IDOR protection
+    verify_user_access(current_user, user_id)
+
     question = select_next_question(db, user_id, use_ai=False)
 
     if not question:
@@ -138,11 +156,20 @@ def get_next_question(user_id: str, db: Session = Depends(get_db)):
 
 
 @router.post("/submit", response_model=AnswerFeedback)
-def submit_answer(request: SubmitAnswerRequest, db: Session = Depends(get_db)):
+def submit_answer(
+    request: SubmitAnswerRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
-    Submit answer and record attempt
-    Returns immediate feedback and schedules spaced repetition
+    Submit answer and record attempt.
+    Returns immediate feedback and schedules spaced repetition.
+
+    SECURITY: Requires authentication. Users can only submit for themselves.
     """
+    # IDOR protection
+    verify_user_access(current_user, request.user_id)
+
     # Get question
     question = db.query(Question).filter(Question.id == request.question_id).first()
 
@@ -162,6 +189,7 @@ def submit_answer(request: SubmitAnswerRequest, db: Session = Depends(get_db)):
         hover_events=request.hover_events,
         scroll_events=request.scroll_events,
         confidence_level=request.confidence_level,
+        interaction_data=request.interaction_data,  # Rich cognitive tracking
         attempted_at=datetime.utcnow()
     )
 
@@ -369,99 +397,98 @@ def submit_answer(request: SubmitAnswerRequest, db: Session = Depends(get_db)):
 
 @router.get("/random", response_model=QuestionResponse)
 def get_random_question(
-    db: Session = Depends(get_db),
     specialty: Optional[str] = None,
-    user_id: Optional[str] = None,
-    use_ai: bool = True,
-    instant: bool = True
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
 ):
     """
-    Get an AI-generated question - INSTANT from pre-generated pool.
+    Get a random question from the database.
 
-    This endpoint now uses the MassivePool system for truly instant delivery.
-    Questions are pre-generated in background and served in <100ms.
+    SECURITY: Requires authentication. Uses authenticated user's ID for personalization.
 
     Args:
-        specialty: Optional specialty filter (Medicine, Surgery, etc.)
-        user_id: Optional user ID for personalized question selection
-        use_ai: If True, use AI generation (default)
-        instant: If True, serve from pre-generated pool (default, <100ms)
-                 If False, generate on-demand (slower, 10-30s)
+        specialty: Optional specialty filter (Internal Medicine, Surgery, etc.)
 
     Returns:
         QuestionResponse with vignette, choices, and metadata
     """
-    if use_ai:
-        try:
-            if instant and user_id:
-                # INSTANT + ADAPTIVE: Get from massive pool matched to user's needs
-                from app.services.massive_pool import get_instant_question_adaptive
-                logger.debug("Getting adaptive instant question for user_id=%s", user_id[:8] if user_id else 'anon')
+    from sqlalchemy import func
+    from app.models.models import QuestionAttempt
 
-                question = get_instant_question_adaptive(
-                    db,
-                    user_id=user_id,
-                    preferred_specialty=specialty
-                )
+    user_id = current_user.id
 
-                if question:
-                    return QuestionResponse(
-                        id=question.id,
-                        vignette=question.vignette,
-                        choices=question.choices,
-                        source=question.source or "AI Generated",
-                        recency_weight=question.recency_weight or 1.0
-                    )
+    # Get IDs of questions user has already answered
+    answered_ids = db.query(QuestionAttempt.question_id).filter(
+        QuestionAttempt.user_id == user_id
+    ).subquery()
 
-                # Fallback to legacy pool if massive pool empty
-                logger.debug("Massive pool empty, trying legacy pool")
+    # Build base query for unanswered, non-rejected questions with valid 5 choices
+    query = db.query(Question).filter(
+        Question.rejected == False,
+        ~Question.id.in_(answered_ids)
+    )
 
-            if instant:
-                # INSTANT: Get from pre-generated pool (<100ms)
-                logger.debug("Getting instant question for specialty=%s", specialty or 'any')
-                question = get_instant_question(db, specialty=specialty, user_id=user_id)
+    # Apply specialty filter if provided (handle various formats)
+    # NOTE: SQLAlchemy's ilike() uses parameterized queries, preventing SQL injection
+    if specialty:
+        # Normalize specialty name for flexible matching
+        specialty_lower = specialty.lower().replace(" ", "_").replace("-", "_")
 
-                if not question:
-                    # Pool empty - fall back to on-demand generation
-                    logger.info("Pool empty, generating on-demand for specialty=%s", specialty or 'random')
-                    question_data = generate_question_with_agent(db, specialty=specialty)
-                    question = save_generated_question(db, question_data)
-            else:
-                # ON-DEMAND: Generate fresh question (10-30s)
-                logger.info("Generating on-demand for specialty=%s", specialty or 'random')
-                question_data = generate_question_with_agent(db, specialty=specialty)
-                question = save_generated_question(db, question_data)
+        # Build filter conditions
+        conditions = [
+            Question.specialty.ilike(f"%{specialty}%"),
+            Question.specialty.ilike(f"%{specialty_lower}%"),
+        ]
 
-            # Validate AI-generated question
-            if not question or not question.choices or len(question.choices) != 5:
-                raise ValueError("AI generated invalid question format")
+        # Add medicine-specific matching for Internal Medicine
+        if "medicine" in specialty.lower():
+            conditions.append(Question.source.ilike(f"%Medicine%"))
 
-            return QuestionResponse(
-                id=question.id,
-                vignette=question.vignette,
-                choices=question.choices,
-                source=question.source or "AI Generated",
-                recency_weight=question.recency_weight or 1.0
-            )
-        except Exception as e:
-            logger.error("AI generation failed: %s", str(e), exc_info=True)
-            raise HTTPException(status_code=500, detail=f"Failed to generate question: {str(e)}")
+        from sqlalchemy import or_
+        query = query.filter(or_(*conditions))
 
-    # Fallback: Get a random non-rejected question from database (for testing only)
-    question = db.query(Question).filter(Question.rejected == False).order_by(Question.recency_weight.desc()).first()
+    # Get a random question
+    question = query.order_by(func.random()).first()
+
+    # If no unanswered questions, allow repeats
+    if not question:
+        query = db.query(Question).filter(Question.rejected == False)
+        if specialty:
+            specialty_lower = specialty.lower().replace(" ", "_").replace("-", "_")
+            conditions = [
+                Question.specialty.ilike(f"%{specialty}%"),
+                Question.specialty.ilike(f"%{specialty_lower}%"),
+            ]
+            if "medicine" in specialty.lower():
+                conditions.append(Question.source.ilike(f"%Medicine%"))
+            query = query.filter(or_(*conditions))
+        question = query.order_by(func.random()).first()
+
+    # Final fallback: any question
+    if not question:
+        question = db.query(Question).filter(
+            Question.rejected == False
+        ).order_by(func.random()).first()
 
     if not question:
         raise HTTPException(status_code=404, detail="No questions available")
 
     # Validate question has exactly 5 choices
     if not question.choices or len(question.choices) != 5:
-        raise HTTPException(status_code=500, detail="Invalid question format")
+        # Try to get another question
+        question = db.query(Question).filter(
+            Question.rejected == False,
+            Question.id != question.id
+        ).order_by(func.random()).first()
+
+        if not question or not question.choices or len(question.choices) != 5:
+            raise HTTPException(status_code=500, detail="No valid questions available")
 
     return QuestionResponse(
         id=question.id,
         vignette=question.vignette,
         choices=question.choices,
-        source=question.source or "Database",
+        source=question.source or "ShelfSense",
         recency_weight=question.recency_weight or 0.5
     )
 
@@ -499,10 +526,13 @@ def get_question_pool_stats(db: Session = Depends(get_db)):
 def warm_question_pool(
     target_total: int = 500,
     use_massive_pool: bool = True,
-    background_tasks: BackgroundTasks = None
+    background_tasks: BackgroundTasks = None,
+    current_user: User = Depends(get_admin_user)
 ):
     """
     Warm up the question pool with pre-generated questions.
+
+    SECURITY: Requires ADMIN authentication.
 
     This runs in background and returns immediately.
     Use /pool/stats to monitor progress.
@@ -654,11 +684,20 @@ class RateQuestionResponse(BaseModel):
 
 
 @router.post("/rate", response_model=RateQuestionResponse)
-def rate_question(request: RateQuestionRequest, db: Session = Depends(get_db)):
+def rate_question(
+    request: RateQuestionRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
-    Rate a question (approve ✓ or reject ✗) with optional feedback
-    Rejected questions are marked and won't be shown again
+    Rate a question (approve ✓ or reject ✗) with optional feedback.
+    Rejected questions are marked and won't be shown again.
+
+    SECURITY: Requires authentication. Users can only rate as themselves.
     """
+    # IDOR protection
+    verify_user_access(current_user, request.user_id)
+
     # Get the question
     question = db.query(Question).filter(Question.id == request.question_id).first()
 
@@ -698,10 +737,19 @@ def get_question_count(db: Session = Depends(get_db)):
 
 
 @router.get("/error-analysis/{question_id}", response_model=Optional[ErrorAnalysisResponse])
-def get_error_analysis(question_id: str, user_id: str, db: Session = Depends(get_db)):
+def get_error_analysis(
+    question_id: str,
+    user_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
-    Get error analysis for the most recent incorrect attempt of this question by this user
+    Get error analysis for the most recent incorrect attempt of this question by this user.
+
+    SECURITY: Requires authentication. Users can only access their own error analysis.
     """
+    # IDOR protection
+    verify_user_access(current_user, user_id)
     from app.services.error_categorization import ERROR_TYPES
 
     # Find the most recent error analysis for this question + user
@@ -733,10 +781,19 @@ def get_error_analysis(question_id: str, user_id: str, db: Session = Depends(get
 
 
 @router.post("/acknowledge-error/{question_id}")
-def acknowledge_error(question_id: str, user_id: str, db: Session = Depends(get_db)):
+def acknowledge_error(
+    question_id: str,
+    user_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
-    Mark error analysis as acknowledged by user
+    Mark error analysis as acknowledged by user.
+
+    SECURITY: Requires authentication. Users can only acknowledge their own errors.
     """
+    # IDOR protection
+    verify_user_access(current_user, user_id)
     error_analysis = db.query(ErrorAnalysis).filter(
         ErrorAnalysis.question_id == question_id,
         ErrorAnalysis.user_id == user_id
@@ -796,9 +853,15 @@ def get_actual_difficulty(question_id: str, db: Session = Depends(get_db)):
 
 
 @router.post("/analytics/calibrate")
-def calibrate_questions(min_attempts: int = 10, db: Session = Depends(get_db)):
+def calibrate_questions(
+    min_attempts: int = 10,
+    current_user: User = Depends(get_admin_user),
+    db: Session = Depends(get_db)
+):
     """
     Batch calibrate all AI questions based on actual user performance.
+
+    SECURITY: Requires ADMIN authentication.
 
     This updates difficulty_level for all AI questions with at least `min_attempts` attempts.
 
@@ -902,9 +965,15 @@ class DetailedFeedbackRequest(BaseModel):
 
 
 @router.post("/feedback")
-def submit_detailed_feedback(request: DetailedFeedbackRequest, db: Session = Depends(get_db)):
+def submit_detailed_feedback(
+    request: DetailedFeedbackRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
     Submit detailed feedback on an AI-generated question.
+
+    SECURITY: Requires authentication. Users can only submit feedback as themselves.
 
     This is different from the simple approve/reject rating - it collects
     structured feedback for improving question quality.
@@ -922,6 +991,8 @@ def submit_detailed_feedback(request: DetailedFeedbackRequest, db: Session = Dep
     - Flag questions for review
     - Improve future AI generation
     """
+    # IDOR protection
+    verify_user_access(current_user, request.user_id)
     question = db.query(Question).filter(Question.id == request.question_id).first()
     if not question:
         raise HTTPException(status_code=404, detail="Question not found")
@@ -1007,9 +1078,15 @@ def get_optimal_question(
 
 
 @router.get("/analytics/batch-quality")
-def batch_calculate_quality(limit: int = 100, db: Session = Depends(get_db)):
+def batch_calculate_quality(
+    limit: int = 100,
+    current_user: User = Depends(get_admin_user),
+    db: Session = Depends(get_db)
+):
     """
     Calculate quality scores for all AI questions with sufficient data.
+
+    SECURITY: Requires ADMIN authentication.
 
     Args:
         limit: Maximum number of questions to process (default: 100)

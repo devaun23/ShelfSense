@@ -50,25 +50,22 @@ async def stripe_webhook(request: Request, db: Session = Depends(get_db)):
     if not sig_header:
         raise HTTPException(status_code=400, detail="Missing Stripe signature")
 
+    # SECURITY: Always require webhook secret - no bypass mode
     if not STRIPE_WEBHOOK_SECRET:
-        # In development, you might not have webhook secret configured
-        logger.warning("STRIPE_WEBHOOK_SECRET not configured. Skipping signature verification.")
-        try:
-            event = stripe.Event.construct_from(
-                stripe.util.convert_to_dict(stripe.util.json.loads(payload)),
-                stripe.api_key
-            )
-        except Exception as e:
-            raise HTTPException(status_code=400, detail=f"Invalid payload: {str(e)}")
-    else:
-        try:
-            event = stripe.Webhook.construct_event(
-                payload, sig_header, STRIPE_WEBHOOK_SECRET
-            )
-        except ValueError:
-            raise HTTPException(status_code=400, detail="Invalid payload")
-        except stripe.error.SignatureVerificationError:
-            raise HTTPException(status_code=400, detail="Invalid signature")
+        logger.error("STRIPE_WEBHOOK_SECRET not configured!")
+        raise HTTPException(
+            status_code=500,
+            detail="Webhook signature verification not configured"
+        )
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, STRIPE_WEBHOOK_SECRET
+        )
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid payload")
+    except stripe.error.SignatureVerificationError:
+        raise HTTPException(status_code=400, detail="Invalid signature")
 
     event_type = event["type"]
     data_object = event["data"]["object"]

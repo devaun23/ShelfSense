@@ -123,6 +123,10 @@ function StudyContent() {
   const [authTimeout, setAuthTimeout] = useState(false);
   const [confidenceLevel, setConfidenceLevel] = useState<number | null>(null);
 
+  // Cognitive tracking: capture answer changes and timing
+  const [answerHistory, setAnswerHistory] = useState<string[]>([]);
+  const [firstClickTime, setFirstClickTime] = useState<number | null>(null);
+
   // Optimistic UI states for faster perceived performance
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [optimisticFeedback, setOptimisticFeedback] = useState<{ submitted: boolean; answer: string } | null>(null);
@@ -137,11 +141,17 @@ function StudyContent() {
   const questionRef = useRef<Question | null>(null);
   const selectedAnswerRef = useRef<string | null>(null);
   const feedbackRef = useRef<Feedback | null>(null);
+  const startTimeRef = useRef<number>(0);
+  const firstClickTimeRef = useRef<number | null>(null);
+  const answerHistoryRef = useRef<string[]>([]);
 
   // Keep refs in sync with state
   questionRef.current = question;
   selectedAnswerRef.current = selectedAnswer;
   feedbackRef.current = feedback;
+  startTimeRef.current = startTime;
+  firstClickTimeRef.current = firstClickTime;
+  answerHistoryRef.current = answerHistory;
 
   // Get params from URL
   const specialtyParam = searchParams.get('specialty');
@@ -241,6 +251,9 @@ function StudyContent() {
     setOptimisticFeedback(null);
     setStartTime(Date.now());
     setConfidenceLevel(null);
+    // Reset cognitive tracking for new question
+    setAnswerHistory([]);
+    setFirstClickTime(null);
 
     if (sessionParam) {
       // Session-based loading - use preloaded question if available
@@ -377,7 +390,14 @@ function StudyContent() {
       const keyIndex = validKeys.indexOf(key);
 
       if (keyIndex !== -1 && keyIndex < currentQuestion.choices.length) {
-        setSelectedAnswer(currentQuestion.choices[keyIndex]);
+        const choice = currentQuestion.choices[keyIndex];
+        // Track first click time using refs
+        if (!firstClickTimeRef.current && startTimeRef.current > 0) {
+          setFirstClickTime(Date.now() - startTimeRef.current);
+        }
+        // Track answer history
+        setAnswerHistory(prev => [...prev, choice]);
+        setSelectedAnswer(choice);
         e.preventDefault();
       }
     }
@@ -399,11 +419,30 @@ function StudyContent() {
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [handleKeyPress]);
 
+  // Cognitive tracking: capture answer selection with timing
+  const handleAnswerSelect = useCallback((choice: string) => {
+    // Track first click time
+    if (!firstClickTime && startTime > 0) {
+      setFirstClickTime(Date.now() - startTime);
+    }
+    // Track answer history for detecting vacillation
+    setAnswerHistory(prev => [...prev, choice]);
+    setSelectedAnswer(choice);
+  }, [firstClickTime, startTime]);
+
   const handleSubmit = async () => {
     if (!selectedAnswer || !question || !user || isSubmitting) return;
 
     const timeSpent = Math.floor((Date.now() - startTime) / 1000);
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
+    // Build cognitive interaction data
+    const interactionData = {
+      answer_changes: answerHistory.length > 0 ? answerHistory.length - 1 : 0,
+      time_to_first_click_ms: firstClickTime,
+      final_answer_time_ms: firstClickTime ? timeSpent * 1000 - firstClickTime : null,
+      answer_history: answerHistory,
+    };
 
     // Optimistic UI: immediately show submission state
     setIsSubmitting(true);
@@ -420,6 +459,7 @@ function StudyContent() {
             answer: selectedAnswer,
             time_spent_seconds: timeSpent,
             confidence_level: confidenceLevel,
+            interaction_data: interactionData,
           }),
         });
 
@@ -452,6 +492,7 @@ function StudyContent() {
             user_answer: selectedAnswer,
             time_spent_seconds: timeSpent,
             confidence_level: confidenceLevel,
+            interaction_data: interactionData,
           }),
         });
 
@@ -669,7 +710,7 @@ function StudyContent() {
               return (
                 <div key={index} className={containerClass}>
                   <button
-                    onClick={() => !feedback && setSelectedAnswer(choice)}
+                    onClick={() => !feedback && handleAnswerSelect(choice)}
                     disabled={!!feedback}
                     className="w-full px-5 py-4 flex items-start gap-4 text-left hover:bg-gray-900/30 transition-colors"
                   >

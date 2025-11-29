@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useUser } from '@/contexts/UserContext';
@@ -14,7 +14,6 @@ interface PortalSidebarProps {
 
 export default function PortalSidebar({ specialty }: PortalSidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [reviewsDue, setReviewsDue] = useState(0);
   const pathname = usePathname();
   const router = useRouter();
   const { user } = useUser();
@@ -22,41 +21,17 @@ export default function PortalSidebar({ specialty }: PortalSidebarProps) {
 
   const basePath = `/portal/${specialty.slug}`;
 
-  // Fetch reviews due count
-  useEffect(() => {
-    if (user?.userId) {
-      fetchReviewsDue();
-    }
-  }, [user?.userId, specialty.apiName]);
-
-  const fetchReviewsDue = async () => {
-    try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-      let url = `${apiUrl}/api/reviews/stats?user_id=${user?.userId}`;
-      if (specialty.apiName) {
-        url += `&specialty=${encodeURIComponent(specialty.apiName)}`;
-      }
-      const response = await fetch(url);
-      if (response.ok) {
-        const data = await response.json();
-        setReviewsDue(data.due_today || 0);
-      }
-    } catch (error) {
-      console.error('Error fetching reviews:', error);
-    }
-  };
-
   const handleExitPortal = () => {
     exitPortal();
     router.push('/');
   };
 
+  // Simplified navigation - just Dashboard, Study, and Analytics
   const navItems = [
     { href: basePath, label: 'Dashboard', badge: undefined as number | undefined },
-    { href: `${basePath}/study`, label: 'Study Questions', badge: undefined as number | undefined },
+    { href: `${basePath}/study`, label: 'Study', badge: undefined as number | undefined },
+    { href: `${basePath}/studysync`, label: 'StudySync AI', badge: undefined as number | undefined },
     { href: `${basePath}/analytics`, label: 'Analytics', badge: undefined as number | undefined },
-    { href: `${basePath}/reviews`, label: 'Reviews', badge: reviewsDue > 0 ? reviewsDue : undefined },
-    { href: `${basePath}/weak-areas`, label: 'Weak Areas', badge: undefined as number | undefined },
   ];
 
   const isActive = (href: string) => {

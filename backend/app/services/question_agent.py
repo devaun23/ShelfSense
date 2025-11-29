@@ -44,6 +44,14 @@ from app.services.ai_question_analytics import (
     get_generation_recommendations
 )
 from app.services.openai_service import openai_service, CircuitBreakerOpenError
+from app.services.medical_fact_checker import clinical_fact_checker, validate_question_facts
+from app.services.question_validators import (
+    QuestionQualityValidator,
+    validate_question as validate_question_quality,
+    check_vague_terms,
+    check_testwiseness,
+    check_distractor_quality
+)
 
 # Fine-tuned model ID for fast generation
 FINE_TUNED_MODEL = "ft:gpt-3.5-turbo-0125:personal:shelfsense-usmle-v1:CgNY0xCx"
@@ -552,9 +560,115 @@ Return JSON:
                                  specialty: str = None) -> Tuple[bool, List[str]]:
         """Step 6: Validate question quality and identify issues
 
-        Now includes specialty-specific validation rules.
+        Enhanced with:
+        - Clinical fact-checker (#8)
+        - Vague term detection (#10)
+        - Testwiseness detection (#12)
+        - Distractor quality analysis (#11)
+        - Specialty-specific validation rules
         """
-        # Get specialty-specific validation rules
+        all_issues = []
+        validation_failed = False
+
+        # =====================================================================
+        # 1. CLINICAL FACT-CHECKER (#8)
+        # Cross-reference against curated medical guidelines
+        # =====================================================================
+        try:
+            # Safely extract correct answer with bounds checking
+            answer_letter = choices_data.get('correct_answer_letter', '').upper()
+            if answer_letter not in 'ABCDE':
+                all_issues.append(f"[SYSTEM] Invalid answer key: {answer_letter}")
+                validation_failed = True
+            else:
+                answer_index = ord(answer_letter) - ord('A')
+                choices_list = choices_data.get('choices', [])
+                if answer_index >= len(choices_list):
+                    all_issues.append(f"[SYSTEM] Answer key {answer_letter} out of range for {len(choices_list)} choices")
+                    validation_failed = True
+                else:
+                    correct_answer = choices_list[answer_index]
+                    fact_check_passed, fact_issues = validate_question_facts(
+                        vignette, correct_answer, explanation
+                    )
+                    if not fact_check_passed:
+                        all_issues.extend([f"[FACT-CHECK] {issue}" for issue in fact_issues])
+                        validation_failed = True
+                        logger.warning("Clinical fact-check failed: %s", fact_issues)
+        except Exception as e:
+            # CRITICAL: Validator crashes MUST block validation for safety
+            logger.error("Clinical fact-checker crashed (BLOCKING): %s", e, exc_info=True)
+            all_issues.append(f"[SYSTEM] Fact-checker validation failed: {e}")
+            validation_failed = True
+
+        # =====================================================================
+        # 2. VAGUE TERM DETECTION (#10)
+        # Ensure explicit clinical values
+        # =====================================================================
+        try:
+            # Limit vignette length to prevent regex DoS
+            vignette_limited = vignette[:10000] if len(vignette) > 10000 else vignette
+            vague_passed, vague_issues = check_vague_terms(vignette_limited)
+            if not vague_passed:
+                all_issues.extend([f"[VAGUE] {issue}" for issue in vague_issues])
+                validation_failed = True
+                logger.debug("Vague term validation failed: %s", vague_issues)
+        except Exception as e:
+            # Validator crashes block validation for quality assurance
+            logger.error("Vague term validator crashed (BLOCKING): %s", e, exc_info=True)
+            all_issues.append(f"[SYSTEM] Vague term validator failed: {e}")
+            validation_failed = True
+
+        # =====================================================================
+        # 3. TESTWISENESS DETECTION (#12)
+        # Prevent test-taking shortcuts
+        # =====================================================================
+        try:
+            # Extract lead-in properly - find the question sentence
+            if "?" in vignette:
+                # Split on sentences, find last one with question mark
+                sentences = vignette.replace("?", "?.").split(".")
+                question_sentences = [s.strip() for s in sentences if "?" in s]
+                lead_in = question_sentences[-1] if question_sentences else vignette[-200:]
+            else:
+                lead_in = vignette[-200:]
+
+            testwiseness_passed, testwiseness_issues = check_testwiseness(
+                lead_in,
+                choices_data.get('choices', []),
+                choices_data.get('correct_answer_letter', 'A')
+            )
+            if not testwiseness_passed:
+                all_issues.extend([f"[TESTWISENESS] {issue}" for issue in testwiseness_issues])
+                validation_failed = True
+                logger.debug("Testwiseness validation failed: %s", testwiseness_issues)
+        except Exception as e:
+            # Testwiseness is less critical - log but allow to continue
+            logger.warning("Testwiseness validator error: %s", e)
+            all_issues.append(f"[WARNING] Testwiseness check skipped: {e}")
+
+        # =====================================================================
+        # 4. DISTRACTOR QUALITY (#11)
+        # Ensure plausible, well-differentiated distractors
+        # =====================================================================
+        try:
+            distractor_passed, distractor_issues = check_distractor_quality(
+                choices_data.get('choices', []),
+                choices_data.get('correct_answer_letter', 'A'),
+                vignette[:10000] if len(vignette) > 10000 else vignette
+            )
+            if not distractor_passed:
+                all_issues.extend([f"[DISTRACTOR] {issue}" for issue in distractor_issues])
+                validation_failed = True
+                logger.debug("Distractor validation failed: %s", distractor_issues)
+        except Exception as e:
+            # Distractor quality is less critical - log but allow to continue
+            logger.warning("Distractor validator error: %s", e)
+            all_issues.append(f"[WARNING] Distractor check skipped: {e}")
+
+        # =====================================================================
+        # 5. SPECIALTY-SPECIFIC RULES
+        # =====================================================================
         specialty_rules = []
         if specialty:
             specialty_rules = get_specialty_validation_rules(specialty)
@@ -566,6 +680,9 @@ SPECIALTY-SPECIFIC VALIDATION RULES FOR {specialty.upper()}:
 {chr(10).join(f'- {rule}' for rule in specialty_rules)}
 """
 
+        # =====================================================================
+        # 6. LLM-BASED VALIDATION (for nuanced checks)
+        # =====================================================================
         system_prompt = """You are a rigorous USMLE question quality reviewer.
 You check for clinical accuracy, formatting issues, and adherence to NBME standards."""
 
@@ -605,11 +722,39 @@ Return JSON:
   "specialty_rules_passed": true/false
 }}"""
 
-        response = self._call_llm(system_prompt, user_prompt, temperature=0.2,
-                                  response_format={"type": "json_object"})
-        validation = json.loads(response)
+        try:
+            response = self._call_llm(system_prompt, user_prompt, temperature=0.2,
+                                      response_format={"type": "json_object"})
+            llm_validation = json.loads(response)
+        except json.JSONDecodeError as e:
+            logger.error("LLM returned invalid JSON: %s", e)
+            all_issues.append("[LLM] Failed to parse validation response")
+            llm_validation = {"passes_quality": False}
+        except Exception as e:
+            logger.error("LLM validation call failed: %s", e)
+            all_issues.append(f"[LLM] Validation call failed: {e}")
+            llm_validation = {"passes_quality": False}
 
-        return validation['passes_quality'], validation['issues_found']
+        # Combine LLM issues with rule-based issues (with type checking)
+        issues_found = llm_validation.get('issues_found', [])
+        if isinstance(issues_found, str):
+            issues_found = [issues_found]  # Handle single string
+        elif not isinstance(issues_found, list):
+            issues_found = []
+
+        all_issues.extend([
+            f"[LLM] {issue}" for issue in issues_found
+            if isinstance(issue, str)
+        ])
+
+        # Final pass/fail decision
+        # Fail if: any rule-based validator failed OR LLM says quality is bad
+        passes = not validation_failed and llm_validation.get('passes_quality', False)
+
+        if all_issues:
+            logger.info("Validation complete: %s (issues: %d)", "PASS" if passes else "FAIL", len(all_issues))
+
+        return passes, all_issues
 
     def generate_question(self, specialty: Optional[str] = None,
                          topic: Optional[str] = None,

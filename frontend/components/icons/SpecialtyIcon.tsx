@@ -33,86 +33,119 @@ export default function SpecialtyIcon({
       );
 
     case 'surgery':
-      // Vertical closed scissors
+      // Horizontal open scissors (classic design)
       return (
         <svg {...iconProps}>
-          <path d="M12 2l-3 6v5" />
-          <path d="M12 2l3 6v5" />
-          <circle cx="9" cy="18" r="3" />
-          <circle cx="15" cy="18" r="3" />
-          <path d="M9 13v2" />
-          <path d="M15 13v2" />
+          {/* Finger loops on left */}
+          <circle cx="5" cy="8" r="2.5" />
+          <circle cx="5" cy="16" r="2.5" />
+          {/* Handles */}
+          <path d="M7.5 8h3" />
+          <path d="M7.5 16h3" />
+          {/* Pivot point */}
+          <circle cx="11" cy="12" r="1" fill="currentColor" />
+          {/* Blades pointing right */}
+          <path d="M11 12l10-4" />
+          <path d="M11 12l10 4" />
         </svg>
       );
 
     case 'pediatrics':
-      // Baby rattle
+      // Balloon with wavy string
       return (
         <svg {...iconProps}>
-          <circle cx="12" cy="7" r="5" />
-          <path d="M12 12v6" />
-          <path d="M10 18h4" />
-          <circle cx="10" cy="6" r="1" fill="currentColor" />
-          <circle cx="14" cy="6" r="1" fill="currentColor" />
-          <circle cx="12" cy="9" r="1" fill="currentColor" />
+          {/* Balloon */}
+          <ellipse cx="12" cy="8" rx="5" ry="6" />
+          {/* Knot */}
+          <path d="M11 14l2 0" />
+          <path d="M12 14v1" />
+          {/* Wavy string */}
+          <path d="M12 15c-1.5 1.5 1.5 3 0 4.5-1.5 1.5 1.5 3 0 4.5" />
         </svg>
       );
 
     case 'psychiatry':
-      // Human head profile outline (side view)
+      // Accurate human head profile (side view)
       return (
         <svg {...iconProps}>
-          <path d="M18 8c0-3.5-2.5-6-6-6-4 0-7 3-7 7 0 2 .5 3.5 1.5 5l.5 1v5c0 1 1 2 2 2h4c1 0 2-1 2-2v-3c2-1.5 3-4 3-6v-3z" />
-          <path d="M5 11c-1 0-2 .5-2 1.5s1 2 2 1.5" />
+          {/* Head profile outline */}
+          <path d="M9 3c-3 0-5 2.5-5 6 0 1.5.5 3 1.5 4l-1 2v3c0 1 .5 1.5 1.5 1.5h2c.5 0 1 .5 1 1v1.5h4v-1.5c0-.5.5-1 1-1h.5c1 0 2-.5 2.5-1.5.5-1 1-2.5 1-4 0-2-.5-4-2-5.5C13.5 4 11 3 9 3z" />
+          {/* Ear */}
+          <path d="M18 11c.5 0 1 .5 1 1.5s-.5 1.5-1 1.5" />
         </svg>
       );
 
     case 'obgyn':
-      // Pregnant silhouette
+      // Pregnant woman silhouette with hair (side profile)
       return (
         <svg {...iconProps}>
-          <circle cx="12" cy="5" r="2.5" />
-          <path d="M9 21v-4c0-2 1-4 3-4h.5c1.5 0 2.5 1.5 2.5 3 0 1.5-.5 3-2 4" />
-          <ellipse cx="12" cy="13" rx="2.5" ry="3" />
+          {/* Head */}
+          <circle cx="10" cy="4" r="2" />
+          {/* Hair flowing */}
+          <path d="M8 3c-1.5 1-2 3-2 5" />
+          <path d="M9 2.5c-1 1.5-1.5 3.5-1 6" />
+          <path d="M10 2c-.5 2-1 4-.5 6" />
+          {/* Neck */}
+          <path d="M10 6v1" />
+          {/* Back curve */}
+          <path d="M10 7c-1 1-1.5 3-1.5 5 0 2 .5 4 1 6" />
+          {/* Front with pregnant belly */}
+          <path d="M10 7c1 0 2 1.5 3 4 1 2.5 1 5 0 7" />
+          {/* Feet */}
+          <path d="M9.5 18h4" />
         </svg>
       );
 
     case 'family-medicine':
-      // Running person (exercise/wellness)
+      // Running person outline
       return (
         <svg {...iconProps}>
-          <circle cx="14" cy="4" r="2.5" />
-          <path d="M7 22l4-8 3 3 4-7" />
-          <path d="M11 14l-4-2" />
-          <path d="M17 8l-3 5" />
+          {/* Head */}
+          <circle cx="14" cy="4" r="2" />
+          {/* Torso */}
+          <path d="M12 8l2-2" />
+          <path d="M14 6l-2 6" />
+          {/* Arms */}
+          <path d="M12 8l-4 2" />
+          <path d="M12 10l4-1" />
+          {/* Back leg */}
+          <path d="M12 12l-3 5-2 4" />
+          {/* Front leg */}
+          <path d="M12 12l2 4 4 1" />
         </svg>
       );
 
     case 'emergency-medicine':
-      // First aid cross
+      // Emergency button (circle with cross)
       return (
         <svg {...iconProps}>
-          <rect x="3" y="3" width="18" height="18" rx="2" />
-          <path d="M12 8v8" strokeWidth="2.5" />
-          <path d="M8 12h8" strokeWidth="2.5" />
+          {/* Outer circle (button) */}
+          <circle cx="12" cy="12" r="9" />
+          {/* Inner cross */}
+          <path d="M12 7v10" strokeWidth="2.5" />
+          <path d="M7 12h10" strokeWidth="2.5" />
         </svg>
       );
 
     case 'neurology':
-      // Brain with hemispheres and folds
+      // Brain side profile with clear lobes and gyri
       return (
         <svg {...iconProps}>
-          {/* Left hemisphere */}
-          <path d="M12 4c-1.5 0-3 .5-4 1.5C6.5 7 6 8.5 6 10c0 1 .3 2 .8 2.8-.3.8-.5 1.5-.3 2.2.3 1.5 1.5 2.5 3 3 .5 1.5 1.5 2.5 2.5 2.5" />
-          {/* Right hemisphere */}
-          <path d="M12 4c1.5 0 3 .5 4 1.5 1.5 1.5 2 3 2 4.5 0 1-.3 2-.8 2.8.3.8.5 1.5.3 2.2-.3 1.5-1.5 2.5-3 3-.5 1.5-1.5 2.5-2.5 2.5" />
-          {/* Brain stem */}
-          <path d="M10 20.5c0 1 1 1.5 2 1.5s2-.5 2-1.5" />
-          {/* Folds/gyri */}
-          <path d="M8 8c1 .5 2 .5 3 0" />
-          <path d="M13 8c1 .5 2 .5 3 0" />
-          <path d="M7.5 12c1.5 0 2.5-.5 3.5-.5" />
-          <path d="M13 11.5c1 0 2.5.5 4 .5" />
+          {/* Main brain outline - top curve */}
+          <path d="M5 11c0-2 .5-4 2-5.5C8.5 4 10.5 3.5 12 3.5c2 0 4 1 5.5 2.5 1 1 1.5 2.5 1.5 4 0 1.5-.5 3-1.5 4-1 1-1.5 1.5-1.5 2.5v2c0 .5-.5 1-1 1h-2" />
+          {/* Bottom curve and cerebellum area */}
+          <path d="M5 11c-.5 1.5 0 3 1 4s2 1.5 2.5 2.5v1.5c0 .5.5 1 1 1h2" />
+          {/* Cerebellum bumps */}
+          <path d="M15 17c.5.3 1 .3 1.5 0" />
+          <path d="M15.5 18.5c.5.3 1 .3 1.5 0" />
+          {/* Gyri folds - top */}
+          <path d="M7 7c1.5.5 3 .5 4.5 0" />
+          <path d="M12.5 6c1.5.5 3 .5 4 0" />
+          {/* Gyri folds - middle */}
+          <path d="M6 10c2 .5 4 .5 5.5 0" />
+          <path d="M12.5 10c2 .5 3.5 .3 5-.5" />
+          {/* Gyri fold - lower */}
+          <path d="M7 13c1.5.5 3 .5 4 0" />
         </svg>
       );
 

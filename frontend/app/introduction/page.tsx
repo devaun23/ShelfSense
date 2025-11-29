@@ -77,8 +77,8 @@ export default function IntroductionPage() {
   }
 
   return (
-    <main className={`h-screen bg-black text-white flex flex-col items-center justify-center px-6 overflow-hidden transition-opacity duration-500 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
-      <div className="max-w-lg w-full text-center">
+    <main className={`h-screen bg-black text-white flex flex-col items-center justify-center px-8 overflow-hidden transition-opacity duration-500 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
+      <div className="max-w-2xl w-full text-center">
         {/* Eye Logo */}
         <div
           className={`mb-6 transition-all duration-700 ease-out ${
@@ -90,7 +90,7 @@ export default function IntroductionPage() {
 
         {/* Welcome Heading */}
         <h1
-          className={`text-3xl md:text-4xl text-white mb-4 transition-all duration-700 ease-out delay-150 ${
+          className={`text-2xl md:text-3xl text-white mb-4 transition-all duration-700 ease-out delay-150 ${
             showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}
           style={{ fontFamily: 'var(--font-serif)' }}
@@ -112,35 +112,35 @@ export default function IntroductionPage() {
 
         {/* Divider */}
         <div
-          className={`w-12 h-px bg-gray-800 mx-auto mb-6 transition-all duration-700 ease-out delay-450 ${
+          className={`w-12 h-px bg-gray-700 mx-auto mb-6 transition-all duration-700 ease-out delay-450 ${
             showContent ? 'opacity-100 scale-x-100' : 'opacity-0 scale-x-0'
           }`}
         />
 
-        {/* Features */}
+        {/* Features - Centered */}
         <div
-          className={`space-y-3 mb-6 text-left transition-all duration-700 ease-out delay-500 ${
+          className={`space-y-3 mb-6 transition-all duration-700 ease-out delay-500 ${
             showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}
         >
-          <div className="flex items-start gap-3">
-            <svg className="w-4 h-4 text-[#4169E1] mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+          <div className="flex items-center justify-center gap-2">
+            <svg className="w-4 h-4 text-[#4169E1] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
             </svg>
             <span className="text-gray-300 text-sm">
               <strong className="text-white">Adaptive questions</strong> that target your weak areas
             </span>
           </div>
-          <div className="flex items-start gap-3">
-            <svg className="w-4 h-4 text-[#4169E1] mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+          <div className="flex items-center justify-center gap-2">
+            <svg className="w-4 h-4 text-[#4169E1] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
             </svg>
             <span className="text-gray-300 text-sm">
               <strong className="text-white">Personalized support</strong> that explains what you need
             </span>
           </div>
-          <div className="flex items-start gap-3">
-            <svg className="w-4 h-4 text-[#4169E1] mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+          <div className="flex items-center justify-center gap-2">
+            <svg className="w-4 h-4 text-[#4169E1] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
             </svg>
             <span className="text-gray-300 text-sm">
@@ -151,7 +151,7 @@ export default function IntroductionPage() {
 
         {/* Divider */}
         <div
-          className={`w-12 h-px bg-gray-800 mx-auto mb-6 transition-all duration-700 ease-out delay-600 ${
+          className={`w-12 h-px bg-gray-700 mx-auto mb-6 transition-all duration-700 ease-out delay-600 ${
             showContent ? 'opacity-100 scale-x-100' : 'opacity-0 scale-x-0'
           }`}
         />
@@ -163,7 +163,7 @@ export default function IntroductionPage() {
           }`}
         >
           <p
-            className="text-gray-300 text-sm leading-relaxed mb-2"
+            className="text-gray-300 text-sm leading-relaxed mb-1"
             style={{ fontFamily: 'var(--font-serif)' }}
           >
             Made with care, for students like you.
@@ -180,22 +180,22 @@ export default function IntroductionPage() {
         <button
           onClick={handleBegin}
           disabled={isTransitioning}
-          className={`px-8 py-3 bg-[#4169E1] hover:bg-[#3558c0] text-white font-medium rounded-full transition-all duration-300 ease-out hover:shadow-lg hover:shadow-[#4169E1]/20 active:scale-[0.98] disabled:opacity-50 ${
+          className={`px-8 py-3 bg-[#4169E1] hover:bg-[#3558c0] text-white text-sm font-medium rounded-full transition-all duration-300 ease-out hover:shadow-lg hover:shadow-[#4169E1]/20 active:scale-[0.98] disabled:opacity-50 ${
             showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}
           style={{ fontFamily: 'var(--font-serif)', transitionDelay: showContent ? '800ms' : '0ms' }}
         >
           {isTransitioning ? (
             <span className="flex items-center gap-2">
-              <span className="relative w-4 h-4">
+              <span className="relative w-5 h-5">
                 {[...Array(8)].map((_, i) => (
                   <span
                     key={i}
-                    className="absolute w-1 h-1 bg-white rounded-full"
+                    className="absolute w-1.5 h-1.5 bg-white rounded-full"
                     style={{
                       top: '50%',
                       left: '50%',
-                      transform: `rotate(${i * 45}deg) translateY(-6px)`,
+                      transform: `rotate(${i * 45}deg) translateY(-8px)`,
                       opacity: 1 - i * 0.1,
                       animation: 'spinFade 1s linear infinite',
                       animationDelay: `${i * 0.125}s`,
@@ -210,14 +210,14 @@ export default function IntroductionPage() {
           )}
         </button>
 
-        {/* Feedback Note - Larger and more prominent */}
+        {/* Feedback Note */}
         <div
           className={`mt-8 transition-all duration-700 ease-out delay-900 ${
             showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}
         >
           <p
-            className="text-gray-400 text-sm leading-relaxed"
+            className="text-gray-400 text-xs leading-relaxed"
             style={{ fontFamily: 'var(--font-serif)' }}
           >
             Questions or ideas? We'd love to hear from you.

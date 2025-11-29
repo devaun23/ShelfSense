@@ -78,6 +78,20 @@ export default function StudyModesPage() {
 
   const studyModes: StudyModeCard[] = [
     {
+      id: 'assessment',
+      name: 'Self Assessment',
+      description: 'Full length NBME style practice exam with score prediction',
+      path: '/study-modes/assessment',
+      features: [
+        '4 blocks x 40 questions x 60 minutes',
+        'Predicted Step 2 CK score',
+        'Percentile comparison with peers',
+        'Performance breakdown by system'
+      ],
+      bestFor: 'Testing readiness and getting accurate score predictions',
+      badge: 'NEW'
+    },
+    {
       id: 'timed',
       name: 'Timed Mode',
       description: 'Simulate real exam conditions with a countdown timer',

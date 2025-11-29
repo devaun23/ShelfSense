@@ -5,6 +5,8 @@ Handles Stripe payment endpoints:
 - Create checkout sessions for subscription purchase
 - Create customer portal sessions for subscription management
 - Get payment/subscription status
+
+SECURITY: All endpoints require authentication and IDOR protection.
 """
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -14,6 +16,7 @@ from typing import Optional
 
 from app.database import get_db
 from app.models.models import User, Subscription
+from app.dependencies.auth import get_current_user, verify_user_access
 from app.services.subscription import get_or_create_subscription
 from app.services.stripe_service import (
     create_checkout_session,
@@ -55,12 +58,17 @@ class PaymentStatusResponse(BaseModel):
 def create_checkout(
     user_id: str,
     request: CheckoutRequest,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
     Create a Stripe Checkout session for subscription purchase.
     Returns a URL to redirect the user to Stripe's hosted checkout page.
+
+    SECURITY: Requires authentication. Users can only create sessions for themselves.
     """
+    # IDOR protection
+    verify_user_access(current_user, user_id)
     # Validate tier
     valid_tiers = ["student", "premium"]
     if request.tier not in valid_tiers:
@@ -112,11 +120,19 @@ def create_checkout(
 
 
 @router.post("/create-portal-session", response_model=PortalResponse)
-def create_portal(user_id: str, db: Session = Depends(get_db)):
+def create_portal(
+    user_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
     Create a Stripe Customer Portal session.
     Allows users to manage their subscription, update payment method, etc.
+
+    SECURITY: Requires authentication. Users can only access their own billing portal.
     """
+    # IDOR protection
+    verify_user_access(current_user, user_id)
     subscription = get_or_create_subscription(db, user_id)
 
     if not subscription.stripe_customer_id:
@@ -135,11 +151,19 @@ def create_portal(user_id: str, db: Session = Depends(get_db)):
 
 
 @router.get("/status", response_model=PaymentStatusResponse)
-def get_payment_status(user_id: str, db: Session = Depends(get_db)):
+def get_payment_status(
+    user_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
     Get current payment and subscription status.
     Includes grace period information if applicable.
+
+    SECURITY: Requires authentication. Users can only access their own payment status.
     """
+    # IDOR protection
+    verify_user_access(current_user, user_id)
     subscription = get_or_create_subscription(db, user_id)
 
     # Calculate grace period info
@@ -170,12 +194,17 @@ def get_payment_status(user_id: str, db: Session = Depends(get_db)):
 def verify_checkout_session(
     session_id: str,
     user_id: str,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
     Verify a checkout session completed successfully.
     Called from success page to confirm subscription activation.
+
+    SECURITY: Requires authentication. Users can only verify their own sessions.
     """
+    # IDOR protection
+    verify_user_access(current_user, user_id)
     import stripe
     import os
 

@@ -3,6 +3,8 @@ AI Chat Router
 
 Provides endpoints for chatting with AI about specific questions.
 Uses clinical reasoning frameworks for Socratic-method tutoring.
+
+SECURITY: All endpoints require authentication and IDOR protection.
 """
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -17,7 +19,8 @@ import json
 logger = logging.getLogger(__name__)
 
 from app.database import get_db
-from app.models.models import Question, ChatMessage, ErrorAnalysis, QuestionAttempt
+from app.models.models import Question, ChatMessage, ErrorAnalysis, QuestionAttempt, User
+from app.dependencies.auth import get_current_user, verify_user_access
 from app.services.clinical_reasoning import (
     build_reasoning_coach_prompt,
     get_framework_for_error,
@@ -31,6 +34,12 @@ from app.services.multi_turn_reasoning import (
     assess_progress
 )
 from app.services.openai_service import openai_service, CircuitBreakerOpenError
+from app.services.socratic_tutor import (
+    get_socratic_response_prompt,
+    track_reasoning_progress,
+    get_reasoning_stage,
+    CLINICAL_REASONING_STAGES
+)
 
 router = APIRouter(prefix="/api/chat", tags=["chat"])
 
@@ -62,9 +71,15 @@ class ChatHistoryResponse(BaseModel):
 
 
 @router.post("/question", response_model=ChatResponse)
-def chat_about_question(request: ChatRequest, db: Session = Depends(get_db)):
+def chat_about_question(
+    request: ChatRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
     Chat with AI about a specific question.
+
+    SECURITY: Requires authentication. Users can only chat as themselves.
 
     Uses clinical reasoning frameworks for Socratic-method tutoring when
     the student answered incorrectly and error analysis exists.
@@ -77,6 +92,9 @@ def chat_about_question(request: ChatRequest, db: Session = Depends(get_db)):
     - Framework explanation
     - Clinical reasoning framework (if error analysis exists)
     """
+    # IDOR protection
+    verify_user_access(current_user, request.user_id)
+
     # Get question
     question = db.query(Question).filter(Question.id == request.question_id).first()
 
@@ -272,13 +290,22 @@ RULES:
 
 
 @router.post("/question/stream")
-async def chat_about_question_stream(request: ChatRequest, db: Session = Depends(get_db)):
+async def chat_about_question_stream(
+    request: ChatRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
     Stream chat response about a specific question using Server-Sent Events.
+
+    SECURITY: Requires authentication. Users can only chat as themselves.
 
     Provides real-time streaming of AI responses for better UX.
     First token arrives in <500ms, full response streams progressively.
     """
+    # IDOR protection
+    verify_user_access(current_user, request.user_id)
+
     # Get question
     question = db.query(Question).filter(Question.id == request.question_id).first()
 
@@ -460,11 +487,16 @@ RULES:
 def get_chat_history(
     question_id: str,
     user_id: str,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
     Get chat history for a specific question.
+
+    SECURITY: Requires authentication. Users can only access their own history.
     """
+    # IDOR protection
+    verify_user_access(current_user, user_id)
     messages = db.query(ChatMessage).filter_by(
         user_id=user_id,
         question_id=question_id
@@ -486,11 +518,16 @@ def get_chat_history(
 def clear_chat_history(
     question_id: str,
     user_id: str,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
     Clear chat history for a specific question.
+
+    SECURITY: Requires authentication. Users can only delete their own history.
     """
+    # IDOR protection
+    verify_user_access(current_user, user_id)
     db.query(ChatMessage).filter_by(
         user_id=user_id,
         question_id=question_id
@@ -499,3 +536,280 @@ def clear_chat_history(
     db.commit()
 
     return {"message": "Chat history cleared"}
+
+
+# =============================================================================
+# ENHANCED SOCRATIC TUTOR ENDPOINTS
+# =============================================================================
+
+class SocraticRequest(BaseModel):
+    """Request for enhanced Socratic tutoring."""
+    user_id: str
+    question_id: str
+    message: str
+    mode: str = "standard"  # standard, teach_me, hint
+
+
+class ReasoningProgress(BaseModel):
+    """Clinical reasoning progress tracker."""
+    current_stage: str
+    stage_index: int
+    stages_completed: int
+    total_stages: int
+    progress_percent: float
+    next_stage: str
+    stages: List[dict]
+
+
+class SocraticResponse(BaseModel):
+    """Response from Socratic tutor."""
+    response: str
+    reasoning_progress: ReasoningProgress
+    hint_level: int
+    turn_count: int
+    created_at: datetime
+
+
+@router.post("/socratic", response_model=SocraticResponse)
+def socratic_tutoring(
+    request: SocraticRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Enhanced Socratic tutoring with clinical reasoning framework.
+
+    Guides students through clinical reasoning stages:
+    Chief Complaint → History → Physical → Differential → Workup → Diagnosis → Management
+
+    Modes:
+    - standard: Socratic questioning to guide discovery
+    - teach_me: Explain concepts without revealing answers
+    - hint: Provide breadcrumb hints based on error type
+
+    SECURITY: Requires authentication. Users can only chat as themselves.
+    """
+    # IDOR protection
+    verify_user_access(current_user, request.user_id)
+
+    # Get prompt and metadata
+    system_prompt, metadata = get_socratic_response_prompt(
+        db=db,
+        user_id=request.user_id,
+        question_id=request.question_id,
+        user_message=request.message,
+        mode=request.mode
+    )
+
+    if metadata.get("error"):
+        raise HTTPException(status_code=404, detail="Question not found")
+
+    # Get conversation history
+    history = db.query(ChatMessage).filter_by(
+        user_id=request.user_id,
+        question_id=request.question_id
+    ).order_by(ChatMessage.created_at).all()
+
+    # Build messages
+    messages = [{"role": "system", "content": system_prompt}]
+    for msg in history:
+        messages.append({"role": msg.role, "content": msg.message})
+    messages.append({"role": "user", "content": request.message})
+
+    try:
+        # Call OpenAI
+        response = openai_service.chat_completion(
+            messages=messages,
+            model="gpt-4o-mini",
+            max_tokens=400,
+            temperature=0.7
+        )
+
+        ai_message = response.choices[0].message.content
+
+        # Save messages
+        user_msg = ChatMessage(
+            user_id=request.user_id,
+            question_id=request.question_id,
+            message=request.message,
+            role="user",
+            created_at=datetime.utcnow()
+        )
+        db.add(user_msg)
+
+        ai_msg = ChatMessage(
+            user_id=request.user_id,
+            question_id=request.question_id,
+            message=ai_message,
+            role="assistant",
+            created_at=datetime.utcnow()
+        )
+        db.add(ai_msg)
+        db.commit()
+
+        return SocraticResponse(
+            response=ai_message,
+            reasoning_progress=ReasoningProgress(**metadata["reasoning_progress"]),
+            hint_level=metadata["hint_level"],
+            turn_count=metadata["turn_count"],
+            created_at=ai_msg.created_at
+        )
+
+    except CircuitBreakerOpenError:
+        fallback = "I'm temporarily unable to respond. Please review the explanation above and try again in a moment."
+        return SocraticResponse(
+            response=fallback,
+            reasoning_progress=ReasoningProgress(**metadata["reasoning_progress"]),
+            hint_level=metadata["hint_level"],
+            turn_count=metadata["turn_count"],
+            created_at=datetime.utcnow()
+        )
+
+    except Exception as e:
+        logger.error("Socratic tutor error: %s", e, exc_info=True)
+        raise HTTPException(status_code=503, detail="AI service temporarily unavailable")
+
+
+@router.get("/reasoning-stages")
+def get_clinical_reasoning_stages():
+    """
+    Get the clinical reasoning stages used for Socratic tutoring.
+
+    Returns the framework that guides students through:
+    Chief Complaint → History → Physical → Differential → Workup → Diagnosis → Management
+    """
+    return {
+        "stages": [
+            {
+                "id": stage[0],
+                "name": stage[1],
+                "guiding_question": stage[2],
+                "order": i + 1
+            }
+            for i, stage in enumerate(CLINICAL_REASONING_STAGES)
+        ],
+        "total_stages": len(CLINICAL_REASONING_STAGES)
+    }
+
+
+@router.get("/progress/{question_id}")
+def get_reasoning_progress(
+    question_id: str,
+    user_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Get student's progress through clinical reasoning for a specific question.
+
+    SECURITY: Requires authentication. Users can only access their own progress.
+    """
+    # IDOR protection
+    verify_user_access(current_user, user_id)
+
+    # Get conversation history
+    history = db.query(ChatMessage).filter_by(
+        user_id=user_id,
+        question_id=question_id
+    ).order_by(ChatMessage.created_at).all()
+
+    history_dicts = [
+        {"role": msg.role, "message": msg.message}
+        for msg in history
+    ]
+
+    stage_id, _ = get_reasoning_stage(history_dicts)
+    progress = track_reasoning_progress(db, user_id, question_id, history_dicts, stage_id)
+
+    return {
+        "question_id": question_id,
+        "conversation_turns": len([m for m in history if m.role == "user"]),
+        "reasoning_progress": progress
+    }
+
+
+@router.post("/teach-me")
+def teach_me_mode(
+    request: SocraticRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    "Teach Me" mode - explain concepts without revealing answers.
+
+    Use this when students want to learn about a topic or concept
+    without being given the direct answer to the question.
+
+    SECURITY: Requires authentication. Users can only chat as themselves.
+    """
+    # IDOR protection
+    verify_user_access(current_user, request.user_id)
+
+    # Override mode to teach_me
+    request.mode = "teach_me"
+
+    # Get prompt
+    system_prompt, metadata = get_socratic_response_prompt(
+        db=db,
+        user_id=request.user_id,
+        question_id=request.question_id,
+        user_message=request.message,
+        mode="teach_me"
+    )
+
+    if metadata.get("error"):
+        raise HTTPException(status_code=404, detail="Question not found")
+
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": f"Teach me about: {request.message}"}
+    ]
+
+    try:
+        response = openai_service.chat_completion(
+            messages=messages,
+            model="gpt-4o-mini",
+            max_tokens=600,
+            temperature=0.7
+        )
+
+        ai_message = response.choices[0].message.content
+
+        # Save messages
+        user_msg = ChatMessage(
+            user_id=request.user_id,
+            question_id=request.question_id,
+            message=f"[Teach Me] {request.message}",
+            role="user",
+            created_at=datetime.utcnow()
+        )
+        db.add(user_msg)
+
+        ai_msg = ChatMessage(
+            user_id=request.user_id,
+            question_id=request.question_id,
+            message=ai_message,
+            role="assistant",
+            created_at=datetime.utcnow()
+        )
+        db.add(ai_msg)
+        db.commit()
+
+        return {
+            "response": ai_message,
+            "mode": "teach_me",
+            "topic": request.message,
+            "created_at": ai_msg.created_at.isoformat()
+        }
+
+    except CircuitBreakerOpenError:
+        return {
+            "response": "I'm temporarily unable to explain this. Please try again in a moment.",
+            "mode": "teach_me",
+            "topic": request.message,
+            "created_at": datetime.utcnow().isoformat()
+        }
+
+    except Exception as e:
+        logger.error("Teach Me error: %s", e, exc_info=True)
+        raise HTTPException(status_code=503, detail="AI service temporarily unavailable")
