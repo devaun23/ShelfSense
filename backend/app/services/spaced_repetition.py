@@ -357,8 +357,8 @@ def get_review_stats(db: Session, user_id: str, specialty: Optional[str] = None)
 
     # Count by source
     by_source = {}
-    for review in all_reviews:
-        source = review.source or "Unknown"
+    for scheduled_review in all_reviews:
+        source = scheduled_review.source or "Unknown"
         if source not in by_source:
             by_source[source] = 0
         by_source[source] += 1

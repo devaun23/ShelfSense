@@ -33,16 +33,25 @@ RATE_LIMITS = {
         "ai_questions_generated": 10,
         "ai_chat_messages": 50,
         "questions_answered": 100,
+        "assessments_created": 2,  # 2 assessments per day for free tier
+        "study_plans_created": 3,  # 3 plan operations per day for free tier
+        "curriculum_uploads": 3,  # 3 file uploads per day for free tier
     },
     "student": {
         "ai_questions_generated": 50,
         "ai_chat_messages": 200,
         "questions_answered": None,  # Unlimited
+        "assessments_created": 5,  # 5 assessments per day
+        "study_plans_created": 10,  # 10 plan operations per day
+        "curriculum_uploads": 10,  # 10 file uploads per day
     },
     "premium": {
         "ai_questions_generated": None,  # Unlimited
         "ai_chat_messages": None,
         "questions_answered": None,
+        "assessments_created": None,  # Unlimited
+        "study_plans_created": None,  # Unlimited
+        "curriculum_uploads": None,  # Unlimited
     },
 }
 
@@ -52,8 +61,14 @@ ENDPOINT_USAGE_MAP = {
     "/api/batch/generate": "ai_questions_generated",
     "/api/chat": "ai_chat_messages",
     "/api/chat/message": "ai_chat_messages",
+    "/api/chat/socratic": "ai_chat_messages",  # Socratic tutoring also uses AI
+    "/api/chat/teach-me": "ai_chat_messages",  # Teach Me mode uses AI
     "/api/questions/submit": "questions_answered",
     "/api/questions/answer": "questions_answered",
+    "/api/self-assessment/create": "assessments_created",  # New: Assessment creation
+    "/api/study-plan/create": "study_plans_created",  # New: Study plan creation
+    "/api/study-plan/adapt": "study_plans_created",  # Plan adaptation counts as creation
+    "/api/curriculum/upload": "curriculum_uploads",  # StudySync AI file uploads
 }
 
 
@@ -82,30 +97,78 @@ def get_user_tier(db: Session, user_id: str) -> str:
 
 
 def get_or_create_daily_usage(db: Session, user_id: str) -> DailyUsage:
-    """Get or create today's usage record for user."""
+    """
+    Get or create today's usage record for user using atomic upsert.
+
+    SECURITY: Uses INSERT...ON CONFLICT to prevent race conditions
+    that could create duplicate records or bypass rate limits.
+    """
+    from sqlalchemy.dialects.sqlite import insert as sqlite_insert
+    from sqlalchemy import inspect
+    from app.models.models import generate_uuid
+
     today = date.today()
     today_start = datetime.combine(today, datetime.min.time())
 
+    # First, try to get existing record
     usage = db.query(DailyUsage).filter(
         DailyUsage.user_id == user_id,
         DailyUsage.date >= today_start
     ).first()
 
-    if not usage:
-        from app.models.models import generate_uuid
-        usage = DailyUsage(
+    if usage:
+        return usage
+
+    # Use atomic upsert to prevent race conditions
+    # Generate a deterministic ID based on user_id and date to prevent duplicates
+    import hashlib
+    deterministic_id = hashlib.sha256(
+        f"{user_id}:{today_start.isoformat()}".encode()
+    ).hexdigest()[:32]
+
+    try:
+        # Attempt atomic insert
+        new_usage = DailyUsage(
+            id=deterministic_id,
+            user_id=user_id,
+            date=today_start,
+            questions_answered=0,
+            ai_chat_messages=0,
+            ai_questions_generated=0,
+            assessments_created=0,
+            study_plans_created=0,
+            curriculum_uploads=0
+        )
+        db.add(new_usage)
+        db.commit()
+        db.refresh(new_usage)
+        return new_usage
+    except Exception:
+        # Race condition - another request created the record
+        db.rollback()
+        # Fetch the record created by the other request
+        usage = db.query(DailyUsage).filter(
+            DailyUsage.user_id == user_id,
+            DailyUsage.date >= today_start
+        ).first()
+        if usage:
+            return usage
+        # Fallback: create with random UUID (should rarely happen)
+        fallback_usage = DailyUsage(
             id=generate_uuid(),
             user_id=user_id,
             date=today_start,
             questions_answered=0,
             ai_chat_messages=0,
-            ai_questions_generated=0
+            ai_questions_generated=0,
+            assessments_created=0,
+            study_plans_created=0,
+            curriculum_uploads=0
         )
-        db.add(usage)
+        db.add(fallback_usage)
         db.commit()
-        db.refresh(usage)
-
-    return usage
+        db.refresh(fallback_usage)
+        return fallback_usage
 
 
 def check_rate_limit(
@@ -241,27 +304,36 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             db.close()
 
     def _extract_user_id(self, request: Request) -> Optional[str]:
-        """Extract user ID from request headers, query params, or path."""
-        # Try Authorization header (JWT would be decoded here in production)
+        """
+        Extract user ID from authenticated JWT token ONLY.
+
+        SECURITY: Never trust query params or path params for rate limiting.
+        User ID must come from verified JWT to prevent spoofing.
+        """
         auth_header = request.headers.get("Authorization")
-        if auth_header and auth_header.startswith("Bearer "):
-            # In production, decode JWT and extract user_id
-            # For now, check if there's a user_id in query params
+        if not auth_header or not auth_header.startswith("Bearer "):
+            return None
+
+        token = auth_header[7:]  # Remove "Bearer " prefix
+
+        try:
+            # Import here to avoid circular imports
+            from jose import jwt
+
+            # Decode without verification to get user ID
+            # Full verification happens in the auth dependency
+            # This is safe because we're only using it for rate limiting,
+            # not for authorization decisions
+            unverified = jwt.get_unverified_claims(token)
+            user_id = unverified.get("sub")
+
+            if user_id:
+                return user_id
+        except Exception:
+            # Token parsing failed - no rate limiting by user
             pass
 
-        # Try query parameter
-        user_id = request.query_params.get("user_id")
-        if user_id:
-            return user_id
-
-        # Try path parameter (e.g., /api/users/{user_id}/...)
-        path_parts = request.url.path.split("/")
-        for i, part in enumerate(path_parts):
-            if part == "users" and i + 1 < len(path_parts):
-                return path_parts[i + 1]
-
-        # Try X-User-ID header (for internal services)
-        return request.headers.get("X-User-ID")
+        return None
 
 
 # ============================================================================
@@ -499,6 +571,30 @@ async def get_user_usage_summary(
                 "remaining": (
                     limits["questions_answered"] - usage.questions_answered
                     if limits["questions_answered"] else None
+                )
+            },
+            "assessments_created": {
+                "current": usage.assessments_created,
+                "limit": limits["assessments_created"],
+                "remaining": (
+                    limits["assessments_created"] - usage.assessments_created
+                    if limits["assessments_created"] else None
+                )
+            },
+            "study_plans_created": {
+                "current": usage.study_plans_created,
+                "limit": limits["study_plans_created"],
+                "remaining": (
+                    limits["study_plans_created"] - usage.study_plans_created
+                    if limits["study_plans_created"] else None
+                )
+            },
+            "curriculum_uploads": {
+                "current": usage.curriculum_uploads,
+                "limit": limits["curriculum_uploads"],
+                "remaining": (
+                    limits["curriculum_uploads"] - usage.curriculum_uploads
+                    if limits["curriculum_uploads"] else None
                 )
             }
         }

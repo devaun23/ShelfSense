@@ -5,7 +5,7 @@ Handles user registration, login, logout, and token management.
 import os
 import asyncio
 import logging
-from fastapi import APIRouter, Depends, HTTPException, status, Request
+from fastapi import APIRouter, Depends, HTTPException, status, Request, Header
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, EmailStr, Field
@@ -14,6 +14,7 @@ from typing import Optional
 
 from app.database import get_db
 from app.models.models import User, UserSession, UserSettings, PasswordResetToken
+from app.dependencies.auth import get_current_user, verify_clerk_jwt
 from app.services.auth import (
     AuthService,
     TokenError,
@@ -550,7 +551,10 @@ async def forgot_password(
     success_message = "If an account with that email exists, we've sent password reset instructions."
 
     if not user:
-        logger.info(f"Password reset requested for non-existent email: {request.email}")
+        # SECURITY: Log hashed email prefix to avoid PII in logs
+        import hashlib
+        email_hash = hashlib.sha256(request.email.lower().encode()).hexdigest()[:8]
+        logger.info(f"Password reset requested for non-existent email (hash: {email_hash})")
         return MessageResponse(message=success_message)
 
     # Check if user has a password (not Clerk-only user)
@@ -760,18 +764,54 @@ class ClerkSyncResponse(BaseModel):
 @router.post("/clerk-sync", response_model=ClerkSyncResponse)
 async def clerk_sync(
     request: ClerkSyncRequest,
+    authorization: Optional[str] = Header(None),
     db: Session = Depends(get_db)
 ):
     """
     Sync user from Clerk authentication.
     Creates or updates a user based on their Clerk ID.
     Called automatically when a user signs in via Clerk.
+
+    SECURITY: Requires valid Clerk JWT. Token's user ID must match request.
+    Admin privileges are NOT auto-granted - must be set manually in database.
     """
+    # Extract and verify Clerk JWT
+    token = None
+    if authorization and authorization.startswith("Bearer "):
+        token = authorization[7:]
+
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication required"
+        )
+
+    # Verify the Clerk JWT
+    try:
+        claims = verify_clerk_jwt(token)
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.warning(f"Clerk JWT verification failed: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid authentication token"
+        )
+
+    # SECURITY: Ensure token's user ID matches the request
+    token_user_id = claims.get("sub")
+    if token_user_id != request.clerk_user_id:
+        logger.warning(f"Token user ID mismatch: token={token_user_id}, request={request.clerk_user_id}")
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Cannot sync a different user's data"
+        )
+
     # First, try to find user by Clerk ID (stored in id field now)
     existing_user = db.query(User).filter(User.id == request.clerk_user_id).first()
 
-    # Check for admin email env var
-    admin_email = os.getenv("ADMIN_EMAIL")
+    # SECURITY: Admin auto-promotion REMOVED - admin must be set manually
+    # admin_email check removed to prevent privilege escalation
 
     if existing_user:
         # Update existing user
@@ -781,9 +821,7 @@ async def clerk_sync(
             existing_user.email = request.email
         existing_user.last_login = datetime.utcnow()
 
-        # Auto-promote to admin if email matches ADMIN_EMAIL
-        if admin_email and existing_user.email and existing_user.email.lower() == admin_email.lower():
-            existing_user.is_admin = True
+        # NOTE: is_admin is NOT modified here - must be set via admin panel/database
 
         db.commit()
         db.refresh(existing_user)
@@ -810,9 +848,7 @@ async def clerk_sync(
             email_user.first_name = request.first_name
             email_user.last_login = datetime.utcnow()
 
-            # Auto-promote to admin if email matches ADMIN_EMAIL
-            if admin_email and email_user.email and email_user.email.lower() == admin_email.lower():
-                email_user.is_admin = True
+            # NOTE: is_admin is NOT modified here - preserves existing admin status
 
             db.commit()
             db.refresh(email_user)
@@ -828,9 +864,7 @@ async def clerk_sync(
             )
 
     # Create new user with Clerk ID
-    # Auto-promote to admin if email matches ADMIN_EMAIL
-    is_admin = bool(admin_email and request.email and request.email.lower() == admin_email.lower())
-
+    # SECURITY: New users are NEVER admin - must be promoted manually
     new_user = User(
         id=request.clerk_user_id,  # Use Clerk ID as the user ID
         full_name=request.full_name,
@@ -838,7 +872,7 @@ async def clerk_sync(
         email=request.email,
         email_verified=True,  # Clerk handles verification
         last_login=datetime.utcnow(),
-        is_admin=is_admin
+        is_admin=False  # SECURITY: Never auto-promote to admin
     )
     db.add(new_user)
     db.commit()

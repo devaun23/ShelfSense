@@ -24,10 +24,11 @@ export default function ConfidenceSelector({ value, onChange, disabled }: Confid
 
   return (
     <div className="flex flex-col items-center gap-2">
-      <div className="flex items-center gap-1">
-        <span className="text-xs text-gray-500 mr-2">Confidence:</span>
-        <div className="flex gap-1">
-          {CONFIDENCE_LEVELS.map(({ level, color, bgColor, borderColor }) => {
+      <div className="flex items-center gap-1 sm:gap-2">
+        <span className="text-xs text-gray-500 mr-1 sm:mr-2">Confidence:</span>
+        {/* Touch-optimized button container with minimum 44px touch targets */}
+        <div className="flex gap-0.5 sm:gap-1" role="radiogroup" aria-label="Select your confidence level">
+          {CONFIDENCE_LEVELS.map(({ level, label, color, bgColor, borderColor }) => {
             const isSelected = value === level;
             const isHovered = hoveredLevel === level;
             const isActive = isSelected || isHovered;
@@ -39,16 +40,20 @@ export default function ConfidenceSelector({ value, onChange, disabled }: Confid
                 onMouseEnter={() => !disabled && setHoveredLevel(level)}
                 onMouseLeave={() => setHoveredLevel(null)}
                 disabled={disabled}
+                role="radio"
+                aria-checked={isSelected}
+                aria-label={`${label} - confidence level ${level} of 5`}
                 className={`
-                  w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium
-                  transition-all duration-150
-                  ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:scale-110'}
+                  min-w-[44px] min-h-[44px] w-10 h-10 sm:w-11 sm:h-11
+                  rounded-full flex items-center justify-center text-sm font-medium
+                  transition-all duration-150 touch-manipulation
+                  ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer active:scale-95'}
                   ${isActive
                     ? `${bgColor} ${borderColor} border-2 ${color}`
-                    : 'bg-gray-800/50 border border-gray-700 text-gray-500 hover:border-gray-600'
+                    : 'bg-gray-800/50 border border-gray-700 text-gray-500'
                   }
                 `}
-                title={CONFIDENCE_LEVELS[level - 1].label}
+                style={{ WebkitTapHighlightColor: 'transparent' }}
               >
                 {level}
               </button>
@@ -58,7 +63,7 @@ export default function ConfidenceSelector({ value, onChange, disabled }: Confid
       </div>
 
       {/* Label display */}
-      <div className="h-4 text-xs">
+      <div className="h-5 text-xs sm:text-sm" aria-live="polite">
         {currentLevel && (
           <span className={currentLevel.color}>
             {currentLevel.label} - {currentLevel.description}

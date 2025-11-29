@@ -5,7 +5,7 @@ import Sidebar from '@/components/Sidebar'
 // Mock Next.js router
 const mockPush = jest.fn()
 const mockPathname = jest.fn(() => '/study')
-const mockSearchParams = { get: jest.fn(() => null) }
+const mockSearchParams = { get: jest.fn((): string | null => null) }
 
 jest.mock('next/navigation', () => ({
   useRouter: () => ({

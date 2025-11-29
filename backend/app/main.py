@@ -36,21 +36,29 @@ if sentry_dsn:
 Base.metadata.create_all(bind=engine)
 
 
+async def _background_pool_warming():
+    """Initialize pool in background after app is ready to serve."""
+    await asyncio.sleep(5)  # Let healthcheck pass first
+    try:
+        from app.services.massive_pool import initialize_massive_pool
+        logger.info("Background: Initializing massive question pool...")
+        initialize_massive_pool()
+        logger.info("Background: Massive pool initialized successfully")
+    except Exception as e:
+        logger.warning("Background pool initialization failed: %s", e)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan handler - runs on startup and shutdown."""
-    # STARTUP: Initialize the massive question pool
-    if os.getenv("ENABLE_POOL_WARMING", "true").lower() == "true":
-        try:
-            from app.services.massive_pool import initialize_massive_pool
-            logger.info("Initializing massive question pool...")
-            initialize_massive_pool()
-            logger.info("Massive pool initialized successfully")
-        except Exception as e:
-            logger.warning("Pool initialization failed: %s", e)
-            # Don't crash on pool init failure - app can still work
+    logger.info("Starting ShelfSense API...")
+
+    # STARTUP: Initialize the massive question pool (in background to not block healthcheck)
+    if os.getenv("ENABLE_POOL_WARMING", "false").lower() == "true":
+        # Run pool warming in background after app is ready
+        asyncio.create_task(_background_pool_warming())
     else:
-        logger.info("Pool warming disabled via ENABLE_POOL_WARMING=false")
+        logger.info("Pool warming disabled via ENABLE_POOL_WARMING")
 
     # Start email schedulers if Resend API key is configured
     if os.getenv("RESEND_API_KEY"):

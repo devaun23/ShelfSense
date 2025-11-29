@@ -7,6 +7,7 @@ import { getSpecialtyBySlug } from '@/lib/specialties';
 import EyeLogo from '@/components/icons/EyeLogo';
 import SpecialtyIcon from '@/components/icons/SpecialtyIcon';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import WelcomeModal from '@/components/WelcomeModal';
 
 interface PortalDashboardProps {
   params: Promise<{ specialty: string }>;
@@ -71,12 +72,13 @@ const FEATURE_CARDS = [
 ];
 
 export default function PortalDashboard({ params }: PortalDashboardProps) {
-  const { user, isLoading } = useUser();
+  const { user, isLoading, updateTargetScore, updateExamDate } = useUser();
   const router = useRouter();
   const resolvedParams = use(params);
   const specialty = getSpecialtyBySlug(resolvedParams.specialty);
   const [isStarting, setIsStarting] = useState(false);
   const [encouragement, setEncouragement] = useState('');
+  const [showWelcome, setShowWelcome] = useState(false);
 
   // Pick a random encouragement on client-side mount only (avoids hydration mismatch)
   useEffect(() => {
@@ -84,6 +86,34 @@ export default function PortalDashboard({ params }: PortalDashboardProps) {
       ENCOURAGEMENT_MESSAGES[Math.floor(Math.random() * ENCOURAGEMENT_MESSAGES.length)]
     );
   }, []);
+
+  // Check if onboarding is needed when entering portal
+  useEffect(() => {
+    if (user) {
+      const onboardingKey = `shelfpass_onboarding_complete_${user.userId}`;
+      const hasCompletedOnboarding = localStorage.getItem(onboardingKey) === 'true';
+
+      if (!hasCompletedOnboarding && user.targetScore === null && user.examDate === null) {
+        setShowWelcome(true);
+      }
+    }
+  }, [user]);
+
+  const handleWelcomeComplete = async (targetScore: number, examDate: string) => {
+    if (user) {
+      await updateTargetScore(targetScore);
+      await updateExamDate(examDate);
+      localStorage.setItem(`shelfpass_onboarding_complete_${user.userId}`, 'true');
+    }
+    setShowWelcome(false);
+  };
+
+  const handleWelcomeSkip = () => {
+    if (user) {
+      localStorage.setItem(`shelfpass_onboarding_complete_${user.userId}`, 'true');
+    }
+    setShowWelcome(false);
+  };
 
   const handleStartStudying = () => {
     if (!specialty) return;
@@ -114,11 +144,21 @@ export default function PortalDashboard({ params }: PortalDashboardProps) {
   const basePath = `/portal/${specialty.slug}`;
 
   return (
-    <main className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-4 animate-fade-in">
-      {/* Eye Logo */}
-      <div className="mb-6 animate-bounce-in" style={{ animationDelay: '0ms' }}>
-        <EyeLogo size={48} />
-      </div>
+    <>
+      {/* Welcome Modal for onboarding */}
+      {showWelcome && user && (
+        <WelcomeModal
+          firstName={user.firstName}
+          onComplete={handleWelcomeComplete}
+          onSkip={handleWelcomeSkip}
+        />
+      )}
+
+      <main className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-4 animate-fade-in">
+        {/* Eye Logo */}
+        <div className="mb-6 animate-bounce-in" style={{ animationDelay: '0ms' }}>
+          <EyeLogo size={48} />
+        </div>
 
       {/* Empathetic Encouragement */}
       {encouragement && (
@@ -224,7 +264,8 @@ export default function PortalDashboard({ params }: PortalDashboardProps) {
           animation: bounceIn 0.5s ease-out forwards;
         }
       `}</style>
-    </main>
+      </main>
+    </>
   );
 }
 
