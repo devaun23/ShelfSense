@@ -935,45 +935,55 @@ def bootstrap_admin(
     """
     import secrets
 
-    bootstrap_secret = os.getenv("ADMIN_BOOTSTRAP_SECRET")
+    try:
+        bootstrap_secret = os.getenv("ADMIN_BOOTSTRAP_SECRET", "").strip()
 
-    if not bootstrap_secret:
-        logger.warning("Bootstrap admin attempt but ADMIN_BOOTSTRAP_SECRET not configured")
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="Admin bootstrap not configured"
-        )
+        if not bootstrap_secret:
+            logger.warning("Bootstrap admin attempt but ADMIN_BOOTSTRAP_SECRET not configured")
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="Admin bootstrap not configured"
+            )
 
-    # Constant-time comparison to prevent timing attacks
-    if not secrets.compare_digest(request.secret, bootstrap_secret):
-        logger.warning(f"Bootstrap admin attempt with invalid secret for email: {request.email}")
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Invalid bootstrap secret"
-        )
+        # Constant-time comparison to prevent timing attacks
+        provided_secret = request.secret.strip()
+        if not secrets.compare_digest(provided_secret, bootstrap_secret):
+            logger.warning(f"Bootstrap admin attempt with invalid secret for email: {request.email}")
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Invalid bootstrap secret"
+            )
 
-    # Find the user
-    user = db.query(User).filter(User.email == request.email).first()
+        # Find the user
+        user = db.query(User).filter(User.email == request.email).first()
 
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found. Please sign in first to create your account."
-        )
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found. Please sign in first to create your account."
+            )
 
-    if user.is_admin:
+        if user.is_admin:
+            return BootstrapAdminResponse(
+                success=True,
+                message=f"User {request.email} is already an admin"
+            )
+
+        # Promote to admin
+        user.is_admin = True
+        db.commit()
+
+        logger.info(f"User {request.email} promoted to admin via bootstrap")
+
         return BootstrapAdminResponse(
             success=True,
-            message=f"User {request.email} is already an admin"
+            message=f"User {request.email} has been promoted to admin"
         )
-
-    # Promote to admin
-    user.is_admin = True
-    db.commit()
-
-    logger.info(f"User {request.email} promoted to admin via bootstrap")
-
-    return BootstrapAdminResponse(
-        success=True,
-        message=f"User {request.email} has been promoted to admin"
-    )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Bootstrap admin error: {type(e).__name__}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Bootstrap failed: {type(e).__name__}"
+        )
