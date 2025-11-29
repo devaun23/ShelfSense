@@ -2,6 +2,7 @@
 
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import { useUser } from '@/contexts/UserContext';
 import { getSpecialtyBySlug } from '@/lib/specialties';
 import EyeLogo from '@/components/icons/EyeLogo';
@@ -9,21 +10,12 @@ import SpecialtyIcon from '@/components/icons/SpecialtyIcon';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import WelcomeModal from '@/components/WelcomeModal';
 
+// Dynamically import Sidebar to avoid SSR issues
+const Sidebar = dynamic(() => import('@/components/Sidebar'), { ssr: false });
+
 interface PortalDashboardProps {
   params: Promise<{ specialty: string }>;
 }
-
-// Warm, empathetic messages that rotate
-const ENCOURAGEMENT_MESSAGES = [
-  "You've got this.",
-  "One step at a time.",
-  "Trust your preparation.",
-  "Show up. That's what matters.",
-  "Every question is a teacher.",
-  "You're exactly where you need to be.",
-  "Breathe. Focus. Begin.",
-  "Your hard work will pay off.",
-];
 
 // Feature card definitions with icons
 const FEATURE_CARDS = [
@@ -77,14 +69,12 @@ export default function PortalDashboard({ params }: PortalDashboardProps) {
   const resolvedParams = use(params);
   const specialty = getSpecialtyBySlug(resolvedParams.specialty);
   const [isStarting, setIsStarting] = useState(false);
-  const [encouragement, setEncouragement] = useState('');
   const [showWelcome, setShowWelcome] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Pick a random encouragement on client-side mount only (avoids hydration mismatch)
+  // Set initial sidebar state after mount
   useEffect(() => {
-    setEncouragement(
-      ENCOURAGEMENT_MESSAGES[Math.floor(Math.random() * ENCOURAGEMENT_MESSAGES.length)]
-    );
+    setSidebarOpen(window.innerWidth >= 900);
   }, []);
 
   // Check if onboarding is needed when entering portal
@@ -161,6 +151,9 @@ export default function PortalDashboard({ params }: PortalDashboardProps) {
 
   return (
     <>
+      {/* Sidebar */}
+      <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
+
       {/* Welcome Modal for onboarding */}
       {showWelcome && user && (
         <WelcomeModal
@@ -170,21 +163,13 @@ export default function PortalDashboard({ params }: PortalDashboardProps) {
         />
       )}
 
-      <main className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-4 animate-fade-in">
+      <main className={`min-h-screen bg-black text-white flex flex-col items-center justify-center px-4 animate-fade-in transition-all duration-300 ${
+        sidebarOpen ? 'md:ml-64' : 'ml-0'
+      }`}>
         {/* Eye Logo */}
         <div className="mb-6 animate-bounce-in" style={{ animationDelay: '0ms' }}>
           <EyeLogo size={48} />
         </div>
-
-      {/* Empathetic Encouragement */}
-      {encouragement && (
-        <p
-          className="text-gray-500 text-lg mb-8 text-center animate-bounce-in"
-          style={{ fontFamily: 'var(--font-serif)', animationDelay: '100ms' }}
-        >
-          {encouragement}
-        </p>
-      )}
 
       {/* Specialty Banner */}
       <div
@@ -224,7 +209,7 @@ export default function PortalDashboard({ params }: PortalDashboardProps) {
       <button
         onClick={handleStartStudying}
         disabled={isStarting}
-        className="px-8 py-4 bg-white hover:bg-gray-100 text-black font-medium rounded-full transition-all duration-200 ease-out active:scale-95 hover:shadow-lg hover:shadow-white/10 animate-bounce-in disabled:opacity-70"
+        className="px-8 py-4 bg-[#4169E1] hover:bg-[#5B7FE8] text-white font-medium rounded-full transition-all duration-200 ease-out active:scale-95 hover:shadow-lg hover:shadow-blue-500/20 animate-bounce-in disabled:opacity-70"
         style={{ fontFamily: 'var(--font-serif)', animationDelay: '550ms' }}
       >
         {isStarting ? (
@@ -235,15 +220,6 @@ export default function PortalDashboard({ params }: PortalDashboardProps) {
         ) : (
           'Start Studying'
         )}
-      </button>
-
-      {/* Back to Home */}
-      <button
-        onClick={() => router.push('/')}
-        className="mt-8 text-gray-600 hover:text-gray-400 text-sm transition-colors animate-bounce-in"
-        style={{ animationDelay: '650ms' }}
-      >
-        Back to all exams
       </button>
 
       {/* Animation styles */}
@@ -292,7 +268,7 @@ function LoadingDots() {
       {[0, 1, 2].map((i) => (
         <div
           key={i}
-          className="w-2 h-2 bg-black rounded-full animate-pulse"
+          className="w-2 h-2 bg-white rounded-full animate-pulse"
           style={{
             animationDelay: `${i * 150}ms`,
             animationDuration: '0.8s',
