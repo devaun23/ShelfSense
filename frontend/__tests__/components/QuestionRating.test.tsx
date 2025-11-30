@@ -23,15 +23,15 @@ describe('QuestionRating', () => {
   it('renders rating buttons', () => {
     render(<QuestionRating {...mockProps} />)
 
-    // Check for thumbs up and down buttons
-    expect(screen.getByTitle('Good question')).toBeInTheDocument()
-    expect(screen.getByTitle('Bad question')).toBeInTheDocument()
+    // Check for thumbs up and down buttons (using aria-label)
+    expect(screen.getByLabelText('Rate as good question')).toBeInTheDocument()
+    expect(screen.getByLabelText('Report issue with question')).toBeInTheDocument()
   })
 
   it('opens modal when good question clicked', async () => {
     render(<QuestionRating {...mockProps} />)
 
-    fireEvent.click(screen.getByTitle('Good question'))
+    fireEvent.click(screen.getByLabelText('Rate as good question'))
 
     expect(screen.getByText('Good Question')).toBeInTheDocument()
     expect(screen.getByText('What made this question good?')).toBeInTheDocument()
@@ -40,7 +40,7 @@ describe('QuestionRating', () => {
   it('opens modal when bad question clicked', async () => {
     render(<QuestionRating {...mockProps} />)
 
-    fireEvent.click(screen.getByTitle('Bad question'))
+    fireEvent.click(screen.getByLabelText('Report issue with question'))
 
     expect(screen.getByText('Report Issue')).toBeInTheDocument()
     expect(screen.getByText('Help improve by explaining the issue')).toBeInTheDocument()
@@ -50,7 +50,7 @@ describe('QuestionRating', () => {
     const user = userEvent.setup()
     render(<QuestionRating {...mockProps} />)
 
-    fireEvent.click(screen.getByTitle('Good question'))
+    fireEvent.click(screen.getByLabelText('Rate as good question'))
 
     const textarea = screen.getByPlaceholderText('Optional feedback...')
     await user.type(textarea, 'Great clinical scenario!')
@@ -62,7 +62,7 @@ describe('QuestionRating', () => {
     const user = userEvent.setup()
     render(<QuestionRating {...mockProps} />)
 
-    fireEvent.click(screen.getByTitle('Good question'))
+    fireEvent.click(screen.getByLabelText('Rate as good question'))
 
     const textarea = screen.getByPlaceholderText('Optional feedback...')
     await user.type(textarea, 'Great question!')
@@ -83,7 +83,7 @@ describe('QuestionRating', () => {
   it('calls onRatingComplete after successful submission', async () => {
     render(<QuestionRating {...mockProps} />)
 
-    fireEvent.click(screen.getByTitle('Good question'))
+    fireEvent.click(screen.getByLabelText('Rate as good question'))
     fireEvent.click(screen.getByText('Submit'))
 
     await waitFor(() => {
@@ -94,7 +94,7 @@ describe('QuestionRating', () => {
   it('allows skipping feedback', async () => {
     render(<QuestionRating {...mockProps} />)
 
-    fireEvent.click(screen.getByTitle('Good question'))
+    fireEvent.click(screen.getByLabelText('Rate as good question'))
     fireEvent.click(screen.getByText('Skip'))
 
     expect(mockProps.onRatingComplete).toHaveBeenCalled()
@@ -109,7 +109,7 @@ describe('QuestionRating', () => {
 
     render(<QuestionRating {...mockProps} />)
 
-    fireEvent.click(screen.getByTitle('Good question'))
+    fireEvent.click(screen.getByLabelText('Rate as good question'))
     fireEvent.click(screen.getByText('Submit'))
 
     expect(screen.getByText('Submitting...')).toBeInTheDocument()
@@ -121,7 +121,7 @@ describe('QuestionRating', () => {
 
     render(<QuestionRating {...mockProps} />)
 
-    fireEvent.click(screen.getByTitle('Good question'))
+    fireEvent.click(screen.getByLabelText('Rate as good question'))
     fireEvent.click(screen.getByText('Submit'))
 
     await waitFor(() => {
